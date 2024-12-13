@@ -1,0 +1,31 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+<h2>My Profile</h2>
+
+<h3>My Proposed Trajects</h3>
+{% if proposed_trajects %}
+    <ul>
+        {% for traject in proposed_trajects %}
+            <li>{{ traject.traject.start_locality }} to {{ traject.traject.end_locality }} on {{ traject.departure_time }} - {{ traject.arrival_time }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You have not proposed any trajects.</p>
+{% endif %}
+<a href="{% url 'proposed_traject' %}">Propose a Traject</a>
+
+<h3>My Researched Trajects</h3>
+{% if researched_trajects %}
+    <ul>
+        {% for traject in researched_trajects %}
+            <li>{{ traject.traject.start_locality }} to {{ traject.traject.end_locality }} on {{ traject.departure_time }} - {{ traject.arrival_time }}</li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>You have not researched any trajects.</p>
+{% endif %}
+<a href="{% url 'searched_traject' %}">Search and Save a Traject</a>
+{% endblock %}

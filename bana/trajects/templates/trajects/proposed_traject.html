@@ -1,0 +1,14 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Create Proposed Traject{% endblock %}
+
+{% block content %}
+<h2>Create Proposed Traject</h2>
+
+<form method="post" action="{% url 'proposed_traject' %}">
+    {% csrf_token %}
+    {{ traject_form.as_p }}
+    {{ proposed_form.as_p }}
+    <button type="submit">Create Proposed Traject</button>
+</form>
+{% endblock %}

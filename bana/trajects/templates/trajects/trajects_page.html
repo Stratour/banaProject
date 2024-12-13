@@ -1,0 +1,75 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}All Trajects{% endblock %}
+
+{% block content %}
+<h2>Search Trajects</h2>
+
+<form method="get" action="{% url 'search_trajects' %}">
+    <label for="start_locality">Start City:</label>
+    <input type="text" id="start_locality" name="start_locality" placeholder="e.g., Couillet">
+    
+    <label for="end_locality">End City:</label>
+    <input type="text" id="end_locality" name="end_locality" placeholder="e.g., Bruxelles">
+    
+    <button type="submit">Search</button>
+</form>
+
+<h2>Proposed Trajects</h2>
+{% if proposed_trajects %}
+    <ul>
+        {% for proposed in proposed_trajects %}
+            <li>{{ proposed.traject.start_locality }} to {{ proposed.traject.end_locality }}
+            Departure: {{ proposed.departure_time }}, Arrival: {{ proposed.arrival_time }}</li>
+        {% endfor %}
+    </ul>
+    <div class="pagination">
+        <span class="step-links">
+            {% if proposed_trajects.has_previous %}
+                <a href="?page1=1">&laquo; first</a>
+                <a href="?page1={{ proposed_trajects.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ proposed_trajects.number }} of {{ proposed_trajects.paginator.num_pages }}.
+            </span>
+    
+            {% if proposed_trajects.has_next %}
+                <a href="?page1={{ proposed_trajects.next_page_number }}">next</a>
+                <a href="?page1={{ proposed_trajects.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% else %}
+    <p>No proposed trajects found.</p>
+{% endif %}
+
+<h2>Researched Trajects</h2>
+{% if researched_trajects %}
+    <ul>
+        {% for researched in researched_trajects %}
+            <li>{{ researched.traject.start_locality }} to {{ researched.traject.end_locality }}
+            Departure: {{ researched.departure_time }}, Arrival: {{ researched.arrival_time }}</li>
+        {% endfor %}
+    </ul>
+    <div class="pagination">
+        <span class="step-links">
+            {% if researched_trajects.has_previous %}
+                <a href="?page2=1">&laquo; first</a>
+                <a href="?page2={{ researched_trajects.previous_page_number }}">previous</a>
+            {% endif %}
+    
+            <span class="current">
+                Page {{ researched_trajects.number }} of {{ researched_trajects.paginator.num_pages }}.
+            </span>
+    
+            {% if researched_trajects.has_next %}
+                <a href="?page2={{ researched_trajects.next_page_number }}">next</a>
+                <a href="?page2={{ researched_trajects.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+{% else %}
+    <p>No researched trajects found.</p>
+{% endif %}
+{% endblock %}
