@@ -19,7 +19,9 @@ from django.urls import path, include
 from . import views
 
 urlpatterns = [ 
+    path("__reload__/", include("django_browser_reload.urls")), #tailwind related it's the auto reload
     path('admin/', admin.site.urls),
+
     path('', views.home, name='home'),
     path('contact/', views.contact, name='contact'),
     path('about/', views.about, name='about'),

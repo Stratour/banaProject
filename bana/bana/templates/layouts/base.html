@@ -1,4 +1,4 @@
-{% load static %}
+{% load static tailwind_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -7,19 +7,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- styling part -->
-    <link rel="stylesheet" href="{% static 'members/css/style.css' %}"> 
-    <script src="{% static 'members/js/scripts.js' %}" defer ></script>
+    {% tailwind_css %}
 
+    <!-- js -->
+    <script src="{% static 'members/js/scripts.js' %}" defer ></script>
+    
     <title>{% block title %}{% endblock  %}</title>
 </head>
-<body>
-        {% include './header.html' %}
+<body class="min-h-screen flex flex-col">
+    {% include './header.html' %}
 
-
+    <main class="flex-grow">
         {% block content %}
         {% endblock %}
-        
+    </main>
 
-        {% include './footer.html' %}
+    {% include './footer.html' %}
 </body>
 </html>
