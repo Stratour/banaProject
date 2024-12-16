@@ -18,7 +18,6 @@
     cd BanaCommunity
     ```
     **<span style="color:red">Ensure you create a branch with your own name</span>**
-
     ```sh
     git checkout -b your-branch-name
     ```
@@ -26,7 +25,7 @@
 2. **Set up a virtual environment**:
     ```sh
     python3 -m venv env
-    source env/bin/activate  # For Unix or MacOS
+    source env/bin/activate  # For Unix or macOS
     ```
 
 3. **Install project dependencies**:
@@ -82,6 +81,33 @@
 4. **Start the development server**:
     ```sh
     python manage.py runserver
+    ```
+
+### Git Branching and Workflow
+
+- **Create a new branch**:
+    ```sh
+    git checkout -b your-branch-name
+    ```
+
+- **Switch to another branch**:
+    ```sh
+    git checkout branch-name
+    ```
+
+- **Pull the latest changes from the remote repository**:
+    ```sh
+    git pull origin main  # Replace 'main' with your default branch name if different
+    ```
+
+- **Merge another branch into your current branch**:
+    ```sh
+    git merge branch-name
+    ```
+
+- **Push your branch to the remote repository**:
+    ```sh
+    git push origin your-branch-name
     ```
 
 ### Notes
