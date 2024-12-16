@@ -1,25 +1,86 @@
-# This project is a private project for BanaCommunity
+# BanaCommunity
 
-## About 
-This project is a carpooling like, it will be developped in Django. 
+## Project Setup Instructions
 
-## Requirement
+### Requirements
 
-For the installation u will need :
+- Python 3.12 or later
+- Django 4.2 or later
+- Node.js and npm (Node Package Manager)
 
-* python version 1O at least. 
-* django 
-* code editor like VsCode 
+### Installation Steps
 
-## installation
+#### General Instructions
 
-steps:
+1. **Clone the repository**:
+    ```sh
+    git clone https://github.com/yourusername/your-repo-name.git
+    cd your-repo-name
+    ```
 
-1. do uzdhuazh
-2. then ud
-3. finally 
+2. **Set up a virtual environment**:
+    ```sh
+    python3 -m venv env
+    source env/bin/activate  # For Unix or MacOS
+    ```
 
-## back-end docuumentation :
+3. **Install project dependencies**:
+    ```sh
+    pip install -r requirements.txt
+    ```
 
+4. **Install Tailwind CSS and dependencies**:
+    ```sh
+    npm install
+    ```
 
-## font-end documentation :
+5. **Create and configure your `.env` file**:
+    - Copy the sample environment file and modify it with your configuration:
+      ```sh
+      cp .env.example .env
+      ```
+
+#### Additional Steps for Linux
+
+1. **Apply database migrations**:
+    ```sh
+    python manage.py migrate
+    ```
+
+2. **Collect static files**:
+    ```sh
+    python manage.py collectstatic
+    ```
+
+3. **Start the development server**:
+    ```sh
+    npm run dev  # To start Tailwind CSS watch process
+    python manage.py runserver
+    ```
+
+#### Additional Steps for macOS
+
+1. **Apply database migrations**:
+    ```sh
+    python manage.py migrate
+    ```
+
+2. **Collect static files**:
+    ```sh
+    python manage.py collectstatic
+    ```
+
+3. **Start the development server**:
+    ```sh
+    npm run dev  # To start Tailwind CSS watch process
+    python manage.py runserver
+    ```
+
+### Notes
+
+- Ensure that your environment variables are correctly set in the `.env` file.
+- If you encounter any issues with Node.js or npm, make sure they are properly installed and configured on your system.
+
+For any additional details, refer to the project documentation or reach out to the maintainers.
+
+Happy coding!
