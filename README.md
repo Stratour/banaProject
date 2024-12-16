@@ -14,8 +14,8 @@
 
 1. **Clone the repository**:
     ```sh
-    git clone https://github.com/yourusername/your-repo-name.git
-    cd your-repo-name
+    git clone git@github.com:Iliess-A/BanaCommunity.git
+    cd BanaCommunity
     ```
 
 2. **Set up a virtual environment**:
@@ -70,9 +70,13 @@
     python manage.py collectstatic
     ```
 
-3. **Start the development server**:
+3. **Start Tailwind CSS**:
+   ```sh
+    python manage.py tailwind start
+   ```
+   
+5. **Start the development server**:
     ```sh
-    npm run dev  # To start Tailwind CSS watch process
     python manage.py runserver
     ```
 
