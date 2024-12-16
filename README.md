@@ -17,6 +17,11 @@
     git clone git@github.com:Iliess-A/BanaCommunity.git
     cd BanaCommunity
     ```
+    **<span style="color:red">Ensure you create a branch with your own name</span>**
+
+    ```sh
+    git checkout -b your-branch-name
+    ```
 
 2. **Set up a virtual environment**:
     ```sh
