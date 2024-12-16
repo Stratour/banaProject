@@ -1,18 +1,21 @@
 {% extends 'layouts/base.html' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Register - BanaCommunity{% endblock %}
 
 {% block content %}
+<div class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
+    <div class="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
+        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Inscription</h2>
+        <form method="post" action="{% url 'register' %}" class="space-y-6">
+            {% csrf_token %}
 
-<form method="post" action="{% url 'register' %}">
+            {{ user_form.as_p }}
+            {{ members_form.as_p }}
 
-  {% csrf_token %}
-  
-  {{ user_form.as_p }}
-  {{ members_form.as_p }}
-  
-  <button type="submit">Inscription</button>
-
-</form>
-
+            <button type="submit" class="w-full py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                Inscription
+            </button>
+        </form>
+    </div>
+</div>
 {% endblock %}

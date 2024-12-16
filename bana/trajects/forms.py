@@ -24,26 +24,26 @@ class TrajectForm(forms.ModelForm):
             'end_country': 'Pays d’arrivée',
         }
         widgets = {
-            'start_street': forms.TextInput(attrs={'placeholder': 'Rue de ...'}),
-            'start_number': forms.TextInput(attrs={'placeholder': '12'}),
-            'start_box': forms.TextInput(attrs={'placeholder': '044, 4D, Bis'}),
-            'start_zp': forms.TextInput(attrs={'placeholder': '1000'}),
-            'start_locality': forms.TextInput(attrs={'placeholder': 'Bruxelles'}),
-            'start_country': forms.TextInput(attrs={'value': 'Belgique', 'placeholder': 'Belgique'}),
-            'end_street': forms.TextInput(attrs={'placeholder': 'Rue de ...'}),
-            'end_number': forms.TextInput(attrs={'placeholder': '34'}),
-            'end_box': forms.TextInput(attrs={'placeholder': '044, 4D, Bis'}),
-            'end_zp': forms.TextInput(attrs={'placeholder': '2000'}),
-            'end_locality': forms.TextInput(attrs={'placeholder': 'Anvers'}),
-            'end_country': forms.TextInput(attrs={'value': 'Belgique', 'placeholder': 'Belgique'}),
+            'start_street': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Rue de ...'}),
+            'start_number': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': '12'}),
+            'start_box': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': '044, 4D, Bis'}),
+            'start_zp': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': '1000'}),
+            'start_locality': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Bruxelles'}),
+            'start_country': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'value': 'Belgique', 'placeholder': 'Belgique'}),
+            'end_street': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Rue de ...'}),
+            'end_number': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': '34'}),
+            'end_box': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': '044, 4D, Bis'}),
+            'end_zp': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': '2000'}),
+            'end_locality': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Anvers'}),
+            'end_country': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'value': 'Belgique', 'placeholder': 'Belgique'}),
         }
 
 class ProposedTrajectForm(forms.ModelForm):
     departure_time = forms.TimeField(
-        widget=forms.TimeInput(attrs={'type': 'time', 'placeholder': 'hh:mm'})
+        widget=forms.TimeInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'time', 'placeholder': 'hh:mm'})
     )
     arrival_time = forms.TimeField(
-        widget=forms.TimeInput(attrs={'type': 'time', 'placeholder': 'hh:mm'})
+        widget=forms.TimeInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'time', 'placeholder': 'hh:mm'})
     )
 
     class Meta:
@@ -56,16 +56,16 @@ class ProposedTrajectForm(forms.ModelForm):
             'arrival_time': 'Heure d’arrivée',
         }
         widgets = {
-            'name': forms.TextInput(attrs={'placeholder': 'Nom de votre trajet'}),
-            'details': forms.Textarea(attrs={'placeholder': 'Ajoutez des détails utiles pour les passagers'}),
+            'name': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Nom de votre trajet'}),
+            'details': forms.Textarea(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Ajoutez des détails utiles pour les passagers'}),
         }
 
 class ResearchedTrajectForm(forms.ModelForm):
     departure_time = forms.TimeField(
-        widget=forms.TimeInput(attrs={'type': 'time', 'placeholder': 'hh:mm'})
+        widget=forms.TimeInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'time', 'placeholder': 'hh:mm'})
     )
     arrival_time = forms.TimeField(
-        widget=forms.TimeInput(attrs={'type': 'time', 'placeholder': 'hh:mm'})
+        widget=forms.TimeInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'time', 'placeholder': 'hh:mm'})
     )
 
     class Meta:
@@ -78,13 +78,13 @@ class ResearchedTrajectForm(forms.ModelForm):
             'arrival_time': 'Heure d’arrivée',
         }
         widgets = {
-            'name': forms.TextInput(attrs={'placeholder': 'Nom de votre recherche'}),
-            'details': forms.Textarea(attrs={'placeholder': 'Ajoutez des détails utiles pour le conducteur'}),
+            'name': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Nom de votre recherche'}),
+            'details': forms.Textarea(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Ajoutez des détails utiles pour le conducteur'}),
         }
 
 class TrajectTypeForm(forms.Form):
     traject_type = forms.ChoiceField(
         choices=[('search', 'Rechercher un trajet'), ('propose', 'Proposer un trajet')],
-        widget=forms.RadioSelect,
+        widget=forms.RadioSelect(attrs={'class': 'form-radio mt-1 block w-full text-indigo-600'}),
         label="Type de trajet"
     )

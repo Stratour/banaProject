@@ -1,31 +1,43 @@
 {% extends 'layouts/base.html' %}
 
-{% block title %}Profile{% endblock %}
+{% block title %}Profile - BanaCommunity{% endblock %}
 
 {% block content %}
-<h2>My Profile</h2>
+<div class="bg-gray-100 min-h-screen p-6">
+    <div class="container mx-auto">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">My Profile</h2>
 
-<h3>My Proposed Trajects</h3>
-{% if proposed_trajects %}
-    <ul>
-        {% for traject in proposed_trajects %}
-            <li>{{ traject.traject.start_locality }} to {{ traject.traject.end_locality }} on {{ traject.departure_time }} - {{ traject.arrival_time }}</li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>You have not proposed any trajects.</p>
-{% endif %}
-<a href="{% url 'proposed_traject' %}">Propose a Traject</a>
+        <section class="mb-6">
+            <h3 class="text-2xl font-semibold text-gray-700 mb-4">My Proposed Trajects</h3>
+            {% if proposed_trajects %}
+                <ul class="list-disc list-inside space-y-2">
+                    {% for traject in proposed_trajects %}
+                        <li class="bg-white shadow p-4 rounded">
+                            {{ traject.traject.start_locality }} to {{ traject.traject.end_locality }} on {{ traject.departure_time }} - {{ traject.arrival_time }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-600">You have not proposed any trajects.</p>
+            {% endif %}
+            <a href="{% url 'proposed_traject' %}" class="text-blue-500 hover:text-blue-700 mt-4 inline-block">Propose a Traject</a>
+        </section>
 
-<h3>My Researched Trajects</h3>
-{% if researched_trajects %}
-    <ul>
-        {% for traject in researched_trajects %}
-            <li>{{ traject.traject.start_locality }} to {{ traject.traject.end_locality }} on {{ traject.departure_time }} - {{ traject.arrival_time }}</li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>You have not researched any trajects.</p>
-{% endif %}
-<a href="{% url 'searched_traject' %}">Search and Save a Traject</a>
+        <section>
+            <h3 class="text-2xl font-semibold text-gray-700 mb-4">My Researched Trajects</h3>
+            {% if researched_trajects %}
+                <ul class="list-disc list-inside space-y-2">
+                    {% for traject in researched_trajects %}
+                        <li class="bg-white shadow p-4 rounded">
+                            {{ traject.traject.start_locality }} to {{ traject.traject.end_locality }} on {{ traject.departure_time }} - {{ traject.arrival_time }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-gray-600">You have not researched any trajects.</p>
+            {% endif %}
+            <a href="{% url 'searched_traject' %}" class="text-blue-500 hover:text-blue-700 mt-4 inline-block">Search and Save a Traject</a>
+        </section>
+    </div>
+</div>
 {% endblock %}

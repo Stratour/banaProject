@@ -1,13 +1,31 @@
 {% extends './layouts/base.html' %}
 
-
-{% block title %}home{% endblock %}
-
+{% block title %}Home - BanaCommunity{% endblock %}
 
 {% block content %}
-<!-- Your page content goes here  -->
- 
-<p>Welcome to the home page!</p>
-
-
+<div class="bg-gray-100 min-h-screen flex flex-col justify-between">
+    <main class="flex-grow container mx-auto p-6">
+        <section class="text-center">
+            <h2 class="text-3xl font-bold text-gray-800 mb-4">Welcome to BanaCommunity</h2>
+            <p class="text-gray-600 mb-6">Connecting parents and kids with safe and reliable carpooling and transportation options.</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white shadow-md rounded-lg p-4">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">Carpooling</h3>
+                    <p class="text-gray-600">Join our trusted carpool network for kids.</p>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-4">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">Train</h3>
+                    <p class="text-gray-600">Safe train rides organized for school commutes.</p>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-4">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">Bike</h3>
+                    <p class="text-gray-600">Bike safely to school with our biking groups.</p>
+                </div>
+                <div class="bg-white shadow-md rounded-lg p-4">
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">Walk</h3>
+                    <p class="text-gray-600">Organized walking routes with adult supervision.</p>
+                </div>
+            </div>
+        </section>
+    </main>
 {% endblock %}

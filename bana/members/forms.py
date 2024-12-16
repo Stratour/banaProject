@@ -7,6 +7,7 @@ class UserRegistrationForm(forms.ModelForm):
         widget=forms.PasswordInput(attrs={
             'placeholder': 'Mot de passe',
             'title': 'Entrez un mot de passe sécurisé',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
         }),
         label='Mot de passe'
     )
@@ -14,6 +15,7 @@ class UserRegistrationForm(forms.ModelForm):
         widget=forms.TextInput(attrs={
             'placeholder': 'Nom d’utilisateur',
             'title': 'Entrez un nom d’utilisateur unique',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
         }),
         label='Nom d’utilisateur'
     )
@@ -21,6 +23,7 @@ class UserRegistrationForm(forms.ModelForm):
         widget=forms.TextInput(attrs={
             'placeholder': 'Prénom',
             'title': 'Entrez votre prénom',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
         }),
         label='Prénom'
     )
@@ -28,6 +31,7 @@ class UserRegistrationForm(forms.ModelForm):
         widget=forms.TextInput(attrs={
             'placeholder': 'Nom',
             'title': 'Entrez votre nom',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
         }),
         label='Nom'
     )
@@ -35,6 +39,7 @@ class UserRegistrationForm(forms.ModelForm):
         widget=forms.EmailInput(attrs={
             'placeholder': 'Adresse e-mail',
             'title': 'Entrez une adresse e-mail valide',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
         }),
         label='Adresse e-mail'
     )
@@ -50,18 +55,22 @@ class MembersForm(forms.ModelForm):
             'type': 'date',
             'placeholder': 'Date de naissance',
             'title': 'Entrez votre date de naissance',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
         }),
         label='Date de naissance'
     )
     memb_gender = forms.ChoiceField(
         choices=[('M', 'Homme'), ('F', 'Femme'), ('O', 'Autre')],
-        widget=forms.RadioSelect(),
+        widget=forms.RadioSelect(attrs={
+            'class': 'form-radio mt-1 block w-full text-indigo-600',
+        }),
         label='Genre'
     )
     memb_num_street = forms.CharField(
         widget=forms.TextInput(attrs={
             'placeholder': 'Numéro de rue',
             'title': 'Entrez votre numéro de rue',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
         }),
         label='Numéro de rue'
     )
@@ -70,6 +79,7 @@ class MembersForm(forms.ModelForm):
         widget=forms.TextInput(attrs={
             'placeholder': 'Boîte (ex : 4D, Bis)',
             'title': 'Optionnel, indiquez votre boîte',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
         }),
         label='Boîte'
     )
@@ -77,6 +87,7 @@ class MembersForm(forms.ModelForm):
         widget=forms.TextInput(attrs={
             'placeholder': 'Rue',
             'title': 'Entrez votre rue',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
         }),
         label='Rue'
     )
@@ -84,6 +95,7 @@ class MembersForm(forms.ModelForm):
         widget=forms.TextInput(attrs={
             'placeholder': 'Code postal',
             'title': 'Entrez votre code postal',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
         }),
         label='Code postal'
     )
@@ -91,6 +103,7 @@ class MembersForm(forms.ModelForm):
         widget=forms.TextInput(attrs={
             'placeholder': 'Localité',
             'title': 'Entrez votre ville',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
         }),
         label='Localité'
     )
@@ -99,6 +112,7 @@ class MembersForm(forms.ModelForm):
             'value': 'Belgique',
             'placeholder': 'Pays',
             'title': 'Pays de résidence',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
         }),
         label='Pays'
     )
@@ -106,6 +120,7 @@ class MembersForm(forms.ModelForm):
         required=False,
         widget=forms.CheckboxInput(attrs={
             'title': 'Cochez si vous possédez une voiture',
+            'class': 'form-checkbox mt-1 block text-indigo-600',
         }),
         label='Possédez-vous une voiture ?'
     )
@@ -118,12 +133,12 @@ class MembersForm(forms.ModelForm):
         ]
 
 
-
 class LoginForm(forms.Form):
     username = forms.CharField(
         widget=forms.TextInput(attrs={
             'placeholder': 'Nom d’utilisateur',
             'title': 'Entrez votre nom d’utilisateur',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
         }),
         label='Nom d’utilisateur'
     )
@@ -131,6 +146,7 @@ class LoginForm(forms.Form):
         widget=forms.PasswordInput(attrs={
             'placeholder': 'Mot de passe',
             'title': 'Entrez votre mot de passe',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
         }),
         label='Mot de passe'
     )
