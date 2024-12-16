@@ -29,12 +29,7 @@
     pip install -r requirements.txt
     ```
 
-4. **Install Tailwind CSS and dependencies**:
-    ```sh
-    npm install
-    ```
-
-5. **Create and configure your `.env` file**:
+4. **Create and configure your `.env` file**:
     - Copy the sample environment file and modify it with your configuration:
       ```sh
       cp .env.example .env
@@ -52,9 +47,13 @@
     python manage.py collectstatic
     ```
 
-3. **Start the development server**:
+3. **Start Tailwind CSS**:
     ```sh
-    npm run dev  # To start Tailwind CSS watch process
+    python manage.py tailwind start
+    ```
+
+4. **Start the development server**:
+    ```sh
     python manage.py runserver
     ```
 
@@ -71,11 +70,11 @@
     ```
 
 3. **Start Tailwind CSS**:
-   ```sh
+    ```sh
     python manage.py tailwind start
-   ```
-   
-5. **Start the development server**:
+    ```
+
+4. **Start the development server**:
     ```sh
     python manage.py runserver
     ```
