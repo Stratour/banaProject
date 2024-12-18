@@ -1,5 +1,6 @@
 from django import forms
 from .models import Traject, ProposedTraject, ResearchedTraject
+from .utils.geocoding import get_coordinate,matrix
 
 class TrajectForm(forms.ModelForm):
     class Meta:
@@ -9,34 +10,30 @@ class TrajectForm(forms.ModelForm):
             'start_locality', 'start_country', 'end_street', 'end_number',
             'end_box', 'end_zp', 'end_locality', 'end_country'
         ]
-        labels = {
-            'start_street': 'Rue de départ',
-            'start_number': 'Numéro de départ',
-            'start_box': 'Boîte de départ',
-            'start_zp': 'Code postal de départ',
-            'start_locality': 'Localité de départ',
-            'start_country': 'Pays de départ',
-            'end_street': 'Rue d’arrivée',
-            'end_number': 'Numéro d’arrivée',
-            'end_box': 'Boîte d’arrivée',
-            'end_zp': 'Code postal d’arrivée',
-            'end_locality': 'Localité d’arrivée',
-            'end_country': 'Pays d’arrivée',
-        }
-        widgets = {
-            'start_street': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Rue de ...'}),
-            'start_number': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': '12'}),
-            'start_box': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': '044, 4D, Bis'}),
-            'start_zp': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': '1000'}),
-            'start_locality': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Bruxelles'}),
-            'start_country': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'value': 'Belgique', 'placeholder': 'Belgique'}),
-            'end_street': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Rue de ...'}),
-            'end_number': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': '34'}),
-            'end_box': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': '044, 4D, Bis'}),
-            'end_zp': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': '2000'}),
-            'end_locality': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Anvers'}),
-            'end_country': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'value': 'Belgique', 'placeholder': 'Belgique'}),
-        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start_address = f"{cleaned_data.get('start_street')} {cleaned_data.get('start_number')}, {cleaned_data.get('start_zp')} {cleaned_data.get('start_locality')}"
+        start_country = cleaned_data.get('start_country')
+
+        end_address = f"{cleaned_data.get('end_street')} {cleaned_data.get('end_number')}, {cleaned_data.get('end_zp')} {cleaned_data.get('end_locality')}"
+        end_country = cleaned_data.get('end_country')
+
+        start_valid, start_coords = get_coordinate(start_address, start_country)
+        if not start_valid:
+            self.add_error('start_locality', 'Invalid start address. Please verify.')
+
+        end_valid, end_coords = get_coordinate(end_address, end_country)
+        if not end_valid:
+            self.add_error('end_locality', 'Invalid end address. Please verify.')
+
+        if start_valid and end_valid:
+            self.instance.start_coordinate = f"{start_coords[0]},{start_coords[1]}"
+            self.instance.end_coordinate = f"{end_coords[0]},{end_coords[1]}"
+
+        return cleaned_data
+
+
 
 class ProposedTrajectForm(forms.ModelForm):
     departure_time = forms.TimeField(

@@ -3,9 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.contrib import messages
-from .models import ProposedTraject, ResearchedTraject, Traject
+from .models import ProposedTraject, ResearchedTraject
 from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm
-from .utils import geocoding
 
 def all_trajects(request):
 
@@ -63,8 +62,6 @@ def search_trajects(request):
 
 
 
-
-
 @login_required
 def proposed_traject(request):
     if request.method == 'POST':
@@ -78,6 +75,8 @@ def proposed_traject(request):
             proposed.member.add(request.user.members)
             messages.success(request, 'Proposed Traject created successfully!')
             return redirect('profile')
+        else:
+            messages.error(request, 'There were errors in your form. Please fix them and try again.')
     else:
         traject_form = TrajectForm()
         proposed_form = ProposedTrajectForm()
@@ -100,6 +99,8 @@ def searched_traject(request):
             searched.member.add(request.user.members)
             messages.success(request, 'Searched Traject created successfully!')
             return redirect('profile')
+        else:
+            messages.error(request, 'There were errors in your form. Please fix them and try again.')
     else:
         traject_form = TrajectForm()
         researched_form = ResearchedTrajectForm()
@@ -108,5 +109,7 @@ def searched_traject(request):
         'researched_form': researched_form
     }
     return render(request, 'trajects/searched_traject.html', context)
+
+
 
 

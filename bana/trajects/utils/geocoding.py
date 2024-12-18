@@ -1,47 +1,61 @@
 from django.conf import settings
 import requests
 from geopy.geocoders import Nominatim
-from geopy.exc import GeocoderTimedOut
+from geopy.exc import GeocoderTimedOut,GeocoderUnavailable
+from django.contrib import messages
 
-api_key = settings.OPEN_STREET_MAP_API_KEY 
-base_url = 'https://api.openrouteservice.org/v2/matrix' # for verifying if the adress is correct 
-geolocator = Nominatim(user_agent="BanaCommunity") # for converting adress to Lat Long point
 
-coordinate = {'lat' :"5555",'long' :"66666"} 
-payload = {
-    "locations": coordinate,
-    "metrics": ["distance"],
-    "profile": "driving-car",
-    "api_key": api_key
-}
+api_key = settings.OPEN_STREET_MAP_API_KEY
+base_url = 'https://api.openrouteservice.org/v2/matrix'
+geolocator = Nominatim(user_agent="BanaCommunity")
 
-# Make the API request
-response = requests.post(base_url, json=payload)
-
-# Parse the response
-if response.status_code == 200:
-    data = response.json()
-    print(data)
-else:
-    print(f"Error: {response.status_code}")
-
-# ==================================================================================== #
-
+def get_coordinate(address, country=None, request=None):
+    location = check_address(address, country)
+    if location:
+        if request:
+            messages.success(request, "Address found and registered.")
+        return True, (location.latitude, location.longitude)
+    else:
+        if request:
+            messages.error(request, "The address could not be found. Please check the input and try again.")
+        return False, None
 
 
 def check_address(address, country=None):
     try:
         if country:
-            location = geolocator.geocode(address, country=country)
+            location = geolocator.geocode(f"{address}, {country}")
         else:
             location = geolocator.geocode(address)
         return location
     except GeocoderTimedOut:
+        raise Exception("Geocoding service timeout. Please try again.")
+
+# ======================================================================= #
+def matrix(payload):
+    response = requests.post(base_url, json=payload)
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
         return None
 
-def address_exists(address, country=None):
-    location = check_address(address, country)
-    if location:
-        return f"Address exists: {location.address}"
-    else:
-        return "Address does not exist."
+
+'''
+what should look like the coordinate send to the matrix .
+
+# Define the coordinates for your points
+coordinates = [
+    {"lat": 52.5200, "lng": 13.4050},  # Point A
+    {"lat": 52.5205, "lng": 13.4055},  # Point B
+    {"lat": 52.5210, "lng": 13.4060}   # Point C
+]
+
+# Prepare the payload
+payload = {
+    "locations": coordinates,
+    "metrics": ["distance"],
+    "profile": "driving-car",
+    "api_key": api_key
+}
+'''
