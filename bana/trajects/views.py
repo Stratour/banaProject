@@ -5,9 +5,10 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from .models import ProposedTraject, ResearchedTraject, Traject
 from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm
-# import requests  # Uncomment this when you need to use the coordinate API
+from .utils import geocoding
 
 def all_trajects(request):
+
     proposed_trajects_list = ProposedTraject.objects.all().order_by('-departure_time')
     researched_trajects_list = ResearchedTraject.objects.all().order_by('-departure_time')
     
@@ -109,13 +110,3 @@ def searched_traject(request):
     return render(request, 'trajects/searched_traject.html', context)
 
 
-
-"""
-# Uncomment this when ready to integrate the coordinate API
-def get_coordinates(street, locality, country):
-    # Example function to make an API call to get coordinates
-    api_url = "https://api.example.com/get-coordinates"
-    response = requests.get(api_url, params={'street': street, 'locality': locality, 'country': country})
-    data = response.json()
-    return f"{data['lat']}, {data['lng']}"
-"""
