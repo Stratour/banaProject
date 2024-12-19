@@ -1,10 +1,13 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.contrib import messages
 from .models import ProposedTraject, ResearchedTraject
 from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm
+
+
+# ===================== listing ======================== #
 
 def all_trajects(request):
 
@@ -61,6 +64,7 @@ def search_trajects(request):
     return render(request, 'trajects/trajects_page.html', context)
 
 
+# ===================== CRUD ======================== #
 
 @login_required
 def proposed_traject(request):
@@ -111,5 +115,39 @@ def searched_traject(request):
     return render(request, 'trajects/searched_traject.html', context)
 
 
+@login_required
+def delete_traject(request, id, type):
+    if type == 'proposed':
+        traject = get_object_or_404(ProposedTraject, id=id, member=request.user.members)
+    else:
+        traject = get_object_or_404(ResearchedTraject, id=id, member=request.user.members)
 
+    traject.delete()
+    messages.success(request, 'Traject deleted successfully!')
+    return redirect('profile')
 
+@login_required
+def modify_traject(request, id, type):
+    if type == 'proposed':
+        traject_instance = get_object_or_404(ProposedTraject, id=id, member=request.user.members)
+        form_class = ProposedTrajectForm
+    else:
+        traject_instance = get_object_or_404(ResearchedTraject, id=id, member=request.user.members)
+        form_class = ResearchedTrajectForm
+
+    if request.method == 'POST':
+        form = form_class(request.POST, instance=traject_instance)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Traject updated successfully!')
+            return redirect('profile')
+        else:
+            messages.error(request, 'There were errors in your form. Please fix them and try again.')
+    else:
+        form = form_class(instance=traject_instance)
+    
+    context = {
+        'form': form,
+        'traject': traject_instance
+    }
+    return render(request, 'trajects/modify_traject.html', context)

@@ -7,24 +7,7 @@ from .forms import UserRegistrationForm, MembersForm,LoginForm
 from trajects.models import Traject, ProposedTraject, ResearchedTraject
 
 
-@login_required
-def profile(request):
-    if request.user.is_authenticated:
-        member = request.user.members  # Assuming a OneToOneField relationship from User to Members
-        proposed_trajects = ProposedTraject.get_proposed_trajects_by_member(member)
-        researched_trajects = ResearchedTraject.get_researched_trajects_by_member(member)
-        
-        context = {
-            'proposed_trajects': proposed_trajects,
-            'researched_trajects': researched_trajects,
-        }
-    else:
-        context = {}
-
-    return render(request, 'members/profile.html', context)
-
-
-# connexion :
+# ===================== connexion ======================== #
 def register_user(request):
 
     if request.user.is_authenticated:
@@ -81,3 +64,22 @@ def login_user(request):
 def logout_user(request):
     logout(request)
     return redirect('home')
+
+
+# ===================== profile ======================== #
+
+@login_required
+def profile(request):
+    if request.user.is_authenticated:
+        member = request.user.members 
+        proposed_trajects = ProposedTraject.get_proposed_trajects_by_member(member)
+        researched_trajects = ResearchedTraject.get_researched_trajects_by_member(member)
+        
+        context = {
+            'proposed_trajects': proposed_trajects,
+            'researched_trajects': researched_trajects,
+        }
+    else:
+        context = {}
+
+    return render(request, 'members/profile.html', context)
