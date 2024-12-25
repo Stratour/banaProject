@@ -1,7 +1,5 @@
 {% extends 'layouts/base.html' %}
 
-{% load crispy_forms_tags %}
-
 {% block title %}Create Proposed Traject - BanaCommunity{% endblock %}
 
 {% block content %}
@@ -11,19 +9,96 @@
         <form method="post" action="{% url 'proposed_traject' %}" class="space-y-6">
             {% csrf_token %}
             
-            <!-- Traject Form Fields -->
+            <!-- Starting Point Form Fields -->
             <fieldset>
-                <legend class="text-lg font-semibold text-gray-700 mb-2">Traject Details</legend>
+                <legend class="text-lg font-semibold text-gray-700 mb-2">Starting Point</legend>
                 <div class="grid grid-cols-2 gap-6">
-                    {% crispy traject_form %}
+                    <div>
+                        <label for="start_street" class="block text-sm font-medium text-gray-700">Start Street</label>
+                        {{ traject_form.start_street }}
+                    </div>
+                    <div>
+                        <label for="start_number" class="block text-sm font-medium text-gray-700">Start Number</label>
+                        {{ traject_form.start_number }}
+                    </div>
+                    <div>
+                        <label for="start_box" class="block text-sm font-medium text-gray-700">Start Box</label>
+                        {{ traject_form.start_box }}
+                    </div>
+                    <div>
+                        <label for="start_zp" class="block text-sm font-medium text-gray-700">Start Zip Code</label>
+                        {{ traject_form.start_zp }}
+                    </div>
+                    <div>
+                        <label for="start_locality" class="block text-sm font-medium text-gray-700">Start Locality</label>
+                        {{ traject_form.start_locality }}
+                    </div>
+                    <div>
+                        <label for="start_country" class="block text-sm font-medium text-gray-700">Start Country</label>
+                        {{ traject_form.start_country }}
+                    </div>
                 </div>
             </fieldset>
             
-            <!-- Searched Traject Form Fields -->
+            <!-- Ending Point Form Fields -->
             <fieldset>
-                <legend class="text-lg font-semibold text-gray-700 mt-4 mb-2">Searched Traject Details</legend>
+                <legend class="text-lg font-semibold text-gray-700 mt-4 mb-2">Ending Point</legend>
                 <div class="grid grid-cols-2 gap-6">
-                    {% crispy proposed_form %}
+                    <div>
+                        <label for="end_street" class="block text-sm font-medium text-gray-700">End Street</label>
+                        {{ traject_form.end_street }}
+                    </div>
+                    <div>
+                        <label for="end_number" class="block text-sm font-medium text-gray-700">End Number</label>
+                        {{ traject_form.end_number }}
+                    </div>
+                    <div>
+                        <label for="end_box" class="block text-sm font-medium text-gray-700">End Box</label>
+                        {{ traject_form.end_box }}
+                    </div>
+                    <div>
+                        <label for="end_zp" class="block text-sm font-medium text-gray-700">End Zip Code</label>
+                        {{ traject_form.end_zp }}
+                    </div>
+                    <div>
+                        <label for="end_locality" class="block text-sm font-medium text-gray-700">End Locality</label>
+                        {{ traject_form.end_locality }}
+                    </div>
+                    <div>
+                        <label for="end_country" class="block text-sm font-medium text-gray-700">End Country</label>
+                        {{ traject_form.end_country }}
+                    </div>
+                </div>
+            </fieldset>
+            
+            <!-- Proposed Traject Form Fields -->
+            <fieldset>
+                <legend class="text-lg font-semibold text-gray-700 mt-4 mb-2">Proposed Traject Details</legend>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                        {{ proposed_form.name }}
+                    </div>
+                    <div>
+                        <label for="details" class="block text-sm font-medium text-gray-700">Details</label>
+                        {{ proposed_form.details }}
+                    </div>
+                    <div>
+                        <label for="departure_time" class="block text-sm font-medium text-gray-700">Departure Time</label>
+                        {{ proposed_form.departure_time }}
+                    </div>
+                    <div>
+                        <label for="arrival_time" class="block text-sm font-medium text-gray-700">Arrival Time</label>
+                        {{ proposed_form.arrival_time }}
+                    </div>
+                    <div>
+                        <label for="transport_modes" class="block text-sm font-medium text-gray-700">Transport Modes</label>
+                        {{ proposed_form.transport_modes }}
+                    </div>
+                    <div>
+                        <label for="detour_km" class="block text-sm font-medium text-gray-700">Detour (km)</label>
+                        {{ proposed_form.detour_km }}
+                    </div>
                 </div>
             </fieldset>
 
