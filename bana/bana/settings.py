@@ -42,8 +42,10 @@ INSTALLED_APPS = [
     
     # my extensions
     'django_extensions',
-    'tailwind',
+    'tailwind',    
     'theme',
+    'crispy_forms',
+    'crispy_bootstrap4',
 
     # my apps 
     'bana',
@@ -140,13 +142,16 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# tailwinds 
+# tailwinds & Crispy 
 
 TAILWIND_APP_NAME = 'theme'
 
 INTERNAL_IPS = [
     "127.0.0.1",
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 
 # URL for login redirect 
 

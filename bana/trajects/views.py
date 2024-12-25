@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.core.paginator import Paginator
 from django.contrib import messages
-from .models import ProposedTraject, ResearchedTraject
+from .models import ProposedTraject, ResearchedTraject,Members
 from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm
 
 
@@ -11,8 +11,9 @@ from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm
 
 def all_trajects(request):
 
+    active_tab = request.GET.get('active_tab', 'proposed')
     proposed_trajects_list = ProposedTraject.objects.all().order_by('-departure_time')
-    researched_trajects_list = ResearchedTraject.objects.all().order_by('-departure_time')
+    researched_trajects_list = ResearchedTraject.objects.select_related('traject').all().order_by('-departure_time')
     
     # Pagination for proposed trajects
     paginator1 = Paginator(proposed_trajects_list, 10)  # Show 10 proposed trajects per page
@@ -25,6 +26,7 @@ def all_trajects(request):
     researched_trajects = paginator2.get_page(page_number2)
     
     context = {
+        'active_tab': active_tab,
         'proposed_trajects': proposed_trajects,
         'researched_trajects': researched_trajects,
     }
@@ -75,8 +77,9 @@ def proposed_traject(request):
             traject = traject_form.save()
             proposed = proposed_form.save(commit=False)
             proposed.traject = traject
+            proposed.member = Members.objects.get(memb_user_fk=request.user)  # Assign the member
             proposed.save()
-            proposed.member.add(request.user.members)
+            proposed_form.save_m2m()  # Save many-to-many relationships
             messages.success(request, 'Proposed Traject created successfully!')
             return redirect('profile')
         else:
@@ -99,8 +102,9 @@ def searched_traject(request):
             traject = traject_form.save()
             searched = researched_form.save(commit=False)
             searched.traject = traject
+            searched.member = Members.objects.get(memb_user_fk=request.user)  # Assign the member
             searched.save()
-            searched.member.add(request.user.members)
+            researched_form.save_m2m()  # Save many-to-many relationships
             messages.success(request, 'Searched Traject created successfully!')
             return redirect('profile')
         else:

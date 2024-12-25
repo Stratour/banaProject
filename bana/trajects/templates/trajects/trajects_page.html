@@ -3,83 +3,108 @@
 {% block title %}All Trajects - BanaCommunity{% endblock %}
 
 {% block content %}
-<div class="bg-gray-100 min-h-screen p-6">
-    <div class="container mx-auto">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Search Trajects</h2>
+    <div class="bg-gray-100 min-h-screen p-6">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">All Trajects</h2>
 
-        <form method="get" action="{% url 'search_trajects' %}" class="space-y-4 mb-6">
-            <div>
-                <label for="start_locality" class="block text-gray-700">Start City:</label>
-                <input type="text" id="start_locality" name="start_locality" placeholder="e.g., Couillet" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+            <!-- Toggle buttons -->
+            <div class="flex justify-center mb-6">
+                <a href="?active_tab=researched" 
+                class="btn-toggle {% if active_tab == 'researched' %}border-indigo-600{% else %}border-transparent{% endif %} text-lg px-6 py-2 border-b-4 focus:outline-none">
+                    Trajets recherchés
+                </a>
+                <a href="?active_tab=proposed" 
+                class="btn-toggle {% if active_tab == 'proposed' %}border-indigo-600{% else %}border-transparent{% endif %} text-lg px-6 py-2 border-b-4 focus:outline-none">
+                    Trajets proposés
+                </a>
             </div>
-            <div>
-                <label for="end_locality" class="block text-gray-700">End City:</label>
-                <input type="text" id="end_locality" name="end_locality" placeholder="e.g., Bruxelles" class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-            </div>
-            <button type="submit" class="py-2 px-4 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Search</button>
-        </form>
 
-        <h2 class="text-2xl font-bold text-gray-800 mb-6">Proposed Trajects</h2>
-        {% if proposed_trajects %}
-            <ul class="list-disc list-inside space-y-2">
-                {% for proposed in proposed_trajects %}
-                    <li class="bg-white shadow p-4 rounded">
-                        {{ proposed.traject.start_locality }} to {{ proposed.traject.end_locality }}
-                        Departure: {{ proposed.departure_time }}, Arrival: {{ proposed.arrival_time }}
-                    </li>
-                {% endfor %}
-            </ul>
-            <div class="pagination mt-4">
-                <span class="step-links flex justify-center space-x-4">
-                    {% if proposed_trajects.has_previous %}
-                        <a href="?page1=1" class="text-indigo-600 hover:text-indigo-800">&laquo; first</a>
-                        <a href="?page1={{ proposed_trajects.previous_page_number }}" class="text-indigo-600 hover:text-indigo-800">previous</a>
-                    {% endif %}
-        
-                    <span class="current text-gray-700">
-                        Page {{ proposed_trajects.number }} of {{ proposed_trajects.paginator.num_pages }}.
-                    </span>
-        
-                    {% if proposed_trajects.has_next %}
-                        <a href="?page1={{ proposed_trajects.next_page_number }}" class="text-indigo-600 hover:text-indigo-800">next</a>
-                        <a href="?page1={{ proposed_trajects.paginator.num_pages }}" class="text-indigo-600 hover:text-indigo-800">last &raquo;</a>
-                    {% endif %}
-                </span>
+            <!-- Proposed Trajects -->
+            {% if active_tab == 'proposed' %}
+            <div id="proposed-list" class="traject-list">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Proposed Trajects</h2>
+                {% if proposed_trajects %}
+                    <ul class="space-y-4">
+                        {% for proposed in proposed_trajects %}
+                        <li class="bg-white shadow-md rounded-lg p-4">
+                            <h3 class="text-xl font-semibold text-gray-700">{{ proposed.traject.start_locality }} to {{ proposed.traject.end_locality }}</h3>
+                            <p class="text-gray-600"><strong>Membre:</strong> {{ proposed.member.memb_user_fk.username }}</p>
+                            <p class="text-gray-600">
+                                <strong>Adresse de départ:</strong> {{ proposed.traject.start_street }}, {{ proposed.traject.start_locality }} {{ proposed.traject.start_country }}
+                            </p>
+                            <p class="text-gray-600">
+                                <strong>Adresse de destination:</strong> {{ proposed.traject.end_street }}, {{ proposed.traject.end_locality }} {{ proposed.traject.end_country }}
+                            </p>
+                            <p class="text-gray-600"><strong>Heure de départ:</strong> {{ proposed.departure_time }}</p>
+                            <p class="text-gray-600"><strong>Moyens de transport:</strong> {{ proposed.transport_modes.all|join:", " }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="pagination mt-4">
+                        {{ proposed_trajects.paginator.page_range|join:" " }}
+                    </div>
+                {% else %}
+                    <p class="text-gray-600">No proposed trajects found.</p>
+                {% endif %}
             </div>
-        {% else %}
-            <p class="text-gray-600">No proposed trajects found.</p>
-        {% endif %}
+            {% endif %}
 
-        <h2 class="text-2xl font-bold text-gray-800 mb-6 mt-8">Researched Trajects</h2>
-        {% if researched_trajects %}
-            <ul class="list-disc list-inside space-y-2">
-                {% for researched in researched_trajects %}
-                    <li class="bg-white shadow p-4 rounded">
-                        {{ researched.traject.start_locality }} to {{ researched.traject.end_locality }}
-                        Departure: {{ researched.departure_time }}, Arrival: {{ researched.arrival_time }}
-                    </li>
-                {% endfor %}
-            </ul>
-            <div class="pagination mt-4">
-                <span class="step-links flex justify-center space-x-4">
-                    {% if researched_trajects.has_previous %}
-                        <a href="?page2=1" class="text-indigo-600 hover:text-indigo-800">&laquo; first</a>
-                        <a href="?page2={{ researched_trajects.previous_page_number }}" class="text-indigo-600 hover:text-indigo-800">previous</a>
-                    {% endif %}
-        
-                    <span class="current text-gray-700">
-                        Page {{ researched_trajects.number }} of {{ researched_trajects.paginator.num_pages }}.
-                    </span>
-        
-                    {% if researched_trajects.has_next %}
-                        <a href="?page2={{ researched_trajects.next_page_number }}" class="text-indigo-600 hover:text-indigo-800">next</a>
-                        <a href="?page2={{ researched_trajects.paginator.num_pages }}" class="text-indigo-600 hover:text-indigo-800">last &raquo;</a>
-                    {% endif %}
-                </span>
+            <!-- Researched Trajects -->
+            {% if active_tab == 'researched' %}
+            <div id="researched-list" class="traject-list">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Researched Trajects</h2>
+                {% if researched_trajects %}
+                    <ul class="space-y-4">
+                        {% for researched in researched_trajects %}
+                        <li class="bg-white shadow-md rounded-lg p-4">
+                            <h3 class="text-xl font-semibold text-gray-700">{{ researched.traject.start_locality }} to {{ researched.traject.end_locality }}</h3>
+                            <p class="text-gray-600"><strong>Membre:</strong> {{ researched.member.memb_user_fk.username }}</p>
+                            <p class="text-gray-600">
+                                <strong>Adresse de départ:</strong> {{ researched.traject.start_street }}, {{ researched.traject.start_locality }} {{ researched.traject.start_country }}
+                            </p>
+                            <p class="text-gray-600">
+                                <strong>Adresse de destination:</strong> {{ researched.traject.end_street }}, {{ researched.traject.end_locality }} {{ researched.traject.end_country }}
+                            </p>
+                            <p class="text-gray-600"><strong>Heure de départ:</strong> {{ researched.departure_time }}</p>
+                            <p class="text-gray-600"><strong>Moyens de transport:</strong> {{ researched.transport_modes.all|join:", " }}</p>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    <div class="pagination mt-4">
+                        {{ researched_trajects.paginator.page_range|join:" " }}
+                    </div>
+                {% else %}
+                    <p class="text-gray-600">No researched trajects found.</p>
+                {% endif %}
             </div>
-        {% else %}
-            <p class="text-gray-600">No researched trajects found.</p>
-        {% endif %}
+            {% endif %}
+        </div>
     </div>
-</div>
 {% endblock %}
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const researchedBtn = document.getElementById('researched-btn');
+        const proposedBtn = document.getElementById('proposed-btn');
+        const researchedList = document.getElementById('researched-list');
+        const proposedList = document.getElementById('proposed-list');
+
+        researchedBtn.addEventListener('click', () => {
+            researchedBtn.classList.add('active', 'border-indigo-600');
+            proposedBtn.classList.remove('active', 'border-indigo-600');
+            proposedBtn.classList.add('border-transparent');
+            researchedList.classList.remove('hidden');
+            proposedList.classList.add('hidden');
+        });
+
+        proposedBtn.addEventListener('click', () => {
+            proposedBtn.classList.add('active', 'border-indigo-600');
+            researchedBtn.classList.remove('active', 'border-indigo-600');
+            researchedBtn.classList.add('border-transparent');
+            proposedList.classList.remove('hidden');
+            researchedList.classList.add('hidden');
+        });
+    });
+</script>

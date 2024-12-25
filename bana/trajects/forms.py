@@ -1,6 +1,6 @@
 from django import forms
-from .models import Traject, ProposedTraject, ResearchedTraject
-from .utils.geocoding import get_coordinate,matrix
+from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode
+from .utils.geocoding import get_coordinate, matrix
 
 class TrajectForm(forms.ModelForm):
     class Meta:
@@ -21,21 +21,36 @@ class TrajectForm(forms.ModelForm):
 
         start_valid, start_coords = get_coordinate(start_address, start_country)
         if not start_valid:
-            self.add_error('start_locality', 'Invalid start address. Please verify.')
+            self.add_error('start_locality', 'Adresse de départ invalide. Veuillez vérifier.')
 
         end_valid, end_coords = get_coordinate(end_address, end_country)
         if not end_valid:
-            self.add_error('end_locality', 'Invalid end address. Please verify.')
+            self.add_error('end_locality', 'Adresse d’arrivée invalide. Veuillez vérifier.')
 
         if start_valid and end_valid:
             self.instance.start_coordinate = f"{start_coords[0]},{start_coords[1]}"
             self.instance.end_coordinate = f"{end_coords[0]},{end_coords[1]}"
-
+        '''
+            # Calcul de la distance via Matrix API
+            distance = matrix(start_coords, end_coords)
+            if distance:
+                self.instance.distance = distance
+        '''
         return cleaned_data
 
 
-
 class ProposedTrajectForm(forms.ModelForm):
+    transport_modes = forms.ModelMultipleChoiceField(
+        queryset=TransportMode.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-checkbox'}),
+        label="Moyens de transport"
+    )
+    detour_km = forms.FloatField(
+        widget=forms.NumberInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
+        label="Détour maximum (km)",
+        required=False
+    )
+
     departure_time = forms.TimeField(
         widget=forms.TimeInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'time', 'placeholder': 'hh:mm'})
     )
@@ -45,7 +60,8 @@ class ProposedTrajectForm(forms.ModelForm):
 
     class Meta:
         model = ProposedTraject
-        fields = ['name', 'details', 'departure_time', 'arrival_time']
+        exclude = ['member'] 
+        fields = ['name', 'details', 'departure_time', 'arrival_time', 'transport_modes', 'detour_km']
         labels = {
             'name': 'Nom du trajet',
             'details': 'Détails',
@@ -57,7 +73,19 @@ class ProposedTrajectForm(forms.ModelForm):
             'details': forms.Textarea(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Ajoutez des détails utiles pour les passagers'}),
         }
 
+
 class ResearchedTrajectForm(forms.ModelForm):
+    transport_modes = forms.ModelMultipleChoiceField(
+        queryset=TransportMode.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-checkbox'}),
+        label="Moyens de transport"
+    )
+    detour_km = forms.FloatField(
+        widget=forms.NumberInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
+        label="Détour maximum (km)",
+        required=False
+    )
+
     departure_time = forms.TimeField(
         widget=forms.TimeInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'time', 'placeholder': 'hh:mm'})
     )
@@ -67,7 +95,8 @@ class ResearchedTrajectForm(forms.ModelForm):
 
     class Meta:
         model = ResearchedTraject
-        fields = ['name', 'details', 'departure_time', 'arrival_time']
+        exclude = ['member'] 
+        fields = ['name', 'details', 'departure_time', 'arrival_time', 'transport_modes', 'detour_km']
         labels = {
             'name': 'Nom de la recherche',
             'details': 'Détails',
@@ -78,10 +107,3 @@ class ResearchedTrajectForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Nom de votre recherche'}),
             'details': forms.Textarea(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Ajoutez des détails utiles pour le conducteur'}),
         }
-
-class TrajectTypeForm(forms.Form):
-    traject_type = forms.ChoiceField(
-        choices=[('search', 'Rechercher un trajet'), ('propose', 'Proposer un trajet')],
-        widget=forms.RadioSelect(attrs={'class': 'form-radio mt-1 block w-full text-indigo-600'}),
-        label="Type de trajet"
-    )

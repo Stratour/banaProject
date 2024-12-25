@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Traject, ProposedTraject, ResearchedTraject
+from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode
 
 @admin.register(Traject)
 class TrajectAdmin(admin.ModelAdmin):
@@ -16,9 +16,14 @@ class TrajectAdmin(admin.ModelAdmin):
         return ", ".join(members)
     get_researched_members.short_description = 'Researched Members'
 
+
 @admin.register(ProposedTraject)
 class ProposedTrajectAdmin(admin.ModelAdmin):
-    list_display = ('traject', 'name', 'details', 'get_members', 'departure_time', 'arrival_time', 'get_start_location', 'get_end_location')
+    list_display = (
+        'traject', 'name', 'details', 'get_members', 
+        'departure_time', 'arrival_time', 'get_start_location', 
+        'get_end_location', 'get_transport_modes'
+    )
     search_fields = ('traject__start_street', 'traject__end_street', 'name')
 
     def get_members(self, obj):
@@ -32,10 +37,19 @@ class ProposedTrajectAdmin(admin.ModelAdmin):
     def get_end_location(self, obj):
         return obj.traject.end_street
     get_end_location.short_description = 'End Street'
+
+    def get_transport_modes(self, obj):
+        return ", ".join([mode.name for mode in obj.transport_modes.all()])
+    get_transport_modes.short_description = 'Transport Modes'
+
 
 @admin.register(ResearchedTraject)
 class ResearchedTrajectAdmin(admin.ModelAdmin):
-    list_display = ('traject', 'name', 'details', 'get_members', 'departure_time', 'arrival_time', 'get_start_location', 'get_end_location')
+    list_display = (
+        'traject', 'name', 'details', 'get_members', 
+        'departure_time', 'arrival_time', 'get_start_location', 
+        'get_end_location', 'get_transport_modes'
+    )
     search_fields = ('traject__start_street', 'traject__end_street', 'name')
 
     def get_members(self, obj):
@@ -49,3 +63,13 @@ class ResearchedTrajectAdmin(admin.ModelAdmin):
     def get_end_location(self, obj):
         return obj.traject.end_street
     get_end_location.short_description = 'End Street'
+
+    def get_transport_modes(self, obj):
+        return ", ".join([mode.name for mode in obj.transport_modes.all()])
+    get_transport_modes.short_description = 'Transport Modes'
+
+
+@admin.register(TransportMode)
+class TransportModeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')
+    search_fields = ('name',)
