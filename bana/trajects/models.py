@@ -23,7 +23,7 @@ class Traject(models.Model):
     end_country = models.CharField(max_length=100, default='Belgium')
     start_coordinate = models.CharField(max_length=50, blank=True, null=True)
     end_coordinate = models.CharField(max_length=50, blank=True, null=True)
-    distance = models.FloatField(blank=True, null=True)  # Automatically calculated
+    distance = models.FloatField(blank=True, null=True)  
 
     def __str__(self):
         return f"{self.start_street} to {self.end_street}"
