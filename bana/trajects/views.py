@@ -5,6 +5,9 @@ from django.core.paginator import Paginator
 from django.contrib import messages
 from .models import ProposedTraject, ResearchedTraject,Members
 from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm
+from django.core.exceptions import PermissionDenied
+
+
 
 
 # ===================== listing ======================== #
@@ -65,6 +68,11 @@ def search_trajects(request):
     
     return render(request, 'trajects/trajects_page.html', context)
 
+# ===================== reservation page ======================== #
+
+@login_required
+def reserve_traject(request,id):
+    return render(request,'trajects/reserve_traject.html')
 
 # ===================== CRUD ======================== #
 

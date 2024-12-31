@@ -24,10 +24,15 @@
     <div class="messages mt-4">
         {% if messages %}
             {% for message in messages %}
-                <div class="alert {{ message.tags }} p-2 mb-2 border rounded bg-red-100 text-red-700">
+                <div class="alert p-2 mb-2 border rounded
+                {% if 'success' in message.tags %}
+                    bg-green-100 text-green-700 border-green-400
+                {% else %}
+                    bg-red-100 text-red-700 border-red-400
+                {% endif %}">
                     {{ message }}
                 </div>
-            {% endfor %}
+            {% endfor %}   
         {% endif %}
     </div>
     

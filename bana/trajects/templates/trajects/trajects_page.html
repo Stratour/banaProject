@@ -26,17 +26,20 @@
                 {% if proposed_trajects %}
                     <ul class="space-y-4">
                         {% for proposed in proposed_trajects %}
-                        <li class="bg-white shadow-md rounded-lg p-4">
-                            <h3 class="text-xl font-semibold text-gray-700">{{ proposed.traject.start_locality }} to {{ proposed.traject.end_locality }}</h3>
-                            <p class="text-gray-600"><strong>Membre:</strong> {{ proposed.member.memb_user_fk.username }}</p>
-                            <p class="text-gray-600">
-                                <strong>Adresse de départ:</strong> {{ proposed.traject.start_street }}, {{ proposed.traject.start_locality }} {{ proposed.traject.start_country }}
-                            </p>
-                            <p class="text-gray-600">
-                                <strong>Adresse de destination:</strong> {{ proposed.traject.end_street }}, {{ proposed.traject.end_locality }} {{ proposed.traject.end_country }}
-                            </p>
-                            <p class="text-gray-600"><strong>Heure de départ:</strong> {{ proposed.departure_time }}</p>
-                            <p class="text-gray-600"><strong>Moyens de transport:</strong> {{ proposed.transport_modes.all|join:", " }}</p>
+                        <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-700">{{ proposed.traject.start_locality }} to {{ proposed.traject.end_locality }}</h3>
+                                <p class="text-gray-600"><strong>Membre:</strong> {{ proposed.member.memb_user_fk.username }}</p>
+                                <p class="text-gray-600">
+                                    <strong>Adresse de départ:</strong> {{ proposed.traject.start_street }}, {{ proposed.traject.start_locality }} {{ proposed.traject.start_country }}
+                                </p>
+                                <p class="text-gray-600">
+                                    <strong>Adresse de destination:</strong> {{ proposed.traject.end_street }}, {{ proposed.traject.end_locality }} {{ proposed.traject.end_country }}
+                                </p>
+                                <p class="text-gray-600"><strong>Heure de départ:</strong> {{ proposed.departure_time }}</p>
+                                <p class="text-gray-600"><strong>Moyens de transport:</strong> {{ proposed.transport_modes.all|join:", " }}</p>
+                            </div>
+                            <a href="{% url 'reserve_traject' proposed.id %}" class="btn btn-primary">Réserver</a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -56,17 +59,20 @@
                 {% if researched_trajects %}
                     <ul class="space-y-4">
                         {% for researched in researched_trajects %}
-                        <li class="bg-white shadow-md rounded-lg p-4">
-                            <h3 class="text-xl font-semibold text-gray-700">{{ researched.traject.start_locality }} to {{ researched.traject.end_locality }}</h3>
-                            <p class="text-gray-600"><strong>Membre:</strong> {{ researched.member.memb_user_fk.username }}</p>
-                            <p class="text-gray-600">
-                                <strong>Adresse de départ:</strong> {{ researched.traject.start_street }}, {{ researched.traject.start_locality }} {{ researched.traject.start_country }}
-                            </p>
-                            <p class="text-gray-600">
-                                <strong>Adresse de destination:</strong> {{ researched.traject.end_street }}, {{ researched.traject.end_locality }} {{ researched.traject.end_country }}
-                            </p>
-                            <p class="text-gray-600"><strong>Heure de départ:</strong> {{ researched.departure_time }}</p>
-                            <p class="text-gray-600"><strong>Moyens de transport:</strong> {{ researched.transport_modes.all|join:", " }}</p>
+                        <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center"">
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-700">{{ researched.traject.start_locality }} to {{ researched.traject.end_locality }}</h3>
+                                <p class="text-gray-600"><strong>Membre:</strong> {{ researched.member.memb_user_fk.username }}</p>
+                                <p class="text-gray-600">
+                                    <strong>Adresse de départ:</strong> {{ researched.traject.start_street }}, {{ researched.traject.start_locality }} {{ researched.start_country }}
+                                </p>
+                                <p class="text-gray-600">
+                                    <strong>Adresse de destination:</strong> {{ researched.traject.end_street }}, {{ researched.end_locality }} {{ researched.end_country }}
+                                </p>
+                                <p class="text-gray-600"><strong>Heure de départ:</strong> {{ researched.departure_time }}</p>
+                                <p class="text-gray-600"><strong>Moyens de transport:</strong> {{ researched.transport_modes.all|join:", " }}</p>
+                            </div>
+                            <a href="{% url 'proposed_traject' %}" class="btn btn-primary">Proposer</a>
                         </li>
                         {% endfor %}
                     </ul>
@@ -81,30 +87,3 @@
         </div>
     </div>
 {% endblock %}
-
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const researchedBtn = document.getElementById('researched-btn');
-        const proposedBtn = document.getElementById('proposed-btn');
-        const researchedList = document.getElementById('researched-list');
-        const proposedList = document.getElementById('proposed-list');
-
-        researchedBtn.addEventListener('click', () => {
-            researchedBtn.classList.add('active', 'border-indigo-600');
-            proposedBtn.classList.remove('active', 'border-indigo-600');
-            proposedBtn.classList.add('border-transparent');
-            researchedList.classList.remove('hidden');
-            proposedList.classList.add('hidden');
-        });
-
-        proposedBtn.addEventListener('click', () => {
-            proposedBtn.classList.add('active', 'border-indigo-600');
-            researchedBtn.classList.remove('active', 'border-indigo-600');
-            researchedBtn.classList.add('border-transparent');
-            proposedList.classList.remove('hidden');
-            researchedList.classList.add('hidden');
-        });
-    });
-</script>
