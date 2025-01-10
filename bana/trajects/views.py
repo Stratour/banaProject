@@ -71,8 +71,28 @@ def search_trajects(request):
 # ===================== reservation page ======================== #
 
 @login_required
-def reserve_traject(request,id):
-    return render(request,'trajects/reserve_traject.html')
+def reserve_traject(request, id):
+    traject = get_object_or_404(ProposedTraject, id=id)
+    user_member = Members.objects.get(memb_user_fk=request.user)
+    is_creator = traject.member == user_member
+
+    context = {
+        'traject': traject,
+        'is_creator': is_creator,
+    }
+
+    if is_creator:
+        # Add the list of reservation requests if the user is the creator
+        # Assuming you have a model for reservations, replace `ReservationRequest` with the actual model name
+        reservation_requests = ["member1","member2","member3"] #ReservationRequest.objects.filter(traject=traject)
+        context['reservation_requests'] = reservation_requests
+    else:
+        # Add any other context needed for non-creator users
+        reservation_count = 3 #ReservationRequest.objects.filter(traject=traject).count()
+        context['reservation_count'] = reservation_count
+
+    return render(request, 'trajects/reserve_traject.html', context)
+
 
 # ===================== CRUD ======================== #
 
