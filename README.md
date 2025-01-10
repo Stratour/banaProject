@@ -113,7 +113,7 @@
 - **Pull the latest changes from the remote repository**:
 
   ```sh
-  git pull origin main  # Replace 'main' with your default branch name if different
+  git pull branch-name  # Be sure to be on the branch you want to pull from
   ```
 
 - **Merge another branch into your current branch**:
