@@ -6,17 +6,17 @@ class TrajectForm(forms.ModelForm):
     class Meta:
         model = Traject
         fields = [
-            'start_street', 'start_number', 'start_box', 'start_zp',
-            'start_locality', 'start_country', 'end_street', 'end_number',
+            'start_name','start_street', 'start_number', 'start_box', 'start_zp',
+            'start_locality', 'start_country','end_name', 'end_street', 'end_number',
             'end_box', 'end_zp', 'end_locality', 'end_country'
         ]
 
     def clean(self):
         cleaned_data = super().clean()
-        start_address = f"{cleaned_data.get('start_street')} {cleaned_data.get('start_number')}, {cleaned_data.get('start_zp')} {cleaned_data.get('start_locality')}"
+        start_address = f"{cleaned_data.get('start_name')}, {cleaned_data.get('start_street')} {cleaned_data.get('start_number')}, {cleaned_data.get('start_zp')} {cleaned_data.get('start_locality')}"
         start_country = cleaned_data.get('start_country')
 
-        end_address = f"{cleaned_data.get('end_street')} {cleaned_data.get('end_number')}, {cleaned_data.get('end_zp')} {cleaned_data.get('end_locality')}"
+        end_address = f"{cleaned_data.get('start_name')}, {cleaned_data.get('end_street')} {cleaned_data.get('end_number')}, {cleaned_data.get('end_zp')} {cleaned_data.get('end_locality')}"
         end_country = cleaned_data.get('end_country')
 
         start_valid, start_coords = get_coordinate(start_address, start_country)
@@ -61,16 +61,14 @@ class ProposedTrajectForm(forms.ModelForm):
     class Meta:
         model = ProposedTraject
         exclude = ['member'] 
-        fields = ['name', 'details', 'departure_time', 'arrival_time', 'transport_modes', 'detour_km']
+        fields = ['details', 'departure_time', 'arrival_time', 'transport_modes', 'detour_km','language','number_of_places']
         labels = {
-            'name': 'Nom du trajet',
             'details': 'Détails',
             'departure_time': 'Heure de départ',
             'arrival_time': 'Heure d’arrivée',
         }
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Nom de votre trajet'}),
-            'details': forms.Textarea(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Ajoutez des détails utiles pour les passagers'}),
+          'details': forms.Textarea(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Ajoutez des détails utiles pour les passagers'}),
         }
 
 
@@ -96,14 +94,12 @@ class ResearchedTrajectForm(forms.ModelForm):
     class Meta:
         model = ResearchedTraject
         exclude = ['member'] 
-        fields = ['name', 'details', 'departure_time', 'arrival_time', 'transport_modes', 'detour_km']
+        fields = ['details', 'departure_time', 'arrival_time', 'transport_modes', 'detour_km', 'language', 'number_of_places']
         labels = {
-            'name': 'Nom de la recherche',
             'details': 'Détails',
             'departure_time': 'Heure de départ',
             'arrival_time': 'Heure d’arrivée',
         }
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Nom de votre recherche'}),
             'details': forms.Textarea(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Ajoutez des détails utiles pour le conducteur'}),
         }
