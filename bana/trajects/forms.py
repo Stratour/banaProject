@@ -1,42 +1,11 @@
 from django import forms
 from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode
-from .utils.geocoding import get_coordinate
+
 
 class TrajectForm(forms.ModelForm):
     class Meta:
         model = Traject
-        fields = [
-            'start_name','start_street', 'start_number', 'start_box', 'start_zp',
-            'start_locality', 'start_country','end_name', 'end_street', 'end_number',
-            'end_box', 'end_zp', 'end_locality', 'end_country'
-        ]
-
-    def clean(self):
-        cleaned_data = super().clean()
-        start_address = f"{cleaned_data.get('start_name')}, {cleaned_data.get('start_street')} {cleaned_data.get('start_number')}, {cleaned_data.get('start_zp')} {cleaned_data.get('start_locality')}"
-        start_country = cleaned_data.get('start_country')
-
-        end_address = f"{cleaned_data.get('start_name')}, {cleaned_data.get('end_street')} {cleaned_data.get('end_number')}, {cleaned_data.get('end_zp')} {cleaned_data.get('end_locality')}"
-        end_country = cleaned_data.get('end_country')
-
-        start_valid, start_coords = get_coordinate(start_address, start_country)
-        if not start_valid:
-            self.add_error('start_locality', 'Adresse de départ invalide. Veuillez vérifier.')
-
-        end_valid, end_coords = get_coordinate(end_address, end_country)
-        if not end_valid:
-            self.add_error('end_locality', 'Adresse d’arrivée invalide. Veuillez vérifier.')
-
-        if start_valid and end_valid:
-            self.instance.start_coordinate = f"{start_coords[0]},{start_coords[1]}"
-            self.instance.end_coordinate = f"{end_coords[0]},{end_coords[1]}"
-        '''
-            # Calcul de la distance via Matrix API
-            distance = matrix(start_coords, end_coords)
-            if distance:
-                self.instance.distance = distance
-        '''
-        return cleaned_data
+        fields = ['start_coordinate', 'end_coordinate']
 
 
 class ProposedTrajectForm(forms.ModelForm):

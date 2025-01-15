@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator
 from django.contrib import messages
 from .models import ProposedTraject, ResearchedTraject,Members
 from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm
 from django.core.exceptions import PermissionDenied
-
+from .utils.geocoding import get_autocomplete_suggestions
+#from django.conf import settings
 
 
 
@@ -68,6 +69,25 @@ def search_trajects(request):
     
     return render(request, 'trajects/trajects_page.html', context)
 
+
+
+def autocomplete_view(request):
+    """
+    Vue pour gérer l'autocomplétion côté backend.
+    """
+    query = request.GET.get("query")  # Récupère le texte saisi par l'utilisateur
+    if not query:
+        return JsonResponse({"error": "Le champ 'query' est requis."}, status=400)
+
+    suggestions = get_autocomplete_suggestions(query)
+    if isinstance(suggestions, str):  # Si c'est une erreur
+        return JsonResponse({"error": suggestions}, status=500)
+
+    return JsonResponse({"suggestions": suggestions}, status=200)
+
+
+
+
 # ===================== reservation page ======================== #
 
 @login_required
@@ -95,7 +115,6 @@ def reserve_traject(request, id):
 
 
 # ===================== CRUD ======================== #
-
 @login_required
 def proposed_traject(request):
     if request.method == 'POST':

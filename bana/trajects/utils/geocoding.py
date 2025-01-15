@@ -1,36 +1,30 @@
+import requests
 from django.conf import settings
-import googlemaps
-from django.contrib import messages
+def get_autocomplete_suggestions(query):
+    """
+    Récupère les suggestions d'adresses via l'API Google Geocoding tout en limitant à la Belgique.
+    :param query: Texte saisi par l'utilisateur (par exemple, 'Bruxelles').
+    :return: Liste des adresses suggérées ou un message d'erreur.
+    """
+    api_key = settings.GOOGLE_MAPS_API_KEY
+    base_url = "https://maps.googleapis.com/maps/api/place/autocomplete/json"
 
-# Initialiser le client Google Maps
-gmaps = googlemaps.Client(key=settings.GOOGLE_MAPS_API_KEY)
+    params = {
+        "input": query,             # Texte de la recherche
+        "key": api_key,             # Clé API Google
+        "components": "country:BE", # Restreint les résultats à la Belgique
+    }
 
-def get_coordinate(address, country=None, request=None):
-    """Vérifie l'adresse et retourne les coordonnées (latitude, longitude)."""
-    location = check_address(address, country)
-    if location:
-        if request:
-            messages.success(request, "Adresse trouvée et enregistrée.")
-        return True, location
-    else:
-        if request:
-            messages.error(request, "L'adresse n'a pas pu être trouvée. Veuillez vérifier les informations saisies.")
-        return False, None
-
-def check_address(address, country=None):
-    """Utilise l'API Google Maps pour vérifier et géocoder une adresse."""
     try:
-        if country:
-            address = f"{address}, {country}"
-        
-        # Requête à l'API Google Maps
-        geocode_result = gmaps.geocode(address)
+        response = requests.get(base_url, params=params)
+        response.raise_for_status()  # Lève une erreur en cas de réponse HTTP non valide
+        data = response.json()
 
-        # Si une adresse est trouvée
-        if geocode_result:
-            location = geocode_result[0]['geometry']['location']
-            return location['lat'], location['lng']
+        if data.get("status") == "OK":
+            suggestions = [item["description"] for item in data.get("predictions", [])]
+            return suggestions
         else:
-            return None
-    except Exception as e:
-        raise Exception(f"Erreur lors de la vérification de l'adresse : {e}")
+            return f"Erreur API: {data.get('status')}"
+
+    except requests.RequestException as e:
+        return f"Erreur de connexion à l'API: {e}"
