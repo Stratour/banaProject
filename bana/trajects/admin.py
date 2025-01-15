@@ -20,15 +20,15 @@ class TrajectAdmin(admin.ModelAdmin):
 @admin.register(ProposedTraject)
 class ProposedTrajectAdmin(admin.ModelAdmin):
     list_display = (
-        'traject', 'details', 'get_members', 
+        'traject', 'details', 'get_member', 
         'departure_time', 'arrival_time', 'get_start_location', 
         'get_end_location', 'get_transport_modes', 'language','number_of_places'
     )
     search_fields = ('traject__start_street', 'traject__end_street', 'traject__start_name','traject__end_name')
 
-    def get_members(self, obj):
-        return ", ".join([member.memb_user_fk.username for member in obj.member.all()])
-    get_members.short_description = 'Members'
+    def get_member(self, obj):
+        return obj.member.memb_user_fk.username
+    get_member.short_description = 'Member'
 
     def get_start_location(self, obj):
         return obj.traject.start_street
@@ -46,15 +46,16 @@ class ProposedTrajectAdmin(admin.ModelAdmin):
 @admin.register(ResearchedTraject)
 class ResearchedTrajectAdmin(admin.ModelAdmin):
     list_display = (
-        'traject', 'details', 'get_members', 
+        'traject', 'details', 'get_member', 
         'departure_time', 'arrival_time', 'get_start_location', 
         'get_end_location', 'get_transport_modes','language','number_of_places'
     )
     search_fields = ('traject__start_street', 'traject__end_street', 'traject__start_name','traject__end_name')
 
-    def get_members(self, obj):
-        return ", ".join([member.memb_user_fk.username for member in obj.member.all()])
-    get_members.short_description = 'Members'
+    def get_member(self, obj):
+        return obj.member.memb_user_fk.username
+    get_member.short_description = 'Member'
+
 
     def get_start_location(self, obj):
         return obj.traject.start_street

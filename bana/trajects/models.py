@@ -42,9 +42,9 @@ class ProposedTraject(models.Model):
     details = models.TextField()
     detour_distance = models.FloatField(blank=True, null=True)
 
-    def __str__(self):
-        return f"{self.name} by {self.member.memb_user_fk.username}"
-    
+    ''' def __str__(self):
+            return f"{self.name} by {self.member.memb_user_fk.username}" '''
+ 
     @classmethod
     def get_proposed_trajects_by_member(cls, member):
         return cls.objects.filter(member=member)
@@ -59,8 +59,8 @@ class ResearchedTraject(models.Model):
     number_of_places = models.SmallIntegerField(blank=False,null=False)
     details = models.TextField()
 
-    def __str__(self):
-        return f"{self.name} by {self.member.memb_user_fk.username}"
+    ''' def __str__(self):
+            return f"{self.name} by {self.member.memb_user_fk.username}" '''
 
     @classmethod
     def get_researched_trajects_by_member(cls, member):
