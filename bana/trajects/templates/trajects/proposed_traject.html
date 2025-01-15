@@ -14,6 +14,10 @@
                 <legend class="text-lg font-semibold text-gray-700 mb-2">Starting Point</legend>
                 <div class="grid grid-cols-2 gap-6">
                     <div>
+                        <label for="start_name" class="block text-sm font-medium text-gray-700">named place</label>
+                        {{ traject_form.start_name }}
+                    </div>
+                    <div>
                         <label for="start_street" class="block text-sm font-medium text-gray-700">Start Street</label>
                         {{ traject_form.start_street }}
                     </div>
@@ -44,6 +48,10 @@
             <fieldset>
                 <legend class="text-lg font-semibold text-gray-700 mt-4 mb-2">Ending Point</legend>
                 <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label for="start_name" class="block text-sm font-medium text-gray-700">named place</label>
+                        {{ traject_form.start_name }}
+                    </div>
                     <div>
                         <label for="end_street" class="block text-sm font-medium text-gray-700">End Street</label>
                         {{ traject_form.end_street }}

@@ -160,3 +160,5 @@ LOGIN_URL = '/profile/login_user/'
 # API key 
 
 OPEN_STREET_MAP_API_KEY = config("OPEN_STREET_MAP_API", default="default_value")
+
+GOOGLE_MAPS_API_KEY = config("GOOGLE_MAPS_API_KEY",default="default_value")

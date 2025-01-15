@@ -1,6 +1,6 @@
 from django import forms
 from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode
-from .utils.geocoding import get_coordinate, matrix
+from .utils.geocoding import get_coordinate
 
 class TrajectForm(forms.ModelForm):
     class Meta:
