@@ -8,12 +8,25 @@
 
     <div id="traject-info" class="bg-white p-4 rounded shadow">
         <h2 class="text-xl font-semibold mb-2">Traject Information</h2>
-        <p><strong>Origin:</strong> {{ traject.traject.start_locality }}</p>
-        <p><strong>Destination:</strong> {{ traject.traject.end_locality }}</p>
+        <p><strong>Origin:</strong>
+            {% if traject.traject.start_adress %}
+                {{ traject.traject.start_adress }}
+            {% else %}
+                {{ traject.traject.start_street }}, {{ traject.traject.start_locality }} {{ traject.traject.start_country }}
+            {% endif %}
+        </p>
+        <p><strong>Destination:</strong>
+            {% if traject.traject.end_adress %}
+                {{ traject.traject.end_adress }}
+            {% else %}
+                {{ traject.traject.end_street }}, {{ traject.traject.end_locality }} {{ traject.traject.end_country }}
+            {% endif %}
+        </p>
         <p><strong>Date:</strong> {{ traject.departure_date }}</p>
         <p><strong>Time:</strong> {{ traject.departure_time }}</p>
-        <p><strong>Seats Available:</strong> {{ traject.seats_available }}</p>
+        <p><strong>Seats Available:</strong> {{ traject.number_of_places }}</p>
     </div>
+    
 
     {% if is_creator %}
     <div id="creator-actions" class="mt-4">

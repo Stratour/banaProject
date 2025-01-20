@@ -1,5 +1,15 @@
 from django.contrib import admin
-from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode
+from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode,Languages
+
+
+
+
+@admin.register(Languages)
+class LanguagesAdmin(admin.ModelAdmin):
+    list_display = ('name', )
+    search_fields = ('name',)
+
+
 
 @admin.register(Traject)
 class TrajectAdmin(admin.ModelAdmin):
@@ -22,7 +32,7 @@ class ProposedTrajectAdmin(admin.ModelAdmin):
     list_display = (
         'traject', 'details', 'get_member', 
         'departure_time', 'arrival_time', 'get_start_location', 
-        'get_end_location', 'get_transport_modes', 'language','number_of_places'
+        'get_end_location', 'get_transport_modes','number_of_places'
     )
     search_fields = ('traject__start_street', 'traject__end_street', 'traject__start_name','traject__end_name')
 
@@ -48,7 +58,7 @@ class ResearchedTrajectAdmin(admin.ModelAdmin):
     list_display = (
         'traject', 'details', 'get_member', 
         'departure_time', 'arrival_time', 'get_start_location', 
-        'get_end_location', 'get_transport_modes','language','number_of_places'
+        'get_end_location', 'get_transport_modes','number_of_places'
     )
     search_fields = ('traject__start_street', 'traject__end_street', 'traject__start_name','traject__end_name')
 

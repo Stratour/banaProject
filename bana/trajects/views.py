@@ -115,12 +115,13 @@ def reserve_traject(request, id):
 
 
 # ===================== CRUD ======================== #
+
 @login_required
 def proposed_traject(request):
     if request.method == 'POST':
         traject_form = TrajectForm(request.POST)
         proposed_form = ProposedTrajectForm(request.POST)
-        if traject_form.is_valid() and proposed_form.is_valid():
+        if  traject_form.is_valid() and proposed_form.is_valid():
             traject = traject_form.save()
             proposed = proposed_form.save(commit=False)
             proposed.traject = traject
@@ -130,6 +131,8 @@ def proposed_traject(request):
             messages.success(request, 'Proposed Traject created successfully!')
             return redirect('profile')
         else:
+            print("Traject Form Errors:", traject_form.errors)
+            print("Proposed Form Errors:", proposed_form.errors)
             messages.error(request, 'There were errors in your form. Please fix them and try again.')
     else:
         traject_form = TrajectForm()
@@ -139,6 +142,7 @@ def proposed_traject(request):
         'proposed_form': proposed_form
     }
     return render(request, 'trajects/proposed_traject.html', context)
+
 
 @login_required
 def searched_traject(request):
@@ -155,6 +159,8 @@ def searched_traject(request):
             messages.success(request, 'Searched Traject created successfully!')
             return redirect('profile')
         else:
+            print("================Traject Form Errors:", traject_form.errors)
+            print("================Proposed Form Errors:", researched_form.errors)
             messages.error(request, 'There were errors in your form. Please fix them and try again.')
     else:
         traject_form = TrajectForm()

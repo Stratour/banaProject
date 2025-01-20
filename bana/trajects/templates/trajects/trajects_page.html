@@ -28,16 +28,29 @@
                         {% for proposed in proposed_trajects %}
                         <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
                             <div>
-                                <h3 class="text-xl font-semibold text-gray-700">{{ proposed.traject.start_locality }} to {{ proposed.traject.end_locality }}</h3>
-                                <p class="text-gray-600"><strong>Membre:</strong> {{ proposed.member.memb_user_fk.username }}</p>
+                                <h3 class="text-xl font-semibold text-gray-700">
+                                    {{ proposed.member.memb_user_fk.username }}
+                                </h3>
                                 <p class="text-gray-600">
-                                    <strong>Adresse de départ:</strong> {{ proposed.traject.start_street }}, {{ proposed.traject.start_locality }} {{ proposed.traject.start_country }}
+                                    <strong>Adresse de départ:</strong>
+                                    {% if proposed.traject.start_adress %}
+                                        {{ proposed.traject.start_adress }}
+                                    {% else %}
+                                        {{ proposed.traject.start_street }}, {{ proposed.traject.start_locality }} {{ proposed.traject.start_country }}
+                                    {% endif %}
                                 </p>
                                 <p class="text-gray-600">
-                                    <strong>Adresse de destination:</strong> {{ proposed.traject.end_street }}, {{ proposed.traject.end_locality }} {{ proposed.traject.end_country }}
+                                    <strong>Adresse de destination:</strong>
+                                    {% if proposed.traject.end_adress %}
+                                        {{ proposed.traject.end_adress }}
+                                    {% else %}
+                                        {{ proposed.traject.end_street }}, {{ proposed.traject.end_locality }} {{ proposed.traject.end_country }}
+                                    {% endif %}
                                 </p>
                                 <p class="text-gray-600"><strong>Heure de départ:</strong> {{ proposed.departure_time }}</p>
                                 <p class="text-gray-600"><strong>Moyens de transport:</strong> {{ proposed.transport_modes.all|join:", " }}</p>
+                                <p class="text-gray-600"><strong>Nombre de place:</strong> {{ proposed.number_of_places }}</p>
+                                <p class="text-gray-600"><strong>Langue parler:</strong> {{ proposed.language.name }}</p>
                             </div>
                             <a href="{% url 'reserve_traject' proposed.id %}" class="btn btn-primary">Réserver</a>
                         </li>
@@ -59,18 +72,30 @@
                 {% if researched_trajects %}
                     <ul class="space-y-4">
                         {% for researched in researched_trajects %}
-                        <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center"">
+                        <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
                             <div>
-                                <h3 class="text-xl font-semibold text-gray-700">{{ researched.traject.start_locality }} to {{ researched.traject.end_locality }}</h3>
-                                <p class="text-gray-600"><strong>Membre:</strong> {{ researched.member.memb_user_fk.username }}</p>
+                                <h3 class="text-xl font-semibold text-gray-700">
+                                    {{ researched.member.memb_user_fk.username }}
+                                </h3>
                                 <p class="text-gray-600">
-                                    <strong>Adresse de départ:</strong> {{ researched.traject.start_street }}, {{ researched.traject.start_locality }} {{ researched.start_country }}
+                                    <strong>Adresse de départ:</strong>
+                                    {% if researched.traject.start_adress %}
+                                        {{ researched.traject.start_adress }}
+                                    {% else %}
+                                        {{ researched.traject.start_street }}, {{ researched.traject.start_locality }} {{ researched.traject.start_country }}
+                                    {% endif %}
                                 </p>
                                 <p class="text-gray-600">
-                                    <strong>Adresse de destination:</strong> {{ researched.traject.end_street }}, {{ researched.end_locality }} {{ researched.end_country }}
+                                    <strong>Adresse de destination:</strong>
+                                    {% if researched.traject.end_adress %}
+                                        {{ researched.traject.end_adress }}
+                                    {% else %}
+                                        {{ researched.traject.end_street }}, {{ researched.traject.end_locality }} {{ researched.traject.end_country }}
+                                    {% endif %}
                                 </p>
                                 <p class="text-gray-600"><strong>Heure de départ:</strong> {{ researched.departure_time }}</p>
                                 <p class="text-gray-600"><strong>Moyens de transport:</strong> {{ researched.transport_modes.all|join:", " }}</p>
+                                <p class="text-gray-600"><strong>Nombre de place:</strong> {{ researched.number_of_places }}</p>
                             </div>
                             <a href="{% url 'proposed_traject' %}" class="btn btn-primary">Proposer</a>
                         </li>

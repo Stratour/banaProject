@@ -13,7 +13,7 @@
                 <ul class="list-disc list-inside space-y-2">
                     {% for traject in proposed_trajects %}
                         <li class="bg-white shadow p-4 rounded">
-                            {{ traject.traject.start_locality }} to {{ traject.traject.end_locality }} on {{ traject.departure_time }} - {{ traject.arrival_time }}
+                            {{ traject.traject.start_adress }} to {{ traject.traject.end_adress }} on {{ traject.departure_time }} - {{ traject.arrival_time }}
                             <a href="{% url 'modify_traject' traject.id 'proposed' %}" class="text-blue-500 hover:text-blue-700 ml-2">Modify</a>
                             <a href="{% url 'delete_traject' traject.id 'proposed' %}" class="text-red-500 hover:text-red-700 ml-2">Delete</a>
                         </li>
@@ -31,7 +31,7 @@
                 <ul class="list-disc list-inside space-y-2">
                     {% for traject in researched_trajects %}
                         <li class="bg-white shadow p-4 rounded">
-                            {{ traject.traject.start_locality }} to {{ traject.traject.end_locality }} on {{ traject.departure_time }} - {{ traject.arrival_time }}
+                            {{ traject.traject.start_adress }} to {{ traject.traject.end_adress }} on {{ traject.departure_time }} - {{ traject.arrival_time }}
                             <a href="{% url 'modify_traject' traject.id 'researched' %}" class="text-blue-500 hover:text-blue-700 ml-2">Modify</a>
                             <a href="{% url 'delete_traject' traject.id 'researched' %}" class="text-red-500 hover:text-red-700 ml-2">Delete</a>
                         </li>
