@@ -15,8 +15,6 @@ class Languages(models.Model):
         return self.name
 
 
-from django.db import models
-
 class Traject(models.Model):
     # Adresse en une ligne
     start_adress = models.CharField(max_length=255)
@@ -81,7 +79,7 @@ class ResearchedTraject(models.Model):
     transport_modes = models.ManyToManyField(TransportMode, related_name='researched_trajects')
     departure_time = models.TimeField()
     arrival_time = models.TimeField()
-    language = models.ManyToManyField(Languages, related_name='researched_trajects',blank=True,null=True)
+    language = models.ManyToManyField(Languages, related_name='researched_trajects',blank=True)
     number_of_places = models.CharField(max_length=1, choices=NUMBER_PLACE)
     details = models.TextField()
 

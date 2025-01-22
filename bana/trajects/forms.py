@@ -1,6 +1,6 @@
 from django import forms
 from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode
-
+from django.forms.widgets import SelectMultiple
 
 
 
@@ -53,8 +53,8 @@ class ProposedTrajectForm(forms.ModelForm):
             'language':'language(s)',
         }
         widgets = {
-            'language': forms.CheckboxSelectMultiple(),
-          'details': forms.Textarea(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Ajoutez des détails utiles pour les passagers'}),
+            'language': SelectMultiple(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
+            'details': forms.Textarea(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Ajoutez des détails utiles pour les passagers'}),
         }
 
 
@@ -87,7 +87,7 @@ class ResearchedTrajectForm(forms.ModelForm):
             'arrival_time': 'Heure d’arrivée',
             'language':'language(s)',
         }
-        widgets = {
-            'language': forms.CheckboxSelectMultiple(),
+        widgets = {    
+            'language': SelectMultiple(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
             'details': forms.Textarea(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Ajoutez des détails utiles pour le conducteur'}),
         }
