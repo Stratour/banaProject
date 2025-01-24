@@ -7,17 +7,46 @@ from .models import ProposedTraject, ResearchedTraject,Members
 from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm
 from django.core.exceptions import PermissionDenied
 from .utils.geocoding import get_autocomplete_suggestions
-#from django.conf import settings
+from django.db.models import Q
+
 
 
 
 # ===================== listing ======================== #
 
 def all_trajects(request):
-
     active_tab = request.GET.get('active_tab', 'proposed')
+    start_adress = request.GET.get('start_adress', '').strip()
+    end_adress = request.GET.get('end_adress', '').strip()
+    
+    # Base querysets
     proposed_trajects_list = ProposedTraject.objects.all().order_by('-departure_time')
     researched_trajects_list = ResearchedTraject.objects.select_related('traject').all().order_by('-departure_time')
+    
+    # Filtering based on search inputs
+    if start_adress:
+        proposed_trajects_list = proposed_trajects_list.filter(
+            Q(traject__start_adress__icontains=start_adress) |
+            Q(traject__start_street__icontains=start_adress) |
+            Q(traject__start_locality__icontains=start_adress)
+        )
+        researched_trajects_list = researched_trajects_list.filter(
+            Q(traject__start_adress__icontains=start_adress) |
+            Q(traject__start_street__icontains=start_adress) |
+            Q(traject__start_locality__icontains=start_adress)
+        )
+    
+    if end_adress:
+        proposed_trajects_list = proposed_trajects_list.filter(
+            Q(traject__end_adress__icontains=end_adress) |
+            Q(traject__end_street__icontains=end_adress) |
+            Q(traject__end_locality__icontains=end_adress)
+        )
+        researched_trajects_list = researched_trajects_list.filter(
+            Q(traject__end_adress__icontains=end_adress) |
+            Q(traject__end_street__icontains=end_adress) |
+            Q(traject__end_locality__icontains=end_adress)
+        )
     
     # Pagination for proposed trajects
     paginator1 = Paginator(proposed_trajects_list, 10)  # Show 10 proposed trajects per page
@@ -33,8 +62,11 @@ def all_trajects(request):
         'active_tab': active_tab,
         'proposed_trajects': proposed_trajects,
         'researched_trajects': researched_trajects,
+        'start_adress': start_adress,
+        'end_adress': end_adress,
     }
     return render(request, 'trajects/trajects_page.html', context)
+
 
 def search_trajects(request):
     start_city = request.GET.get('start_locality', '').strip()

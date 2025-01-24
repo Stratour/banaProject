@@ -3,9 +3,59 @@
 {% block title %}All Trajects - BanaCommunity{% endblock %}
 
 {% block content %}
-    <div class="bg-gray-100 min-h-screen p-6">
-        <div class="container mx-auto">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6">All Trajects</h2>
+<div class="bg-gray-100 min-h-screen p-6">
+    <div class="container mx-auto">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">All Trajects</h2>
+
+        <!-- Search Bar -->
+        <form method="GET" action="{% url 'all_trajects' %}" class="bg-white shadow-md rounded-lg p-6 mb-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Starting Point -->
+                <div>
+                    <label for="start_adress" class="block text-sm font-medium text-gray-700">
+                        Point de départ
+                    </label>
+                    <input
+                        type="text"
+                        name="start_adress"
+                        id="start_adress"
+                        value="{{ start_adress|default:'' }}"
+                        class="form-input mt-1 block w-full"
+                        placeholder="Entrez le point de départ"
+                        autocomplete="off"
+                    />
+                    <ul id="start-suggestion-list" class="bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-48 overflow-auto"></ul>
+                </div>
+        
+                <!-- Ending Point -->
+                <div>
+                    <label for="end_adress" class="block text-sm font-medium text-gray-700">
+                        Point d’arrivée
+                    </label>
+                    <input
+                        type="text"
+                        name="end_adress"
+                        id="end_adress"
+                        value="{{ end_adress|default:'' }}"
+                        class="form-input mt-1 block w-full"
+                        placeholder="Entrez le point d’arrivée"
+                        autocomplete="off"
+                    />
+                    <ul id="end-suggestion-list" class="bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-48 overflow-auto"></ul>
+                </div>
+        
+                <!-- Submit Button -->
+                <div class="col-span-1 lg:col-span-4">
+                    <button
+                        type="submit"
+                        class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-500 focus:outline-none"
+                    >
+                        Rechercher
+                    </button>
+                </div>
+            </div>
+        </form>
+        
 
             <!-- Toggle buttons -->
             <div class="flex justify-center mb-6">
@@ -111,4 +161,42 @@
             {% endif %}
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll("#start_adress, #end_adress").forEach((inputField) => {
+            inputField.addEventListener("input", async (event) => {
+                const query = event.target.value;
+        
+                if (query.length < 3) return; // Skip queries with fewer than 3 characters
+        
+                try {
+                    const url = `{% url 'autocomplete' %}?query=${query}`; // Use the correct query value
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error("Error fetching suggestions");
+        
+                    const data = await response.json();
+                    const suggestions = data.suggestions || [];
+        
+                    // Determine which suggestion list to populate
+                    const suggestionListId = event.target.id === "start_adress" ? "start-suggestion-list" : "end-suggestion-list";
+                    const suggestionList = document.getElementById(suggestionListId);
+        
+                    // Populate suggestions list
+                    suggestionList.innerHTML = ""; // Clear previous suggestions
+                    suggestions.forEach((suggestion) => {
+                        const li = document.createElement("li");
+                        li.textContent = suggestion;
+                        li.classList.add("cursor-pointer", "p-2", "hover:bg-gray-100");
+                        li.addEventListener("click", () => {
+                            inputField.value = suggestion; // Set input value
+                            suggestionList.innerHTML = ""; // Clear suggestions
+                        });
+                        suggestionList.appendChild(li);
+                    });
+                } catch (error) {
+                    console.error("Error fetching suggestions:", error);
+                }
+            });
+        });
+    </script>
 {% endblock %}
