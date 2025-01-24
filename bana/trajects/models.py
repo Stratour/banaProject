@@ -27,6 +27,8 @@ class Traject(models.Model):
     start_box = models.CharField(max_length=10, blank=True, null=True)
     start_zp = models.CharField(max_length=10, blank=True, null=True)
     start_locality = models.CharField(max_length=100, blank=True, null=True)
+    start_region = models.CharField(max_length=100, blank=True, null=True)
+    start_commune = models.CharField(max_length=100, blank=True, null=True)
     start_country = models.CharField(max_length=100, default='Belgium', blank=True, null=True)
     start_coordinate = models.CharField(max_length=50, blank=True, null=True)
     
@@ -37,6 +39,8 @@ class Traject(models.Model):
     end_box = models.CharField(max_length=10, blank=True, null=True)
     end_zp = models.CharField(max_length=10, blank=True, null=True)
     end_locality = models.CharField(max_length=100, blank=True, null=True)
+    end_region =models.CharField(max_length=100, blank=True, null=True)
+    end_commune = models.CharField(max_length=100, blank=True, null=True)
     end_country = models.CharField(max_length=100, default='Belgium', blank=True)
     end_coordinate = models.CharField(max_length=50, blank=True, null=True)
     

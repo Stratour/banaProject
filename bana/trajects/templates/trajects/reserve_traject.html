@@ -25,6 +25,7 @@
         <p><strong>Date:</strong> {{ traject.departure_date }}</p>
         <p><strong>Time:</strong> {{ traject.departure_time }}</p>
         <p><strong>Seats Available:</strong> {{ traject.number_of_places }}</p>
+        <p><strong>language spoken</strong> {{ traject.language.all|join:", " }}</p>
     </div>
     
 
