@@ -68,41 +68,6 @@ def all_trajects(request):
     return render(request, 'trajects/trajects_page.html', context)
 
 
-def search_trajects(request):
-    start_city = request.GET.get('start_locality', '').strip()
-    end_city = request.GET.get('end_locality', '').strip()
-    
-    # Get all trajects
-    proposed_trajects = ProposedTraject.objects.all()
-    researched_trajects = ResearchedTraject.objects.all()
-    
-    # Filter by start locality if provided
-    if start_city:
-        proposed_trajects = proposed_trajects.filter(traject__start_locality__icontains=start_city)
-        researched_trajects = researched_trajects.filter(traject__start_locality__icontains=start_city)
-    
-    # Filter by end locality if provided
-    if end_city:
-        proposed_trajects = proposed_trajects.filter(traject__end_locality__icontains=end_city)
-        researched_trajects = researched_trajects.filter(traject__end_locality__icontains=end_city)
-    
-    context = {
-        'proposed_trajects': proposed_trajects,
-        'researched_trajects': researched_trajects,
-    }
-    
-    # Add a message if no matches are found
-    if not proposed_trajects.exists() and not researched_trajects.exists():
-        context.update({
-            'no_match': True,
-            'start_city': start_city,
-            'end_city': end_city,
-        })
-    
-    return render(request, 'trajects/trajects_page.html', context)
-
-
-
 def autocomplete_view(request):
     """
     Vue pour gérer l'autocomplétion côté backend.
