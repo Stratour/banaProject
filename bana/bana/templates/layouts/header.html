@@ -1,0 +1,41 @@
+<header class="bg-gray-800 text-white p-4">
+    <nav class="flex justify-between items-center">
+        <div class="flex space-x-4">
+            <a href="{% url 'home' %}" class="hover:text-gray-400">Home</a>
+            <a href="{% url 'about' %}" class="hover:text-gray-400">About</a>
+            <a href="{% url 'contact' %}" class="hover:text-gray-400">Contact</a>
+            <a href="{% url 'all_trajects' %}" class="hover:text-gray-400">All Trajects</a>
+        </div>
+        <div class="flex space-x-4">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}" class="hover:text-gray-400">Profile</a>
+                <form method="post" action="{% url 'logout' %}" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="hover:text-gray-400">Logout</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}" class="hover:text-gray-400">Login</a>
+                <a href="{% url 'register' %}" class="hover:text-gray-400">SignIn</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <!-- error and success message view -->
+    <div class="messages mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert p-2 mb-2 border rounded
+                {% if 'success' in message.tags %}
+                    bg-green-100 text-green-700 border-green-400
+                {% else %}
+                    bg-red-100 text-red-700 border-red-400
+                {% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}   
+        {% endif %}
+    </div>
+    
+
+    </div>
+</header>
