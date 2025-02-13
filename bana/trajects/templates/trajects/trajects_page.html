@@ -30,6 +30,7 @@
                             <div>
                                 <h3 class="text-xl font-semibold text-gray-700">{{ proposed.traject.start_locality }} to {{ proposed.traject.end_locality }}</h3>
                                 <p class="text-gray-600"><strong>Membre:</strong> {{ proposed.member.memb_user_fk.username }}</p>
+                                <p class="text-gray-600"> <strong>Date: </strong>{{ proposed.date }}</p>
                                 <p class="text-gray-600">
                                     <strong>Adresse de départ:</strong> {{ proposed.traject.start_street }}, {{ proposed.traject.start_locality }} {{ proposed.traject.start_country }}
                                 </p>
@@ -63,6 +64,7 @@
                             <div>
                                 <h3 class="text-xl font-semibold text-gray-700">{{ researched.traject.start_locality }} to {{ researched.traject.end_locality }}</h3>
                                 <p class="text-gray-600"><strong>Membre:</strong> {{ researched.member.memb_user_fk.username }}</p>
+                                <p class="text-gray-600"> <strong>Date: </strong>{{ researched.date }}</p>
                                 <p class="text-gray-600">
                                     <strong>Adresse de départ:</strong> {{ researched.traject.start_street }}, {{ researched.traject.start_locality }} {{ researched.start_country }}
                                 </p>

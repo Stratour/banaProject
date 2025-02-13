@@ -34,6 +34,7 @@ class ProposedTraject(models.Model):
     transport_modes = models.ManyToManyField(TransportMode, related_name='proposed_trajects')  
     departure_time = models.TimeField()
     arrival_time = models.TimeField()
+    date= models.DateField()
     name = models.CharField(max_length=100)
     details = models.TextField()
     detour_distance = models.FloatField(blank=True, null=True)
@@ -53,6 +54,7 @@ class ResearchedTraject(models.Model):
     arrival_time = models.TimeField()
     name = models.CharField(max_length=100)
     details = models.TextField()
+    date= models.DateField()
 
     def __str__(self):
         return f"{self.name} by {self.member.memb_user_fk.username}"
