@@ -1,3 +1,110 @@
-<footer class="bg-gray-800 text-white p-4 text-center">
-     <p class="text-gray-400">All rights reserved to Bana &copy; {% now "Y" %}</p>
-</footer>
+{% load static %}
+<footer class="h-auto bg-[#007F73] text-white relative pb-[calc(4rem+16px)] xl:pb-0">
+
+     <!-- Register/Login Section -->
+     <div class="mb-8 p-8 flex justify-center items-center bg-cover bg-center"
+         style="background-image: url('{% static "bana/img/background/Bana_background_light_green.png" %}');">
+         <div class="flex flex-col items-center gap-4 md:flex-row justify-center p-6">
+             <a href="{% url 'register' %}" class="bg-[#D7FC19] text-[#154734] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
+                 Register
+             </a>
+             <a href="{% url 'register' %}" class="bg-[#D7FC19] text-[#154734] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
+                 Login
+             </a>
+         </div>
+     </div>
+ 
+     <!-- Main Footer Content -->
+     <div class="max-w-6xl mx-auto px-6 flex flex-col gap-8 md:flex-row md:justify-between">
+         <!-- Logo & Description -->
+         <div class="flex flex-row items-center md:items-start lg:w-1/4">
+             <div class="relative flex-shrink-0 w-28 h-28">
+                 <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
+                     <path id="circlePath" d="M 10, 50 a 40,40 0 1,1 80,0 40,40 0 1,1 -80,0" fill="none" />
+                     <text>
+                         <textPath href="#circlePath" startOffset="50%" text-anchor="middle"
+                             style="fill: #84cc16; font-weight: bold; font-size: 0.75rem;">
+                             ACCOMPAGNER • PARTAGER • GRANDIR •
+                         </textPath>
+                     </text>
+                 </svg>
+                 <div class="absolute inset-0 flex items-center justify-center">
+                     <img src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Bana Logo" class="w-14 h-14">
+                 </div>
+             </div>
+             <h3 class="text-sm font-medium ml-4">
+                 Mobile babysitting platform for the
+                 <span class="text-[#D7FC19]">home-school-activities kids' journeys</span>
+             </h3>
+         </div>
+ 
+         <!-- Bana Community Links -->
+         <div class="flex-1">
+             <h3 class="text-[#D7FC19] font-bold text-lg mb-1">Bana community</h3>
+             <ul class="space-y-1">
+                 <li><a href="#" class="font-light hover:text-[#D7FC19]">Home</a></li>
+                 <li><a href="#" class="font-light hover:text-[#D7FC19]">Sign up</a></li>
+                 <li><a href="#" class="font-light hover:text-[#D7FC19]">About us</a></li>
+                 <li><a href="#" class="font-light hover:text-[#D7FC19]">How it works?</a></li>
+                 <li><a href="#" class="font-light hover:text-[#D7FC19]">Contact</a></li>
+             </ul>
+         </div>
+ 
+         <!-- Useful Links -->
+         <div class="flex-1">
+             <h3 class="text-[#D7FC19] font-bold text-lg mb-1">Useful links</h3>
+             <ul class="space-y-1">
+                 <li><a href="#" class="font-light hover:text-[#D7FC19]">Testimonies</a></li>
+                 <li><a href="#" class="font-light hover:text-[#D7FC19]">Price</a></li>
+                 <li><a href="#" class="font-light hover:text-[#D7FC19]">Q&A</a></li>
+                 <li><a href="#" class="font-light hover:text-[#D7FC19]">Students sign up</a></li>
+                 <li><a href="#" class="font-light hover:text-[#D7FC19]">Parents sign up</a></li>
+             </ul>
+         </div>
+ 
+         <!-- Contact Info -->
+         <div class="flex-1">
+             <h3 class="text-[#D7FC19] font-bold text-lg mb-2">Contact</h3>
+             <ul class="space-y-2">
+                 <li class="flex items-center space-x-2">
+                     <svg class="h-8 w-8 text-[#D7FC19]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                     </svg>
+                     <span><a href="mailto:hello@bana.community" class="hover:text-[#D7FC19]">hello@bana.community</a></span>
+                 </li>
+                 <li class="flex items-center space-x-2">
+                     <svg class="h-8 w-8 text-[#D7FC19]" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                         <path
+                             d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+                     </svg>
+                     <span><a href="tel:+32495283791" class="hover:text-[#D7FC19]">+32 495 283 791</a></span>
+                 </li>
+             </ul>
+ 
+             <!-- Social Media -->
+             <div class="mt-4">
+                 <h4 class="font-semibold">Join our community on social media!</h4>
+                 <div class="flex space-x-4 mt-2">
+                     <a href="https://www.facebook.com/BanaCommunity/" target="_blank">
+                         <img class="w-8 h-8" src="{% static 'bana/img/icon/icon_fb.svg' %}" alt="Icon Facebook">
+                     </a>
+                     <a href="https://www.instagram.com/bana_tribus/" target="_blank">
+                         <img class="w-8 h-8" src="{% static 'bana/img/icon/icon_insta.svg' %}" alt="Icon Instagram">
+                     </a>
+                 </div>
+             </div>
+         </div>
+     </div>
+ 
+     <!-- Footer Bottom -->
+     <div class="mt-10 border-t border-[#D7FC19] p-8 text-center text-sm">
+         <div class="flex flex-col space-y-2 md:flex-row md:justify-center md:items-center md:space-x-4 md:space-y-0">
+             <a href="#" class="hover:text-[#D7FC19]">Confidentiality</a>
+             <a href="#" class="hover:text-[#D7FC19]">Legal notice</a>
+             <a href="#" class="hover:text-[#D7FC19]">Cookies</a>
+         </div>
+         <p class="mt-2">&copy; bana.community</p>
+     </div>
+ </footer> 
