@@ -11,12 +11,30 @@
         </div>
 
         <!-- Mobile Menu Button -->
-        <button id="menu-toggle" class="md:hidden focus:outline-none">
-            <svg class="w-8 h-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-            </svg>
-        </button>
+        <div class="md:hidden flex justify-center items-center gap-4">
+            <div class="relative inline-block text-left">
+                <button class="flex items-center text-white font-bold rounded-md focus:outline-none peer">
+                    En
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                    
+                </button>
+
+                <div
+                    class="absolute left-0 w-32 bg-white border border-gray-300 rounded-md shadow-lg hidden peer-focus:block">
+                    <ul class="py-1">
+                        <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Français</a></li>
+                        <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Nederlands</a></li>
+                    </ul>
+                </div>
+            </div>
+            <button id="menu-toggle" class="focus:outline-none">
+                <svg class="w-8 h-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
 
         <!-- Navigation Links -->
         <div id="nav-links" class="hidden md:flex items-center space-x-6 font-bold">
@@ -29,21 +47,56 @@
         </div>
 
         <!-- Authentication Buttons -->
-        <div id="auth-buttons" class="hidden md:flex items-center space-x-4">
-            {% if user.is_authenticated %}
-            <a href="{% url 'profile' %}">Profile</a>
-            <a href="{% url 'logout' %}">Logout</a>
-            {% else %}
-            <a href="{% url 'register' %}"
-                class="bg-[#D7FC19] text-[#154734] px-4 py-2 rounded-full font-bold hover:bg-[#D7FC19] hover:text-[#3D4F00] hover:no-underline">
-                Register
-            </a>
-            <a href="{% url 'login' %}"
-                class="border-2 border-[#D7FC19] text-[#D7FC19] px-8 py-2 rounded-full hover:text-[#D7FC19] hover:no-underline">
-                Login
-            </a>
-            {% endif %}
+        <div class="hidden md:flex flex-row gap-8 items-center">
+            <!-- Language Dropdown -->
+            <div class="relative inline-block text-left z-10">
+                <button
+                    class="flex items-center px-6 py-2 bg-[#00FFAB] font-bold text-[#007F73] rounded-full hover:bg-[#D7FC19] hover:!text-[#007F73] focus:outline-none peer">
+                    En
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>                    
+                </button>
+
+                <div
+                    class="absolute left-0 mt-2 w-32 bg-white border border-gray-300 rounded-md shadow-lg hidden peer-focus:block">
+                    <ul class="py-1">
+                        <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Français</a></li>
+                        <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Nederlands</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Authentication Buttons -->
+            <!-- bg-[#D7FC19] -->
+
+
+            <div id="auth-buttons" class="md:flex items-center space-x-4">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profile' %}"
+                        class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-[#3D4F00] hover:no-underline">
+                        Profile
+                    </a>
+            
+                    <a href="{% url 'logout' %}"
+                        class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-[#3D4F00] hover:no-underline">
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="{% url 'register' %}"
+                        class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-[#3D4F00] hover:no-underline">
+                        Register
+                    </a>
+            
+                    <a href="{% url 'login' %}"
+                        class="relative bg-[#007F73] text-[#D7FC19] px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-[#D7FC19] hover:no-underline before:absolute before:inset-0 before:rounded-full before:border-2 before:border-[#D7FC19]">
+                        Login
+                    </a>
+                {% endif %}
+            </div>
+            
         </div>
+
     </nav>
 
     <!-- Mobile Dropdown Menu -->
@@ -59,20 +112,20 @@
             <div class="flex flex-col items-center gap-4 md:flex-row justify-center p-6">
                 {% if user.is_authenticated %}
                 <a href="{% url 'profile' %}"
-                    class="bg-[#D7FC19] text-[#154734] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
+                    class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
                     Profile
                 </a>
                 <a href="{% url 'logout' %}"
-                    class="bg-[#D7FC19] text-[#154734] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
+                    class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
                     Logout
                 </a>
                 {% else %}
                 <a href="{% url 'register' %}"
-                    class="bg-[#D7FC19] text-[#154734] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
+                    class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
                     Register
                 </a>
                 <a href="{% url 'login' %}"
-                    class="bg-[#D7FC19] text-[#154734] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
+                    class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
                     Login
                 </a>
                 {% endif %}
