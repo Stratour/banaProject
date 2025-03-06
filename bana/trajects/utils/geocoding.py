@@ -1,61 +1,30 @@
-from django.conf import settings
 import requests
-from geopy.geocoders import Nominatim
-from geopy.exc import GeocoderTimedOut,GeocoderUnavailable
-from django.contrib import messages
+from django.conf import settings
+def get_autocomplete_suggestions(query):
+    """
+    Récupère les suggestions d'adresses via l'API Google Geocoding tout en limitant à la Belgique.
+    :param query: Texte saisi par l'utilisateur (par exemple, 'Bruxelles').
+    :return: Liste des adresses suggérées ou un message d'erreur.
+    """
+    api_key = settings.GOOGLE_MAPS_API_KEY
+    base_url = "https://maps.googleapis.com/maps/api/place/autocomplete/json"
 
+    params = {
+        "input": query,             # Texte de la recherche
+        "key": api_key,             # Clé API Google
+        "components": "country:BE", # Restreint les résultats à la Belgique
+    }
 
-api_key = settings.OPEN_STREET_MAP_API_KEY
-base_url = 'https://api.openrouteservice.org/v2/matrix'
-geolocator = Nominatim(user_agent="BanaCommunity")
-
-def get_coordinate(address, country=None, request=None):
-    location = check_address(address, country)
-    if location:
-        if request:
-            messages.success(request, "Address found and registered.")
-        return True, (location.latitude, location.longitude)
-    else:
-        if request:
-            messages.error(request, "The address could not be found. Please check the input and try again.")
-        return False, None
-
-
-def check_address(address, country=None):
     try:
-        if country:
-            location = geolocator.geocode(f"{address}, {country}")
-        else:
-            location = geolocator.geocode(address)
-        return location
-    except GeocoderTimedOut:
-        raise Exception("Geocoding service timeout. Please try again.")
-
-# ======================================================================= #
-def matrix(payload):
-    response = requests.post(base_url, json=payload)
-    if response.status_code == 200:
+        response = requests.get(base_url, params=params)
+        response.raise_for_status()  # Lève une erreur en cas de réponse HTTP non valide
         data = response.json()
-        return data
-    else:
-        return None
 
+        if data.get("status") == "OK":
+            suggestions = [item["description"] for item in data.get("predictions", [])]
+            return suggestions
+        else:
+            return f"Erreur API: {data.get('status')}"
 
-'''
-what should look like the coordinate send to the matrix .
-
-# Define the coordinates for your points
-coordinates = [
-    {"lat": 52.5200, "lng": 13.4050},  # Point A
-    {"lat": 52.5205, "lng": 13.4055},  # Point B
-    {"lat": 52.5210, "lng": 13.4060}   # Point C
-]
-
-# Prepare the payload
-payload = {
-    "locations": coordinates,
-    "metrics": ["distance"],
-    "profile": "driving-car",
-    "api_key": api_key
-}
-'''
+    except requests.RequestException as e:
+        return f"Erreur de connexion à l'API: {e}"
