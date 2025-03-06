@@ -1,10 +1,20 @@
 from django.contrib import admin
-from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode
+from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode,Languages
+
+
+
+
+@admin.register(Languages)
+class LanguagesAdmin(admin.ModelAdmin):
+    list_display = ('name', )
+    search_fields = ('name',)
+
+
 
 @admin.register(Traject)
 class TrajectAdmin(admin.ModelAdmin):
-    list_display = ('start_street', 'end_street', 'get_proposed_members', 'get_researched_members')
-    search_fields = ('start_street', 'end_street')
+    list_display = ('start_name','start_street','end_name','end_street', 'get_proposed_members', 'get_researched_members')
+    search_fields = ('start_name','start_street','end_name', 'end_street')
 
     def get_proposed_members(self, obj):
         members = ProposedTraject.objects.filter(traject=obj).values_list('member__memb_user_fk__username', flat=True)
@@ -20,15 +30,15 @@ class TrajectAdmin(admin.ModelAdmin):
 @admin.register(ProposedTraject)
 class ProposedTrajectAdmin(admin.ModelAdmin):
     list_display = (
-        'traject', 'name', 'details', 'get_members', 
+        'traject', 'details', 'get_member', 
         'departure_time', 'arrival_time', 'get_start_location', 
-        'get_end_location', 'get_transport_modes'
+        'get_end_location', 'get_transport_modes','number_of_places'
     )
-    search_fields = ('traject__start_street', 'traject__end_street', 'name')
+    search_fields = ('traject__start_street', 'traject__end_street', 'traject__start_name','traject__end_name')
 
-    def get_members(self, obj):
-        return ", ".join([member.memb_user_fk.username for member in obj.member.all()])
-    get_members.short_description = 'Members'
+    def get_member(self, obj):
+        return obj.member.memb_user_fk.username
+    get_member.short_description = 'Member'
 
     def get_start_location(self, obj):
         return obj.traject.start_street
@@ -46,15 +56,16 @@ class ProposedTrajectAdmin(admin.ModelAdmin):
 @admin.register(ResearchedTraject)
 class ResearchedTrajectAdmin(admin.ModelAdmin):
     list_display = (
-        'traject', 'name', 'details', 'get_members', 
+        'traject', 'details', 'get_member', 
         'departure_time', 'arrival_time', 'get_start_location', 
-        'get_end_location', 'get_transport_modes'
+        'get_end_location', 'get_transport_modes','number_of_places'
     )
-    search_fields = ('traject__start_street', 'traject__end_street', 'name')
+    search_fields = ('traject__start_street', 'traject__end_street', 'traject__start_name','traject__end_name')
 
-    def get_members(self, obj):
-        return ", ".join([member.memb_user_fk.username for member in obj.member.all()])
-    get_members.short_description = 'Members'
+    def get_member(self, obj):
+        return obj.member.memb_user_fk.username
+    get_member.short_description = 'Member'
+
 
     def get_start_location(self, obj):
         return obj.traject.start_street

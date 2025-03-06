@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator
 from django.contrib import messages
 from .models import ProposedTraject, ResearchedTraject,Members
 from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm
 from django.core.exceptions import PermissionDenied
+from .utils.geocoding import get_autocomplete_suggestions
+from django.db.models import Q
 
 
 
@@ -13,10 +15,38 @@ from django.core.exceptions import PermissionDenied
 # ===================== listing ======================== #
 
 def all_trajects(request):
-
     active_tab = request.GET.get('active_tab', 'proposed')
+    start_adress = request.GET.get('start_adress', '').strip()
+    end_adress = request.GET.get('end_adress', '').strip()
+    
+    # Base querysets
     proposed_trajects_list = ProposedTraject.objects.all().order_by('-departure_time')
     researched_trajects_list = ResearchedTraject.objects.select_related('traject').all().order_by('-departure_time')
+    
+    # Filtering based on search inputs
+    if start_adress:
+        proposed_trajects_list = proposed_trajects_list.filter(
+            Q(traject__start_adress__icontains=start_adress) |
+            Q(traject__start_street__icontains=start_adress) |
+            Q(traject__start_locality__icontains=start_adress)
+        )
+        researched_trajects_list = researched_trajects_list.filter(
+            Q(traject__start_adress__icontains=start_adress) |
+            Q(traject__start_street__icontains=start_adress) |
+            Q(traject__start_locality__icontains=start_adress)
+        )
+    
+    if end_adress:
+        proposed_trajects_list = proposed_trajects_list.filter(
+            Q(traject__end_adress__icontains=end_adress) |
+            Q(traject__end_street__icontains=end_adress) |
+            Q(traject__end_locality__icontains=end_adress)
+        )
+        researched_trajects_list = researched_trajects_list.filter(
+            Q(traject__end_adress__icontains=end_adress) |
+            Q(traject__end_street__icontains=end_adress) |
+            Q(traject__end_locality__icontains=end_adress)
+        )
     
     # Pagination for proposed trajects
     paginator1 = Paginator(proposed_trajects_list, 10)  # Show 10 proposed trajects per page
@@ -32,47 +62,54 @@ def all_trajects(request):
         'active_tab': active_tab,
         'proposed_trajects': proposed_trajects,
         'researched_trajects': researched_trajects,
+        'start_adress': start_adress,
+        'end_adress': end_adress,
     }
     return render(request, 'trajects/trajects_page.html', context)
 
-def search_trajects(request):
-    start_city = request.GET.get('start_locality', '').strip()
-    end_city = request.GET.get('end_locality', '').strip()
-    
-    # Get all trajects
-    proposed_trajects = ProposedTraject.objects.all()
-    researched_trajects = ResearchedTraject.objects.all()
-    
-    # Filter by start locality if provided
-    if start_city:
-        proposed_trajects = proposed_trajects.filter(traject__start_locality__icontains=start_city)
-        researched_trajects = researched_trajects.filter(traject__start_locality__icontains=start_city)
-    
-    # Filter by end locality if provided
-    if end_city:
-        proposed_trajects = proposed_trajects.filter(traject__end_locality__icontains=end_city)
-        researched_trajects = researched_trajects.filter(traject__end_locality__icontains=end_city)
-    
-    context = {
-        'proposed_trajects': proposed_trajects,
-        'researched_trajects': researched_trajects,
-    }
-    
-    # Add a message if no matches are found
-    if not proposed_trajects.exists() and not researched_trajects.exists():
-        context.update({
-            'no_match': True,
-            'start_city': start_city,
-            'end_city': end_city,
-        })
-    
-    return render(request, 'trajects/trajects_page.html', context)
+
+def autocomplete_view(request):
+    """
+    Vue pour gérer l'autocomplétion côté backend.
+    """
+    query = request.GET.get("query")  # Récupère le texte saisi par l'utilisateur
+    if not query:
+        return JsonResponse({"error": "Le champ 'query' est requis."}, status=400)
+
+    suggestions = get_autocomplete_suggestions(query)
+    if isinstance(suggestions, str):  # Si c'est une erreur
+        return JsonResponse({"error": suggestions}, status=500)
+
+    return JsonResponse({"suggestions": suggestions}, status=200)
+
+
+
 
 # ===================== reservation page ======================== #
 
 @login_required
-def reserve_traject(request,id):
-    return render(request,'trajects/reserve_traject.html')
+def reserve_traject(request, id):
+    traject = get_object_or_404(ProposedTraject, id=id)
+    user_member = Members.objects.get(memb_user_fk=request.user)
+    is_creator = traject.member == user_member
+
+    context = {
+        'traject': traject,
+        'is_creator': is_creator,
+    }
+
+    if is_creator:
+        # Add the list of reservation requests if the user is the creator
+        # Assuming you have a model for reservations, replace `ReservationRequest` with the actual model name
+        reservation_requests = ["member1","member2","member3"] #ReservationRequest.objects.filter(traject=traject)
+        context['reservation_requests'] = reservation_requests
+    else:
+        # Add any other context needed for non-creator users
+        reservation_count = 3 #ReservationRequest.objects.filter(traject=traject).count()
+        context['reservation_count'] = reservation_count
+
+    return render(request, 'trajects/reserve_traject.html', context)
+
 
 # ===================== CRUD ======================== #
 
@@ -81,7 +118,7 @@ def proposed_traject(request):
     if request.method == 'POST':
         traject_form = TrajectForm(request.POST)
         proposed_form = ProposedTrajectForm(request.POST)
-        if traject_form.is_valid() and proposed_form.is_valid():
+        if  traject_form.is_valid() and proposed_form.is_valid():
             traject = traject_form.save()
             proposed = proposed_form.save(commit=False)
             proposed.traject = traject
@@ -91,6 +128,8 @@ def proposed_traject(request):
             messages.success(request, 'Proposed Traject created successfully!')
             return redirect('profile')
         else:
+            print("Traject Form Errors:", traject_form.errors)
+            print("Proposed Form Errors:", proposed_form.errors)
             messages.error(request, 'There were errors in your form. Please fix them and try again.')
     else:
         traject_form = TrajectForm()
@@ -100,6 +139,7 @@ def proposed_traject(request):
         'proposed_form': proposed_form
     }
     return render(request, 'trajects/proposed_traject.html', context)
+
 
 @login_required
 def searched_traject(request):
@@ -116,6 +156,8 @@ def searched_traject(request):
             messages.success(request, 'Searched Traject created successfully!')
             return redirect('profile')
         else:
+            print("================Traject Form Errors:", traject_form.errors)
+            print("================Proposed Form Errors:", researched_form.errors)
             messages.error(request, 'There were errors in your form. Please fix them and try again.')
     else:
         traject_form = TrajectForm()
