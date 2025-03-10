@@ -47,6 +47,8 @@ class Traject(models.Model):
     # Distance entre le point de départ et d'arrivée (facultatif)
     distance = models.FloatField(blank=True, null=True)
 
+    date = models.DateField(blank=True, null=True)
+
     def __str__(self):
         return f"{self.start_adress} to {self.end_adress}"
     
@@ -64,6 +66,7 @@ class ProposedTraject(models.Model):
     transport_modes = models.ManyToManyField(TransportMode, related_name='proposed_trajects')  
     departure_time = models.TimeField()
     arrival_time = models.TimeField()
+    date = models.DateField()
     language = models.ManyToManyField(Languages, related_name='proposed_trajects',blank=True)
     number_of_places = models.CharField(max_length=1, choices=NUMBER_PLACE)
     details = models.TextField()
@@ -83,6 +86,7 @@ class ResearchedTraject(models.Model):
     transport_modes = models.ManyToManyField(TransportMode, related_name='researched_trajects')
     departure_time = models.TimeField()
     arrival_time = models.TimeField()
+    date = models.DateField()
     language = models.ManyToManyField(Languages, related_name='researched_trajects',blank=True)
     number_of_places = models.CharField(max_length=1, choices=NUMBER_PLACE)
     details = models.TextField()

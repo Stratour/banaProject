@@ -7,7 +7,7 @@ from django.forms.widgets import SelectMultiple
 class TrajectForm(forms.ModelForm):
     class Meta:
         model = Traject
-        fields = ['start_adress', 'end_adress']
+        fields = ['start_adress', 'end_adress','date']
         widgets = {
             'start_adress': forms.TextInput(attrs={
                 'id': 'start_adress',
@@ -40,17 +40,23 @@ class ProposedTrajectForm(forms.ModelForm):
     arrival_time = forms.TimeField(
         widget=forms.TimeInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'time', 'placeholder': 'hh:mm'})
     )
+    date = forms.DateField(
+                widget = forms.TextInput(
+                    attrs = {'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+                              'type': 'Date', 'placeholder': 'dd:MM:yyyy'})
+        )
 
     class Meta:
         model = ProposedTraject
         exclude = ['member'] 
-        fields = ['details', 'departure_time', 'arrival_time', 'transport_modes','language', 'detour_km','number_of_places']
+        fields = ['details', 'departure_time', 'arrival_time', 'transport_modes','language', 'detour_km','number_of_places','date']
         labels = {
             'details': 'Détails',
             'departure_time': 'Heure de départ',
             'arrival_time': 'Heure d’arrivée',
             'number_of_places':'Nombre de place',
             'language':'language(s)',
+            'date': 'Date de traject',
         }
         widgets = {
             'language': SelectMultiple(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
@@ -76,16 +82,22 @@ class ResearchedTrajectForm(forms.ModelForm):
     arrival_time = forms.TimeField(
         widget=forms.TimeInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'time', 'placeholder': 'hh:mm'})
     )
+    date = forms.DateField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+                   'type': 'Date', 'placeholder': 'dd:MM:yyyy'})
+    )
 
     class Meta:
         model = ResearchedTraject
         exclude = ['member'] 
-        fields = ['details', 'departure_time', 'arrival_time', 'transport_modes', 'detour_km','language', 'number_of_places']
+        fields = ['details', 'departure_time', 'arrival_time', 'transport_modes', 'detour_km','language', 'number_of_places','date']
         labels = {
             'details': 'Détails',
             'departure_time': 'Heure de départ',
             'arrival_time': 'Heure d’arrivée',
             'language':'language(s)',
+            'date': 'Date de traject',
         }
         widgets = {    
             'language': SelectMultiple(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),

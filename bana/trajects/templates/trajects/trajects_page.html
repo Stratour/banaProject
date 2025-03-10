@@ -97,6 +97,7 @@
                                         {{ proposed.traject.end_street }}, {{ proposed.traject.end_locality }} {{ proposed.traject.end_country }}
                                     {% endif %}
                                 </p>
+                                <p class="text-gray-600"> <strong>Date: </strong>{{ proposed.date }}</p>
                                 <p class="text-gray-600"><strong>Heure de départ:</strong> {{ proposed.departure_time }}</p>
                                 <p class="text-gray-600"><strong>Moyens de transport:</strong> {{ proposed.transport_modes.all|join:", " }}</p>
                                 <p class="text-gray-600"><strong>Nombre de place:</strong> {{ proposed.number_of_places }}</p>
@@ -143,6 +144,7 @@
                                         {{ researched.traject.end_street }}, {{ researched.traject.end_locality }} {{ researched.traject.end_country }}
                                     {% endif %}
                                 </p>
+                                <p class="text-gray-600"> <strong>Date: </strong>{{ researched.date }}</p>
                                 <p class="text-gray-600"><strong>Heure de départ:</strong> {{ researched.departure_time }}</p>
                                 <p class="text-gray-600"><strong>Moyens de transport:</strong> {{ researched.transport_modes.all|join:", " }}</p>
                                 <p class="text-gray-600"><strong>Nombre de place:</strong> {{ researched.number_of_places }}</p>
