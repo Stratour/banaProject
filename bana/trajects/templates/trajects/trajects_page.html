@@ -107,9 +107,16 @@
                         </li>
                         {% endfor %}
                     </ul>
-                    <div class="pagination mt-4">
-                        {{ proposed_trajects.paginator.page_range|join:" " }}
-                    </div>
+                     <div class="pagination mt-4">
+                        {% for page_num in proposed_trajects.paginator.page_range %}
+                            {% if proposed_trajects.number == page_num %}
+                               <span class="current">{{ page_num }}</span>
+                           {% else %}
+                                <a href="?page1={{ page_num }}&active_tab={{ active_tab }}" class="page-link">{{ page_num }}</a>
+                            {% endif %}
+                        {% endfor %}
+                     </div>
+
                 {% else %}
                     <p class="text-gray-600">No proposed trajects found.</p>
                 {% endif %}

@@ -593,3 +593,31 @@ INSERT INTO trajects_proposedtraject_transport_modes
     (proposedtraject_id, transportmode_id)
 VALUES
     (37, 2);
+
+
+---nouvelles requetes
+-- Trajet 1: Bruxelles à Bruxelles
+INSERT INTO trajects_traject
+    (start_street, start_number, start_box, start_zp, start_locality, start_country,
+    end_street, end_number, end_box, end_zp, end_locality, end_country, distance, date)
+VALUES
+    ('Boulevard Anspach', '10', '', '1000', 'Bruxelles', 'Belgium',
+    'Avenue Louise', '50', '', '1050', 'Bruxelles', 'Belgium', 3.5, '2025-03-01');
+
+-- Proposed Traject 1
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, name, details, detour_distance)
+VALUES
+    (19, 4, '09:00:00', '09:30:00', '2025-03-01', 'Bruxelles - Bruxelles', 'Trajet proposé à Bruxelles', 0.5);
+
+-- Liaison transport modes
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (8, 1);  -- On utilise l'ID 8 pour Proposed Traject et 1 pour Transport Mode
+
+-- Liaison languages
+INSERT INTO trajects_proposedtraject_languages
+    (proposedtraject_id, language_id)
+VALUES
+    (8, 1);  -- Exemple : l'ID 1 pour "Français"
