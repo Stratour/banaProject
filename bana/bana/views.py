@@ -11,3 +11,6 @@ def about(request):
 
 def work(request):
     return render(request, 'work.html')
+
+def parent(request):
+    return render(request, 'parent.html')
