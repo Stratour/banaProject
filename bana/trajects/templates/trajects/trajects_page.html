@@ -79,7 +79,7 @@
                         <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
                             <div>
                                 <h3 class="text-xl font-semibold text-gray-700">
-                                    {{ proposed.member.memb_user_fk.username }}
+                                    Membre : {{ proposed.member.memb_user_fk.username }}
                                 </h3>
                                 <p class="text-gray-600">
                                     <strong>Adresse de départ:</strong>
@@ -133,7 +133,7 @@
                         <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
                             <div>
                                 <h3 class="text-xl font-semibold text-gray-700">
-                                    {{ researched.member.memb_user_fk.username }}
+                                    {{ researched.member.memb_user_fk.username }} {{ researched.traject.id }}
                                 </h3>
                                 <p class="text-gray-600">
                                     <strong>Adresse de départ:</strong>
@@ -156,7 +156,10 @@
                                 <p class="text-gray-600"><strong>Moyens de transport:</strong> {{ researched.transport_modes.all|join:", " }}</p>
                                 <p class="text-gray-600"><strong>Nombre de place:</strong> {{ researched.number_of_places }}</p>
                             </div>
-                            <a href="{% url 'proposed_traject' %}" class="btn btn-primary">Proposer</a>
+                        <div class="flex flex-col items-end space-y-2">
+                            <a href="{% url 'proposed_traject' researched.id%}" class="btn btn-primary" title="proposer mon aide directement">Proposer Trajet similaire</a>
+                            {% comment %}<a href="{% url 'proposed_traject' researched.traject.id%}" class="btn btn-primary" title="creer ce trajet ou un trajet similaire">{% endcomment %}Rejoindre ce trajet</a>
+                        </div>
                         </li>
                         {% endfor %}
                     </ul>

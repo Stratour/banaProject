@@ -621,3 +621,633 @@ INSERT INTO trajects_proposedtraject_languages
     (proposedtraject_id, language_id)
 VALUES
     (8, 1);  -- Exemple : l'ID 1 pour "Français"
+
+
+------------------------------------------------------------
+
+             -- Trajet 1: Bruxelles à Bruxelles
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Boulevard Anspach 10, Bruxelles', 'Avenue Louise 50, Bruxelles', 'Boulevard Anspach', 'Boulevard Anspach',
+     '10', '', '1000', 'Bruxelles', '', '', 'Belgium', NULL,
+     'Avenue Louise', 'Avenue Louise', '50', '', '1050', 'Bruxelles', '', '', 'Belgium', NULL,
+     3.5, '2025-03-01');
+
+-- Proposed Traject 11 (le prochain ID après 10)
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (20, 4, '09:00:00', '09:30:00', '2025-03-01', '4', 'Trajet proposé à Bruxelles', 0.5);
+
+-- Liaison transport modes pour Proposed Traject 11
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (11, 1);  -- Transport Mode ID 1 (par exemple Voiture)
+
+-- Liaison languages pour Proposed Traject 11
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (11, 1);  -- Langue ID 1 (par exemple Français)
+
+-- Trajet 21: Bruxelles à Bruxelles
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Rue Neuve 5, Bruxelles', 'Place Royale 10, Bruxelles', 'Rue Neuve', 'Rue Neuve',
+     '5', '', '1000', 'Bruxelles', '', '', 'Belgium', NULL,
+     'Place Royale', 'Place Royale', '10', '', '1000', 'Bruxelles', '', '', 'Belgium', NULL,
+     2.3, '2025-03-02');
+
+-- Proposed Traject 11 (le prochain ID après 10)
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (21, 5, '10:00:00', '10:30:00', '2025-03-02', '4', 'Trajet proposé à Bruxelles', 0.3);
+
+-- Liaison transport modes pour Proposed Traject 11
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (11, 2);  -- Transport Mode ID 2 (par exemple Train)
+
+-- Liaison languages pour Proposed Traject 11
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (11, 1);  -- Langue ID 1 (par exemple Français)
+
+
+-- Trajet 22: Liège à Liège
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Place Saint-Lambert 1, Liège', 'Boulevard de la Sauvenière 30, Liège', 'Place Saint-Lambert', 'Place Saint-Lambert',
+     '1', '', '4000', 'Liège', '', '', 'Belgium', NULL,
+     'Boulevard de la Sauvenière', 'Boulevard de la Sauvenière', '30', '', '4000', 'Liège', '', '', 'Belgium', NULL,
+     4.5, '2025-03-02');
+
+-- Trajet proposé 22
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (22, 6, '14:00:00', '14:45:00', '2025-03-02', '4', 'Trajet proposé à Liège', 0.4);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (12, 1);  -- Bus
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (12, 1),  -- Français
+    (12, 3);  -- Allemand
+
+-------------------------------------------------trajet---------------------------------------------------------------------
+-- Trajet 23: Anvers à Anvers
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Meir 10, Anvers', 'Groenplaats 5, Anvers', 'Meir', 'Meir',
+     '10', '', '2000', 'Anvers', '', '', 'Belgium', NULL,
+     'Groenplaats', 'Groenplaats', '5', '', '2000', 'Anvers', '', '', 'Belgium', NULL,
+     3.1, '2025-03-02');
+
+-- Trajet proposé 23
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (23, 4, '09:00:00', '09:40:00', '2025-03-02', '4', 'Trajet proposé à Anvers', 0.2);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (13, 2);  -- Train
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (13, 16),  -- Néerlandais
+    (13, 2),  -- Néerlandais
+    (13, 4);  -- Anglais
+
+-- Trajet 24: Gand à Gand
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Korenmarkt 3, Gand', 'Veldstraat 25, Gand', 'Korenmarkt', 'Korenmarkt',
+     '3', '', '9000', 'Gand', '', '', 'Belgium', NULL,
+     'Veldstraat', 'Veldstraat', '25', '', '9000', 'Gand', '', '', 'Belgium', NULL,
+     2.8, '2025-03-02');
+
+-- Trajet proposé 24
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (24, 4, '16:00:00', '16:30:00', '2025-03-02', '4', 'Trajet proposé à Gand', 0.3);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (14, 1);  -- Bus
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (14, 16),  -- Néerlandais
+    (14, 2),  -- Néerlandais
+    (14, 5);  -- Anglais
+
+-- Trajet 25: Charleroi à Charleroi
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Place Charles II 1, Charleroi', 'Avenue de la Province 45, Charleroi', 'Place Charles II', 'Place Charles II',
+     '1', '', '6000', 'Charleroi', '', '', 'Belgium', NULL,
+     'Avenue de la Province', 'Avenue de la Province', '45', '', '6000', 'Charleroi', '', '', 'Belgium', NULL,
+     5.2, '2025-03-02');
+
+-- Trajet proposé 25
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (25, 4, '12:00:00', '12:45:00', '2025-03-02', '4', 'Trajet proposé à Charleroi', 0.4);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (15, 2);  -- Train
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (15, 4),  -- Français
+    (15, 16),  -- Néerlandais
+    (15, 2);  -- Néerlandais
+
+-- Trajet 26: Bruxelles à Bruxelles
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Avenue Louise 50, Bruxelles', 'Rue du Marché aux Herbes 30, Bruxelles', 'Avenue Louise', 'Avenue Louise',
+     '50', '', '1050', 'Bruxelles', '', '', 'Belgium', NULL,
+     'Rue du Marché aux Herbes', 'Rue du Marché aux Herbes', '30', '', '1000', 'Bruxelles', '', '', 'Belgium', NULL,
+     3.5, '2025-03-03');
+
+-- Trajet proposé 26
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (26, 4, '11:00:00', '11:30:00', '2025-03-03', '4', 'Trajet proposé à Bruxelles', 0.2);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (16, 1);  -- Bus
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (16, 5),  -- Français
+    (16, 16),  -- Néerlandais
+    (16, 6);  -- Néerlandais
+
+-- Trajet 27: Liège à Liège
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Place du Marché 12, Liège', 'Boulevard dAvroy 20, Liège', 'Place du Marché', 'Place du Marché',
+     '12', '', '4000', 'Liège', '', '', 'Belgium', NULL,
+     'Boulevard d/Avroy', 'Boulevard d/Avroy', '20', '', '4000', 'Liège', '', '', 'Belgium', NULL,
+     2.6, '2025-03-03');
+
+-- Trajet proposé 27
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (27, 4, '13:00:00', '13:30:00', '2025-03-03', '4', 'Trajet proposé à Liège', 0.3);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (17, 2);  -- Tram
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (17, 1),  -- Français
+    (17, 16),  -- Néerlandais
+    (17, 3);  -- Allemand
+-- Trajet 28: Anvers à Anvers
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Stadsfeestzaal 10, Anvers', 'Meir 100, Anvers', 'Stadsfeestzaal', 'Stadsfeestzaal',
+     '10', '', '2000', 'Anvers', '', '', 'Belgium', NULL,
+     'Meir', 'Meir', '100', '', '2000', 'Anvers', '', '', 'Belgium', NULL,
+     1.8, '2025-03-03');
+
+-- Trajet proposé 28
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (28, 4, '14:30:00', '15:00:00', '2025-03-03', '4', 'Trajet proposé à Anvers', 0.2);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (18, 1);  -- Bus
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (18, 16),  -- Néerlandais
+    (18, 2),  -- Néerlandais
+    (18, 4);  -- Anglais
+-- Trajet 29: Gand à Gand
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Korenmarkt 5, Gand', 'Veldstraat 40, Gand', 'Korenmarkt', 'Korenmarkt',
+     '5', '', '9000', 'Gand', '', '', 'Belgium', NULL,
+     'Veldstraat', 'Veldstraat', '40', '', '9000', 'Gand', '', '', 'Belgium', NULL,
+     2.4, '2025-03-03');
+
+-- Trajet proposé 29
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (29, 4, '15:00:00', '15:30:00', '2025-03-03', '4', 'Trajet proposé à Gand', 0.3);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (19, 2);  -- Tram
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (19, 16),  -- Néerlandais
+    (19, 5);  -- Anglais
+-- Trajet 30: Charleroi à Charleroi
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Rue de la Montagne 5, Charleroi', 'Avenue Janson 22, Charleroi', 'Rue de la Montagne', 'Rue de la Montagne',
+     '5', '', '6000', 'Charleroi', '', '', 'Belgium', NULL,
+     'Avenue Janson', 'Avenue Janson', '22', '', '6000', 'Charleroi', '', '', 'Belgium', NULL,
+     3.0, '2025-03-03');
+
+-- Trajet proposé 30
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (30, 4, '12:30:00', '13:00:00', '2025-03-03', '4', 'Trajet proposé à Charleroi', 0.1);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (20, 1);  -- Bus
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (20, 16),  -- Français
+    (20, 2);  -- Néerlandais
+-- Trajet 31: Bruxelles à Bruxelles
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Rue de la Loi 100, Bruxelles', 'Boulevard de l’Empereur 50, Bruxelles', 'Rue de la Loi', 'Rue de la Loi',
+     '100', '', '1000', 'Bruxelles', '', '', 'Belgium', NULL,
+     'Boulevard de l’Empereur', 'Boulevard de l’Empereur', '50', '', '1000', 'Bruxelles', '', '', 'Belgium', NULL,
+     3.8, '2025-03-03');
+
+-- Trajet proposé 31
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (31, 4, '08:00:00', '08:30:00', '2025-03-03', '4', 'Trajet proposé à Bruxelles', 0.2);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (21, 1);  -- Bus
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (21, 16),  -- Français
+    (21, 2);  -- Néerlandais
+-- Trajet 32: Liège à Liège
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Rue de la Cathédrale 5, Liège', 'Rue Léopold 10, Liège', 'Rue de la Cathédrale', 'Rue de la Cathédrale',
+     '5', '', '4000', 'Liège', '', '', 'Belgium', NULL,
+     'Rue Léopold', 'Rue Léopold', '10', '', '4000', 'Liège', '', '', 'Belgium', NULL,
+     1.7, '2025-03-03');
+
+-- Trajet proposé 32
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (32, 4, '09:00:00', '09:30:00', '2025-03-03', '4', 'Trajet proposé à Liège', 0.2);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (22, 2);  -- Tram
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (22, 16),  -- Français
+    (22, 3);  -- Allemand
+-- Trajet 33: Anvers à Anvers
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Pelgrimsstraat 15, Anvers', 'Meir 200, Anvers', 'Pelgrimsstraat', 'Pelgrimsstraat',
+     '15', '', '2000', 'Anvers', '', '', 'Belgium', NULL,
+     'Meir', 'Meir', '200', '', '2000', 'Anvers', '', '', 'Belgium', NULL,
+     2.2, '2025-03-03');
+
+-- Trajet proposé 33
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (33, 4, '10:00:00', '10:30:00', '2025-03-03', '4', 'Trajet proposé à Anvers', 0.1);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (23, 1);  -- Bus
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (23, 16),  -- Néerlandais
+    (23, 4);  -- Anglais
+-- Trajet 34: Gand à Gand
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Kouter 7, Gand', 'Veldstraat 5, Gand', 'Kouter', 'Kouter',
+     '7', '', '9000', 'Gand', '', '', 'Belgium', NULL,
+     'Veldstraat', 'Veldstraat', '5', '', '9000', 'Gand', '', '', 'Belgium', NULL,
+     1.5, '2025-03-03');
+
+-- Trajet proposé 34
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (34, 4, '11:30:00', '12:00:00', '2025-03-03', '4', 'Trajet proposé à Gand', 0.2);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (24, 2);  -- Tram
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (24, 4),  -- Néerlandais
+    (24, 16);  -- Anglais
+-- Trajet 35: Charleroi à Charleroi
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Avenue du 24 Juin 8, Charleroi', 'Rue de la Couronne 12, Charleroi', 'Avenue du 24 Juin', 'Avenue du 24 Juin',
+     '8', '', '6000', 'Charleroi', '', '', 'Belgium', NULL,
+     'Rue de la Couronne', 'Rue de la Couronne', '12', '', '6000', 'Charleroi', '', '', 'Belgium', NULL,
+     2.3, '2025-03-03');
+
+-- Trajet proposé 35
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (35, 4, '13:00:00', '13:30:00', '2025-03-03', '4', 'Trajet proposé à Charleroi', 0.1);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (25, 1);  -- Bus
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (25, 4),  -- Français
+    (25, 16),  -- Néerlandais
+    (25, 2);  -- Néerlandais
+-- Trajet 36: Bruxelles à Bruxelles
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Avenue des Arts 40, Bruxelles', 'Rue de la Loi 250, Bruxelles', 'Avenue des Arts', 'Avenue des Arts',
+     '40', '', '1000', 'Bruxelles', '', '', 'Belgium', NULL,
+     'Rue de la Loi', 'Rue de la Loi', '250', '', '1000', 'Bruxelles', '', '', 'Belgium', NULL,
+     4.0, '2025-03-03');
+
+-- Trajet proposé 36
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (36, 4, '08:15:00', '08:45:00', '2025-03-03', '4', 'Trajet proposé à Bruxelles', 0.1);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (26, 1);  -- Bus
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (26, 3),  -- Français
+    (26, 2);  -- Néerlandais
+-- Trajet 37: Liège à Liège
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Place du Palais 8, Liège', 'Rue Saint-Gilles 15, Liège', 'Place du Palais', 'Place du Palais',
+     '8', '', '4000', 'Liège', '', '', 'Belgium', NULL,
+     'Rue Saint-Gilles', 'Rue Saint-Gilles', '15', '', '4000', 'Liège', '', '', 'Belgium', NULL,
+     1.5, '2025-03-03');
+
+-- Trajet proposé 37
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (37, 4, '09:00:00', '09:30:00', '2025-03-03', '4', 'Trajet proposé à Liège', 0.3);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (27, 2);  -- Tram
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (27, 1),  -- Français
+    (27, 3);  -- Allemand
+-- Trajet 38: Anvers à Anvers
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Kasteelplein 7, Anvers', 'Meir 400, Anvers', 'Kasteelplein', 'Kasteelplein',
+     '7', '', '2000', 'Anvers', '', '', 'Belgium', NULL,
+     'Meir', 'Meir', '400', '', '2000', 'Anvers', '', '', 'Belgium', NULL,
+     2.1, '2025-03-03');
+
+-- Trajet proposé 38
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (38, 4, '10:00:00', '10:30:00', '2025-03-03', '4', 'Trajet proposé à Anvers', 0.2);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (28, 1);  -- Bus
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (28, 2),  -- Néerlandais
+    (28, 4);  -- Anglais
+-- Trajet 39: Gand à Gand
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Gravensteen 10, Gand', 'Veldstraat 50, Gand', 'Gravensteen', 'Gravensteen',
+     '10', '', '9000', 'Gand', '', '', 'Belgium', NULL,
+     'Veldstraat', 'Veldstraat', '50', '', '9000', 'Gand', '', '', 'Belgium', NULL,
+     2.3, '2025-03-03');
+
+-- Trajet proposé 39
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (39, 4, '11:00:00', '11:30:00', '2025-03-03', '4', 'Trajet proposé à Gand', 0.2);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (29, 2);  -- Tram
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (29, 2),  -- Néerlandais
+    (29, 4);  -- Anglais
+-- Trajet 40: Charleroi à Charleroi
+INSERT INTO trajects_traject
+    (start_adress, end_adress, start_name, start_street, start_number, start_box, start_zp,
+     start_locality, start_region, start_commune, start_country, start_coordinate,
+     end_name, end_street, end_number, end_box, end_zp, end_locality, end_region, end_commune,
+     end_country, end_coordinate, distance, date)
+VALUES
+    ('Boulevard Joseph II 8, Charleroi', 'Rue de l’Alliance 25, Charleroi', 'Boulevard Joseph II', 'Boulevard Joseph II',
+     '8', '', '6000', 'Charleroi', '', '', 'Belgium', NULL,
+     'Rue de l’Alliance', 'Rue de l’Alliance', '25', '', '6000', 'Charleroi', '', '', 'Belgium', NULL,
+     3.0, '2025-03-03');
+
+-- Trajet proposé 40
+INSERT INTO trajects_proposedtraject
+    (traject_id, member_id, departure_time, arrival_time, date, number_of_places, details, detour_distance)
+VALUES
+    (40, 4, '12:00:00', '12:30:00', '2025-03-03', '4', 'Trajet proposé à Charleroi', 0.2);
+
+-- Transport mode et Langue
+INSERT INTO trajects_proposedtraject_transport_modes
+    (proposedtraject_id, transportmode_id)
+VALUES
+    (30, 1);  -- Bus
+
+INSERT INTO trajects_proposedtraject_language
+    (proposedtraject_id, languages_id)
+VALUES
+    (30, 2),  -- Français
+    (30, 16);  -- Néerlandais
+

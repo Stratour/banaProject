@@ -41,9 +41,9 @@ class ProposedTrajectForm(forms.ModelForm):
         widget=forms.TimeInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'time', 'placeholder': 'hh:mm'})
     )
     date = forms.DateField(
-                widget = forms.TextInput(
+                widget = forms.DateInput(
                     attrs = {'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
-                              'type': 'Date', 'placeholder': 'dd:MM:yyyy'})
+                              'type': 'date-time', 'placeholder': 'dd:MM:yyyy'})
         )
 
     class Meta:
@@ -83,9 +83,9 @@ class ResearchedTrajectForm(forms.ModelForm):
         widget=forms.TimeInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'time', 'placeholder': 'hh:mm'})
     )
     date = forms.DateField(
-        widget=forms.TextInput(
+        widget=forms.DateTimeInput(
             attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
-                   'type': 'Date', 'placeholder': 'dd:MM:yyyy'})
+                   'type': 'date-time', 'placeholder': 'dd:MM:yyyy'}),
     )
 
     class Meta:
@@ -103,3 +103,4 @@ class ResearchedTrajectForm(forms.ModelForm):
             'language': SelectMultiple(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
             'details': forms.Textarea(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Ajoutez des détails utiles pour le conducteur'}),
         }
+

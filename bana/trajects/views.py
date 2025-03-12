@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator
 from django.contrib import messages
-from .models import ProposedTraject, ResearchedTraject,Members
+from .models import ProposedTraject, ResearchedTraject, Members, Traject
 from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm
 from django.core.exceptions import PermissionDenied
 from .utils.geocoding import get_autocomplete_suggestions
@@ -114,11 +114,36 @@ def reserve_traject(request, id):
 # ===================== CRUD ======================== #
 
 @login_required
-def proposed_traject(request):
+def proposed_traject(request, researchesTraject_id=None):
+    researched_traject = None
+    if researchesTraject_id:
+        try:
+            researched_traject = ResearchedTraject.objects.get(id=researchesTraject_id)
+            traject= Traject.objects.get(id=researched_traject.traject_id)
+            print("++++++++++++++++++++++++++++++++++ " + str(traject))
+            print("++++++++++++++++++++++++++++++++++ " + str(researched_traject.date))
+
+        except Traject.DoesNotExist:
+            pass  # Si le trajet n'existe pas, continue sans données pré-remplies
+
+    initial_data = {}
+    if researched_traject:
+        initial_data = {
+            'start_adress': traject.start_adress or f"{traject.start_street}, {traject.start_locality} {traject.start_country}",
+            'end_adress': traject.end_adress or f"{traject.end_street}, {traject.end_locality} {traject.end_country}",
+            'details': researched_traject.details,
+            'number_of_places': researched_traject.number_of_places,
+            'language': researched_traject.language.all(),
+            'departure_time': researched_traject.departure_time,
+            'arrival_time': researched_traject.arrival_time,
+            'date': researched_traject.date,
+            'transport_modes': researched_traject.transport_modes.all(),
+        }
+
     if request.method == 'POST':
         traject_form = TrajectForm(request.POST)
         proposed_form = ProposedTrajectForm(request.POST)
-        if  traject_form.is_valid() and proposed_form.is_valid():
+        if traject_form.is_valid() and proposed_form.is_valid():
             traject = traject_form.save()
             proposed = proposed_form.save(commit=False)
             proposed.traject = traject
@@ -132,11 +157,13 @@ def proposed_traject(request):
             print("Proposed Form Errors:", proposed_form.errors)
             messages.error(request, 'There were errors in your form. Please fix them and try again.')
     else:
-        traject_form = TrajectForm()
-        proposed_form = ProposedTrajectForm()
+        traject_form = TrajectForm(initial=initial_data)
+        proposed_form = ProposedTrajectForm(initial=initial_data)
+
     context = {
         'traject_form': traject_form,
-        'proposed_form': proposed_form
+        'proposed_form': proposed_form,
+        'researched_traject': researched_traject  # Passer l'objet pour savoir si on a des données
     }
     return render(request, 'trajects/proposed_traject.html', context)
 
