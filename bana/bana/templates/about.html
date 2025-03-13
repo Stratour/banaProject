@@ -3,18 +3,268 @@
 {% block title %}About - BanaCommunity{% endblock %}
 
 {% block content %}
-<div class="bg-gray-100 min-h-screen p-6">
-    <div class="container mx-auto">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">About BanaCommunity</h2>
-        <p class="text-gray-600 mb-4">
-            Welcome to BanaCommunity! Our mission is to provide safe and reliable transportation options for kids, ensuring peace of mind for parents. We offer a range of services including carpooling, organized train rides, biking groups, and walking routes with adult supervision.
-        </p>
-        <p class="text-gray-600 mb-4">
-            Our community-driven platform connects parents and trusted drivers to create a safe and efficient transportation network. We believe in building a supportive community where every journey is a shared experience.
-        </p>
-        <p class="text-gray-600 mb-4">
-            Join us in making transportation safer and more reliable for children. Together, we can ensure that every child reaches their destination safely and on time.
-        </p>
+{% load static %}
+<div class="min-h-screen flex flex-col items-center">
+    <div class="flex flex-col-reverse md:flex-row items-center w-full h-[90vh] md:h-screen my-8 md:my-0"
+        style="background-image: url('{% static 'bana/img/background/Background_Bana.jpg' %}'); background-size: cover; background-position: center;">
+
+        <!-- Left Content -->
+        <div class="flex flex-col items-center text-center md:text-left px-8 pb-4 md:mb-4 md:w-1/2 md:px-16 xl:px-32">
+            <h1 class="mt-4 text-4xl md:text-5xl font-bold">The team</h1>
+            <h2 class="mt-2 mb-4 text-lg font-semibold text-[#007F73]">Parents, just like
+            </h2>
+            <div class="mt-6 flex flex-col xl:flex-row gap-4 items-center">
+                <a href="/jobs" class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-[#007F73] rounded-full"
+                    aria-label="Join our team">Join our team</a>
+            </div>
+        </div>
+
+        <!-- Right Content -->
+        <div class="relative w-full md:w-1/2 h-full overflow-hidden">
+            <!-- Right Side Background (Hidden on small screens) -->
+            <div
+                class="absolute top-0 right-[-20%] hidden md:flex w-full h-full items-center justify-center bg-lime-400 rounded-l-full overflow-hidden">
+                <img src="{% static 'bana/img/background/Bana_background_lime.png' %}" alt="Background"
+                    class="absolute w-full h-full object-cover opacity-70">
+            </div>
+
+            <!-- Circular Image Container (Responsive Size) -->
+            <div
+                class="absolute left-1/2 md:left-0 top-1/2 w-80 h-80 max-w-full max-h-full transform -translate-x-1/2 md:translate-x-0 -translate-y-1/2 rounded-full overflow-hidden">
+                <img src="{% static 'bana/img/page/Bana_team_bruno_nascimento.jpg' %}" alt="Mother with her child"
+                    class="w-full h-full object-cover">
+            </div>
+        </div>
+    </div>
+
+    <!-- Benefits Section -->
+    <div class="bg-[#007F73] md:h-[12rem] w-full flex flex-col md:flex-row relative overflow-hidden">
+
+        <div class="hidden xl:block h-full">
+            <img class="h-full w-full object-cover" src="{% static 'bana/img/other/Bana_circle_right.png' %}"
+                alt="Circle with logo Bana">
+        </div>
+
+        <div class="h-[1/2] block md:hidden">
+            <img class="object-cover" src="{% static 'bana/img/other/Bana_circle_bottom.png' %}"
+                alt="Circle with logo Bana">
+        </div>
+
+        <!-- Right Section -->
+        <div
+            class="h-auto w-full flex-1 flex flex-col md:flex-row items-center justify-between md:py-6 md:px-20 text-white">
+
+            <!-- Benefit Items -->
+            <div class="flex flex-col items-center mt-12 mb-4 md:!mt-0 md:!mb-0 md:items-start text-left">
+                <h3 class="text-xl text-center md:text-left font-bold text-[#00FFAB] mb-2">
+                    It takes a village to raise a child
+                </h3>
+                <div class="flex flex-col p-8 md:!p-0 justify-around text-base text-white text-center md:!text-left">
+                    <p class="mb-4 md:!mb-0">
+                        This <span class="text-[#00FFAB]">African proverb</span> which advocates community parenting
+                        inspired the concept of Bana.
+                    </p>
+
+                    <p class="mb-4 md:!mb-0">
+                        Imagined by a mother, Bana platform is based on a <span class="text-[#00FFAB]">participatory
+                            system</span>; either money or time.
+                    </p>
+
+                    <p class="mb-4 md:!mb-0">
+                        On one hand, parents who need help with their children's journeys and, on the other hand,
+                        parents who can help other families.
+                    </p>
+
+                    <p>
+                        Using Bana is like asking a helping friend... Who understands us!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="carousel-container flex items-center justify-center w-full h-1/2 p-4 overflow-hidden">
+        <div class="relative flex items-center w-full md:w-3/4">
+            <!-- Left Button -->
+            <button
+                class="prev absolute left-0 z-10 flex items-center justify-center w-16 h-16 p-4 text-white bg-[#007F73] rounded-full shadow-lg transform -translate-x-1/2"
+                onclick="plusDivs(-1)">
+                ❮
+            </button>
+
+            <!-- Slides Container -->
+            <div class="relative w-full overflow-hidden">
+                <div id="carousel1"
+                    class="carousel flex w-full transition-transform duration-500 ease-in-out pointer-events-none">
+                    <div
+                        class="mySlides flex flex-col justify-center items-center w-full p-8 text-center flex-shrink-0 gap-24 xl:flex-row xl:!text-left pointer-events-auto">
+                        <img src="{% static 'bana/img/other/Nyota.png' %}"
+                            class="object-cover w-40 h-40 rounded-full md:w-96 md:h-96 md:ml-16" alt="Profile">
+                        <div class="mx-4 max-w-lg">
+                            <h2 class="text-2xl font-bold text-[#007F73]">Nyota Delecourt</h2>
+                            <p class="text-sm font-semibold text-[#007F73]">
+                                Mother of two (2010, 2023) with a marketing background and experience in HR, purchasing,
+                                and project management.
+                            </p><br>
+                            <p class="text-sm text-gray-700">
+                                Passionate about family well-being. I juggle life as a mom to a teenager and a baby,
+                                balancing basketball practices, bottles, and meetings.
+                                <br><br>
+                                I value sustainable living and dream of a world where parenting is easier and children
+                                grow up peacefully.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="mySlides flex flex-col justify-center items-center w-full p-8 text-center flex-shrink-0 gap-24 xl:flex-row xl:!text-left pointer-events-auto">
+                        <img src="{% static 'bana/img/other/Bernard.png' %}"
+                            class="object-cover w-40 h-40 rounded-full md:w-96 md:h-96 md:ml-16" alt="Profile">
+                        <div class="mx-4 max-w-lg">
+                            <h2 class="text-2xl font-bold text-[#007F73]">Bernard Lambeau</h2>
+                            <p class="text-sm font-semibold text-[#007F73]">
+                                Father of 3 children, IT profile, experience in platform development for mobility.
+                                Committed and sensitive to the environment.
+                            </p><br>
+                            <p class="text-sm text-gray-700">
+                                I aim to know everything about mobility in Belgium, or, perhaps more realistically, to
+                                contribute to its improvement.
+                                <br><br>
+                                I am particularly interested in mobility in rural areas.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Button -->
+            <button
+                class="next absolute right-0 z-10 flex items-center justify-center w-16 h-16 p-4 text-white bg-[#007F73] rounded-full shadow-lg transform translate-x-1/2"
+                onclick="plusDivs(1)">
+                ❯
+            </button>
+        </div>
+    </div>
+
+    <div class="w-full flex flex-col items-center p-8 bg-cover bg-center"
+        style="background-image: url('{% static 'bana/img/background/Bana_background_dark_green.png' %}');">
+
+        <div class="text-xl text-center font-bold ">
+            <h3 class="text-[#D7FC19] md:text-2xl">
+                Our story
+            </h3>
+
+            <h4 class="text-white mt-2">
+                It's the story of a mother who thought she could handle everything...<br>
+                <span class="text-[#00FFAB]">Spoiler alert: She was wrong!</span>
+            </h4>
+        </div>
+    </div>
+
+    <div class="flex justify-center w-full py-12">
+        <div class="w-full flex flex-col md:flex-row gap-4 md:w-[80%] xl:w-1/2">
+
+            <div class="w-full flex flex-col text-center md:w-1/2">
+                <div class="h-auto">
+                    <img src="{% static 'bana/img/other/Organic_shape_img.png' %}" alt="Bana Logo"
+                        class="w-full h-auto">
+                </div>
+                <div class="h-auto px-12 py-16"
+                    style="background-repeat: no-repeat; background-size: 100% 100%; background-image: url('{% static 'bana/img/other/Organic_shape_lime.png' %}');">
+                    <p>
+                        At the time, I was always in a hurry, stressed about arriving late at the office. When leaving
+                        the house, I had to drop my son off at school, drive through downtown, and then take the highway
+                        to work. Just 35 km to go, but door to door, during rush hour, it took me 1 hour.
+                    </p>
+
+                    <p>
+                        Every morning, I woke up my oldest (who was only 6 years old at the time) and told him "Come on,
+                        hurry up, we're going to be late." And at the end of the day, it was the same thing. When I
+                        arrived at daycare, dropping him off at his activity, to do homework, to go to the shower... I
+                        kept asking
+                        him to hurry up. And I didn't really realize the pressure I was putting on him...
+                    </p>
+                </div>
+            </div>
+
+            <!-- Duplicate Content Block -->
+            <div class="w-full flex flex-col text-center md:w-1/2">
+                
+                <div class="h-auto px-12 py-16 "
+                    style="background-repeat: no-repeat; background-size: 100% 100%; background-image: url('{% static 'bana/img/other/Organic_shape_dark_green.png' %}');">
+                    <p>
+                        Until one day, one morning like any other, I go to wake him up so he can get ready for school.
+                        And there, he barely opens his tired little eyes and, in his little sleepy voice, asks me: “Are
+                        we late?”
+
+                        The slap! My heart broke! I felt like the worst mother... That morning, I lay down next to him,
+                        held him in my arms and cuddled him for a long time before going to school. It was a really good
+                        time. Quality time like we want every day.
+
+                        And yes, that morning I ended up being late! But it was worth it because that's the day
+                        everything changed...
+                    </p>
+                </div>
+
+                <div class="h-auto px-12 py-16"
+                    style="background-repeat: no-repeat; background-size: 100% 100%; background-image: url('{% static 'bana/img/other/Organic_shape_light_green.png' %}');">
+                    <p>
+                        Bana’s story was born from the desire to make a difference; to make life easier for parents and
+                        to create a fulfilling and peaceful environment for children.
+                    </p>
+
+                    <p>
+                        Bana - which means "children" in Lingala, is a committed community that shares the same values,
+                        encourages mutual assistance between parents, and promotes the well-being of children.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="carousel-container flex flex-col items-center justify-center w-full h-1/2 py-24 px-4 overflow-hidden bg-cover bg-center"
+    style="background-image: url('{% static 'bana/img/background/Bana_background_dark_green.png' %}');">
+    <div class="text-xl text-center font-bold">
+        <h3 class="text-[#D7FC19] md:text-2xl mb-24">They talk about us</h3>
+    </div>
+
+    <div class="relative flex items-center w-full md:w-3/4">
+        <!-- Left Button -->
+        <button class="prev absolute left-0 z-10 flex items-center justify-center w-16 h-16 p-4 text-white bg-[#00FFAB] rounded-full shadow-lg transform -translate-x-1/2">
+            ❮
+        </button>
+
+        <!-- Slides Container -->
+        <div class="relative w-full overflow-hidden">
+            <div id="carousel2" class="carousel flex flex-nowrap w-full transition-transform duration-500 ease-in-out">
+                <div class="mySlides flex flex-col md:flex-row items-center justify-center w-full flex-shrink-0 gap-8 px-16">
+                    <img src="{% static 'bana/img/logo/Logo_La_Libre.svg' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                    <img src="{% static 'bana/img/logo/Logo_Lavenir.svg' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                    <img src="{% static 'bana/img/logo/Logo_Rtbf_Auvio.svg' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                </div>
+
+                <div class="mySlides flex flex-col md:flex-row items-center justify-center w-full flex-shrink-0 gap-8 px-16">
+                    <img src="{% static 'bana/img/logo/Logo_La_Capitale.png' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                    <img src="{% static 'bana/img/logo/Logo_Maison_Slash.png' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                    <img src="{% static 'bana/img/logo/Logo_Sudinfo.png' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                </div>
+
+                <div class="mySlides flex flex-col md:flex-row items-center justify-center w-full flex-shrink-0 gap-8 px-16">
+                    <img src="{% static 'bana/img/logo/Logo_Telesambre.svg' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                    <img src="{% static 'bana/img/logo/Logo_Vivacite.svg' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Button -->
+        <button class="next absolute right-0 z-10 flex items-center justify-center w-16 h-16 p-4 text-white bg-[#00FFAB] rounded-full shadow-lg transform translate-x-1/2">
+            ❯
+        </button>
     </div>
 </div>
+
+
+
+</div>
+
 {% endblock %}

@@ -28,4 +28,6 @@ urlpatterns = [
     path('about/', views.about, name='about'),
     path('profile/', include('members.urls')),
     path('trajects/', include('trajects.urls')),
+    path('work/', views.work, name='work'),
+    path('parent/', views.parent, name='parent'),
 ]
