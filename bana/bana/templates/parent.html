@@ -1,6 +1,6 @@
 {% extends './layouts/base.html' %}
 
-{% block title %}About - BanaCommunity{% endblock %}
+{% block title %}Parent - BanaCommunity{% endblock %}
 
 {% block content %}
 {% load static %}
@@ -77,7 +77,7 @@
         <div class="flex flex-col gap-y-14 px-8 md:!px-0 w-full xl:w-1/4">
             <div class="flex flex-col items-center">
                 <img src="{% static 'bana/img/page/Bana_parent_search_your_drive.jpg' %}"
-                    class="object-cover w-40 h-40 rounded-full md:w-96 md:h-96" alt="Profile">
+                    class="shadow-lg object-cover w-40 h-40 rounded-full md:w-96 md:h-96" alt="Profile">
                 <h2 class="text-2xl md:text-3xl font-bold text-[#007F73]">Search your drive</h2>
                 <h5 class="text-sm md:text-base font-bold text-[#1FAB89] mb-4">
                     With our platform, you can connect with trusted parents
@@ -95,43 +95,16 @@
             <div class="flex flex-col items-center">
                 <h3 class="w-1/2 text-xl md:text-2xl font-bold text-[#007F73] mb-8">Free time and more</h3>
                 <div class="flex flex-col gap-y-8">
-                    <div class="flex flex-row items-center justify-center gap-12">
-                        <div class="flex flex-col items-center justify-center w-1/2">
-                            <img class="w-10 h-10 mb-2" src="{% static 'bana/img/icon/Icon_clock.svg' %}"
-                                alt="Time-saving feature icon">
-                            <h4 class="text-[#007F73] text-lg md:text-xl font-semibold">Time saving</h4>
-                            <p class="text-[#007F73] text-sm md:text-base"><span
-                                    class="text-[#00FFAB] font-semibold">Flexibility</span> in your
-                                calendar</p>
-                        </div>
-
-                        <div class="flex flex-col items-center justify-center w-1/2">
-                            <img class="w-10 h-10 mb-2" src="{% static 'bana/img/icon/Icon_currency.svg' %}"
-                                alt="Economic feature icon">
-                            <h4 class="text-[#007F73] text-lg md:text-xl font-semibold">Economic</h4>
-                            <p class="text-[#007F73] text-sm md:text-base">Save <span
-                                    class="text-[#00FFAB] font-semibold">money</span> on gasoline
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex flex-row items-center justify-center gap-12">
-                        <div class="flex flex-col items-center justify-center w-1/2">
-                            <img class="w-10 h-10 mb-2" src="{% static 'bana/img/icon/Icon_earth.svg' %}"
-                                alt="Ecological feature icon">
-                            <h4 class="text-[#007F73] text-lg md:text-xl font-semibold">Ecological</h4>
-                            <p class="text-[#007F73] text-sm md:text-base">Using <span
-                                    class="text-[#00FFAB] font-semibold">alternative</span> transport</p>
-                        </div>
-
-                        <div class="flex flex-col items-center justify-center w-1/2">
-                            <img class="w-10 h-10 mb-2" src="{% static 'bana/img/icon/Icon_hearth.svg' %}"
-                                alt="Community feature icon">
-                            <h4 class="text-[#007F73] text-lg md:text-xl font-semibold">Community</h4>
-                            <p class="text-[#007F73] text-sm md:text-base"><span
-                                    class="text-[#00FFAB] font-semibold">Social
-                                    connection</span> & sharing moments
-                            </p>
-                        </div>
+                    <div class="grid grid-cols-2 gap-12 items-center justify-center">
+                        {% for feature in features_search %}
+                            <div class="flex flex-col items-center justify-center">
+                                <img class="w-10 h-10 mb-2" src="{% static 'bana/img/icon/' %}{{ feature.icon }}" alt="{{ feature.title }} icon">
+                                <h4 class="text-[#007F73] text-lg md:text-xl font-semibold">{{ feature.title }}</h4>
+                                <p class="text-[#007F73] text-sm md:text-base">
+                                    <span class="text-[#00FFAB] font-semibold">{{ feature.highlight }}</span> {{ feature.text }}
+                                </p>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -145,7 +118,7 @@
         <div class="flex flex-col gap-y-14 px-8 md:!px-0 w-full xl:w-1/4">
             <div class="flex flex-col items-center">
                 <img src="{% static 'bana/img/page/Bana_parent_share_your_drive.jpg' %}"
-                    class="object-cover w-40 h-40 rounded-full md:w-96 md:h-96" alt="Profile">
+                    class="shadow-lg object-cover w-40 h-40 rounded-full md:w-96 md:h-96" alt="Profile">
                 <h2 class="text-2xl md:text-3xl font-bold text-[#007F73]">Share your drive</h2>
                 <h5 class="text-sm md:text-base font-bold text-[#1FAB89] mb-4">
                     Share the ride and make a difference!
@@ -161,40 +134,16 @@
             <div class="flex flex-col items-center">
                 <h3 class="w-1/2 text-xl md:text-2xl font-bold text-[#007F73] mb-8">Earn money for every trip </h3>
                 <div class="flex flex-col gap-y-8">
-                    <div class="flex flex-row items-center justify-center gap-12">
-                        <div class="flex flex-col items-center justify-center w-1/2">
-                            <img class="w-10 h-10 mb-2" src="{% static 'bana/img/icon/Icon_flexibility.svg' %}"
-                                alt="Time-saving feature icon">
-                            <h4 class="text-[#007F73] text-lg md:text-xl font-semibold">Flexibility</h4>
-                            <p class="text-[#007F73] text-sm md:text-base"><span
-                                    class="text-[#00FFAB] font-semibold">You choose</span> the rides you share</p>
-                        </div>
-    
-                        <div class="flex flex-col items-center justify-center w-1/2">
-                            <img class="w-10 h-10 mb-2" src="{% static 'bana/img/icon/Icon_experience.svg' %}"
-                                alt="Economic feature icon">
-                            <h4 class="text-[#007F73] text-lg md:text-xl font-semibold">Experience</h4>
-                            <p class="text-[#007F73] text-sm md:text-base">Support children's <span
-                                    class="text-[#00FFAB] font-semibold">development</span>
-                            </p>
-                        </div>
-                    </div>
-                    <div class="flex flex-row items-center justify-center gap-12">
-                        <div class="flex flex-col items-center justify-center w-1/2">
-                            <img class="w-10 h-10 mb-2" src="{% static 'bana/img/icon/Icon_support.svg' %}"
-                                alt="Ecological feature icon">
-                            <h4 class="text-[#007F73] text-lg md:text-xl font-semibold">Most importantly</h4>
-                            <p class="text-[#007F73] text-sm md:text-base">Support other parents <span
-                                    class="text-[#00FFAB] font-semibold">in your community</span></p>
-                        </div>
-    
-                        <div class="flex flex-col items-center justify-center w-1/2">
-                            <img class="w-10 h-10 mb-2" src="{% static 'bana/img/icon/Icon_trust.svg' %}"
-                                alt="Community feature icon">
-                            <h4 class="text-[#007F73] text-lg md:text-xl font-semibold">Trust</h4>
-                            <p class="text-[#007F73] text-sm md:text-base"><span class="text-[#00FFAB] font-semibold">Provide safe</span>, reliable rides with trusted parents.
-                            </p>
-                        </div>
+                    <div class="grid grid-cols-2 gap-12 items-center justify-center">
+                        {% for feature in features_share %}
+                            <div class="flex flex-col items-center justify-center">
+                                <img class="w-10 h-10 mb-2" src="{% static 'bana/img/icon/' %}{{ feature.icon }}" alt="{{ feature.title }} icon">
+                                <h4 class="text-[#007F73] text-lg md:text-xl font-semibold">{{ feature.title }}</h4>
+                                <p class="text-[#007F73] text-sm md:text-base">
+                                    <span class="text-[#00FFAB] font-semibold">{{ feature.highlight }}</span> {{ feature.text }}
+                                </p>
+                            </div>
+                        {% endfor %}
                     </div>
                 </div>
             </div>

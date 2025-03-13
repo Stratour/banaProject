@@ -87,7 +87,7 @@
         <div class="relative flex items-center w-full md:w-3/4">
             <!-- Left Button -->
             <button
-                class="prev absolute left-0 z-10 flex items-center justify-center w-16 h-16 p-4 text-white bg-[#007F73] rounded-full shadow-lg transform -translate-x-1/2"
+                class="prev absolute left-2 md:left-0 z-10 flex items-center justify-center w-8 h-8 md:w-16 md:h-16 p-4 text-white bg-[#007F73] rounded-full shadow-lg transform -translate-x-1/2"
                 onclick="plusDivs(-1)">
                 ❮
             </button>
@@ -139,7 +139,7 @@
 
             <!-- Right Button -->
             <button
-                class="next absolute right-0 z-10 flex items-center justify-center w-16 h-16 p-4 text-white bg-[#007F73] rounded-full shadow-lg transform translate-x-1/2"
+                class="next absolute right-2 md:right-0 z-10 flex items-center justify-center w-8 h-8 md:w-16 md:h-16 p-4 text-white bg-[#007F73] rounded-full shadow-lg transform translate-x-1/2"
                 onclick="plusDivs(1)">
                 ❯
             </button>
@@ -189,7 +189,7 @@
 
             <!-- Duplicate Content Block -->
             <div class="w-full flex flex-col text-center md:w-1/2">
-                
+
                 <div class="h-auto px-12 py-16 "
                     style="background-repeat: no-repeat; background-size: 100% 100%; background-image: url('{% static 'bana/img/other/Organic_shape_dark_green.png' %}');">
                     <p>
@@ -223,45 +223,61 @@
     </div>
 
     <div class="carousel-container flex flex-col items-center justify-center w-full h-1/2 py-24 px-4 overflow-hidden bg-cover bg-center"
-    style="background-image: url('{% static 'bana/img/background/Bana_background_dark_green.png' %}');">
-    <div class="text-xl text-center font-bold">
-        <h3 class="text-[#D7FC19] md:text-2xl mb-24">They talk about us</h3>
-    </div>
-
-    <div class="relative flex items-center w-full md:w-3/4">
-        <!-- Left Button -->
-        <button class="prev absolute left-0 z-10 flex items-center justify-center w-16 h-16 p-4 text-white bg-[#00FFAB] rounded-full shadow-lg transform -translate-x-1/2">
-            ❮
-        </button>
-
-        <!-- Slides Container -->
-        <div class="relative w-full overflow-hidden">
-            <div id="carousel2" class="carousel flex flex-nowrap w-full transition-transform duration-500 ease-in-out">
-                <div class="mySlides flex flex-col md:flex-row items-center justify-center w-full flex-shrink-0 gap-8 px-16">
-                    <img src="{% static 'bana/img/logo/Logo_La_Libre.svg' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                    <img src="{% static 'bana/img/logo/Logo_Lavenir.svg' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                    <img src="{% static 'bana/img/logo/Logo_Rtbf_Auvio.svg' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                </div>
-
-                <div class="mySlides flex flex-col md:flex-row items-center justify-center w-full flex-shrink-0 gap-8 px-16">
-                    <img src="{% static 'bana/img/logo/Logo_La_Capitale.png' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                    <img src="{% static 'bana/img/logo/Logo_Maison_Slash.png' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                    <img src="{% static 'bana/img/logo/Logo_Sudinfo.png' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                </div>
-
-                <div class="mySlides flex flex-col md:flex-row items-center justify-center w-full flex-shrink-0 gap-8 px-16">
-                    <img src="{% static 'bana/img/logo/Logo_Telesambre.svg' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                    <img src="{% static 'bana/img/logo/Logo_Vivacite.svg' %}" class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                </div>
-            </div>
+        style="background-image: url('{% static 'bana/img/background/Bana_background_dark_green.png' %}');">
+        <div class="text-xl text-center font-bold">
+            <h3 class="text-[#D7FC19] md:text-2xl mb-24">They talk about us</h3>
         </div>
 
-        <!-- Right Button -->
-        <button class="next absolute right-0 z-10 flex items-center justify-center w-16 h-16 p-4 text-white bg-[#00FFAB] rounded-full shadow-lg transform translate-x-1/2">
-            ❯
-        </button>
+        <div class="relative flex items-center w-full md:w-3/4">
+            <!-- Left Button -->
+            <button
+                class="prev absolute left-2 md:left-0 z-10 flex items-center justify-center w-8 h-8 md:w-16 md:h-16 p-4 text-[#007F73] bg-[#00FFAB] rounded-full shadow-lg transform -translate-x-1/2"
+                onclick="plusDivs(-1)">
+                ❮
+            </button>
+
+            <!-- Slides Container -->
+            <div class="relative w-full overflow-hidden">
+                <div id="carousel2"
+                    class="carousel flex flex-nowrap w-full transition-transform duration-500 ease-in-out">
+                    <div
+                        class="mySlides flex flex-col md:flex-row items-center justify-center w-full flex-shrink-0 gap-8 px-16">
+                        <img src="{% static 'bana/img/logo/Logo_La_Libre.svg' %}"
+                            class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                        <img src="{% static 'bana/img/logo/Logo_Lavenir.svg' %}"
+                            class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                        <img src="{% static 'bana/img/logo/Logo_Rtbf_Auvio.svg' %}"
+                            class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                    </div>
+
+                    <div
+                        class="mySlides flex flex-col md:flex-row items-center justify-center w-full flex-shrink-0 gap-8 px-16">
+                        <img src="{% static 'bana/img/logo/Logo_La_Capitale.png' %}"
+                            class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                        <img src="{% static 'bana/img/logo/Logo_Maison_Slash.png' %}"
+                            class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                        <img src="{% static 'bana/img/logo/Logo_Sudinfo.png' %}"
+                            class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                    </div>
+
+                    <div
+                        class="mySlides flex flex-col md:flex-row items-center justify-center w-full flex-shrink-0 gap-8 px-16">
+                        <img src="{% static 'bana/img/logo/Logo_Telesambre.svg' %}"
+                            class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                        <img src="{% static 'bana/img/logo/Logo_Vivacite.svg' %}"
+                            class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Button -->
+            <button
+                class="next absolute right-2 md:right-0 z-10 flex items-center justify-center w-8 h-8 md:w-16 md:h-16 p-4 text-[#007F73] bg-[#00FFAB] rounded-full shadow-lg transform translate-x-1/2"
+                onclick="plusDivs(1)">
+                ❯
+            </button>
+        </div>
     </div>
-</div>
 
 
 
