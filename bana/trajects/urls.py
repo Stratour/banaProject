@@ -11,5 +11,6 @@ urlpatterns = [
     path('delete/<int:id>/<str:type>/', views.delete_traject, name='delete_traject'),
     path('modify/<int:id>/<str:type>/', views.modify_traject, name='modify_traject'),
     path('reserve/<int:id>/', views.reserve_traject, name='reserve_traject'),
-    
+    # Dans urls.py
+    path('reserve/researched/<int:researchedTraject_id>/', views.reserve_trajectResearched, name='reserve_trajectResearched'),
 ]

@@ -90,20 +90,55 @@ def autocomplete_view(request):
 @login_required
 def reserve_traject(request, id):
     traject = get_object_or_404(ProposedTraject, id=id)
+    print("++++++++++++++++++++++ traject " + str(traject))
     user_member = Members.objects.get(memb_user_fk=request.user)
     is_creator = traject.member == user_member
+    print("++++++++++++++++++++++ traject.id " + str( traject.id))
+    print("++++++++++++++++++++++ traject.traject_id ' " + str( traject.traject_id))
 
     context = {
         'traject': traject,
         'is_creator': is_creator,
     }
-
     if is_creator:
+        print('================ if')
         # Add the list of reservation requests if the user is the creator
         # Assuming you have a model for reservations, replace `ReservationRequest` with the actual model name
         reservation_requests = ["member1","member2","member3"] #ReservationRequest.objects.filter(traject=traject)
         context['reservation_requests'] = reservation_requests
     else:
+        print('================ else')
+        # Add any other context needed for non-creator users
+        reservation_count = 3 #ReservationRequest.objects.filter(traject=traject).count()
+        context['reservation_count'] = reservation_count
+
+    return render(request, 'trajects/reserve_traject.html', context)
+
+@login_required
+def reserve_trajectResearched(request, researchedTraject_id):
+    researched_traject = ResearchedTraject.objects.get(id=researchedTraject_id)
+    traject = Traject.objects.get(id=researched_traject.traject_id)
+    print("++++++++++++++++++++++++++++++++++ méthode appelé " + str(traject))
+    print("++++++++++++++++++++++++++++++++++ " + str(researched_traject.date))
+    trajectResearched = get_object_or_404(ResearchedTraject, id=researchedTraject_id)
+    print("++++++++++++++++++++++ traject " + str(trajectResearched))
+    user_member = Members.objects.get(memb_user_fk=request.user)
+    is_creator = trajectResearched.member == user_member
+    print("++++++++++++++++++++++ traject.id " + str(trajectResearched.id))
+    print("++++++++++++++++++++++ traject.traject_id ' " + str(trajectResearched.traject_id))
+
+    context = {
+        'traject': trajectResearched,
+        'is_creator': is_creator,
+    }
+    if is_creator:
+        print('================ if')
+        # Add the list of reservation requests if the user is the creator
+        # Assuming you have a model for reservations, replace `ReservationRequest` with the actual model name
+        reservation_requests = ["member1","member2","member3"] #ReservationRequest.objects.filter(traject=traject)
+        context['reservation_requests'] = reservation_requests
+    else:
+        print('================ else')
         # Add any other context needed for non-creator users
         reservation_count = 3 #ReservationRequest.objects.filter(traject=traject).count()
         context['reservation_count'] = reservation_count
