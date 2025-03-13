@@ -56,27 +56,16 @@
             class="h-auto w-full flex-1 flex flex-col gap-6 md:flex-row items-center justify-between md:py-6 md:px-20 text-white">
 
             <!-- Benefit Items -->
-            <div class="flex flex-col text-center px-16 md:!px-0 items-center mt-12 md:!mt-0 mb-4 md:!mb-0 md:items-start md:w-[20%] md:!text-left">
-                <img class="w-12 h-18 mb-2" src="{% static 'bana/img/icon/Icon_profile.svg' %}"
-                    alt="Economic feature icon">
-                <h3 class="text-lg font-bold">1. Create your profile</h3>
-                <p class="text-sm">Join a <span class="text-[#D7FC19] font-semibold">community of parents</span> from your child’s school or activities.</p>
+            {% for step in work_steps %}
+            <div
+                class="flex flex-col text-center px-16 md:!px-0 items-center mb-4 md:!mb-0 md:items-start md:w-[20%] md:!text-left">
+                <img class="w-12 h-18 mb-2" src="{% static step.img_src %}" alt="{{ step.title }} feature icon">
+                <h3 class="text-lg font-bold">{{ step.title }}</h3>
+                <p class="text-sm">Join a <span class="text-[#D7FC19] font-semibold">{{ step.highlight }}</span>
+                    {{ step.description }}</p>
             </div>
+            {% endfor %}
 
-            <div class="flex flex-col text-center px-16 md:!px-0 items-center mb-4 md:!mb-0 md:items-start md:w-[20%] md:!text-left">
-                <img class="w-12 h-18 mb-2" src="{% static 'bana/img/icon/Icon_place.svg' %}"
-                    alt="Ecological feature icon">
-                <h3 class="text-lg font-bold">2. Indicate your routes</h3>
-                <p class="text-sm">Share trip requests or respond to alerts, and <span class="text-[#D7FC19] font-semibold">Bana connects you</span>.</p>
-            </div>
-
-            <div class="flex flex-col text-center px-16 md:!px-0 items-center mb-12 md:!mb-0 md:items-start md:w-[20%] md:!text-left">
-                <img class="w-12 h-18 mb-2" src="{% static 'bana/img/icon/Icon_message.svg' %}"
-                    alt="Community feature icon">
-                <h3 class="text-lg font-bold">3. Compose your tribe</h3>
-                <p class="text-sm">Find parents with similar routes, choose profiles, and <span class="text-[#D7FC19] font-semibold">build your trusted tribe</span>.
-                </p>
-            </div>
         </div>
     </div>
 
@@ -84,26 +73,30 @@
         <div class="w-full p-6 md:w-1/2">
             <div class="relative w-full">
                 <!-- Tablet Frame (Ensures it's on top) -->
-                <img src="{% static 'bana/img/other/tablet.png' %}" alt="Tablet Frame" class="w-full relative z-20 pointer-events-none">
-    
+                <img src="{% static 'bana/img/other/tablet.png' %}" alt="Tablet Frame"
+                    class="w-full relative z-20 pointer-events-none">
+
                 <!-- Video Element (Hidden Initially) -->
                 <video id="video-element" class="absolute top-0 left-0 w-auto h-full hidden z-0 px-2 md:px-8" controls>
                     <source src="{% static 'bana/video/how_it_works.mp4' %}" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
-    
+
                 <!-- Video Thumbnail & Play Button -->
-                <div id="video-container" class="absolute top-0 left-0 w-full h-full flex items-center justify-center cursor-pointer z-10">
-                    <img src="{% static 'bana/img/other/video-thumbnail.avif' %}" alt="Video Thumbnail" class="w-full h-full object-cover">
-                    
+                <div id="video-container"
+                    class="absolute top-0 left-0 w-full h-full flex items-center justify-center cursor-pointer z-10">
+                    <img src="{% static 'bana/img/other/video-thumbnail.avif' %}" alt="Video Thumbnail"
+                        class="w-full h-full object-cover">
+
                     <!-- Play Button -->
                     <div class="absolute">
-                        <img src="{% static 'bana/img/icon/Icon_play.svg' %}" alt="Play Button" class="w-16 h-16 md:w-32 h-32">
+                        <img src="{% static 'bana/img/icon/Icon_play.svg' %}" alt="Play Button"
+                            class="w-16 h-16 md:w-32 h-32">
                     </div>
                 </div>
             </div>
-        </div>     
-    
+        </div>
+
         <div class="w-full p-6 md:w-auto">
             <div>
                 <h3 class="text-xl text-center md:text-left font-bold text-[#007F73] mb-2">
@@ -117,28 +110,19 @@
                     aria-label="Offer a ride">Offer a ride</a>
             </div>
         </div>
-    </div>    
+    </div>
 
     <div class="flex flex-col items-center gap-8 pt-8 pb-8 md:flex-row md:justify-around md:my-12">
 
+        {% for role in work_roles %}
         <div class="flex flex-col items-center">
-            <img src="{% static 'bana/img/other/Bana_Parent.png' %}" alt="Parent Icon" class="w-50 h-50">
-            <a href="#" class="mt-2 hover:no-underline">
-                <p class="font-bold text-[#007F73]">I am a parent</p>
+            <img src="{% static role.img_src %}" alt="{{ role.alt_text }}" class="w-50 h-50">
+            <a href="{{ role.link_url }}" class="mt-2 hover:no-underline drop-shadow-lg">
+                <p class="font-bold text-[#007F73]">{{ role.link_text }}</p>
             </a>
         </div>
-        <div class="flex flex-col items-center">
-            <img src="{% static 'bana/img/other/Bana_Mentor.png' %}" alt="Mentor Icon" class="w-50 h-50">
-            <a href="#" class="mt-2 hover:no-underline">
-                <p class="font-bold text-[#007F73]">I am a mentor</p>
-            </a>
-        </div>
-        <div class="flex flex-col items-center">
-            <img src="{% static 'bana/img/other/Bana_Community.png' %}" alt="Community Icon" class="w-50 h-50">
-            <a href="#" class="mt-2 hover:no-underline">
-                <p class="font-bold text-[#007F73]">I am a community member</p>
-            </a>
-        </div>
+        {% endfor %}
+
     </div>
 
     <div class="w-full flex flex-col items-center p-8 bg-cover bg-center"
@@ -164,44 +148,22 @@
             <div class="relative w-full overflow-hidden">
                 <div id="carousel1"
                     class="carousel flex w-full transition-transform duration-500 ease-in-out pointer-events-none">
+                    {% for profile in work_profiles %}
                     <div
                         class="mySlides flex flex-col items-center w-full p-8 text-center flex-shrink-0 gap-24 xl:flex-row xl:!text-left pointer-events-auto">
-                        <img src="{% static 'bana/img/other/Nyota.png' %}"
+                        <img src="{% static profile.img_src %}"
                             class="object-cover w-40 h-40 rounded-full md:w-96 md:h-96 md:ml-16" alt="Profile">
                         <div class="mx-4 md:mr-16 max-w-lg">
-                            <h2 class="text-2xl font-bold text-[#007F73]">Nyota Delecourt</h2>
+                            <h2 class="text-2xl font-bold text-[#007F73]">{{ profile.name }}</h2>
                             <p class="text-sm font-semibold text-[#007F73]">
-                                Mother of two (2010, 2023) with a marketing background and experience in HR, purchasing,
-                                and project management.
+                                {{ profile.short_bio }}
                             </p><br>
                             <p class="text-sm text-gray-700">
-                                Passionate about family well-being. I juggle life as a mom to a teenager and a baby,
-                                balancing basketball practices, bottles, and meetings.
-                                <br><br>
-                                I value sustainable living and dream of a world where parenting is easier and children
-                                grow up peacefully.
+                                {{ profile.full_description }}
                             </p>
                         </div>
                     </div>
-
-                    <div
-                        class="mySlides flex flex-col items-center w-full p-8 text-center flex-shrink-0 gap-24 xl:flex-row xl:!text-left pointer-events-auto">
-                        <img src="{% static 'bana/img/other/Bernard.png' %}"
-                            class="object-cover w-40 h-40 rounded-full md:w-96 md:h-96 md:ml-16" alt="Profile">
-                        <div class="mx-4 md:mr-16 max-w-lg">
-                            <h2 class="text-2xl font-bold text-[#007F73]">Bernard Lambeau</h2>
-                            <p class="text-sm font-semibold text-[#007F73]">
-                                Father of 3 children, IT profile, experience in platform development for mobility.
-                                Committed and sensitive to the environment.
-                            </p><br>
-                            <p class="text-sm text-gray-700">
-                                I aim to know everything about mobility in Belgium, or, perhaps more realistically, to
-                                contribute to its improvement.
-                                <br><br>
-                                I am particularly interested in mobility in rural areas.
-                            </p>
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -213,7 +175,7 @@
             </button>
         </div>
     </div>
-    
+
 </div>
 
 {% endblock %}
