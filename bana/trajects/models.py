@@ -98,3 +98,39 @@ class ResearchedTraject(models.Model):
     def get_researched_trajects_by_member(cls, member):
         return cls.objects.filter(member=member)
 
+
+
+class Reservation(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('confirmed', 'Confirmed'),
+        ('canceled', 'Canceled'),
+    ]
+
+    member = models.ForeignKey(Members, on_delete=models.CASCADE, verbose_name="User who made the reservation")
+    # Référence vers l'un ou l'autre des trajets (Proposé ou Recherché)
+    traject = models.ForeignKey(
+        ProposedTraject,  # Lien vers le modèle Traject (proposé ou recherché)
+        null=True,
+        blank=True,
+        on_delete=models.CASCADE
+    )
+
+    number_of_places = models.CharField(max_length=1,
+                                        choices=[('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'),
+                                                 ('7', '7')])
+    reservation_date = models.DateTimeField(auto_now_add=True)  # Date et heure de la réservation
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')  # Statut de la réservation
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Prix total (par défaut)
+
+    def __str__(self):
+        return f"Reservation {self.id} by {self.member.memb_user_fk.username} for {self.number_of_places} places"
+
+    def save(self, *args, **kwargs):
+        # Calculer le prix total ici si nécessaire
+        self.total_price = int(self.number_of_places) * 20.00  # Exemple de prix par place
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def get_reservation_by_member(cls, member):
+        return cls.objects.filter(member=member)

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode
+from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode, Reservation
 from django.forms.widgets import SelectMultiple
 
 
@@ -104,3 +104,8 @@ class ResearchedTrajectForm(forms.ModelForm):
             'details': forms.Textarea(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Ajoutez des détails utiles pour le conducteur'}),
         }
 
+
+class ReservationForm(forms.ModelForm):
+    class Meta:
+        model = Reservation
+        fields = ['number_of_places']  # On suppose que l'utilisateur n'a besoin que de spécifier le nombre de places

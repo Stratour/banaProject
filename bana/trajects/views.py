@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator
 from django.contrib import messages
-from .models import ProposedTraject, ResearchedTraject, Members, Traject
+from .models import ProposedTraject, ResearchedTraject, Members, Traject, Reservation
 from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm
 from django.core.exceptions import PermissionDenied
 from .utils.geocoding import get_autocomplete_suggestions
@@ -86,7 +86,7 @@ def autocomplete_view(request):
 
 
 # ===================== reservation page ======================== #
-
+""""
 @login_required
 def reserve_traject(request, id):
     traject = get_object_or_404(ProposedTraject, id=id)
@@ -113,6 +113,59 @@ def reserve_traject(request, id):
         context['reservation_count'] = reservation_count
 
     return render(request, 'trajects/reserve_traject.html', context)
+"""
+
+
+@login_required
+def reserve_traject(request, id):
+    traject = get_object_or_404(ProposedTraject, id=id)
+    user_member = Members.objects.get(memb_user_fk=request.user)
+    is_creator = traject.member == user_member
+
+    # Si l'utilisateur n'est pas le créateur
+    if not is_creator:
+        if request.method == 'POST':
+            # Récupérer le nombre de places demandées
+            try:
+                num_places = int(request.POST.get('num_places'))
+            except (ValueError, TypeError):
+                num_places = 0
+
+            # Vérifier si le nombre de places est valide
+            if num_places <= 0:
+                messages.error(request, "Le nombre de places doit être supérieur à 0.")
+            elif num_places > int(traject.number_of_places):
+                messages.error(request, "Il n'y a pas assez de places disponibles pour ce trajet.")
+            else:
+                # Créer la réservation
+                reservation = Reservation.objects.create(
+                    member=user_member,
+                    traject=traject,
+                    number_of_places=num_places
+                )
+
+                # Réduire le nombre de places disponibles
+                traject.number_of_places = int(traject.number_of_places)  # Convertir en entier si nécessaire
+                traject.number_of_places -= num_places
+                traject.save()
+
+                messages.success(request, f'Votre réservation de {num_places} places a été confirmée avec succès !')
+                return redirect('profile')  # Redirige vers une page de confirmation ou ailleurs
+
+    context = {
+        'traject': traject,
+        'is_creator': is_creator,
+    }
+
+    if is_creator:
+        reservation_requests = []  # Remplacer par la liste des demandes de réservation si tu en as
+        context['reservation_requests'] = reservation_requests
+    else:
+        reservation_count = 3  # Remplacer par le nombre réel de réservations
+        context['reservation_count'] = reservation_count
+
+    return render(request, 'trajects/reserve_traject.html', context)
+
 
 @login_required
 def reserve_trajectResearched(request, researchedTraject_id):

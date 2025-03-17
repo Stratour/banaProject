@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Members
 from .forms import UserRegistrationForm, MembersForm,LoginForm
-from trajects.models import Traject, ProposedTraject, ResearchedTraject
+from trajects.models import Traject, ProposedTraject, ResearchedTraject, Reservation
 
 
 # ===================== connexion ======================== #
@@ -74,10 +74,12 @@ def profile(request):
         member = request.user.members 
         proposed_trajects = ProposedTraject.get_proposed_trajects_by_member(member)
         researched_trajects = ResearchedTraject.get_researched_trajects_by_member(member)
+        reservations=Reservation.get_reservation_by_member(member)
         
         context = {
             'proposed_trajects': proposed_trajects,
             'researched_trajects': researched_trajects,
+            'reservations': reservations,
         }
     else:
         context = {}
