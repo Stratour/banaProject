@@ -81,11 +81,11 @@
                                     <p><strong>Places réservées:</strong> {{ reservation.number_of_places }}</p>
                                     <p><strong>date de departeur: </strong> {{ reservation.traject.date }}</p>
                                     {% if reservation.status == "pending" %}
-                                        <p class="text-yellow-500 font-bold">En attente de confirmation</p>
+                                        <p class="text-yellow-500 font-bold" style="color:orange">En attente de confirmation</p>
                                     {% elif reservation.status == "confirmed" %}
-                                        <p class="text-green-500 font-bold">Réservation confirmée</p>
-                                    {% elif reservation.status == "rejected" %}
-                                        <p class="text-red-500 font-bold">Réservation refusée</p>
+                                        <p class="text-green-500 font-bold" style="color:green">Réservation confirmée</p>
+                                    {% elif reservation.status == "canceled" %}
+                                        <p class="text-red-500 font-bold" style="color:red">Réservation refusée</p>
                                     {% endif %}
 
                                     {% comment %}<a href="{% url 'reservation_detail' reservation.id %}" class="text-blue-500">Voir

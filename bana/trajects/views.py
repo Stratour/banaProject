@@ -1,14 +1,16 @@
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse,JsonResponse
 from django.core.paginator import Paginator
 from django.contrib import messages
-from .models import ProposedTraject, ResearchedTraject, Members, Traject, Reservation
+from .models import ProposedTraject, ResearchedTraject, Members, Traject, Reservation, TransportMode
 from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm
-from django.core.exceptions import PermissionDenied
+from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from .utils.geocoding import get_autocomplete_suggestions
 from django.db.models import Q
-
+from django.conf import settings
+from datetime import datetime
 
 
 
@@ -18,12 +20,22 @@ def all_trajects(request):
     active_tab = request.GET.get('active_tab', 'proposed')
     start_adress = request.GET.get('start_adress', '').strip()
     end_adress = request.GET.get('end_adress', '').strip()
-    
+    date_str = request.GET.get('date', '').strip()
+    transport_modes = request.GET.getlist('transport_modes')  # Récupérer les modes de transport sélectionnés
+
     # Base querysets
     proposed_trajects_list = ProposedTraject.objects.all().order_by('-departure_time')
     researched_trajects_list = ResearchedTraject.objects.select_related('traject').all().order_by('-departure_time')
-    
-    # Filtering based on search inputs
+
+    # Récupérer les objets TransportMode correspondants
+    transport_modes_objs = []
+    if transport_modes:
+        try:
+            transport_modes_objs = TransportMode.objects.filter(name__in=transport_modes)
+        except ObjectDoesNotExist:
+            transport_modes_objs = []
+
+    # Filtering based on start and end addresses
     if start_adress:
         proposed_trajects_list = proposed_trajects_list.filter(
             Q(traject__start_adress__icontains=start_adress) |
@@ -35,7 +47,7 @@ def all_trajects(request):
             Q(traject__start_street__icontains=start_adress) |
             Q(traject__start_locality__icontains=start_adress)
         )
-    
+
     if end_adress:
         proposed_trajects_list = proposed_trajects_list.filter(
             Q(traject__end_adress__icontains=end_adress) |
@@ -47,23 +59,43 @@ def all_trajects(request):
             Q(traject__end_street__icontains=end_adress) |
             Q(traject__end_locality__icontains=end_adress)
         )
-    
+
+    # Filtering based on date
+    if date_str:
+        try:
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d')  # Format de la date
+            proposed_trajects_list = proposed_trajects_list.filter(date=date_obj)
+            researched_trajects_list = researched_trajects_list.filter(date=date_obj)
+        except ValueError:
+            pass  # Si la date est mal formée, on ignore le filtrage
+
+    # Filtering based on transport modes
+    if transport_modes_objs:
+        proposed_trajects_list = proposed_trajects_list.filter(
+            traject__proposedtraject__transport_modes__in=transport_modes_objs
+        )
+        researched_trajects_list = researched_trajects_list.filter(
+            traject__researchedtraject__transport_modes__in=transport_modes_objs
+        )
+
     # Pagination for proposed trajects
     paginator1 = Paginator(proposed_trajects_list, 10)  # Show 10 proposed trajects per page
     page_number1 = request.GET.get('page1')
     proposed_trajects = paginator1.get_page(page_number1)
-    
+
     # Pagination for researched trajects
     paginator2 = Paginator(researched_trajects_list, 10)  # Show 10 researched trajects per page
     page_number2 = request.GET.get('page2')
     researched_trajects = paginator2.get_page(page_number2)
-    
+
     context = {
         'active_tab': active_tab,
         'proposed_trajects': proposed_trajects,
         'researched_trajects': researched_trajects,
         'start_adress': start_adress,
         'end_adress': end_adress,
+        'date': date_str,
+        'transport_modes': transport_modes,
     }
     return render(request, 'trajects/trajects_page.html', context)
 
@@ -77,6 +109,7 @@ def autocomplete_view(request):
         return JsonResponse({"error": "Le champ 'query' est requis."}, status=400)
 
     suggestions = get_autocomplete_suggestions(query)
+    print(suggestions)
     if isinstance(suggestions, str):  # Si c'est une erreur
         return JsonResponse({"error": suggestions}, status=500)
 
@@ -144,12 +177,33 @@ def reserve_traject(request, id):
                     number_of_places=num_places
                 )
 
-                # Réduire le nombre de places disponibles
-                traject.number_of_places = int(traject.number_of_places)  # Convertir en entier si nécessaire
-                traject.number_of_places -= num_places
                 traject.save()
 
-                messages.success(request, f'Votre réservation de {num_places} places a été confirmée avec succès !')
+                # Récupérer l'email de l'utilisateur et du créateur
+                user_email = request.user.email
+                creator_email = traject.member.memb_user_fk.email
+
+                # Afficher les emails dans la console pour débogage
+                print(f"Email de l'utilisateur (membre) : {user_email}")
+                print(f"Email du créateur du trajet : {creator_email}")
+
+                # Envoi d'une notification par email au membre
+                send_mail(
+                    'Confirmation de votre demande de réservation',
+                    f'Bonjour {request.user.username},\n\nVotre demande de réservation de {num_places} places pour le trajet "{traject.traject}" est en attente de confirmation.\n\nMerci.',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user_email]
+                )
+
+                # Envoi d'une notification par email au créateur du trajet
+                send_mail(
+                    'Nouvelle demande de réservation',
+                    f'Bonjour {traject.member.memb_user_fk.username},\n\nUn membre a fait une demande de réservation pour {num_places} places sur le trajet "{traject.traject}".\nVeuillez consulter la demande pour l\'approuver ou la refuser.\n\nMerci.',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [creator_email]
+                )
+
+                messages.success(request, f'Votre demande de réservation de {num_places} places est une attente de confirmation!')
                 return redirect('profile')  # Redirige vers une page de confirmation ou ailleurs
 
     context = {
@@ -158,10 +212,10 @@ def reserve_traject(request, id):
     }
 
     if is_creator:
-        reservation_requests = []  # Remplacer par la liste des demandes de réservation si tu en as
+        reservation_requests = Reservation.objects.filter(traject=traject)
         context['reservation_requests'] = reservation_requests
     else:
-        reservation_count = 3  # Remplacer par le nombre réel de réservations
+        reservation_count = Reservation.objects.filter(traject=traject).count()  # Remplacer par le nombre réel de réservations
         context['reservation_count'] = reservation_count
 
     return render(request, 'trajects/reserve_traject.html', context)
@@ -198,6 +252,52 @@ def reserve_trajectResearched(request, researchedTraject_id):
 
     return render(request, 'trajects/reserve_traject.html', context)
 
+
+@login_required
+def manage_reservation(request, reservation_id, action):
+    # Récupérer la réservation
+    reservation = get_object_or_404(Reservation, id=reservation_id)
+
+    # Vérifier si l'utilisateur est bien le créateur du trajet
+    if not reservation.traject.member == Members.objects.get(memb_user_fk=request.user):
+        messages.error(request, "You are not authorized to manage this reservation.")
+        return redirect('profile')  # Ou une autre redirection appropriée
+
+    # Gérer l'acceptation ou le rejet de la demande
+    if action == 'accept':
+        if reservation.status != 'pending':
+            messages.error(request, "This reservation has already been processed.")
+        else:
+            # Récupérer l'objet ProposedTraject associé à la réservation
+            proposed_traject = reservation.traject
+
+            # Vérifier si le nombre de places demandées ne dépasse pas les places disponibles
+            available_places = int(proposed_traject.number_of_places)
+            requested_places = int(reservation.number_of_places)
+
+            if requested_places > available_places:
+                messages.error(request, "Not enough available places for this reservation.")
+                return redirect('reserve_traject', id=reservation.traject.id)
+
+            # Accepter la réservation, mettre à jour le statut
+            reservation.status = 'confirmed'
+
+            # Diminuer les places disponibles dans ProposedTraject
+            proposed_traject.number_of_places = str(available_places - requested_places)
+            proposed_traject.save()  # Sauvegarder l'objet ProposedTraject
+            reservation.save()  # Sauvegarder la réservation
+
+            messages.success(request, "Reservation accepted successfully.")
+    elif action == 'reject':
+        if reservation.status != 'pending':
+            messages.error(request, "This reservation has already been processed.")
+        else:
+            # Rejeter la réservation
+            reservation.status = 'canceled'
+            reservation.save()
+            messages.success(request, "Reservation rejected.")
+
+    return redirect('reserve_traject', id=reservation.traject.id)
 
 # ===================== CRUD ======================== #
 

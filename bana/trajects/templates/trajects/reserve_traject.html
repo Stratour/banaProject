@@ -46,13 +46,33 @@
                     <h3 class="text-lg font-semibold mb-2">Reservation Requests</h3>
                     {% for request in reservation_requests %}
                         <div class="request mb-2">
-                            <p>User: {{ request.user.username }}</p>
-                            <button class="accept bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-2">
-                                Accept
-                            </button>
-                            <button class="reject bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
-                                Reject
-                            </button>
+                            <p><strong>Membre:</strong> {{ request.member.memb_user_fk.username }}</p>
+                            <p><strong>Traject:</strong> {{ request.traject.traject.start_adress }}
+                                to {{ request.traject.traject.end_adress }}</p>
+                            <p><strong>Number of places demandés:</strong> {{ request.number_of_places }}</p>
+                            <p><strong>Reservation Date:</strong> {{ request.reservation_date }}</p>
+                            <p><strong>Status:</strong> {{ request.status }}</p>
+                            <p><strong>Total Price:</strong> €{{ request.total_price }}</p>
+
+                            <!-- Form to accept reservation -->
+                            <form method="POST"
+                                  action="{% url 'manage_reservation' reservation_id=request.id action='accept' %}">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="accept bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-2">
+                                    Accept
+                                </button>
+                            </form>
+
+                            <!-- Form to reject reservation -->
+                            <form method="POST"
+                                  action="{% url 'manage_reservation' reservation_id=request.id action='reject' %}">
+                                {% csrf_token %}
+                                <button type="submit"
+                                        class="reject bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
+                                    Reject
+                                </button>
+                            </form>
                         </div>
                     {% endfor %}
                 </div>
