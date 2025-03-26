@@ -3,124 +3,239 @@
 {% block title %}Create Proposed Traject - BanaCommunity{% endblock %}
 
 {% block content %}
-<div class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
-    <div class="bg-white shadow-md rounded-lg p-8 max-w-4xl w-full">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Create Proposed Traject</h2>
-        <form method="post" action="{% if researched_traject.id %}{% url 'proposed_traject' researched_traject.id %}{% else %}{% url 'proposed_traject' %}{% endif %}" class="space-y-6">            {% csrf_token %}
-            
-           <!-- Starting Point Autocomplete -->
-            <fieldset>
-                <legend class="text-lg font-semibold text-gray-700 mb-2">Starting Point</legend>
-                <div class="mb-6">
-                    <label for="start_adress" class="block text-sm font-medium text-gray-700">
-                        Enter Starting Point
-                    </label>
-                    {{ traject_form.start_adress }}
-                </div>
-                <div>
-                    <ul id="start-suggestion-list" class="bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-48 overflow-auto"></ul>
-                </div>
-            </fieldset>
+    <div class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
+        <div class="bg-white shadow-md rounded-lg p-8 max-w-4xl w-full">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Create Proposed Traject</h2>
+            <form method="post" action="
 
-            <!-- Ending Point Autocomplete -->
-            <fieldset>
-                <legend class="text-lg font-semibold text-gray-700 mt-4 mb-2">Ending Point</legend>
-                <div class="mb-6">
-                    <label for="end_adress" class="block text-sm font-medium text-gray-700">
-                        Enter Ending Point
-                    </label>
-                    {{ traject_form.end_adress }}
-                </div>
-                <div>
-                    <ul id="end-suggestion-list" class="bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-48 overflow-auto"></ul>
-                </div>
-            </fieldset>
 
-            
-            <!-- Proposed Traject Form Fields -->
-            <fieldset>
-                <legend class="text-lg font-semibold text-gray-700 mt-4 mb-2">Proposed Traject Details</legend>
-                <div class="grid grid-cols-2 gap-6">
+
+
+
+                    {% if researched_traject.id %}{% url 'proposed_traject' researched_traject.id %}{% else %}{% url 'proposed_traject' %}{% endif %}"
+                  class="space-y-6">
+                {% csrf_token %}
+                <!-- Starting Point Autocomplete -->
+                <fieldset>
+                    <legend class="text-lg font-semibold text-gray-700 mb-2">Starting Point</legend>
+                    <div class="mb-6">
+                        <label for="start_adress" class="block text-sm font-medium text-gray-700">
+                            Enter Starting Point
+                        </label>
+                        {{ traject_form.start_adress }}
+                    </div>
+                    <div>
+                        <ul id="start-suggestion-list"
+                            class="bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-48 overflow-auto"></ul>
+                    </div>
+                </fieldset>
+
+                <!-- Ending Point Autocomplete -->
+                <fieldset>
+                    <legend class="text-lg font-semibold text-gray-700 mt-4 mb-2">Ending Point</legend>
+                    <div class="mb-6">
+                        <label for="end_adress" class="block text-sm font-medium text-gray-700">
+                            Enter Ending Point
+                        </label>
+                        {{ traject_form.end_adress }}
+                    </div>
+                    <div>
+                        <ul id="end-suggestion-list"
+                            class="bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-48 overflow-auto"></ul>
+                    </div>
+                </fieldset>
+
+                <!-- Proposed Traject Form Fields -->
+                <fieldset>
+                    <legend class="text-lg font-semibold text-gray-700 mt-4 mb-2">Proposed Traject Details</legend>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="mb-4">
+                            <label for="date" class="block text-sm font-medium text-gray-700 mb-2">Date du
+                                trajet</label>
+                            <input type="date" id="date" name="date"
+                                   class="block w-full px-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                        <div>
+                            <label for="departure_time" class="block text-sm font-medium text-gray-700">Departure
+                                Time</label>
+                            {{ proposed_form.departure_time }}
+                        </div>
+                        <div>
+                            <label for="arrival_time" class="block text-sm font-medium text-gray-700">Arrival
+                                Time</label>
+                            {{ proposed_form.arrival_time }}
+                        </div>
+                        <div>
+                            <label for="detour_km" class="block text-sm font-medium text-gray-700">Detour (km)</label>
+                            {{ proposed_form.detour_km }}
+                        </div>
+                        <div>
+                            <label for="number_of_places" class="block text-sm font-medium text-gray-700">Nombre de
+                                place</label>
+                            {{ proposed_form.number_of_places }}
+                        </div>
+                        <div>
+                            <label for="transport_modes" class="block text-sm font-medium text-gray-700">Transport
+                                Modes</label>
+                            {{ proposed_form.transport_modes }}
+                        </div>
+                    </div>
                     <div>
                         <label for="details" class="block text-sm font-medium text-gray-700">Details</label>
                         {{ proposed_form.details }}
                     </div>
-                    <div>
-                        <label for="number_of_places" class="block text-sm font-medium text-gray-700">Nombre de place</label>
-                        {{ proposed_form.number_of_places }}
-                    </div>
-                    <div>
-                        <label for="language" class="block text-sm font-medium text-gray-700">Langue(s) parler</label>
-                        {{ proposed_form.language }}
-                    </div>
-                    <div>
-                        <label for="departure_time" class="block text-sm font-medium text-gray-700">Departure Time</label>
-                        {{ proposed_form.departure_time }}
-                    </div>
-                    <div>
-                        <label for="arrival_time" class="block text-sm font-medium text-gray-700">Arrival Time</label>
-                        {{ proposed_form.arrival_time }}
-                    </div>
-                    <div>
-                        <label for="date" class="block text-sm font-medium text-gray-700" >Date du trajet</label>
-                           {{ proposed_form.date}}
-                     </div>
-                    <div>
-                        <label for="transport_modes" class="block text-sm font-medium text-gray-700">Transport Modes</label>
-                        {{ proposed_form.transport_modes }}
-                    </div>
-                    <div>
-                        <label for="detour_km" class="block text-sm font-medium text-gray-700">Detour (km)</label>
-                        {{ proposed_form.detour_km }}
-                    </div>
-                </div>
-            </fieldset>
+                </fieldset>
+                <fieldset>
+                    <legend class="text-lg font-semibold text-gray-700 mb-2">Récurrence</legend>
 
-            <!-- Submit Button -->
-            <button type="submit" class="w-full py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                Create Proposed Traject
-            </button>
-        </form>
+                    <div class="mb-4">
+                        <label for="id_recurrence_type" class="block text-sm font-medium text-gray-700">Type de
+                            récurrence</label>
+                        {{ proposed_form.recurrence_type }}
+                    </div>
+
+                    <!-- Récurrence par intervalle de semaines -->
+                    <div class="mb-4" id="recurrence_interval_container">
+                        <label for="id_recurrence_interval" class="block text-sm font-medium text-gray-700">Intervalle
+                            de récurrence (en semaines)</label>
+                        {{ proposed_form.recurrence_interval }}
+                    </div>
+
+                    <!-- Récurrence par jours spécifiques -->
+                    <!-- Choix des jours de la semaine -->
+                    <div id="recurrence_days_container" class="form-group" style="display:none;">
+                        <label for="tr_weekdays">Choisissez les jours de la semaine</label>
+                        <div id="tr_weekdays">
+                            <ul class="checkbox_list" style="padding: 10px 0;">
+                                <li class="checkbox_list" style="list-style: none;">
+                                    <input type="checkbox" name="tr_weekdays[]" id="tr_weekdays-1" value="1">
+                                    <label for="tr_weekdays-1">Lundi</label>
+                                </li>
+                                <li class="checkbox_list" style="list-style: none;">
+                                    <input type="checkbox" name="tr_weekdays[]" id="tr_weekdays-2" value="2">
+                                    <label for="tr_weekdays-2">Mardi</label>
+                                </li>
+                                <li class="checkbox_list" style="list-style: none;">
+                                    <input type="checkbox" name="tr_weekdays[]" id="tr_weekdays-3" value="3">
+                                    <label for="tr_weekdays-3">Mercredi</label>
+                                </li>
+                                <li class="checkbox_list" style="list-style: none;">
+                                    <input type="checkbox" name="tr_weekdays[]" id="tr_weekdays-4" value="4">
+                                    <label for="tr_weekdays-4">Jeudi</label>
+                                </li>
+                                <li class="checkbox_list" style="list-style: none;">
+                                    <input type="checkbox" name="tr_weekdays[]" id="tr_weekdays-5" value="5">
+                                    <label for="tr_weekdays-5">Vendredi</label>
+                                </li>
+                                <li class="checkbox_list" style="list-style: none;">
+                                    <input type="checkbox" name="tr_weekdays[]" id="tr_weekdays-6" value="6">
+                                    <label for="tr_weekdays-6">Samedi</label>
+                                </li>
+                                <li class="checkbox_list" style="list-style: none;">
+                                    <input type="checkbox" name="tr_weekdays[]" id="tr_weekdays-7" value="7">
+                                    <label for="tr_weekdays-7">Dimanche</label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+
+                    <!-- Date de début et de fin (affichées seulement selon le type de récurrence) -->
+                    <div class="mb-4" id="date_debut_container">
+                        <label for="id_date_debut" class="block text-sm font-medium text-gray-700">Date de début</label>
+                        {{ proposed_form.date_debut }}
+                    </div>
+
+                    <div class="mb-4" id="date_fin_container">
+                        <label for="id_date_fin" class="block text-sm font-medium text-gray-700">Date de fin</label>
+                        {{ proposed_form.date_fin }}
+                    </div>
+                </fieldset>
+
+                <!-- Submit Button -->
+                <button type="submit" class="w-full py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+                    Create Proposed Traject
+                </button>
+            </form>
+        </div>
     </div>
-</div>
 
-<script>
-    document.querySelectorAll("#start_adress, #end_adress").forEach((inputField) => {
-        inputField.addEventListener("input", async (event) => {
-            const query = event.target.value;
-    
-            if (query.length < 3) return; // Skip queries with fewer than 3 characters
-    
-            try {
-                const url = `{% url 'autocomplete' %}?query=${query}`; // Use the correct query value
-                const response = await fetch(url);
-                if (!response.ok) throw new Error("Error fetching suggestions");
-    
-                const data = await response.json();
-                const suggestions = data.suggestions || [];
-    
-                // Determine which suggestion list to populate
-                const suggestionListId = event.target.id === "start_adress" ? "start-suggestion-list" : "end-suggestion-list";
-                const suggestionList = document.getElementById(suggestionListId);
-    
-                // Populate suggestions list
-                suggestionList.innerHTML = ""; // Clear previous suggestions
-                suggestions.forEach((suggestion) => {
-                    const li = document.createElement("li");
-                    li.textContent = suggestion;
-                    li.classList.add("cursor-pointer", "p-2", "hover:bg-gray-100");
-                    li.addEventListener("click", () => {
-                        inputField.value = suggestion; // Set input value
-                        suggestionList.innerHTML = ""; // Clear suggestions
+    <script>
+        document.querySelectorAll("#start_adress, #end_adress").forEach((inputField) => {
+            inputField.addEventListener("input", async (event) => {
+                const query = event.target.value;
+
+                if (query.length < 3) return; // Skip queries with fewer than 3 characters
+
+                try {
+                    const url = `{% url 'autocomplete' %}?query=${query}`; // Use the correct query value
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error("Error fetching suggestions");
+
+                    const data = await response.json();
+                    const suggestions = data.suggestions || [];
+
+                    // Determine which suggestion list to populate
+                    const suggestionListId = event.target.id === "start_adress" ? "start-suggestion-list" : "end-suggestion-list";
+                    const suggestionList = document.getElementById(suggestionListId);
+
+                    // Populate suggestions list
+                    suggestionList.innerHTML = ""; // Clear previous suggestions
+                    suggestions.forEach((suggestion) => {
+                        const li = document.createElement("li");
+                        li.textContent = suggestion;
+                        li.classList.add("cursor-pointer", "p-2", "hover:bg-gray-100");
+                        li.addEventListener("click", () => {
+                            inputField.value = suggestion; // Set input value
+                            suggestionList.innerHTML = ""; // Clear suggestions
+                        });
+                        suggestionList.appendChild(li);
                     });
-                    suggestionList.appendChild(li);
-                });
-            } catch (error) {
-                console.error("Error fetching suggestions:", error);
-            }
+                } catch (error) {
+                    console.error("Error fetching suggestions:", error);
+                }
+            });
         });
-    });    
-    
-</script>
+
+        // Fonction pour ajuster l'affichage des champs de récurrence selon le type choisi
+        document.addEventListener("DOMContentLoaded", function () {
+            const recurrenceTypeField = document.querySelector("#id_recurrence_type"); // Sélectionner le champ "type de récurrence"
+            const recurrenceIntervalContainer = document.getElementById("recurrence_interval_container");
+            const recurrenceDaysContainer = document.getElementById("recurrence_days_container");
+            const dateDebutContainer = document.getElementById("date_debut_container");
+            const dateFinContainer = document.getElementById("date_fin_container");
+
+            // Fonction pour mettre à jour l'affichage des champs de récurrence
+            function updateRecurrenceFields() {
+                const recurrenceType = recurrenceTypeField.value;
+
+                // Afficher ou masquer les champs en fonction du type de récurrence
+                if (recurrenceType === "weekly_interval") {
+                    recurrenceIntervalContainer.style.display = "block"; // Afficher l'intervalle de récurrence
+                    recurrenceDaysContainer.style.display = "none";    // Masquer les jours spécifiques
+                    dateDebutContainer.style.display = "block";        // Afficher la date de début
+                    dateFinContainer.style.display = "none";          // Afficher la date de fin
+                } else if (recurrenceType === "specific_days") {
+                    recurrenceIntervalContainer.style.display = "none"; // Masquer l'intervalle de récurrence
+                    recurrenceDaysContainer.style.display = "block";    // Afficher les jours spécifiques
+                    dateDebutContainer.style.display = "block";          // Afficher la date de début
+                    dateFinContainer.style.display = "block";            // Afficher la date de fin
+                } else {
+                    recurrenceIntervalContainer.style.display = "none"; // Masquer l'intervalle de récurrence
+                    recurrenceDaysContainer.style.display = "none";     // Masquer les jours spécifiques
+                    dateDebutContainer.style.display = "none";         // Afficher la date de début
+                    dateFinContainer.style.display = "none";             // Masquer la date de fin (optionnelle)
+                }
+            }
+
+            // Initialiser l'affichage en fonction de la valeur actuelle
+            updateRecurrenceFields();
+
+            // Ajouter un écouteur d'événement pour réagir aux changements du type de récurrence
+            recurrenceTypeField.addEventListener("change", updateRecurrenceFields);
+        });
+
+
+    </script>
 {% endblock %}
 

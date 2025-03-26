@@ -1,3 +1,5 @@
+import dateutil
+from dateutil.rrule import rrule, WEEKLY, DAILY
 from django.db import models
 from members.models import Members
 
@@ -71,6 +73,24 @@ class ProposedTraject(models.Model):
     number_of_places = models.CharField(max_length=1, choices=NUMBER_PLACE)
     details = models.TextField()
     detour_distance = models.FloatField(blank=True, null=True)
+
+    # Date de départ et de fin pour la récurrence
+    date_debut = models.DateField(blank=True, null=True)
+    date_fin = models.DateField(blank=True, null=True)
+
+    # Type de récurrence (hebdomadaire, toutes les x semaines, dates spécifiques)
+    recurrence_type = models.CharField(
+        max_length=50,
+        choices=[('weekly', 'Toutes les semaines'),
+                 ('weekly_interval', 'Toutes les x semaines'),
+                 ('specific_days', 'Jours spécifiques')],
+        blank=True, null=True
+    )
+    # Si récurrence par intervalle de semaines
+    recurrence_interval = models.IntegerField(default=1, blank=True, null=True)  # Par exemple: toutes les 2 semaines
+
+    # Si récurrence par jours spécifiques
+    recurrence_days = models.CharField(max_length=255, blank=True, null=True)  # Jours spécifiques (ex: 'MO, WE, FR')
 
     ''' def __str__(self):
             return f"{self.name} by {self.member.memb_user_fk.username}" '''
