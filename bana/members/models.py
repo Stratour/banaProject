@@ -8,6 +8,12 @@ GENDER_CHOICES = [
     ("X", "Non Genré"),
 ]
 
+class Languages(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
 class Members(models.Model):
     memb_user_fk = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="votre username", )
     memb_date_joined = models.DateTimeField(auto_now_add=True)
@@ -21,6 +27,7 @@ class Members(models.Model):
     memb_country = models.CharField(max_length=50,default='Belgique')
     memb_car = models.BooleanField(default=False)
     #memb_car_fk=models.OneToOneField(Car, on_delete=models.CASCADE, verbose_name="id de votre voiture", )
+    languages = models.ManyToManyField(Languages, related_name='members', blank=True)
 
     def __int__(self):
         return f"{self.memb_user_fk}"

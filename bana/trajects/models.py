@@ -10,11 +10,6 @@ class TransportMode(models.Model):
     def __str__(self):
         return self.name
 
-class Languages(models.Model):
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
 
 
 class Traject(models.Model):
@@ -69,7 +64,7 @@ class ProposedTraject(models.Model):
     departure_time = models.TimeField()
     arrival_time = models.TimeField()
     date = models.DateField()
-    language = models.ManyToManyField(Languages, related_name='proposed_trajects',blank=True)
+    #language = models.ManyToManyField(Languages, related_name='proposed_trajects',blank=True)
     number_of_places = models.CharField(max_length=1, choices=NUMBER_PLACE)
     details = models.TextField()
     detour_distance = models.FloatField(blank=True, null=True)
@@ -107,7 +102,7 @@ class ResearchedTraject(models.Model):
     departure_time = models.TimeField()
     arrival_time = models.TimeField()
     date = models.DateField()
-    language = models.ManyToManyField(Languages, related_name='researched_trajects',blank=True)
+    #language = models.ManyToManyField(Languages, related_name='researched_trajects',blank=True)
     number_of_places = models.CharField(max_length=1, choices=NUMBER_PLACE)
     details = models.TextField()
 

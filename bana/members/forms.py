@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Members
+
+from .models import Members, Languages
+
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(
@@ -124,13 +126,21 @@ class MembersForm(forms.ModelForm):
         }),
         label='Possédez-vous une voiture ?'
     )
+    languages = forms.ModelChoiceField(
+        queryset=Languages.objects.all(),  # Assurez-vous que le modèle Languages existe
+        widget=forms.SelectMultiple(
+            attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
+        label='Langues parlées'
+    )
+
 
     class Meta:
         model = Members
         fields = [
-            'memb_birth_date', 'memb_gender', 'memb_num_street', 'memb_box', 
-            'memb_street', 'memb_zp', 'memb_locality', 'memb_country', 'memb_car'
+            'memb_birth_date', 'memb_gender', 'memb_num_street', 'memb_box',
+            'memb_street', 'memb_zp', 'memb_locality', 'memb_country', 'memb_car','languages'
         ]
+
 
 
 class LoginForm(forms.Form):

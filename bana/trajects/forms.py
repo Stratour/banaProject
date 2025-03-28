@@ -93,7 +93,7 @@ class ProposedTrajectForm(forms.ModelForm):
     class Meta:
         model = ProposedTraject
         exclude = ['member']
-        fields = ['details', 'departure_time', 'arrival_time', 'transport_modes', 'language', 'detour_km',
+        fields = ['details', 'departure_time', 'arrival_time', 'transport_modes',  'detour_km',
                   'number_of_places', 'date',
                   'recurrence_type', 'recurrence_interval', 'tr_weekdays', 'date_debut', 'date_fin']
         labels = {
@@ -101,7 +101,6 @@ class ProposedTrajectForm(forms.ModelForm):
             'departure_time': 'Heure de départ',
             'arrival_time': 'Heure d’arrivée',
             'number_of_places': 'Nombre de places',
-            'language': 'Language(s)',
             'date': 'Date du trajet',
             'recurrence_type': 'Type de récurrence',
             'recurrence_interval': 'Intervalle de récurrence (semaines)',
@@ -110,8 +109,6 @@ class ProposedTrajectForm(forms.ModelForm):
             'date_fin': 'Date de fin de récurrence',
         }
         widgets = {
-            'language': SelectMultiple(
-                attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
             'details': forms.Textarea(
                 attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
                        'placeholder': 'Ajoutez des détails utiles pour les passagers'}),
@@ -160,16 +157,14 @@ class ResearchedTrajectForm(forms.ModelForm):
     class Meta:
         model = ResearchedTraject
         exclude = ['member'] 
-        fields = ['details', 'departure_time', 'arrival_time', 'transport_modes', 'detour_km','language', 'number_of_places','date']
+        fields = ['details', 'departure_time', 'arrival_time', 'transport_modes', 'detour_km', 'number_of_places','date']
         labels = {
             'details': 'Détails',
             'departure_time': 'Heure de départ',
             'arrival_time': 'Heure d’arrivée',
-            'language':'language(s)',
             'date': 'Date de traject',
         }
         widgets = {    
-            'language': SelectMultiple(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
             'details': forms.Textarea(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'placeholder': 'Ajoutez des détails utiles pour le conducteur'}),
         }
 

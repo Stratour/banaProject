@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode,Languages
+
+from members.models import Languages
+from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode
+
 
 
 

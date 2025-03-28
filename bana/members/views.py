@@ -25,6 +25,9 @@ def register_user(request):
             member = members_form.save(commit=False)
             member.memb_user_fk = user
             member.save()
+
+            # Sauvegarder les langues choisies
+            members_form.save_m2m()
             
             user = authenticate(request, username=user_form.cleaned_data['username'], password=user_form.cleaned_data['password'])
             if user is not None:
@@ -75,11 +78,14 @@ def profile(request):
         proposed_trajects = ProposedTraject.get_proposed_trajects_by_member(member)
         researched_trajects = ResearchedTraject.get_researched_trajects_by_member(member)
         reservations=Reservation.get_reservation_by_member(member)
-        
+        # Récupérer les langues associées au membre
+        languages = member.languages.all()
+
         context = {
             'proposed_trajects': proposed_trajects,
             'researched_trajects': researched_trajects,
             'reservations': reservations,
+            'languages': languages,
         }
     else:
         context = {}
