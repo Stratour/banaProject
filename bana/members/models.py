@@ -8,11 +8,13 @@ GENDER_CHOICES = [
     ("X", "Non Genré"),
 ]
 
+
 class Languages(models.Model):
     name = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
+
 
 class Members(models.Model):
     memb_user_fk = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name="votre username", )
@@ -24,17 +26,18 @@ class Members(models.Model):
     memb_street = models.CharField(max_length=50)
     memb_zp = models.SmallIntegerField()
     memb_locality = models.CharField(max_length=50)
-    memb_country = models.CharField(max_length=50,default='Belgique')
+    memb_country = models.CharField(max_length=50, default='Belgique')
     memb_car = models.BooleanField(default=False)
-    #memb_car_fk=models.OneToOneField(Car, on_delete=models.CASCADE, verbose_name="id de votre voiture", )
+    # memb_car_fk=models.OneToOneField(Car, on_delete=models.CASCADE, verbose_name="id de votre voiture", )
     languages = models.ManyToManyField(Languages, related_name='members', blank=True)
 
     def __int__(self):
         return f"{self.memb_user_fk}"
 
+
 class Type(models.Model):
-    memb_type_name=models.CharField(max_length=50)
-    memb_type_desc=models.CharField(max_length=255)
+    memb_type_name = models.CharField(max_length=50)
+    memb_type_desc = models.CharField(max_length=255)
 
     def __int__(self):
         return f"{self.memb_type_name}"
