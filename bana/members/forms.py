@@ -126,13 +126,12 @@ class MembersForm(forms.ModelForm):
         }),
         label='Possédez-vous une voiture ?'
     )
-    languages = forms.ModelChoiceField(
-        queryset=Languages.objects.all(),  # Assurez-vous que le modèle Languages existe
+    languages = forms.ModelMultipleChoiceField(
+        queryset=Languages.objects.all(),
         widget=forms.SelectMultiple(
             attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
         label='Langues parlées'
     )
-
 
     class Meta:
         model = Members
