@@ -1,0 +1,51 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Profile - BanaCommunity{% endblock %}
+
+{% block content %}
+    <h2 class="text-2xl font-bold">{{ user.username }}</h2>
+    <p>Email: {{ user.email }}</p>
+
+    <!-- ⭐ Note moyenne -->
+    <p>Note Moyenne : {{ average_rating }}/5</p>
+
+    <!-- ✅ Liste des avis -->
+    <h3 class="mt-4 font-semibold">Avis reçus :</h3>
+    {% for review in reviews %}
+        <p>{{ review.reviewer.username }} : {{ review.rating }}/5 - "{{ review.comment }}"</p>
+    {% empty %}
+        <p>Aucun avis pour le moment.</p>
+    {% endfor %}
+
+    <!-- ✅ Afficher le formulaire pour AJOUTER un avis -->
+    {% if allow_review %}
+        <h3 class="mt-4 font-semibold">Laisser un avis :</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">⭐ Noter</button>
+        </form>
+
+    {% elif existing_review %}
+        <h3 class="mt-4 font-semibold">Votre avis :</h3>
+
+        {% if is_editing %}
+            <!-- ✅ Formulaire de modification -->
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">✅ Sauvegarder</button>
+                <a href="{% url 'profile_user' user.id %}" class="text-gray-500 hover:underline text-lg">❌ Annuler</a>
+            </form>
+        {% else %}
+            <!-- ✅ Affichage de l'avis avec options Modifier/Supprimer -->
+            <p>⭐ {{ existing_review.rating }}/5 - "{{ existing_review.comment }}"</p>
+
+            <!-- 🔄 Modifier -->
+            <a href="?edit_review=true" class="text-yellow-500 hover:underline text-lg">✏️ Modifier</a>
+
+            <!-- ❌ Supprimer -->
+            <a href="{% url 'delete_review' user_id=user.id %}" class="text-red-500 hover:underline text-lg ml-4">❌ Supprimer</a>
+        {% endif %}
+    {% endif %}
+{% endblock %}

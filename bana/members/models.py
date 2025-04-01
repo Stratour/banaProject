@@ -41,6 +41,17 @@ class Type(models.Model):
 
     def __int__(self):
         return f"{self.memb_type_name}"
+
+class Review(models.Model):
+    reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='given_reviews')  # Celui qui note
+    reviewed_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='received_reviews')  # Celui qui est noté
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])  # Note de 1 à 5
+    comment = models.TextField(blank=True, null=True)  # Optionnel
+    created_at = models.DateTimeField(auto_now_add=True)  # Date de la note
+
+    def __str__(self):
+        return f"{self.reviewer.username} → {self.reviewed_user.username} ({self.rating}/5)"
+
 '''
 class Car
     memb_car_models=

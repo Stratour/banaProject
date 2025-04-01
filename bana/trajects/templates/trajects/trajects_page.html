@@ -173,8 +173,22 @@
                                 <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
                                     <div>
                                         <h3 class="text-xl font-semibold text-gray-700">
-                                            Membre : {{ proposed.member.memb_user_fk.username }}
+                                            Membre :
+                                            {% if proposed.member.memb_user_fk.id == request.user.id %}
+                                                <!-- ✅ Si c'est l'utilisateur lui-même, rediriger vers son profil -->
+                                                <a href="{% url 'profile' %}" class="text-blue-500 hover:underline">
+                                                    {{ proposed.member.memb_user_fk.username }}
+                                                </a>
+                                            {% else %}
+                                                <!-- ✅ Sinon, aller vers le profil du membre avec avis -->
+                                                <a href="{% url 'profile_user' user_id=proposed.member.memb_user_fk.id %}"
+                                                   class="text-blue-500 hover:underline">
+                                                    {{ proposed.member.memb_user_fk.username }}
+                                                </a>
+                                            {% endif %}
                                         </h3>
+
+
                                         <p class="text-gray-600">
                                             <strong>Adresse de départ:</strong>
                                             {% if proposed.traject.start_adress %}
