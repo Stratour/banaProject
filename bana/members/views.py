@@ -123,13 +123,13 @@ def profile_user(request, user_id=None):
     existing_review = Review.objects.filter(reviewer=request.user, reviewed_user=user).first()
     allow_review = existing_review is None
 
-    # ✅ Vérifier si l'utilisateur veut modifier son avis
+    #  Vérifier si l'utilisateur veut modifier son avis
     is_editing = 'edit_review' in request.GET and existing_review
 
-    # ✅ Initialisation du formulaire
+    #  Initialisation du formulaire
     form = ReviewForm(instance=existing_review if is_editing else None)
 
-    # ✅ Gestion de la soumission du formulaire (ajout ou modification)
+    #  Gestion de la soumission du formulaire (ajout ou modification)
     if request.method == 'POST':
         form = ReviewForm(request.POST, instance=existing_review if is_editing else None)
         if form.is_valid():
@@ -147,7 +147,7 @@ def profile_user(request, user_id=None):
         'allow_review': allow_review,
         'existing_review': existing_review,
         'form': form,
-        'is_editing': is_editing,  # ✅ Indicateur pour savoir si l'on modifie
+        'is_editing': is_editing,  #  Indicateur pour savoir si l'on modifie
     })
 
 

@@ -175,12 +175,12 @@
                                         <h3 class="text-xl font-semibold text-gray-700">
                                             Membre :
                                             {% if proposed.member.memb_user_fk.id == request.user.id %}
-                                                <!-- ✅ Si c'est l'utilisateur lui-même, rediriger vers son profil -->
+                                                <!--  Si c'est l'utilisateur lui-même, rediriger vers son profil -->
                                                 <a href="{% url 'profile' %}" class="text-blue-500 hover:underline">
                                                     {{ proposed.member.memb_user_fk.username }}
                                                 </a>
                                             {% else %}
-                                                <!-- ✅ Sinon, aller vers le profil du membre avec avis -->
+                                                <!--  Sinon, aller vers le profil du membre avec avis -->
                                                 <a href="{% url 'profile_user' user_id=proposed.member.memb_user_fk.id %}"
                                                    class="text-blue-500 hover:underline">
                                                     {{ proposed.member.memb_user_fk.username }}
@@ -225,8 +225,15 @@
                                             {% endif %}
                                         </p>
                                     </div>
+                                    <!-- Afficher "Gérer la réservation" ou "Rejoindre" en fonction de l'utilisateur -->
                                     <a href="{% url 'reserve_traject' proposed.id %}"
-                                       class="btn btn-primary">Rejoindre</a>
+                                       class="btn {% if proposed.member.memb_user_fk.id == request.user.id %}btn-warning{% else %}btn-primary{% endif %}">
+                                        {% if proposed.member.memb_user_fk.id == request.user.id %}
+                                            Gérer la réservation
+                                        {% else %}
+                                            Rejoindre
+                                        {% endif %}
+                                    </a>
                                 </li>
                             {% endfor %}
                         </ul>

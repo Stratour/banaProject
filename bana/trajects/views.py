@@ -602,13 +602,22 @@ def modify_traject(request, id, type):
         form_class = ResearchedTrajectForm
 
     if request.method == 'POST':
+
+        if 'date_debut' in request.POST:
+            request.POST = request.POST.copy()  # Rendre mutable
+            request.POST['date'] = request.POST['date_debut']  # Copier date_debut vers date
+
         form = form_class(request.POST, instance=traject_instance)
+        form_class.recurrence_type = None
+
         if form.is_valid():
             form.save()
             messages.success(request, 'Traject updated successfully!')
             return redirect('profile')
         else:
             messages.error(request, 'There were errors in your form. Please fix them and try again.')
+            print(form.errors)  # Debugging des erreurs
+
     else:
         form = form_class(instance=traject_instance)
 
