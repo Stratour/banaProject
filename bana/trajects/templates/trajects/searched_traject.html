@@ -88,21 +88,21 @@
     document.querySelectorAll("#start_adress, #end_adress").forEach((inputField) => {
         inputField.addEventListener("input", async (event) => {
             const query = event.target.value;
-    
+
             if (query.length < 3) return; // Skip queries with fewer than 3 characters
-    
+
             try {
                 const url = `{% url 'autocomplete' %}?query=${query}`; // Use the correct query value
                 const response = await fetch(url);
                 if (!response.ok) throw new Error("Error fetching suggestions");
-    
+
                 const data = await response.json();
                 const suggestions = data.suggestions || [];
-    
+
                 // Determine which suggestion list to populate
                 const suggestionListId = event.target.id === "start_adress" ? "start-suggestion-list" : "end-suggestion-list";
                 const suggestionList = document.getElementById(suggestionListId);
-    
+
                 // Populate suggestions list
                 suggestionList.innerHTML = ""; // Clear previous suggestions
                 suggestions.forEach((suggestion) => {
