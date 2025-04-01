@@ -7,7 +7,7 @@ from django.forms.widgets import SelectMultiple
 class TrajectForm(forms.ModelForm):
     class Meta:
         model = Traject
-        fields = ['start_adress', 'end_adress','date']
+        fields = ['start_adress', 'end_adress','date','start_zp','end_zp','start_region','end_region','start_commune','end_commune']
         widgets = {
             'start_adress': forms.TextInput(attrs={
                 'id': 'start_adress',
@@ -18,6 +18,36 @@ class TrajectForm(forms.ModelForm):
                 'id': 'end_adress',
                 'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
                 'placeholder': 'Type a location'
+            }),
+            'start_zp': forms.NumberInput(attrs={
+                'id': 'start_zp',
+                'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+                'placeholder': 'Start Postal Code'
+            }),
+            'end_zp': forms.NumberInput(attrs={
+                'id': 'end_zp',
+                'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+                'placeholder': 'End Postal Code'
+            }),
+            'start_region': forms.TextInput(attrs={
+                'id': 'start_region',
+                'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+                'placeholder': 'Start Region'
+            }),
+            'end_region': forms.TextInput(attrs={
+                'id': 'end_region',
+                'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+                'placeholder': 'End Region'
+            }),
+            'start_commune': forms.TextInput(attrs={
+                'id': 'start_commune',
+                'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+                'placeholder': 'Start Commune'
+            }),
+            'end_commune': forms.TextInput(attrs={
+                'id': 'end_commune',
+                'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+                'placeholder': 'End Commune'
             }),
         }
 

@@ -83,15 +83,69 @@
                             </label>
                         </div>
                     </div>
-
-                    <!-- Submit Button -->
-                    <div class="col-span-1 lg:col-span-4">
-                        <button
-                                type="submit"
-                                class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-500 focus:outline-none"
+                    <!-- Filtrage région-->
+                    <div>
+                        <label for="region" class="block text-sm font-medium text-gray-700">
+                            Sélectionner une région
+                        </label>
+                        <select
+                                name="region"
+                                id="region"
+                                class="form-select mt-1 block w-full"
+                                onchange="this.form.submit()"
                         >
-                            Rechercher
-                        </button>
+                            <option value="" {% if not region %}selected{% endif %}>Choisissez une région
+                            </option>
+                            <option value="Flandre" {% if region == 'Flandre' %}selected{% endif %}>Flandre</option>
+                            <option value="Wallonie" {% if region == 'Wallonie' %}selected{% endif %}>Wallonie</option>
+                            <option value="Bruxelles"
+                                    {% if region == 'Bruxelles' %}selected{% endif %}>Bruxelles-Capitale
+                            </option>
+                        </select>
+                    </div>
+                    <!-- City and Postal Code Search (Hidden by default) -->
+                    <div id="search-options" style="display: {% if region %}block{% else %}none{% endif %};">
+                        <div class="mt-4">
+                            <label for="city_search" class="block text-sm font-medium text-gray-700">
+                                Rechercher par ville
+                            </label>
+                            <input
+                                    type="text"
+                                    name="city_search"
+                                    id="city_search"
+                                    class="form-input mt-1 block w-full"
+                                    placeholder="Entrez une ville"
+                                    value="{{ city_search|default:'' }}"
+                                    autocomplete="off"
+                            />
+                        </div>
+
+                        <!-- Recherche par code postal -->
+                        <div id="postal-code-search-container"
+                             style="display: {% if region %}block{% else %}none{% endif %};">
+                            <label for="postal_code_search" class="block text-sm font-medium text-gray-700">
+                                Rechercher par code postal
+                            </label>
+                            <input
+                                    type="number"
+                                    name="postal_code_search"
+                                    id="postal_code_search"
+                                    class="form-input mt-1 block w-full"
+                                    placeholder="Entrez un code postal"
+                                    value="{{ postal_code_search|default:'' }}"
+                                    autocomplete="off"
+                            />
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="col-span-1 lg:col-span-4">
+                            <button
+                                    type="submit"
+                                    class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-500 focus:outline-none"
+                            >
+                                Rechercher
+                            </button>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -276,5 +330,17 @@
                 }
             });
         });
+
+        function showSearchBars() {
+            var region = document.getElementById('region').value;
+            var searchOptions = document.getElementById('search-options');
+
+            // Afficher ou masquer les champs de recherche selon la sélection de la région
+            if (region) {
+                searchOptions.style.display = 'block';
+            } else {
+                searchOptions.style.display = 'none';
+            }
+        }
     </script>
 {% endblock %}

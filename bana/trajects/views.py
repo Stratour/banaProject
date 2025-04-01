@@ -18,12 +18,22 @@ from .forms import TrajectForm, ProposedTrajectForm
 
 # ===================== listing ======================== #
 
+from django.db.models import Q
+from datetime import datetime
+from django.core.paginator import Paginator
+from django.shortcuts import render
+from .models import ProposedTraject, ResearchedTraject, TransportMode
+
 def all_trajects(request):
     active_tab = request.GET.get('active_tab', 'proposed')
     start_adress = request.GET.get('start_adress', '').strip()
     end_adress = request.GET.get('end_adress', '').strip()
+    start_region = request.GET.get('start_region', '').strip()
+    end_region = request.GET.get('end_region', '').strip()
     date_str = request.GET.get('date', '').strip()
     transport_modes = request.GET.getlist('transport_modes')  # Récupérer les modes de transport sélectionnés
+    city_search = request.GET.get('city_search', '').strip()
+    postal_code_search = request.GET.get('postal_code_search', '').strip()
 
     # Base querysets
     proposed_trajects_list = ProposedTraject.objects.all().order_by('-departure_time')
@@ -36,6 +46,9 @@ def all_trajects(request):
             transport_modes_objs = TransportMode.objects.filter(name__in=transport_modes)
         except ObjectDoesNotExist:
             transport_modes_objs = []
+
+    # Récupérer la région sélectionnée depuis la requête
+    region = request.GET.get('region', '').strip()
 
     # Filtering based on start and end addresses
     if start_adress:
@@ -61,6 +74,51 @@ def all_trajects(request):
             Q(traject__end_street__icontains=end_adress) |
             Q(traject__end_locality__icontains=end_adress)
         )
+
+    # Filtering based on start and end regions
+    if start_region:
+        proposed_trajects_list = proposed_trajects_list.filter(
+            Q(traject__start_region__icontains=start_region)
+        )
+        researched_trajects_list = researched_trajects_list.filter(
+            Q(traject__start_region__icontains=start_region)
+        )
+
+    if end_region:
+        proposed_trajects_list = proposed_trajects_list.filter(
+            Q(traject__end_region__icontains=end_region)
+        )
+        researched_trajects_list = researched_trajects_list.filter(
+            Q(traject__end_region__icontains=end_region)
+        )
+    # Si une région est sélectionnée, filtrer les trajets en fonction de la région de départ et/ou d’arrivée
+    if region:
+        proposed_trajects_list = proposed_trajects_list.filter(
+            Q(traject__start_region__icontains=region) | Q(traject__end_region__icontains=region)
+        )
+        researched_trajects_list = researched_trajects_list.filter(
+            Q(traject__start_region__icontains=region) | Q(traject__end_region__icontains=region)
+        )
+
+        # Filtrer par ville si l'utilisateur entre une ville
+        if city_search:
+            proposed_trajects_list = proposed_trajects_list.filter(
+                Q(traject__start_locality__icontains=city_search) | Q(traject__end_locality__icontains=city_search)
+            )
+            researched_trajects_list = researched_trajects_list.filter(
+                Q(traject__start_locality__icontains=city_search) | Q(traject__end_locality__icontains=city_search)
+            )
+
+        # Filtrer par code postal si l'utilisateur entre un code postal
+        if postal_code_search:
+            proposed_trajects_list = proposed_trajects_list.filter(
+                Q(traject__start_zp__icontains=postal_code_search) | Q(
+                    traject__end_zp__icontains=postal_code_search)
+            )
+            researched_trajects_list = researched_trajects_list.filter(
+                Q(traject__start_zp__icontains=postal_code_search) | Q(
+                    traject__end_zp__icontains=postal_code_search)
+            )
 
     # Filtering based on date
     if date_str:
@@ -98,8 +156,12 @@ def all_trajects(request):
         'end_adress': end_adress,
         'date': date_str,
         'transport_modes': transport_modes,
+        'start_region': start_region,
+        'end_region': end_region,
+        'region': region,
     }
     return render(request, 'trajects/trajects_page.html', context)
+
 
 
 def autocomplete_view(request):
@@ -308,24 +370,47 @@ def generate_recurrent_trajects(request, recurrent_dates, traject, departure_tim
                                 details, recurrence_type, recurrence_interval, recurrence_days, date_debut, date_fin):
     """Créer des trajets récurrents à partir des dates générées."""
     recurrent_trajects = []
-    for date in recurrent_dates:
+
+    if recurrence_type == 'none':
+        # Si aucun type de récurrence, on crée juste un trajet avec la date fournie
         proposed_traject = ProposedTraject(
             member_id=Members.objects.get(memb_user_fk=request.user).id,
             traject_id=traject.id,
-            date=date,
+            date=date_debut,  # Utiliser la date de début comme unique date
             departure_time=departure_time,
             arrival_time=arrival_time,
             number_of_places=number_of_places,
             details=details,
             recurrence_type=recurrence_type,
-            recurrence_interval=recurrence_interval,
-            recurrence_days=recurrence_days,
+            recurrence_interval=None,
+            recurrence_days=None,
             date_debut=date_debut,
             date_fin=date_fin
         )
         recurrent_trajects.append(proposed_traject)
         proposed_traject.save()
-        proposed_traject.transport_modes.set(request.POST.get('transport_modes'))
+        proposed_traject.transport_modes.set(request.POST.getlist('transport_modes'))  # Assigner les modes de transport
+    else:
+        # Gestion des trajets récurrents ici
+        for date in recurrent_dates:
+            proposed_traject = ProposedTraject(
+                member_id=Members.objects.get(memb_user_fk=request.user).id,
+                traject_id=traject.id,
+                date=date,
+                departure_time=departure_time,
+                arrival_time=arrival_time,
+                number_of_places=number_of_places,
+                details=details,
+                recurrence_type=recurrence_type,
+                recurrence_interval=recurrence_interval,
+                recurrence_days=recurrence_days,
+                date_debut=date_debut,
+                date_fin=date_fin
+            )
+            recurrent_trajects.append(proposed_traject)
+            proposed_traject.save()
+            proposed_traject.transport_modes.set(
+                request.POST.getlist('transport_modes'))  # Assigner les modes de transport
 
     return recurrent_trajects
 
@@ -334,6 +419,8 @@ def handle_form_submission(request, traject_form, proposed_form):
     """Traite la soumission du formulaire pour créer des trajets récurrents."""
     if traject_form.is_valid() and proposed_form.is_valid():
         traject = traject_form.save()
+        date=request.POST.get('date')
+        print(date)
         recurrence_type = proposed_form.cleaned_data['recurrence_type']
         recurrence_interval = proposed_form.cleaned_data['recurrence_interval']
         recurrence_days = request.POST.getlist('tr_weekdays[]')
@@ -344,14 +431,22 @@ def handle_form_submission(request, traject_form, proposed_form):
         number_of_places = request.POST.get('number_of_places')
         details = request.POST.get('details')
 
+        if date_debut is None :
+            date_debut = date
         # Convertir les dates en objets datetime
         if date_debut:
             date_debut = datetime.strptime(str(date_debut), '%Y-%m-%d')
         if date_fin:
             date_fin = datetime.strptime(str(date_fin), '%Y-%m-%d')
 
-        recurrent_dates = generate_recurrent_dates(date_debut, date_fin, recurrence_type, recurrence_interval,
-                                                   recurrence_days)
+        if recurrence_type == 'none':
+            # Si la récurrence est "none", générer une seule date (date_debut)
+            recurrent_dates = [date]
+        else:
+            # Générer des dates récurrentes
+            recurrent_dates = generate_recurrent_dates(date_debut, date_fin, recurrence_type, recurrence_interval,
+                                                       recurrence_days)
+
         recurrent_trajects = generate_recurrent_trajects(request, recurrent_dates, traject, departure_time,
                                                          arrival_time, number_of_places, details, recurrence_type,
                                                          recurrence_interval, recurrence_days, date_debut, date_fin)
@@ -430,6 +525,12 @@ def proposed_traject(request, researchesTraject_id=None):
     if request.method == 'POST':
         traject_form = TrajectForm(request.POST)
         proposed_form = ProposedTrajectForm(request.POST)
+        # Vérification des erreurs
+        if not traject_form.is_valid():
+            print(traject_form.errors)  # Pour voir les erreurs dans la console du serveur
+
+        if not proposed_form.is_valid():
+            print(proposed_form.errors)  # Pour voir les erreurs dans la console du serveur
 
         recurrent_trajects, success = handle_form_submission(request, traject_form, proposed_form)
 
