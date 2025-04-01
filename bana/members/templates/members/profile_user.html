@@ -1,51 +1,71 @@
 {% extends 'layouts/base.html' %}
 
-{% block title %}Profile - BanaCommunity{% endblock %}
+{% block title %}Profil - {{ user.username }}{% endblock %}
 
 {% block content %}
-    <h2 class="text-2xl font-bold">{{ user.username }}</h2>
-    <p>Email: {{ user.email }}</p>
+<div class="bg-gray-100 min-h-screen p-6">
+    <div class="container mx-auto bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Profil de {{ user.username }}</h2>
 
-    <!-- ⭐ Note moyenne -->
-    <p>Note Moyenne : {{ average_rating }}/5</p>
+        <!-- ✅ Infos utilisateur -->
+        <div class="mb-6">
+            <p class="text-lg"><strong>Email :</strong> {{ user.email }}</p>
+            <p class="text-lg"><strong>Genre :</strong> {{ user.members.memb_gender }}</p>
+            <p class="text-lg"><strong>Localisation :</strong> {{ user.members.memb_locality }}, {{ user.members.memb_country }}</p>
+            <p class="text-lg"><strong>Langues parlées :</strong>
+                {% for language in user.members.languages.all %}
+                    {{ language.name }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    Non spécifié
+                {% endfor %}
+            </p>
+        </div>
 
-    <!-- ✅ Liste des avis -->
-    <h3 class="mt-4 font-semibold">Avis reçus :</h3>
-    {% for review in reviews %}
-        <p>{{ review.reviewer.username }} : {{ review.rating }}/5 - "{{ review.comment }}"</p>
-    {% empty %}
-        <p>Aucun avis pour le moment.</p>
-    {% endfor %}
+        <!-- ⭐ Note moyenne -->
+        <p class="text-lg"><strong>Note Moyenne :</strong> {{ average_rating }}/5</p>
 
-    <!-- ✅ Afficher le formulaire pour AJOUTER un avis -->
-    {% if allow_review %}
-        <h3 class="mt-4 font-semibold">Laisser un avis :</h3>
-        <form method="post">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">⭐ Noter</button>
-        </form>
+        <!-- ✅ Avis reçus -->
+        <h3 class="text-2xl font-semibold text-gray-700 mt-4 mb-2">Avis reçus :</h3>
+        <ul class="bg-gray-50 p-4 rounded-md shadow-md">
+            {% for review in reviews %}
+                <li class="border-b py-2">
+                    <strong>{{ review.reviewer.username }}</strong> - ⭐ {{ review.rating }}/5 : "{{ review.comment }}"
+                </li>
+            {% empty %}
+                <p class="text-gray-500">Aucun avis pour le moment.</p>
+            {% endfor %}
+        </ul>
 
-    {% elif existing_review %}
-        <h3 class="mt-4 font-semibold">Votre avis :</h3>
-
-        {% if is_editing %}
-            <!-- ✅ Formulaire de modification -->
-            <form method="post">
+        <!-- ✅ Laisser un avis -->
+        {% if allow_review %}
+            <h3 class="text-2xl font-semibold text-gray-700 mt-4">Laisser un avis :</h3>
+            <form method="post" class="mt-4 bg-white p-4 rounded-md shadow">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">✅ Sauvegarder</button>
-                <a href="{% url 'profile_user' user.id %}" class="text-gray-500 hover:underline text-lg">❌ Annuler</a>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">⭐ Noter</button>
             </form>
-        {% else %}
-            <!-- ✅ Affichage de l'avis avec options Modifier/Supprimer -->
-            <p>⭐ {{ existing_review.rating }}/5 - "{{ existing_review.comment }}"</p>
 
-            <!-- 🔄 Modifier -->
-            <a href="?edit_review=true" class="text-yellow-500 hover:underline text-lg">✏️ Modifier</a>
+        {% elif existing_review %}
+            <h3 class="text-2xl font-semibold text-gray-700 mt-4">Votre avis :</h3>
 
-            <!-- ❌ Supprimer -->
-            <a href="{% url 'delete_review' user_id=user.id %}" class="text-red-500 hover:underline text-lg ml-4">❌ Supprimer</a>
+            {% if is_editing %}
+                <!-- ✅ Formulaire de modification -->
+                <form method="post" class="mt-4 bg-white p-4 rounded-md shadow">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">✅ Sauvegarder</button>
+                    <a href="{% url 'profile_user' user.id %}" class="text-gray-500 hover:underline text-lg ml-4">❌ Annuler</a>
+                </form>
+            {% else %}
+                <p class="mt-2">⭐ {{ existing_review.rating }}/5 - "{{ existing_review.comment }}"</p>
+
+                <!-- 🔄 Modifier -->
+                <a href="?edit_review=true" class="text-yellow-500 hover:underline text-lg">✏️ Modifier</a>
+
+                <!-- ❌ Supprimer -->
+                <a href="{% url 'delete_review' user_id=user.id %}" class="text-red-500 hover:underline text-lg ml-4">❌ Supprimer</a>
+            {% endif %}
         {% endif %}
-    {% endif %}
+    </div>
+</div>
 {% endblock %}

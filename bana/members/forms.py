@@ -164,6 +164,16 @@ class ReviewForm(forms.ModelForm):
         model = Review
         fields = ['rating', 'comment']
         widgets = {
-            'rating': forms.Select(choices=[(i, i) for i in range(1, 6)], attrs={'class': 'form-select'}),
-            'comment': forms.Textarea(attrs={'class': 'form-textarea', 'placeholder': 'Laissez un commentaire...'}),
+            'rating': forms.Select(
+                choices=[(i, f"⭐ {i}") for i in range(1, 6)],
+                attrs={
+                    'class': 'form-select block w-full mt-1 p-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}
+            ),
+            'comment': forms.Textarea(
+                attrs={
+                    'class': 'form-textarea block w-full mt-1 p-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500',
+                    'rows': 4,
+                    'placeholder': 'Laissez un commentaire constructif...'
+                }
+            ),
         }

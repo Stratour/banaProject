@@ -6,16 +6,36 @@
     <div class="bg-gray-100 min-h-screen p-6">
         <div class="container mx-auto">
             <h2 class="text-3xl font-bold text-gray-800 mb-6">My Profile</h2>
-            <h2>Profil de {{ user.username }}</h2>
-            <p><strong>Note moyenne :</strong> {{ average_rating }}/5</p>
 
-            <h3>Les avis des utilisateurs :</h3>
-            <ul>
+            <div class="mb-6">
+                <p class="text-lg"><strong>Nom d'utilisateur :</strong> {{ user.username }}</p>
+                <p class="text-lg"><strong>Email :</strong> {{ user.email }}</p>
+                <p class="text-lg"><strong>Genre :</strong> {{ user.members.memb_gender }}</p>
+                <p class="text-lg"><strong>Date de naissance :</strong> {{ user.members.memb_birth_date }}</p>
+                <p class="text-lg"><strong>Localisation
+                    :</strong> {{ user.members.memb_locality }}, {{ user.members.memb_country }}</p>
+                <p class="text-lg"><strong>Langues parlées :</strong>
+                    {% for language in user.members.languages.all %}
+                        {{ language.name }}{% if not forloop.last %}, {% endif %}
+                    {% empty %}
+                        Non spécifié
+                    {% endfor %}
+                </p>
+            </div>
+
+            <!-- ⭐ Note moyenne -->
+            <p class="text-lg"><strong>Note Moyenne :</strong> {{ average_rating }}/5</p>
+
+            <!-- ✅ Avis reçus -->
+            <h3 class="text-2xl font-semibold text-gray-700 mt-4 mb-2">Avis des utilisateurs :</h3>
+            <ul class="bg-gray-50 p-4 rounded-md shadow-md">
                 {% for review in reviews %}
-                    <li><strong>{{ review.reviewer.username }}</strong> - {{ review.rating }}/5 : {{ review.comment }}
+                    <li class="border-b py-2">
+                        <strong>{{ review.reviewer.username }}</strong> - ⭐ {{ review.rating }}/5 :
+                        "{{ review.comment }}"
                     </li>
                 {% empty %}
-                    <li>Aucun avis pour le moment.</li>
+                    <p class="text-gray-500">Aucun avis pour le moment.</p>
                 {% endfor %}
             </ul>
 
