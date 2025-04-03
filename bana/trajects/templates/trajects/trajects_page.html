@@ -309,7 +309,7 @@
             searchOptions.style.display = region ? 'block' : 'none';
 
             if (region) {
-                console.log('✅ Région sélectionnée :', region);
+                console.log('Région sélectionnée :', region);
 
                 var baseUrl = window.location.pathname; // On prend juste le chemin sans les paramètres existants
                 var params = new URLSearchParams(window.location.search);
@@ -317,31 +317,24 @@
 
                 // Détermine vers quelle liste scroller
                 var targetSection = window.location.search.includes("active_tab=researched") ? "#researched-list" : "#proposed-list";
-                console.log('🎯 Section cible :', targetSection);
-                console.log('🎯 Section  :', params);
+                console.log('Section cible :', targetSection);
 
                 var newUrl = baseUrl + "?" + params.toString() + targetSection;
                 console.log('🔗 Nouvelle URL :', newUrl);
-
                 // Met à jour l'URL sans recharger la page
                 history.pushState(null, null, newUrl);
-
-                // Attends un tout petit instant avant de scroller (pour éviter tout conflit)
-                setTimeout(() => {
                     var targetElement = document.querySelector(targetSection);
                     if (targetElement) {
-                        console.log('📜 Scroll vers :', targetElement);
+                        console.log('Scroll vers :', targetElement);
                         targetElement.scrollIntoView({behavior: "smooth"});
                     } else {
-                        console.warn('⚠️ Élément non trouvé pour scroller !');
+                        console.warn('Élément non trouvé pour scroller !');
                     }
-                }, 300);
             }
         }
 
         // Vérifie après le chargement si on doit scroller
         document.addEventListener("DOMContentLoaded", function () {
-            console.log('🔍 Vérification de l\'hash à l\'ouverture...');
             var hash = window.location.hash;
             if (hash === "#proposed-list" || hash === "#researched-list") {
                 var targetElement = document.querySelector(hash);
@@ -349,7 +342,7 @@
                     console.log('📜 Scroll automatique vers :', hash);
                     targetElement.scrollIntoView({behavior: "smooth"});
                 } else {
-                    console.warn('⚠️ Hash trouvé mais aucun élément correspondant :', hash);
+                    console.warn('Hash trouvé mais aucun élément correspondant :', hash);
                 }
             }
         });
