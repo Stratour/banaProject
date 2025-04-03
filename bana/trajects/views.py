@@ -2,28 +2,23 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.core.paginator import Paginator
-from .models import Reservation, TransportMode
+from .models import Reservation
 from .forms import ResearchedTrajectForm
 from django.core.exceptions import ObjectDoesNotExist
 from .utils.geocoding import get_autocomplete_suggestions
-from django.db.models import Q
 from django.conf import settings
-from datetime import datetime
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.contrib import messages
-from .models import ResearchedTraject, Traject, ProposedTraject, Members
+from .models import Traject, Members
 from .forms import TrajectForm, ProposedTrajectForm
-
-
-# ===================== listing ======================== #
-
 from django.db.models import Q
 from datetime import datetime
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from .models import ProposedTraject, ResearchedTraject, TransportMode
 
+
+# ===================== listing ======================== #
 def all_trajects(request):
     active_tab = request.GET.get('active_tab', 'proposed')
     start_adress = request.GET.get('start_adress', '').strip()
@@ -161,7 +156,6 @@ def all_trajects(request):
         'region': region,
     }
     return render(request, 'trajects/trajects_page.html', context)
-
 
 
 def autocomplete_view(request):
@@ -419,7 +413,7 @@ def handle_form_submission(request, traject_form, proposed_form):
     """Traite la soumission du formulaire pour créer des trajets récurrents."""
     if traject_form.is_valid() and proposed_form.is_valid():
         traject = traject_form.save()
-        date=request.POST.get('date')
+        date = request.POST.get('date')
         print(date)
         recurrence_type = proposed_form.cleaned_data['recurrence_type']
         recurrence_interval = proposed_form.cleaned_data['recurrence_interval']
@@ -431,7 +425,7 @@ def handle_form_submission(request, traject_form, proposed_form):
         number_of_places = request.POST.get('number_of_places')
         details = request.POST.get('details')
 
-        if date_debut is None :
+        if date_debut is None:
             date_debut = date
         # Convertir les dates en objets datetime
         if date_debut:

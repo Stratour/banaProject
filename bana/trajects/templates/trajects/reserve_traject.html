@@ -55,25 +55,27 @@
                                 <p><strong>Status:</strong> {{ request.status }}</p>
                                 <p><strong>Total Price:</strong> €{{ request.total_price }}</p>
 
-                                <!-- Form to accept reservation -->
-                                <form method="POST"
-                                      action="{% url 'manage_reservation' reservation_id=request.id action='accept' %}">
-                                    {% csrf_token %}
-                                    <button type="submit"
-                                            class="accept bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-2">
-                                        Accept
-                                    </button>
-                                </form>
+                                <div style="display: flex; gap: 8px;">
+                                    <!-- Form to accept reservation -->
+                                    <form method="POST"
+                                          action="{% url 'manage_reservation' reservation_id=request.id action='accept' %}">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                class="accept bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded">
+                                            Accept
+                                        </button>
+                                    </form>
 
-                                <!-- Form to reject reservation -->
-                                <form method="POST"
-                                      action="{% url 'manage_reservation' reservation_id=request.id action='reject' %}">
-                                    {% csrf_token %}
-                                    <button type="submit"
-                                            class="reject bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
-                                        Reject
-                                    </button>
-                                </form>
+                                    <!-- Form to reject reservation -->
+                                    <form method="POST"
+                                          action="{% url 'manage_reservation' reservation_id=request.id action='reject' %}">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                                class="reject bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded">
+                                            Reject
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         {% endif %}
                     {% endfor %}

@@ -8,145 +8,96 @@
             <h2 class="text-3xl font-bold text-gray-800 mb-6">All Trajects</h2>
 
             <!-- Search Bar -->
-            <form method="GET" action="{% url 'all_trajects' %}" class="bg-white shadow-md rounded-lg p-6 mb-6">
+            <form method="GET" action="{% url 'all_trajects' %}" class="bg-white shadow-lg rounded-lg p-6 mb-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
                     <!-- Starting Point -->
                     <div>
-                        <label for="start_adress" class="block text-sm font-medium text-gray-700">
-                            Point de départ
-                        </label>
-                        <input
-                                type="text"
-                                name="start_adress"
-                                id="start_adress"
-                                value="{{ start_adress|default:'' }}"
-                                class="form-input mt-1 block w-full"
-                                placeholder="Entrez le point de départ"
-                                autocomplete="off"
-                        />
-                        <ul id="start-suggestion-list"
-                            class="bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-48 overflow-auto"></ul>
+                        <label for="start_adress" class="block text-sm font-medium text-gray-700">🚀 Point de
+                            départ</label>
+                        <input type="text" name="start_adress" id="start_adress" value="{{ start_adress|default:'' }}"
+                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                               placeholder="Entrez le point de départ" autocomplete="off"/>
                     </div>
 
                     <!-- Ending Point -->
                     <div>
-                        <label for="end_adress" class="block text-sm font-medium text-gray-700">
-                            Point d’arrivée
-                        </label>
-                        <input
-                                type="text"
-                                name="end_adress"
-                                id="end_adress"
-                                value="{{ end_adress|default:'' }}"
-                                class="form-input mt-1 block w-full"
-                                placeholder="Entrez le point d’arrivée"
-                                autocomplete="off"
-                        />
-                        <ul id="end-suggestion-list"
-                            class="bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-48 overflow-auto"></ul>
+                        <label for="end_adress" class="block text-sm font-medium text-gray-700">🎯 Point
+                            d’arrivée</label>
+                        <input type="text" name="end_adress" id="end_adress" value="{{ end_adress|default:'' }}"
+                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                               placeholder="Entrez le point d’arrivée" autocomplete="off"/>
                     </div>
+
                     <!-- Date -->
                     <div>
-                        <label for="date" class="block text-sm font-medium text-gray-700">
-                            Date
-                        </label>
-                        <input
-                                type="date"
-                                name="date"
-                                id="date"
-                                value="{{ date|default:'' }}"
-                                class="form-input mt-1 block w-full"
-                        />
+                        <label for="date" class="block text-sm font-medium text-gray-700">📅 Date</label>
+                        <input type="date" name="date" id="date" value="{{ date|default:'' }}"
+                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"/>
                     </div>
 
                     <!-- Transport Mode -->
                     <div>
-                        <label for="transport_modes" class="block text-sm font-medium text-gray-700">
-                            Mode de transport
-                        </label>
-                        <div class="mt-1">
-                            <label class="inline-flex items-center mr-4">
+                        <label for="transport_modes" class="block text-sm font-medium text-gray-700">🚗 Mode de
+                            transport</label>
+                        <div class="mt-1 space-y-2">
+                            <label class="inline-flex items-center">
                                 <input type="checkbox" name="transport_modes" value="transport" class="form-checkbox">
-                                <span class="ml-2">Transport en commun</span>
+                                <span class="ml-2">🚊 Transport en commun</span>
                             </label>
-                            <label class="inline-flex items-center mr-4">
+                            <label class="inline-flex items-center">
                                 <input type="checkbox" name="transport_modes" value="voiture" class="form-checkbox">
-                                <span class="ml-2">Voiture</span>
+                                <span class="ml-2">🚗 Voiture</span>
                             </label>
-                            <label class="inline-flex items-center mr-4">
+                            <label class="inline-flex items-center">
                                 <input type="checkbox" name="transport_modes" value="à vélo" class="form-checkbox">
-                                <span class="ml-2">À vélo</span>
+                                <span class="ml-2">🚴‍♂️ À vélo</span>
                             </label>
-                            <label class="inline-flex items-center mr-4">
+                            <label class="inline-flex items-center">
                                 <input type="checkbox" name="transport_modes" value="à pied" class="form-checkbox">
-                                <span class="ml-2">À pied</span>
+                                <span class="ml-2">🚶‍♂️ À pied</span>
                             </label>
                         </div>
                     </div>
-                    <!-- Filtrage région-->
+
+                    <!-- Sélection de la région -->
                     <div>
-                        <label for="region" class="block text-sm font-medium text-gray-700">
-                            Sélectionner une région
-                        </label>
-                        <select
-                                name="region"
-                                id="region"
-                                class="form-select mt-1 block w-full"
-                                onchange="this.form.submit()"
-                        >
-                            <option value="" {% if not region %}selected{% endif %}>Choisissez une région
-                            </option>
+                        <label for="region" class="block text-sm font-medium text-gray-700">🌍 Sélectionner une
+                            région</label>
+                        <select name="region" id="region" onchange="showSearchBars()"
+                                class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="" {% if not region %}selected{% endif %}>Choisissez une région</option>
                             <option value="Flandre" {% if region == 'Flandre' %}selected{% endif %}>Flandre</option>
                             <option value="Wallonie" {% if region == 'Wallonie' %}selected{% endif %}>Wallonie</option>
-                            <option value="Bruxelles"
-                                    {% if region == 'Bruxelles' %}selected{% endif %}>Bruxelles-Capitale
+                            <option value="Bruxelles" {% if region == 'Bruxelles' %}selected{% endif %}>
+                                Bruxelles-Capitale
                             </option>
                         </select>
                     </div>
-                    <!-- City and Postal Code Search (Hidden by default) -->
+
+                    <!-- Recherche Ville & Code Postal -->
                     <div id="search-options" style="display: {% if region %}block{% else %}none{% endif %};">
-                        <div class="mt-4">
-                            <label for="city_search" class="block text-sm font-medium text-gray-700">
-                                Rechercher par ville
-                            </label>
-                            <input
-                                    type="text"
-                                    name="city_search"
-                                    id="city_search"
-                                    class="form-input mt-1 block w-full"
-                                    placeholder="Entrez une ville"
-                                    value="{{ city_search|default:'' }}"
-                                    autocomplete="off"
-                            />
-                        </div>
+                        <label for="city_search" class="block text-sm font-medium text-gray-700">🏙️ Rechercher par
+                            ville</label>
+                        <input type="text" name="city_search" id="city_search"
+                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                               placeholder="Entrez une ville" value="{{ city_search|default:'' }}" autocomplete="off"/>
 
-                        <!-- Recherche par code postal -->
-                        <div id="postal-code-search-container"
-                             style="display: {% if region %}block{% else %}none{% endif %};">
-                            <label for="postal_code_search" class="block text-sm font-medium text-gray-700">
-                                Rechercher par code postal
-                            </label>
-                            <input
-                                    type="number"
-                                    name="postal_code_search"
-                                    id="postal_code_search"
-                                    class="form-input mt-1 block w-full"
-                                    placeholder="Entrez un code postal"
-                                    value="{{ postal_code_search|default:'' }}"
-                                    autocomplete="off"
-                            />
-                        </div>
-
-                        <!-- Submit Button -->
-                        <div class="col-span-1 lg:col-span-4">
-                            <button
-                                    type="submit"
-                                    class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-500 focus:outline-none"
-                            >
-                                Rechercher
-                            </button>
-                        </div>
+                        <label for="postal_code_search" class="block text-sm font-medium text-gray-700 mt-3">📮
+                            Rechercher par code postal</label>
+                        <input type="number" name="postal_code_search" id="postal_code_search"
+                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                               placeholder="Entrez un code postal" value="{{ postal_code_search|default:'' }}"
+                               autocomplete="off"/>
                     </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-6">
+                    <button type="submit"
+                            class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-500 transition duration-200 shadow-md">
+                        🔍 Rechercher
+                    </button>
                 </div>
             </form>
 
@@ -187,8 +138,6 @@
                                                 </a>
                                             {% endif %}
                                         </h3>
-
-
                                         <p class="text-gray-600">
                                             <strong>Adresse de départ:</strong>
                                             {% if proposed.traject.start_adress %}
@@ -356,12 +305,53 @@
             var region = document.getElementById('region').value;
             var searchOptions = document.getElementById('search-options');
 
-            // Afficher ou masquer les champs de recherche selon la sélection de la région
+            // Afficher ou masquer la section de recherche avancée
+            searchOptions.style.display = region ? 'block' : 'none';
+
             if (region) {
-                searchOptions.style.display = 'block';
-            } else {
-                searchOptions.style.display = 'none';
+                console.log('✅ Région sélectionnée :', region);
+
+                var baseUrl = window.location.pathname; // On prend juste le chemin sans les paramètres existants
+                var params = new URLSearchParams(window.location.search);
+                params.set("region", region);  // Met à jour ou ajoute le paramètre "region"
+
+                // Détermine vers quelle liste scroller
+                var targetSection = window.location.search.includes("active_tab=researched") ? "#researched-list" : "#proposed-list";
+                console.log('🎯 Section cible :', targetSection);
+                console.log('🎯 Section  :', params);
+
+                var newUrl = baseUrl + "?" + params.toString() + targetSection;
+                console.log('🔗 Nouvelle URL :', newUrl);
+
+                // Met à jour l'URL sans recharger la page
+                history.pushState(null, null, newUrl);
+
+                // Attends un tout petit instant avant de scroller (pour éviter tout conflit)
+                setTimeout(() => {
+                    var targetElement = document.querySelector(targetSection);
+                    if (targetElement) {
+                        console.log('📜 Scroll vers :', targetElement);
+                        targetElement.scrollIntoView({behavior: "smooth"});
+                    } else {
+                        console.warn('⚠️ Élément non trouvé pour scroller !');
+                    }
+                }, 300);
             }
         }
+
+        // Vérifie après le chargement si on doit scroller
+        document.addEventListener("DOMContentLoaded", function () {
+            console.log('🔍 Vérification de l\'hash à l\'ouverture...');
+            var hash = window.location.hash;
+            if (hash === "#proposed-list" || hash === "#researched-list") {
+                var targetElement = document.querySelector(hash);
+                if (targetElement) {
+                    console.log('📜 Scroll automatique vers :', hash);
+                    targetElement.scrollIntoView({behavior: "smooth"});
+                } else {
+                    console.warn('⚠️ Hash trouvé mais aucun élément correspondant :', hash);
+                }
+            }
+        });
     </script>
 {% endblock %}
