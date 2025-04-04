@@ -279,37 +279,19 @@ def reserve_traject(request, id):
     return render(request, 'trajects/reserve_traject.html', context)
 
 
+
 @login_required
 def reserve_trajectResearched(request, researchedTraject_id):
-    researched_traject = ResearchedTraject.objects.get(id=researchedTraject_id)
-    traject = Traject.objects.get(id=researched_traject.traject_id)
-    print("++++++++++++++++++++++++++++++++++ méthode appelé " + str(traject))
-    print("++++++++++++++++++++++++++++++++++ " + str(researched_traject.date))
-    trajectResearched = get_object_or_404(ResearchedTraject, id=researchedTraject_id)
-    print("++++++++++++++++++++++ traject " + str(trajectResearched))
-    user_member = Members.objects.get(memb_user_fk=request.user)
-    is_creator = trajectResearched.member == user_member
-    print("++++++++++++++++++++++ traject.id " + str(trajectResearched.id))
-    print("++++++++++++++++++++++ traject.traject_id ' " + str(trajectResearched.traject_id))
+    researched_traject = get_object_or_404(ResearchedTraject, id=researchedTraject_id)
+    # Vérifier si un trajet proposé correspondant existe
+    try:
+        proposed_traject = ProposedTraject.objects.get(traject_id=researched_traject.traject_id)
+        print(proposed_traject)
 
-    context = {
-        'traject': trajectResearched,
-        'is_creator': is_creator,
-    }
-    if is_creator:
-        print('================ if')
-        # Add the list of reservation requests if the user is the creator
-        # Assuming you have a model for reservations, replace `ReservationRequest` with the actual model name
-        reservation_requests = ["member1", "member2", "member3"]  # ReservationRequest.objects.filter(traject=traject)
-        context['reservation_requests'] = reservation_requests
-    else:
-        print('================ else')
-        # Add any other context needed for non-creator users
-        reservation_count = 3  # ReservationRequest.objects.filter(traject=traject).count()
-        context['reservation_count'] = reservation_count
-
-    return render(request, 'trajects/reserve_traject.html', context)
-
+        return reserve_traject(request, proposed_traject.id)  # Appel direct pour éviter la répétition
+    except ProposedTraject.DoesNotExist:
+        messages.error(request, "Ce trajet n'existe pas encore dans les trajets proposés.")
+        return  all_trajects(request)
 
 @login_required
 def manage_reservation(request, reservation_id, action):
@@ -508,7 +490,6 @@ def proposed_traject(request, researchesTraject_id=None):
             'end_adress': traject.end_adress or f"{traject.end_street}, {traject.end_locality} {traject.end_country}",
             'details': researched_traject.details,
             'number_of_places': researched_traject.number_of_places,
-            'language': researched_traject.language.all(),
             'departure_time': researched_traject.departure_time,
             'arrival_time': researched_traject.arrival_time,
             'date': researched_traject.date,
@@ -521,7 +502,7 @@ def proposed_traject(request, researchesTraject_id=None):
         proposed_form = ProposedTrajectForm(request.POST)
         # Vérification des erreurs
         if not traject_form.is_valid():
-            print(traject_form.errors)  # Pour voir les erreurs dans la console du serveur
+            print(traject_form.errors)
 
         if not proposed_form.is_valid():
             print(proposed_form.errors)  # Pour voir les erreurs dans la console du serveur

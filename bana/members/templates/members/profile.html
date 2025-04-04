@@ -3,13 +3,14 @@
 {% block title %}Profile - BanaCommunity{% endblock %}
 
 {% block content %}
-<div class="bg-gray-100 min-h-screen p-6">
-    <div class="container mx-auto">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">My Profile</h2>
+    <div class="bg-gray-100 min-h-screen p-6">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">My Profile</h2>
 
             <div class="mb-6">
                 <p class="text-lg"><strong>Nom d'utilisateur :</strong> {{ user.username }}</p>
                 <p class="text-lg"><strong>Email :</strong> {{ user.email }}</p>
+                <p class="text-lg"><strong>Numéro de GSM :</strong> {{ user.members.memb_num_gsm }}</p>
                 <p class="text-lg"><strong>Genre :</strong> {{ user.members.memb_gender }}</p>
                 <p class="text-lg"><strong>Date de naissance :</strong> {{ user.members.memb_birth_date }}</p>
                 <p class="text-lg"><strong>Localisation
