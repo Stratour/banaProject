@@ -21,9 +21,12 @@ from . import views
 urlpatterns = [ 
     path("__reload__/", include("django_browser_reload.urls")), # tailwind related it's the auto reload
     path('admin/', admin.site.urls), # django admin pannel
-    
     # pages 
     path('', views.home, name='home'),
+    # Authentification
+    path('accounts/', include('accounts.urls')),
+    path('accounts/', include('allauth.urls')),
+
     path('contact/', views.contact, name='contact'),
     path('about/', views.about, name='about'),
     path('profile/', include('members.urls')),

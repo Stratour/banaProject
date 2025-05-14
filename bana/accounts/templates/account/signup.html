@@ -1,0 +1,170 @@
+{% extends "account/base_entrance.html" %}
+{% load allauth i18n account static %}
+
+{% block head_title %}
+    {% trans "Signup" %}
+{% endblock head_title %}
+
+
+{% block content %}
+
+<section id="signup" class="signup section">
+
+<!-- Page Title -->
+    <header class="container section-title" data-aos="fade">
+        <hgroup>
+            <h1>{% trans 'Signup' %}</h1>
+            <hr>
+            <p class="text-center">
+                {% trans "Create an account to get started." %}
+            </p>
+        </hgroup>  
+    </header><!-- End Page Title -->
+
+
+    <div class="container" data-aos="fade-up" data-aos-delay="100">
+            <div class="row justify-content-center">
+                <div class="col-lg-6">
+                 
+                    {% if not SOCIALACCOUNT_ONLY %}
+                        {% url 'account_signup' as action_url %}
+                            <form method="post" class="form" action="{{ signup_url }}">
+                        {% csrf_token %}
+
+                        <!-- Username Input -->
+                        <div class="form-group mb-3">
+                            <label for="username" class="form-label">{% trans 'Username' %}</label>
+                            <input type="text" name="username" id="username" class="form-control" required>
+                            {% if form.username.errors %}
+                                <div class="errorlist text-danger">
+                                    {% for error in form.username.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Email Input -->
+                        <div class="form-group mb-3">
+                            <label for="email" class="form-label">{% trans 'Email' %}</label>
+                            <input type="email" name="email" id="email" class="form-control" required>
+                            {% if form.email.errors %}
+                                <div class="errorlist text-danger">
+                                    {% for error in form.email.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Password Input -->
+                        <div class="form-group mb-3">
+                            <label for="password" class="form-label">{% trans 'Password' %}</label>
+                            <input type="password" name="password1" id="password" class="form-control" required>
+                            {% if form.password1.errors %}
+                                <div class="errorlist text-danger">
+                                    {% for error in form.password1.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Confirm Password Input -->
+                        <div class="form-group mb-3">
+                            <label for="password_confirm" class="form-label">{% trans 'Confirm Password' %}</label>
+                            <input type="password" name="password2" id="password_confirm" class="form-control" required>
+                            {% if form.password2.errors %}
+                                <div class="errorlist text-danger">
+                                    {% for error in form.password2.errors %}
+                                        <p>{{ error }}</p>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-primary btn-block">{% trans 'Sign Up' %}</button>
+                        </div>
+                    </form>
+
+                    
+                    <!-- Login Link -->
+                    <div class="text-center mt-3">
+                        <p>{% blocktranslate %}Already have an account? <a href="{{ login_url }}">Sign In</a>{% endblocktranslate %}</p>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Alternative signup methods -->
+                    {% if PASSKEY_SIGNUP_ENABLED %}
+                        <hr class="my-4">
+                        <div class="text-center">
+                            <a href="{{ signup_by_passkey_url }}" class="btn btn-outline-primary btn-block">
+                                {% trans "Sign up using a passkey" %}
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    <!-- Social sign up options -->
+                    {% if SOCIALACCOUNT_ENABLED %}
+                        <div class="row justify-content-center mt-4">
+                            <div class="col-lg-6 text-center">
+                                <p>{% trans 'Or sign up with:' %}</p>
+                                <div class="social-links">
+                                    {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+</section><!-- End Signup Section -->
+
+{% endblock content %}
+{% comment "backup" %}
+{% block content %}
+    {% element h1 %}
+        {% trans "Sign Up" %}
+    {% endelement %}
+    {% setvar link %}
+        <a href="{{ login_url }}">
+        {% endsetvar %}
+        {% setvar end_link %}
+        </a>
+    {% endsetvar %}
+    {% element p %}
+        {% blocktranslate %}Already have an account? Then please {{ link }}sign in{{ end_link }}.{% endblocktranslate %}
+    {% endelement %}
+
+    {% if not SOCIALACCOUNT_ONLY %}
+        {% url 'account_signup' as action_url %}
+        {% element form form=form method="post" action=action_url tags="entrance,signup" %}
+            {% slot body %}
+                {% csrf_token %}
+                {% element fields form=form unlabeled=True %}
+                {% endelement %}
+                {{ redirect_field }}
+            {% endslot %}
+            {% slot actions %}
+                {% element button tags="prominent,signup" type="submit" %}
+                    {% trans "Sign Up" %}
+                {% endelement %}
+            {% endslot %}
+        {% endelement %}
+    {% endif %}
+
+    {% if PASSKEY_SIGNUP_ENABLED %}
+        {% element hr %}
+        {% endelement %}
+        {% element button href=signup_by_passkey_url tags="prominent,signup,outline,primary" %}
+            {% trans "Sign up using a passkey" %}
+        {% endelement %}
+    {% endif %}
+    {% if SOCIALACCOUNT_ENABLED %}
+        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+    {% endif %}
+{% endblock content %}
+{% endcomment %}

@@ -27,8 +27,9 @@ SECRET_KEY = 'django-insecure-*umwdzm=4)s(*x)hq1_)yd(6mtbrwy5gh8%b^_d(kn8xnspgc(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['37.187.94.53']
 
+print("37.187.94.53:8800")
 
 # Application definition
 
@@ -39,6 +40,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+     #Authentification
+    'accounts',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount', # Pour la connection via les reseaux-sociaux
+    'allauth.socialaccount.providers.instagram', # Pour la connection via google
     
     # my extensions
     'django_extensions',
@@ -46,11 +54,14 @@ INSTALLED_APPS = [
     'theme',
     'crispy_forms',
     'crispy_bootstrap4',
+    'django_htmx',
 
     # my apps 
     'bana',
     'members.apps.MembersConfig',
     'trajects.apps.TrajectsConfig',
+
+
 
 ]
 
@@ -62,8 +73,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
+    "django_htmx.middleware.HtmxMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
+    "allauth.account.middleware.AccountMiddleware",
 ]
 
 ROOT_URLCONF = 'bana.urls'
@@ -86,7 +98,19 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bana.wsgi.application'
 
-
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'instagram': {
+        # For each OAuth based provider, either add a ``SocialApp``
+        # (``socialaccount`` app) containing the required client
+        # credentials, or list them here:
+        'APP': {
+            'client_id': '574705955662733',
+            'secret': '22cff4b8e78f8f5dd6fa980e6d5f732b',
+            'key': ''
+        }
+    }
+}
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -160,3 +184,4 @@ LOGIN_URL = '/profile/login_user/'
 # API key 
 
 OPEN_STREET_MAP_API_KEY = config("OPEN_STREET_MAP_API", default="default_value")
+

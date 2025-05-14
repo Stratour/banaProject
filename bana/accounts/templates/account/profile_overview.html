@@ -1,0 +1,33 @@
+{% load allauth i18n static %}
+
+        <table class="table" id="profile-overview">
+            <h3 class="text-lg-center">{% trans 'Profile Details' %}</h3>
+            <tbody>
+            {% for i in profile %}
+                <tr>
+                    <th class="col-lg-4 col-md-4">{% trans 'Full Name' %}</th>
+                    <td class="col-lg-9 col-md-8">: {{ user.get_full_name }}</td>
+                </tr>
+                <tr>
+                    <th class="col-lg-4 col-md-4">{% trans 'Email' %}</th>
+                    <td class="col-lg-9 col-md-8">: {{ user.email }}</td>
+                </tr>
+                <tr>
+                    <th class="col-lg-4 col-md-4">{% trans 'Phone' %}</th>
+                    <td class="col-lg-9 col-md-8">: {{ i.phone }}</td>
+                </tr>
+                <tr>
+                    <th class="col-lg-4 col-md-4">{% trans 'Bio' %}</th>
+                    <td class="col-lg-9 col-md-8">: {{ i.bio }}</td>
+                </tr>
+                <tr>
+                    <th class="col-lg-3 col-md-4">{% trans 'Inscription' %}</th>
+                    <td class="col-lg-9 col-md-8">: {{ user.date_joined|date:"d M Y" }}</td>
+                </tr>
+                <tr>
+                    <th class="col-lg-3 col-md-4">{% trans 'Last connection' %}</th>
+                    <td class="col-lg-9 col-md-8">: {{ user.last_login|date:"d M Y H:i" }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>

@@ -1,0 +1,33 @@
+{% load allauth socialaccount i18n %}
+{% get_providers as socialaccount_providers %}
+{% if socialaccount_providers %}
+    {% element provider_list %}
+        {% for provider in socialaccount_providers %}
+            {% if provider.id == "google" %}
+                <!-- Affichage personnalisé pour Google -->
+                {% provider_login_url provider process=process scope=scope auth_params=auth_params as href %}
+                <a href="{{ href }}" class="btn bi bi-google">
+                    {% trans "Google" %}
+                </a>
+            {% elif provider.id == "facebook" %}
+                <!-- Affichage personnalisé pour Facebook -->
+                {% provider_login_url provider process=process scope=scope auth_params=auth_params as href %}
+                <a href="{{ href }}" class="btn bi bi-facebook">
+                    {% trans "Sign in with Facebook" %}
+                </a>
+            {% endif %}
+           {% comment "" %}
+           {% if provider.id == "openid" %}
+                {% for brand in provider.get_brands %}
+                    {% provider_login_url provider openid=brand.openid_url process=process as href %}
+                    {% element provider name=brand.name provider_id=provider.id href=href %}
+                    {% endelement %}
+                {% endfor %}
+            {% endif %}
+            {% provider_login_url provider process=process scope=scope auth_params=auth_params as href %}
+            {% element provider name=provider.name provider_id=provider.id href=href %}
+            {% endelement %}
+           {% endcomment %} 
+        {% endfor %}
+    {% endelement %}
+{% endif %}

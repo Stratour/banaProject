@@ -11,21 +11,27 @@
 
     <!-- js -->
     <script src="{% static 'members/js/scripts.js' %}" defer ></script>
-    
+
+    <!-- css -->
+    <link href="{% static 'bana/css/style.css' %}" rel="stylesheet">
+
+
     <title>{% block title %}{% endblock  %}</title>
 </head>
 <body class="min-h-screen flex flex-col">
-    {% include './header.html' %}
+    {% include 'layouts/header.html' %}
 
     <main class="flex-grow">
         {% block content %}
         {% endblock %}
     </main>
 
-    {% include './nav-mobile.html' %}
-    {% include './footer.html' %}
+    {% include 'layouts/nav-mobile.html' %}
+    {% include 'layouts/footer.html' %}    
+    <script src="https://unpkg.com/htmx.org@2.0.3/dist/htmx.js" integrity="sha384-BBDmZzVt6vjz5YbQqZPtFZW82o8QotoM7RUp5xOxV3nSJ8u2pSdtzFAbGKzTlKtg" crossorigin="anonymous"></script>
     <script src="{% static 'bana/js/carroussel.js' %}"></script>
     <script src="{% static 'bana/js/top-mobile-menu.js' %}"></script>
     <script src="{% static 'bana/js/video.js' %}"></script>
+
 </body>
 </html>

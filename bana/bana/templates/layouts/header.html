@@ -49,27 +49,29 @@
         <!-- Authentication Buttons -->
         <div class="hidden md:flex flex-row gap-8 items-center">
             <div id="auth-buttons" class="md:flex items-center space-x-4">
+                
                 {% if user.is_authenticated %}
-                    <a href="{% url 'profile' %}"
+                    <a href="{% url 'accounts:profile' %}"
                         class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-[#3D4F00] hover:no-underline">
                         Profile
                     </a>
             
-                    <a href="{% url 'logout' %}"
+                    <a href="{% url 'account_logout' %}"
                         class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-[#3D4F00] hover:no-underline">
                         Logout
                     </a>
                 {% else %}
-                    <a href="{% url 'register' %}"
+                    <a href="{% url 'account_signup' %}"
                         class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-[#3D4F00] hover:no-underline">
                         Register
                     </a>
             
-                    <a href="{% url 'login' %}"
+                    <a href="{% url 'account_login' %}"
                         class="relative bg-[#007F73] text-[#D7FC19] px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-[#D7FC19] hover:no-underline before:absolute before:inset-0 before:rounded-full before:border-2 before:border-[#D7FC19]">
                         Login
                     </a>
                 {% endif %}
+                
                 <div class="relative inline-block text-left z-10">
                     <button
                         class="flex items-center pl-4 py-2 font-bold text-white rounded-full focus:outline-none peer">

@@ -1,0 +1,92 @@
+{% extends "account/base_manage_email.html" %}
+{% load static allauth i18n %}
+
+{% block head_title %}
+    {% trans "Email Addresses" %}
+{% endblock head_title %}
+
+{% block content %}
+
+<section id="email" class="email section">
+
+    <!-- Page Title -->
+    <header class="container section-title" data-aos="fade">
+        <hgroup>
+            <h1>{% trans 'Email Addresses' %}</h1>
+            {% if emailaddresses %}
+            <hr>
+            <p class="text-center">
+                {% trans 'The following email addresses are associated with your account:' %}
+            </p>
+            {% endif %}
+        </hgroup>  
+    </header><!-- End Page Title -->
+
+    <article class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row justify-content-center">
+
+        {% if emailaddresses %}
+            {% url 'account_email' as email_url %}
+            <div class="col-lg-9 text-center">
+                <form method="post" action="{{ email_url }}" class="form">
+                    {% csrf_token %}
+
+                    {% for radio in emailaddress_radios %}
+                        {% with emailaddress=radio.emailaddress %}
+                            <div class="form-check text-start mb-3">
+                                <input class="form-check-input" type="radio" name="email" id="{{ radio.id }}" value="{{ emailaddress.email }}" {% if radio.checked %}checked{% endif %}>
+                                <label class="form-check-label" for="{{ radio.id }}">
+                                    {{ emailaddress.email }}
+                                    {% if emailaddress.verified %}
+                                        <span class="badge bg-success ms-2">{% translate "Verified" %}</span>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark ms-2">{% translate "Unverified" %}</span>
+                                    {% endif %}
+                                    {% if emailaddress.primary %}
+                                        <span class="badge bg-primary ms-2">{% translate "Primary" %}</span>
+                                    {% endif %}
+                                </label>
+                            </div>
+                        {% endwith %}
+                    {% endfor %}
+
+                    <div class="d-flex justify-content">
+                        <button type="submit" name="action_primary" class="btn btn-primary">{% trans 'Make Primary' %}</button>
+                        <button type="submit" name="action_send" class="btn btn-secondary">{% trans 'Re-send Verification' %}</button>
+                        <button type="submit" name="action_remove" class="btn btn-danger">{% trans 'Remove' %}</button>
+                    </div>
+                </form>
+            </div>
+        {% else %}
+            {% include "account/snippets/warn_no_email.html" %}
+            {% if can_add_email %}
+                <div class="col-lg-6 text-center">
+                    <h2>{% trans "Add Email Address" %}</h2>
+                    {% url 'account_email' as action_url %}
+                    <form method="post" action="{{ action_url }}" class="form">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                            <button type="submit" name="action_add" class="btn-send">
+                                {% trans "Add Email" %}
+                            </button>
+                    </form>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        </div>
+    </article>
+</section>
+{% endblock content %}
+
+{% block extra_body %}
+    <script src="{% static 'account/js/account.js' %}"></script>
+    <script src="{% static 'account/js/onload.js' %}"></script>
+    <script data-allauth-onload="allauth.account.forms.manageEmailForm" type="application/json">
+        {
+            "i18n": {
+                "confirmDelete": "{% trans 'Do you really want to remove the selected email address?' %}"
+            }
+        }
+    </script>
+{% endblock extra_body %}
