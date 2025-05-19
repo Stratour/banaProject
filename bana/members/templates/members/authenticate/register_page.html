@@ -1,21 +1,92 @@
 {% extends 'layouts/base.html' %}
 
-{% block title %}Register - BanaCommunity{% endblock %}
+{% block title %}Inscription - BanaCommunity{% endblock %}
 
 {% block content %}
-<div class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
-    <div class="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
-        <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Inscription</h2>
+<div class="bg-gray-50 min-h-screen flex items-center justify-center p-6">
+    <div class="bg-white shadow-lg rounded-xl p-8 max-w-md w-full space-y-6">
+        <h2 class="text-3xl font-bold text-indigo-700 mb-6 text-center">Inscription</h2>
         <form method="post" action="{% url 'register' %}" class="space-y-6">
             {% csrf_token %}
 
-            {{ user_form.as_p }}
-            {{ members_form.as_p }}
+            <!-- Affichage des champs de base -->
+            <div class="space-y-4">
+                <div class="form-group">
+                    {{ user_form.username }}
+                </div>
+                <div class="form-group">
+                    {{ user_form.last_name }}
+                </div>
+                <div class="form-group">
+                    {{ user_form.email }}
+                </div>
+                <div class="form-group">
+                    {{ members_form.memb_num_gsm }}
+                </div>
+                <div class="form-group">
+                    {{ user_form.password }}
+                </div>
+            </div>
 
-            <button type="submit" class="w-full py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
+            <!-- Case à cocher pour afficher plus d'informations -->
+            <div class="mt-4">
+                <label for="show_additional_info" class="inline-flex items-center text-indigo-600">
+                    <input type="checkbox" id="show_additional_info" name="show_additional_info" class="form-checkbox text-indigo-600" />
+                    <span class="ml-2">Afficher plus d'informations</span>
+                </label>
+            </div>
+
+            <!-- Champs supplémentaires cachés par défaut -->
+            <div id="additional-info" class="hidden space-y-4 mt-4">
+                <div class="form-group">
+                    {{ members_form.memb_birth_date }}
+                </div>
+                <div class="form-group">
+                    {{ members_form.memb_gender }}
+                </div>
+                <div class="form-group">
+                    {{ members_form.memb_num_street }}
+                </div>
+                <div class="form-group">
+                    {{ members_form.memb_box }}
+                </div>
+                <div class="form-group">
+                    {{ members_form.memb_street }}
+                </div>
+                <div class="form-group">
+                    {{ members_form.memb_zp }}
+                </div>
+                <div class="form-group">
+                    {{ members_form.memb_locality }}
+                </div>
+                <div class="form-group">
+                    {{ members_form.memb_country }}
+                </div>
+                <div class="form-group">
+                    {{ members_form.memb_car }}
+                </div>
+                <div class="form-group">
+                    {{ members_form.languages }}
+                </div>
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition ease-in-out duration-300">
                 Inscription
             </button>
         </form>
     </div>
 </div>
+
+<script>
+    // Script pour afficher/masquer les informations supplémentaires
+    document.getElementById('show_additional_info').addEventListener('change', function() {
+        var additionalInfo = document.getElementById('additional-info');
+        if (this.checked) {
+            additionalInfo.classList.remove('hidden');
+        } else {
+            additionalInfo.classList.add('hidden');
+        }
+    });
+</script>
+
 {% endblock %}

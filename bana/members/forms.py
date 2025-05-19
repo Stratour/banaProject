@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Members
+
+from .models import Members, Languages, Review
+
 
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(
@@ -20,6 +22,7 @@ class UserRegistrationForm(forms.ModelForm):
         label='Nom d’utilisateur'
     )
     first_name = forms.CharField(
+        required=False,
         widget=forms.TextInput(attrs={
             'placeholder': 'Prénom',
             'title': 'Entrez votre prénom',
@@ -51,6 +54,7 @@ class UserRegistrationForm(forms.ModelForm):
 
 class MembersForm(forms.ModelForm):
     memb_birth_date = forms.DateField(
+        required=False,  # Permet de laisser vide
         widget=forms.DateInput(attrs={
             'type': 'date',
             'placeholder': 'Date de naissance',
@@ -60,6 +64,7 @@ class MembersForm(forms.ModelForm):
         label='Date de naissance'
     )
     memb_gender = forms.ChoiceField(
+        required=False,  # Permet de laisser vide
         choices=[('M', 'Homme'), ('F', 'Femme'), ('O', 'Autre')],
         widget=forms.RadioSelect(attrs={
             'class': 'form-radio mt-1 block w-full text-indigo-600',
@@ -67,15 +72,25 @@ class MembersForm(forms.ModelForm):
         label='Genre'
     )
     memb_num_street = forms.CharField(
+        required=False,  # Permet de laisser vide
         widget=forms.TextInput(attrs={
             'placeholder': 'Numéro de rue',
             'title': 'Entrez votre numéro de rue',
             'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+            'default': '0'
         }),
         label='Numéro de rue'
     )
+
+    def clean_memb_num_street(self):
+        value = self.cleaned_data.get('memb_num_street')
+        # Si la valeur est vide, on remplace par 0
+        if not value:
+            return 0  # Ou tout autre valeur par défaut que tu préfères
+        return value
+
     memb_box = forms.CharField(
-        required=False,
+        required=False,  # Permet de laisser vide
         widget=forms.TextInput(attrs={
             'placeholder': 'Boîte (ex : 4D, Bis)',
             'title': 'Optionnel, indiquez votre boîte',
@@ -84,6 +99,7 @@ class MembersForm(forms.ModelForm):
         label='Boîte'
     )
     memb_street = forms.CharField(
+        required=False,  # Permet de laisser vide
         widget=forms.TextInput(attrs={
             'placeholder': 'Rue',
             'title': 'Entrez votre rue',
@@ -92,6 +108,7 @@ class MembersForm(forms.ModelForm):
         label='Rue'
     )
     memb_zp = forms.CharField(
+        required=False,  # Permet de laisser vide
         widget=forms.TextInput(attrs={
             'placeholder': 'Code postal',
             'title': 'Entrez votre code postal',
@@ -99,7 +116,24 @@ class MembersForm(forms.ModelForm):
         }),
         label='Code postal'
     )
+
+    def clean_memb_zp(self):
+        value = self.cleaned_data.get('memb_zp')
+        # Si la valeur est vide, on remplace par 0
+        if not value:
+            return 0
+        return value
+
+    memb_num_gsm = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Numéro de GSM',
+            'title': 'Entrez votre numéro de GSM',
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+        }),
+        label='Numéro de GSM'
+    )
     memb_locality = forms.CharField(
+        required=False,  # Permet de laisser vide
         widget=forms.TextInput(attrs={
             'placeholder': 'Localité',
             'title': 'Entrez votre ville',
@@ -108,6 +142,7 @@ class MembersForm(forms.ModelForm):
         label='Localité'
     )
     memb_country = forms.CharField(
+        required=False,  # Permet de laisser vide
         widget=forms.TextInput(attrs={
             'value': 'Belgique',
             'placeholder': 'Pays',
@@ -124,12 +159,19 @@ class MembersForm(forms.ModelForm):
         }),
         label='Possédez-vous une voiture ?'
     )
+    languages = forms.ModelMultipleChoiceField(
+        required=False,  # Permet de laisser vide
+        queryset=Languages.objects.all(),
+        widget=forms.SelectMultiple(
+            attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
+        label='Langues parlées'
+    )
 
     class Meta:
         model = Members
         fields = [
-            'memb_birth_date', 'memb_gender', 'memb_num_street', 'memb_box', 
-            'memb_street', 'memb_zp', 'memb_locality', 'memb_country', 'memb_car'
+            'memb_birth_date', 'memb_gender', 'memb_num_street', 'memb_box',
+            'memb_street', 'memb_zp', 'memb_locality', 'memb_country', 'memb_car', 'languages','memb_num_gsm'
         ]
 
 
@@ -150,3 +192,23 @@ class LoginForm(forms.Form):
         }),
         label='Mot de passe'
     )
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'comment']
+        widgets = {
+            'rating': forms.Select(
+                choices=[(i, f"⭐ {i}") for i in range(1, 6)],
+                attrs={
+                    'class': 'form-select block w-full mt-1 p-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}
+            ),
+            'comment': forms.Textarea(
+                attrs={
+                    'class': 'form-textarea block w-full mt-1 p-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500',
+                    'rows': 4,
+                    'placeholder': 'Laissez un commentaire constructif...'
+                }
+            ),
+        }

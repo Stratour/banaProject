@@ -7,83 +7,344 @@
         <div class="container mx-auto">
             <h2 class="text-3xl font-bold text-gray-800 mb-6">All Trajects</h2>
 
+            <!-- Search Bar -->
+            <form method="GET" action="{% url 'all_trajects' %}" class="bg-white shadow-lg rounded-lg p-6 mb-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                    <!-- Starting Point -->
+                    <div>
+                        <label for="start_adress" class="block text-sm font-medium text-gray-700">🚀 Point de
+                            départ</label>
+                        <input type="text" name="start_adress" id="start_adress" value="{{ start_adress|default:'' }}"
+                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                               placeholder="Entrez le point de départ" autocomplete="off"/>
+                    </div>
+
+                    <!-- Ending Point -->
+                    <div>
+                        <label for="end_adress" class="block text-sm font-medium text-gray-700">🎯 Point
+                            d’arrivée</label>
+                        <input type="text" name="end_adress" id="end_adress" value="{{ end_adress|default:'' }}"
+                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                               placeholder="Entrez le point d’arrivée" autocomplete="off"/>
+                    </div>
+
+                    <!-- Date -->
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700">📅 Date</label>
+                        <input type="date" name="date" id="date" value="{{ date|default:'' }}"
+                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"/>
+                    </div>
+
+                    <!-- Transport Mode -->
+                    <div>
+                        <label for="transport_modes" class="block text-sm font-medium text-gray-700">🚗 Mode de
+                            transport</label>
+                        <div class="mt-1 space-y-2">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="transport_modes" value="transport" class="form-checkbox">
+                                <span class="ml-2">🚊 Transport en commun</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="transport_modes" value="voiture" class="form-checkbox">
+                                <span class="ml-2">🚗 Voiture</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="transport_modes" value="à vélo" class="form-checkbox">
+                                <span class="ml-2">🚴‍♂️ À vélo</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="transport_modes" value="à pied" class="form-checkbox">
+                                <span class="ml-2">🚶‍♂️ À pied</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Sélection de la région -->
+                    <div>
+                        <label for="region" class="block text-sm font-medium text-gray-700">🌍 Sélectionner une
+                            région</label>
+                        <select name="region" id="region" onchange="showSearchBars()"
+                                class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="" {% if not region %}selected{% endif %}>Choisissez une région</option>
+                            <option value="Flandre" {% if region == 'Flandre' %}selected{% endif %}>Flandre</option>
+                            <option value="Wallonie" {% if region == 'Wallonie' %}selected{% endif %}>Wallonie</option>
+                            <option value="Bruxelles" {% if region == 'Bruxelles' %}selected{% endif %}>
+                                Bruxelles-Capitale
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Recherche Ville & Code Postal -->
+                    <div id="search-options" style="display: {% if region %}block{% else %}none{% endif %};">
+                        <label for="city_search" class="block text-sm font-medium text-gray-700">🏙️ Rechercher par
+                            ville</label>
+                        <input type="text" name="city_search" id="city_search"
+                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                               placeholder="Entrez une ville" value="{{ city_search|default:'' }}" autocomplete="off"/>
+
+                        <label for="postal_code_search" class="block text-sm font-medium text-gray-700 mt-3">📮
+                            Rechercher par code postal</label>
+                        <input type="number" name="postal_code_search" id="postal_code_search"
+                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                               placeholder="Entrez un code postal" value="{{ postal_code_search|default:'' }}"
+                               autocomplete="off"/>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-6">
+                    <button type="submit"
+                            class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-500 transition duration-200 shadow-md">
+                        🔍 Rechercher
+                    </button>
+                </div>
+            </form>
+
+
             <!-- Toggle buttons -->
             <div class="flex justify-center mb-6">
-                <a href="?active_tab=researched" 
-                class="btn-toggle {% if active_tab == 'researched' %}border-indigo-600{% else %}border-transparent{% endif %} text-lg px-6 py-2 border-b-4 focus:outline-none">
-                    Trajets recherchés
+                <a href="?active_tab=researched"
+                   class="btn-toggle {% if active_tab == 'researched' %}border-indigo-600{% else %}border-transparent{% endif %} text-lg px-6 py-2 border-b-4 focus:outline-none">
+                    Trajets recherchés (PARENTS)
                 </a>
-                <a href="?active_tab=proposed" 
-                class="btn-toggle {% if active_tab == 'proposed' %}border-indigo-600{% else %}border-transparent{% endif %} text-lg px-6 py-2 border-b-4 focus:outline-none">
-                    Trajets proposés
+                <a href="?active_tab=proposed"
+                   class="btn-toggle {% if active_tab == 'proposed' %}border-indigo-600{% else %}border-transparent{% endif %} text-lg px-6 py-2 border-b-4 focus:outline-none">
+                    Trajets proposés (YAYA)
                 </a>
             </div>
 
             <!-- Proposed Trajects -->
             {% if active_tab == 'proposed' %}
-            <div id="proposed-list" class="traject-list">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Proposed Trajects</h2>
-                {% if proposed_trajects %}
-                    <ul class="space-y-4">
-                        {% for proposed in proposed_trajects %}
-                        <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
-                            <div>
-                                <h3 class="text-xl font-semibold text-gray-700">{{ proposed.traject.start_locality }} to {{ proposed.traject.end_locality }}</h3>
-                                <p class="text-gray-600"><strong>Membre:</strong> {{ proposed.member.memb_user_fk.username }}</p>
-                                <p class="text-gray-600">
-                                    <strong>Adresse de départ:</strong> {{ proposed.traject.start_street }}, {{ proposed.traject.start_locality }} {{ proposed.traject.start_country }}
-                                </p>
-                                <p class="text-gray-600">
-                                    <strong>Adresse de destination:</strong> {{ proposed.traject.end_street }}, {{ proposed.traject.end_locality }} {{ proposed.traject.end_country }}
-                                </p>
-                                <p class="text-gray-600"><strong>Heure de départ:</strong> {{ proposed.departure_time }}</p>
-                                <p class="text-gray-600"><strong>Moyens de transport:</strong> {{ proposed.transport_modes.all|join:", " }}</p>
-                            </div>
-                            <a href="{% url 'reserve_traject' proposed.id %}" class="btn btn-primary">Réserver</a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    <div class="pagination mt-4">
-                        {{ proposed_trajects.paginator.page_range|join:" " }}
-                    </div>
-                {% else %}
-                    <p class="text-gray-600">No proposed trajects found.</p>
-                {% endif %}
-            </div>
+                <div id="proposed-list" class="traject-list">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Proposed Trajects</h2>
+                    {% if proposed_trajects %}
+                        <ul class="space-y-4">
+                            {% for proposed in proposed_trajects %}
+                                <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-gray-700">
+                                            Membre :
+                                            {% if proposed.member.memb_user_fk.id == request.user.id %}
+                                                <!--  Si c'est l'utilisateur lui-même, rediriger vers son profil -->
+                                                <a href="{% url 'profile' %}" class="text-blue-500 hover:underline">
+                                                    {{ proposed.member.memb_user_fk.username }}
+                                                </a>
+                                            {% else %}
+                                                <!--  Sinon, aller vers le profil du membre avec avis -->
+                                                <a href="{% url 'profile_user' user_id=proposed.member.memb_user_fk.id %}"
+                                                   class="text-blue-500 hover:underline">
+                                                    {{ proposed.member.memb_user_fk.username }}
+                                                </a>
+                                            {% endif %}
+                                        </h3>
+                                        <p class="text-gray-600">
+                                            <strong>Adresse de départ:</strong>
+                                            {% if proposed.traject.start_adress %}
+                                                {{ proposed.traject.start_adress }}
+                                            {% else %}
+                                                {{ proposed.traject.start_street }},
+                                                {{ proposed.traject.start_locality }}
+                                                {{ proposed.traject.start_country }}
+                                            {% endif %}
+                                        </p>
+                                        <p class="text-gray-600">
+                                            <strong>Adresse de destination:</strong>
+                                            {% if proposed.traject.end_adress %}
+                                                {{ proposed.traject.end_adress }}
+                                            {% else %}
+                                                {{ proposed.traject.end_street }}, {{ proposed.traject.end_locality }}
+                                                {{ proposed.traject.end_country }}
+                                            {% endif %}
+                                        </p>
+                                        <p class="text-gray-600"><strong>Date: </strong>{{ proposed.date }}</p>
+                                        <p class="text-gray-600"><strong>Heure de
+                                            départ:</strong> {{ proposed.departure_time }}</p>
+                                        <p class="text-gray-600"><strong>Moyens de
+                                            transport:</strong> {{ proposed.transport_modes.all|join:", " }}</p>
+                                        <p class="text-gray-600"><strong>Nombre de
+                                            place:</strong> {{ proposed.number_of_places }}</p>
+                                        <p class="text-gray-600"><strong>Langue parlée:</strong>
+                                            {% if proposed.member.languages.all %}
+                                                {% for language in proposed.member.languages.all %}
+                                                    {{ language.name }}{% if not forloop.last %}, {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                Aucune langue spécifiée
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <!-- Afficher "Gérer la réservation" ou "Rejoindre" en fonction de l'utilisateur -->
+                                    <a href="{% url 'reserve_traject' proposed.id %}"
+                                       class="btn {% if proposed.member.memb_user_fk.id == request.user.id %}btn-warning{% else %}btn-primary{% endif %}">
+                                        {% if proposed.member.memb_user_fk.id == request.user.id %}
+                                            Gérer la réservation
+                                        {% else %}
+                                            Rejoindre
+                                        {% endif %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="pagination mt-4">
+                            {% for page_num in proposed_trajects.paginator.page_range %}
+                                {% if proposed_trajects.number == page_num %}
+                                    <span class="current">{{ page_num }}</span>
+                                {% else %}
+                                    <a href="?page1={{ page_num }}&active_tab={{ active_tab }}"
+                                       class="page-link">{{ page_num }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                    {% else %}
+                        <p class="text-gray-600">No proposed trajects found.</p>
+                    {% endif %}
+                </div>
             {% endif %}
 
             <!-- Researched Trajects -->
             {% if active_tab == 'researched' %}
-            <div id="researched-list" class="traject-list">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">Researched Trajects</h2>
-                {% if researched_trajects %}
-                    <ul class="space-y-4">
-                        {% for researched in researched_trajects %}
-                        <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center"">
-                            <div>
-                                <h3 class="text-xl font-semibold text-gray-700">{{ researched.traject.start_locality }} to {{ researched.traject.end_locality }}</h3>
-                                <p class="text-gray-600"><strong>Membre:</strong> {{ researched.member.memb_user_fk.username }}</p>
-                                <p class="text-gray-600">
-                                    <strong>Adresse de départ:</strong> {{ researched.traject.start_street }}, {{ researched.traject.start_locality }} {{ researched.start_country }}
-                                </p>
-                                <p class="text-gray-600">
-                                    <strong>Adresse de destination:</strong> {{ researched.traject.end_street }}, {{ researched.end_locality }} {{ researched.end_country }}
-                                </p>
-                                <p class="text-gray-600"><strong>Heure de départ:</strong> {{ researched.departure_time }}</p>
-                                <p class="text-gray-600"><strong>Moyens de transport:</strong> {{ researched.transport_modes.all|join:", " }}</p>
-                            </div>
-                            <a href="{% url 'proposed_traject' %}" class="btn btn-primary">Proposer</a>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    <div class="pagination mt-4">
-                        {{ researched_trajects.paginator.page_range|join:" " }}
-                    </div>
-                {% else %}
-                    <p class="text-gray-600">No researched trajects found.</p>
-                {% endif %}
-            </div>
+                <div id="researched-list" class="traject-list">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Researched Trajects</h2>
+                    {% if researched_trajects %}
+                        <ul class="space-y-4">
+                            {% for researched in researched_trajects %}
+                                <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-gray-700">
+                                            {{ researched.member.memb_user_fk.username }} {{ researched.traject.id }}
+                                        </h3>
+                                        <p class="text-gray-600">
+                                            <strong>Adresse de départ:</strong>
+                                            {% if researched.traject.start_adress %}
+                                                {{ researched.traject.start_adress }}
+                                            {% else %}
+                                                {{ researched.traject.start_street }},
+                                                {{ researched.traject.start_locality }}
+                                                {{ researched.traject.start_country }}
+                                            {% endif %}
+                                        </p>
+                                        <p class="text-gray-600">
+                                            <strong>Adresse de destination:</strong>
+                                            {% if researched.traject.end_adress %}
+                                                {{ researched.traject.end_adress }}
+                                            {% else %}
+                                                {{ researched.traject.end_street }},
+                                                {{ researched.traject.end_locality }}
+                                                {{ researched.traject.end_country }}
+                                            {% endif %}
+                                        </p>
+                                        <p class="text-gray-600"><strong>Date: </strong>{{ researched.date }}</p>
+                                        <p class="text-gray-600"><strong>Heure de
+                                            départ:</strong> {{ researched.departure_time }}</p>
+                                        <p class="text-gray-600"><strong>Moyens de
+                                            transport:</strong> {{ researched.transport_modes.all|join:", " }}</p>
+                                        <p class="text-gray-600"><strong>Nombre de
+                                            place:</strong> {{ researched.number_of_places }}</p>
+                                    </div>
+                                    <div class="flex flex-col items-end space-y-2">
+                                        <a href="{% url 'proposed_traject' researched.id %}" class="btn btn-primary"
+                                           title="proposer mon aide directement">Proposer Trajet similaire</a>
+                                        <a href="{% url 'reserve_trajectResearched' researchedTraject_id=researched.id %}"
+                                           class="btn btn-primary" title="creer ce trajet ou un trajet similaire">Rejoindre
+                                            ce trajet</a>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="pagination mt-4">
+                            {{ researched_trajects.paginator.page_range|join:" " }}
+                        </div>
+                    {% else %}
+                        <p class="text-gray-600">No researched trajects found.</p>
+                    {% endif %}
+                </div>
             {% endif %}
         </div>
     </div>
+
+    <script>
+        document.querySelectorAll("#start_adress, #end_adress").forEach((inputField) => {
+            inputField.addEventListener("input", async (event) => {
+                const query = event.target.value;
+
+                if (query.length < 3) return; // Skip queries with fewer than 3 characters
+
+                try {
+                    const url = `{% url 'autocomplete' %}?query=${query}`; // Use the correct query value
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error("Error fetching suggestions");
+
+                    const data = await response.json();
+                    const suggestions = data.suggestions || [];
+
+                    // Determine which suggestion list to populate
+                    const suggestionListId = event.target.id === "start_adress" ? "start-suggestion-list" : "end-suggestion-list";
+                    const suggestionList = document.getElementById(suggestionListId);
+
+                    // Populate suggestions list
+                    suggestionList.innerHTML = ""; // Clear previous suggestions
+                    suggestions.forEach((suggestion) => {
+                        const li = document.createElement("li");
+                        li.textContent = suggestion;
+                        li.classList.add("cursor-pointer", "p-2", "hover:bg-gray-100");
+                        li.addEventListener("click", () => {
+                            inputField.value = suggestion; // Set input value
+                            suggestionList.innerHTML = ""; // Clear suggestions
+                        });
+                        suggestionList.appendChild(li);
+                    });
+                } catch (error) {
+                    console.error("Error fetching suggestions:", error);
+                }
+            });
+        });
+
+        function showSearchBars() {
+            var region = document.getElementById('region').value;
+            var searchOptions = document.getElementById('search-options');
+
+            // Afficher ou masquer la section de recherche avancée
+            searchOptions.style.display = region ? 'block' : 'none';
+
+            if (region) {
+                console.log('Région sélectionnée :', region);
+
+                var baseUrl = window.location.pathname; // On prend juste le chemin sans les paramètres existants
+                var params = new URLSearchParams(window.location.search);
+                params.set("region", region);  // Met à jour ou ajoute le paramètre "region"
+
+                // Détermine vers quelle liste scroller
+                var targetSection = window.location.search.includes("active_tab=researched") ? "#researched-list" : "#proposed-list";
+                console.log('Section cible :', targetSection);
+
+                var newUrl = baseUrl + "?" + params.toString() + targetSection;
+                console.log('🔗 Nouvelle URL :', newUrl);
+                // Met à jour l'URL sans recharger la page
+                history.pushState(null, null, newUrl);
+                    var targetElement = document.querySelector(targetSection);
+                    if (targetElement) {
+                        console.log('Scroll vers :', targetElement);
+                        targetElement.scrollIntoView({behavior: "smooth"});
+                    } else {
+                        console.warn('Élément non trouvé pour scroller !');
+                    }
+            }
+        }
+
+        // Vérifie après le chargement si on doit scroller
+        document.addEventListener("DOMContentLoaded", function () {
+            var hash = window.location.hash;
+            if (hash === "#proposed-list" || hash === "#researched-list") {
+                var targetElement = document.querySelector(hash);
+                if (targetElement) {
+                    console.log('📜 Scroll automatique vers :', hash);
+                    targetElement.scrollIntoView({behavior: "smooth"});
+                } else {
+                    console.warn('Hash trouvé mais aucun élément correspondant :', hash);
+                }
+            }
+        });
+    </script>
 {% endblock %}
