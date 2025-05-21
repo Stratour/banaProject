@@ -185,3 +185,14 @@ LOGIN_URL = '/profile/login_user/'
 
 OPEN_STREET_MAP_API_KEY = config("OPEN_STREET_MAP_API", default="default_value")
 
+GOOGLE_MAPS_API_KEY = config("GOOGLE_MAPS_API_KEY",default="default_value")
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# A completé
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'hellobanacommunity@gmail.com'  # Votre adresse email
+EMAIL_HOST_PASSWORD = 'your-email-password'  # Votre mot de passe d'email
+DEFAULT_FROM_EMAIL = 'your-email@gmail.com'  # Adresse par défaut pour l'expéditeur

@@ -1,5 +1,19 @@
 .env
 env
 venv
-**/__pycache__/
+
+
+# Ignorer les fichiers de l'IDE IntelliJ/PyCharm
+.idea/
+
+# Ignorer la base de données SQLite locale de Django
+*.sqlite3
+db.sqlite3
+
+# Ignorer les dépendances Node.js installées
+node_modules/
+
+# Ignorer les fichiers de cache Django
+__pycache__/
 *.pyc
+**/__pycache__/

@@ -8,7 +8,7 @@ def home(request):
         {'img_src': 'bana/img/icon/Icon_earth.svg', 'title': 'Ecological', 'highlight': 'alternative', 'description': 'Using alternative transport'},
         {'img_src': 'bana/img/icon/Icon_hearth.svg', 'title': 'Community', 'highlight': 'Social connection', 'description': 'Sharing moments'}
     ]
-    
+
     home_roles = [
         {'img_src': 'bana/img/other/Bana_Parent.png', 'alt_text': 'Parent Icon', 'link_text': 'I am a parent', 'link_url': '#'},
         {'img_src': 'bana/img/other/Bana_Mentor.png', 'alt_text': 'Mentor Icon', 'link_text': 'I am a mentor', 'link_url': '#'},
@@ -31,13 +31,13 @@ def work(request):
         {'img_src': 'bana/img/icon/Icon_place.svg', 'title': '2. Indicate your routes', 'highlight': 'Bana connects you', 'description': 'Share trip requests or respond to alerts, and Bana connects you.'},
         {'img_src': 'bana/img/icon/Icon_message.svg', 'title': '3. Compose your tribe', 'highlight': 'build your trusted tribe', 'description': 'Find parents with similar routes, choose profiles, and build your trusted tribe.'}
     ]
-    
+
     work_roles = [
         {'img_src': 'bana/img/other/Bana_Parent.png', 'alt_text': 'Parent Icon', 'link_text': 'I am a parent', 'link_url': '#'},
         {'img_src': 'bana/img/other/Bana_Mentor.png', 'alt_text': 'Mentor Icon', 'link_text': 'I am a mentor', 'link_url': '#'},
         {'img_src': 'bana/img/other/Bana_Community.png', 'alt_text': 'Community Icon', 'link_text': 'I am a community member', 'link_url': '#'}
     ]
-    
+
     work_profiles = [
         {
             'img_src': 'bana/img/other/Nyota.png',
