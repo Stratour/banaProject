@@ -24,6 +24,15 @@
 
     <div class="container" data-aos="fade-up" data-aos-delay="100">
             <div class="row justify-content-center">
+                
+                {% comment "Forms avec toute les données" %}
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+
+                    <button type="submit">Enregistrer</button>
+                </form> 
+                {% endcomment %}   
                 <div class="col-lg-6">
                  
                     {% if not SOCIALACCOUNT_ONLY %}

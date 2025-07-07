@@ -108,20 +108,20 @@
 
             <div class="flex flex-col items-center gap-4 md:flex-row justify-center p-6">
                 {% if user.is_authenticated %}
-                <a href="{% url 'profile' %}"
+                <a href="{% url 'accounts:profile' %}"
                     class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
                     Profile
                 </a>
-                <a href="{% url 'logout' %}"
+                <a href="{% url 'accounts:logout' %}"
                     class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
                     Logout
                 </a>
                 {% else %}
-                <a href="{% url 'register' %}"
+                <a href="{% url 'account_signup' %}"
                     class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
                     Register
                 </a>
-                <a href="{% url 'login' %}"
+                <a href="{% url 'account_login' %}"
                     class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
                     Login
                 </a>

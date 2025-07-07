@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount', # Pour la connection via les reseaux-sociaux
-    'allauth.socialaccount.providers.instagram', # Pour la connection via google
+    'allauth.socialaccount.providers.google', # Pour la connection via google
     
     # my extensions
     'django_extensions',
@@ -78,6 +78,8 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
 ]
 
+SITE_ID = 1
+
 ROOT_URLCONF = 'bana.urls'
 
 TEMPLATES = [
@@ -98,19 +100,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bana.wsgi.application'
 
-# Provider specific settings
-SOCIALACCOUNT_PROVIDERS = {
-    'instagram': {
-        # For each OAuth based provider, either add a ``SocialApp``
-        # (``socialaccount`` app) containing the required client
-        # credentials, or list them here:
-        'APP': {
-            'client_id': '574705955662733',
-            'secret': '22cff4b8e78f8f5dd6fa980e6d5f732b',
-            'key': ''
-        }
-    }
-}
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -159,8 +148,12 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR,'static')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'members','static'),
+    os.path.join(BASE_DIR, 'members','static'),    
     ]
+
+MEDIA_URL = "media/"
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -176,23 +169,75 @@ INTERNAL_IPS = [
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-
-# URL for login redirect 
-
-LOGIN_URL = '/profile/login_user/' 
-
 # API key 
 
 OPEN_STREET_MAP_API_KEY = config("OPEN_STREET_MAP_API", default="default_value")
 
 GOOGLE_MAPS_API_KEY = config("GOOGLE_MAPS_API_KEY",default="default_value")
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#Authentication backends
 
-# A completé
-EMAIL_HOST = 'smtp.gmail.com'
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE' : [
+            'profile',
+            'email'
+        ],
+        
+        'AUTH_PARAMS': {
+            'prompt': 'select_account'
+        }
+    }
+}
+
+# URL for login redirect 
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts/login' 
+ACCOUNT_LOGIN_METHODS = {"email", "username"} 
+
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# 🧠 Email verification obligatoire
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True  # auto-confirmation au clic
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "/accounts/profile/" 
+
+# 🔒 Empêche que des bots puissent détecter les emails existants
+ACCOUNT_PREVENT_ENUMERATION = False  # sécurité activée
+
+# 🔐 Envoie un vrai lien sécurisé (sans stocker de clé en DB)
+ACCOUNT_EMAIL_CONFIRMATION_HMAC = True
+
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
+ACCOUNT_UNIQUE_EMAIL = True
+
+ACCOUNT_INACTIVE_USER_ERROR = "Ce compte est désactivé. Contacte un admin pour le réactiver."
+
+
+# A compléter
+#EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+#EMAIL_HOST = 'smtp.gmail.com'
+#EMAIL_PORT = 587
+#EMAIL_USE_TLS = True
+#EMAIL_HOST_USER = 'hellobanacommunity@gmail.com'  # Votre adresse email
+#EMAIL_HOST_PASSWORD = 'your-email-password'  # Votre mot de passe d'email
+#DEFAULT_FROM_EMAIL = 'your-email@gmail.com'  # Adresse par défaut pour l'expéditeur
+
+# Configurer l'email
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"  # Remplace par ton serveur SMTP
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'hellobanacommunity@gmail.com'  # Votre adresse email
-EMAIL_HOST_PASSWORD = 'your-email-password'  # Votre mot de passe d'email
-DEFAULT_FROM_EMAIL = 'your-email@gmail.com'  # Adresse par défaut pour l'expéditeur
+EMAIL_HOST_USER = 'Lucacamilleri55@gmail.com'
+EMAIL_HOST_PASSWORD = 'bqyu cpzk looj hydh' 
+DEFAULT_FROM_EMAIL = "Lucacamilleri55@gmail.com"
+
+#ACCOUNT_FORMS = {
+#    'signup': 'accounts.forms.CustomSignupForm'
+#}

@@ -1,9 +1,9 @@
+
 {% extends "allauth/layouts/base.html" %}
 {% load allauth i18n static %}
 {% block head_title %}
 {% trans "Profile" %}
 {% endblock head_title %}
-
 {% block content %}
 
     <section class="section profile">
@@ -17,13 +17,57 @@
                     <!--<p class="mb-0">{% trans "Please enter your credentials to access your account." %}</p>-->
                 </div>
             </div>
+
+  {% include "./nav_profile.html" %}
         </header><!-- End Page Title -->
 
+
+
+
+ 
+        
         <div class="container" data-aos="fade-up" data-aos-delay="100">
-            <div class="row justify-content-center">
+
+    <div class="max-w-4xl mx-auto px-4 py-6 space-y-10">
+    
+      <!-- ✅ SECTION PUBLIQUE EN HAUT -->
+      <div 
+          id="public-profile-section"
+          hx-get="{% url 'accounts:profile_public' %}" 
+          hx-trigger="load" 
+          hx-swap="outerHTML"
+          class="border rounded-lg shadow-md bg-white p-6"
+      >
+          Chargement du profil public...
+      </div>
+    
+      <!-- ✅ SECTION PRIVÉE EN DESSOUS -->
+      <div 
+          id="editable-profile-section"
+          hx-get="{% url 'accounts:profile_info' %}" 
+          hx-trigger="load" 
+          hx-swap="outerHTML"
+          class="border rounded-lg shadow-md bg-white p-6"
+      >
+          Chargement des infos privées...
+      </div>
+    </div>
+
+
+            {% comment "" %}
+            <div id="profile-edit-section">
+                <div hx-get="{% url 'accounts:edit_profile' %}" hx-trigger="load" hx-target="this" hx-swap="innerHTML" class="col-lg-12" >
+                </div>
+            </div>
+            {% endcomment %}
+            
+            
+
+                {% comment "" %}
+                
                 <div class="col-lg-2 profile-img">
-	        {% if user.profile.image %}
-	            <img src="{{ user.profile.image.url }}" alt="Photo de profil" class="image_profil_xl">
+	        {% if profile.profile_picture %}
+	            <img src="{{ profile.profile_picture.url }}" alt="Photo de profil" class="image_profil_xl">
 	        {% else %}
               <h1 class="no-image">
               {{ user.first_name.0 }}.{{ user.last_name.0 }}
@@ -71,7 +115,21 @@
                                         <th class="col-lg-4 col-md-4">{% trans 'Phone' %}</th>
                                         <td class="col-lg-9 col-md-8">: {{ profile.phone }}</td>
                                     </tr>
-                                    <tr>
+                                    <tr><tr><tr>
+                                        <th class="col-lg-4 col-md-4">{% trans 'Address' %}</th>
+                                        <td class="col-lg-9 col-md-8">: {{ profile.address }}</td>
+                                    </tr>
+                                        <th class="col-lg-4 col-md-4">{% trans 'Service' %}</th>
+                                        <td class="col-lg-9 col-md-8">: {{ profile.service|join:", " }}</td>
+                                    </tr>
+                                        <th class="col-lg-4 col-md-4">{% trans 'Languages' %}</th>
+                                        <td class="col-lg-9 col-md-8">: {{ profile.languages|join:", " }}</td>
+                                    </tr>
+
+                                    <tr></tr>
+                                        <th class="col-lg-4 col-md-4">{% trans 'Transport' %}</th>
+                                        <td class="col-lg-9 col-md-8">: {{ profile.transport_modes|join:", " }}</td>
+                                    </tr>
                                         <th class="col-lg-4 col-md-4">{% trans 'Bio' %}</th>
                                         <td class="col-lg-9 col-md-8">: {{ profile.bio }}</td>
                                     </tr>
@@ -88,7 +146,7 @@
                         </div>
                     </div><!-- End Bordered Tabs -->
                 </div>
-            </div>
+                {% endcomment %}
         </div>
     </section>
 

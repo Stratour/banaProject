@@ -1,0 +1,9 @@
+<p>Votre adresse actuelle : <strong>{{ user.email }}</strong></p>
+<button 
+    hx-get="{% url 'accounts:email_edit' %}" 
+    hx-target="#email-edit" 
+    hx-swap="innerHTML"
+    class="btn btn-light"
+>
+    ✉️ Modifier mon e-mail
+</button>

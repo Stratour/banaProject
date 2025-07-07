@@ -12,11 +12,10 @@ from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import UserRegistrationForm, MembersForm
 
-
-# ===================== connexion ======================== #
-
-
+# ===================== connexion ==================================================== 89
 def register_user(request):
+    
+    print("=========== On est dans l' App/View :: members/register_user ")
     if request.user.is_authenticated:
         return redirect('/')
 
@@ -57,6 +56,9 @@ def register_user(request):
 
 
 def login_user(request):
+   
+    print("=========== On est dans l' App/View :: members/login_user ")
+
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
@@ -74,16 +76,20 @@ def login_user(request):
         form = LoginForm()
     return render(request, 'members/authenticate/login_page.html', {'form': form})
 
-
 def logout_user(request):
+   
+    print("=========== On est dans l' App/View :: members/logout_user ")
+
     logout(request)
     return redirect('home')
 
-
-# ===================== profile ======================== #
-
+# ===================== profile ====================================================== 89
 @login_required
 def profile(request):
+    '''
+    '''
+    print("=========== On est dans l' App/View :: members/profile ")
+
     if request.user.is_authenticated:
         member = request.user.members
         proposed_trajects = ProposedTraject.get_proposed_trajects_by_member(member)
@@ -108,10 +114,12 @@ def profile(request):
 
     return render(request, 'members/profile.html', context)
 
-
 @login_required
 def profile_user(request, user_id=None):
-    """ Affiche le profil d'un utilisateur et permet de laisser/modifier une note """
+    '''
+    Affiche le profil d'un utilisateur et permet de laisser/modifier une note
+    '''
+    print("=========== On est dans l' App/View :: members/profile_user ")
 
     if user_id and user_id == request.user.id:
         return redirect('profile')
@@ -150,10 +158,14 @@ def profile_user(request, user_id=None):
         'is_editing': is_editing,  #  Indicateur pour savoir si l'on modifie
     })
 
-
+###################################################################################### 89
 @login_required
 def delete_review(request, user_id):
-    """ Supprime la note d'un utilisateur """
+    '''
+    Supprime la note d'un utilisateur
+    '''
+    print("=========== On est dans l' App/View :: members/delete_review ")
+
     user = get_object_or_404(User, id=user_id)
     review = Review.objects.filter(reviewer=request.user, reviewed_user=user).first()
 
