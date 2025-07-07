@@ -19,7 +19,9 @@ password_reset_done.html (Page de confirmation de la réinitialisation du mot de
 password_reset_from_key.html (Formulaire de réinitialisation du mot de passe avec le lien envoyé par mail)
 password_reset_from_key_done.html (Page de confirmation de la réinitialisation du mot de passe (après le changement de mot de passe))
 
-email.html
+email_display.html (Affichage de l'email de l'utilisateur)
+email_change_form.html (Formulaire de changement d'email)
+
 email_confirm.html (Page d'attente de confirmation de l'email après inscirption)
 email_confirm_done.html (Page de confirmation de l'email après inscription)
 
