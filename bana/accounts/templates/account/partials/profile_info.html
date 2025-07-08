@@ -5,7 +5,7 @@
     <p><strong>Nom :</strong> {{ user.last_name }}</p>
     <p><strong>Date de naissance :</strong> {{ profile.birthdate }}</p>
     <p><strong>Lien photo :</strong> {{ user.profile.profile_picture.name }}</p>
-    <p><strong>Service :</strong> {{ user.profile.service }}</p>
+    <p><strong>Service :</strong> {{ user.profile.service|join:", " }}</p>
     <p><strong>Adresse :</strong> {{ user.profile.address }}</p>
     <p><strong>Langues :</strong> {{ user.profile.languages.all|join:", " }}</p>
     <p><strong>Moyens de transport :</strong> {{ user.profile.transport_modes|join:", " }}</p>
@@ -16,7 +16,7 @@
         hx-get="{% url 'accounts:profile_edit' %}" 
         hx-target="#editable-profile-section" 
         hx-swap="innerHTML"
-        class="btn  mt-4 px-4 py-2 rounded"
+        class="btn btn-primary mt-4"
     >
         ✏️ Modifier mon profil
     </button>

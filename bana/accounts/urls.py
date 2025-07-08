@@ -15,7 +15,7 @@ urlpatterns = [
     path('profile/enfant/', views.profile_children, name='profile_children'),
     path('profile/security/', views.profile_security, name='profile_security'),
     path('profile/security/password/', CustomPasswordChangeView.as_view(), name='account_change_password'),
-    path('profile/security/deactivate', views.deactivate_account, name='deactivate_account'),
+    path('profile/security/deactivate/', views.deactivate_account, name='deactivate_account'),
     
     path('email/display/', views.email_display, name='email_display'),
     path('email/edit/', views.email_edit, name='email_edit'),

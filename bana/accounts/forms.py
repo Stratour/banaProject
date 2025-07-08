@@ -93,10 +93,9 @@ class ProfileUpdateForm(forms.ModelForm):
     
     class Meta:
         model = Profile
-        fields = ['profile_picture', 'address', 'service', 'languages', 'transport_modes', 'bio', 'phone']
+        fields = ['profile_picture', 'phone','address', 'service', 'languages', 'transport_modes', 'bio', ]
         widgets = {
             'service': forms.CheckboxSelectMultiple,
-            'languages': forms.CheckboxSelectMultiple,
             'transport_modes': forms.CheckboxSelectMultiple,
         }
         
