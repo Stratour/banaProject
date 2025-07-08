@@ -1,0 +1,29 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Modify Traject{% endblock %}
+
+{% block content %}
+<div class="container mx-auto py-6">
+    <h2 class="text-2xl font-semibold">Modify Traject</h2>
+    <form method="post">
+        {% csrf_token %}
+
+        <!-- Exclure les champs liés à la récurrence -->
+        {% for field in form %}
+            {% if field.name not in "recurrence_type recurrence_interval tr_weekdays date_fin" %}
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700">{{ field.label }}</label>
+                    {{ field }}
+                </div>
+            {% endif %}
+        {% endfor %}
+
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+            Save Changes
+        </button>
+        <a href="{% url 'profile' %}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+            Cancel
+        </a>
+    </form>
+</div>
+{% endblock %}

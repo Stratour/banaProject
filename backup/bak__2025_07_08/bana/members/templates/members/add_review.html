@@ -1,0 +1,12 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Profile - BanaCommunity{% endblock %}
+
+{% block content %}
+<h2>Noter {{ reviewed_user.username }}</h2>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Soumettre la note</button>
+</form>
+{% endblock %}

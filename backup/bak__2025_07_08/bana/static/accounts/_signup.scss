@@ -1,0 +1,56 @@
+/*--------------------------------------------------------------
+# Signup Section
+--------------------------------------------------------------*/
+.signup {
+    .form {
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        padding: 20px 50px;
+        border-radius: 5px;
+
+        @media (max-width: 575px) {
+            padding: 20px;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            padding: .375rem .75rem;
+            font-size: 1rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: var(--bs-body-color);
+            background-color: #007f734f;
+            background-clip: padding-box;
+            border: 1px solid #007f73;
+            border-radius: 3px;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        }
+    }
+
+    .btn {
+        color: white;
+        background: #007f73;
+        border: 0;
+        padding: 10px 30px;
+        transition: 0.4s;
+        border-radius: 50px;
+        margin-bottom: 10px;
+
+        &:hover {
+            background: color-mix(in srgb, #007f73, transparent 20%);
+        }
+
+        &::before {
+            padding-right: 3px;
+        }
+
+    }
+
+    ul {
+        list-style-type: none;
+        padding: 0
+    }
+
+}

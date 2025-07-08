@@ -1,0 +1,377 @@
+body {
+  background-color: f3f3f3;
+}
+
+/*--------------------------------------------------------------
+# Global Sections
+--------------------------------------------------------------*/
+section,
+.section {
+  padding: 60px 0;
+  overflow: clip;
+}
+
+/*--------------------------------------------------------------
+# Global Section Titles
+--------------------------------------------------------------*/
+.section-title {
+  text-align: center;
+  padding-bottom: 50px;
+  max-width: 80ch;
+}
+.section-title h2 {
+  font-size: 40px;
+  font-weight: 700;
+  position: relative;
+}
+.section-title hr {
+  width: 60%;
+  margin: 10px auto;
+  border: 0, 5px solid;
+}
+.section-title p {
+  margin-bottom: 0;
+}
+
+/*--------------------------------------------------------------
+# Login Section
+--------------------------------------------------------------*/
+.login .form {
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px 50px 10px 50px;
+  border-radius: 5px;
+}
+@media (max-width: 575px) {
+  .login .form {
+    padding: 20px;
+  }
+}
+.login .form input[type=text],
+.login .form [type=password] {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--bs-body-color);
+  background-color: #007f734f;
+  background-clip: padding-box;
+  border: 1px solid #007f73;
+  border-radius: 3px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.login .form:focus {
+  border: 1px solid #007f73;
+}
+.login .form .form-check .form-check-input {
+  border: 1px solid #007f73;
+}
+.login .form .form-check .form-check-input:checked {
+  background-color: #007f73;
+  border: 1px solid #007f73;
+}
+.login .form .form-check .form-check-input:focus {
+  border-color: white;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+.login .btn {
+  color: white;
+  background: #007f73;
+  border: 0;
+  padding: 10px 30px;
+  transition: 0.4s;
+  border-radius: 50px;
+}
+.login .btn:checked {
+  background-color: #007f73;
+  border: 1px solid #007f73;
+}
+.login .btn:focus {
+  border-color: #007f73;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}
+.login ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+/*--------------------------------------------------------------
+# Signup Section
+--------------------------------------------------------------*/
+.signup .form {
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px 50px;
+  border-radius: 5px;
+}
+@media (max-width: 575px) {
+  .signup .form {
+    padding: 20px;
+  }
+}
+.signup .form input {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--bs-body-color);
+  background-color: #007f734f;
+  background-clip: padding-box;
+  border: 1px solid #007f73;
+  border-radius: 3px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.signup .btn {
+  color: white;
+  background: #007f73;
+  border: 0;
+  padding: 10px 30px;
+  transition: 0.4s;
+  border-radius: 50px;
+  margin-bottom: 10px;
+}
+.signup .btn:hover {
+  background: color-mix(in srgb, #007f73, transparent 20%);
+}
+.signup .btn::before {
+  padding-right: 3px;
+}
+.signup ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+/*--------------------------------------------------------------
+# Login Section
+--------------------------------------------------------------*/
+.password-reset .form {
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px 50px 10px 50px;
+  border-radius: 5px;
+}
+@media (max-width: 575px) {
+  .password-reset .form {
+    padding: 20px;
+  }
+}
+.password-reset .form input {
+  display: block;
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--bs-body-color);
+  background-color: #007f734f;
+  background-clip: padding-box;
+  border: 0.5px solid #007f73;
+  border-radius: 3px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.password-reset .form button[type=submit] {
+  color: white;
+  background: #007f73;
+  border: 0;
+  padding: 10px 30px;
+  transition: 0.4s;
+  border-radius: 50px;
+}
+.password-reset .form button[type=submit]:hover {
+  background: color-mix(in srgb, #007f73, transparent 20%);
+}
+
+/*.profile .profile-img {
+  text-align: center;
+  justify-items: center;
+  margin-right: 35px;
+}
+.profile .profile-img img {
+  align-items: center;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+.profile .profile-img h2 {
+  color: #007f73;
+  font-weight: bold;
+  font-size: 30px;
+  margin-top: 20px;
+}
+.profile .profile-img .no-image {
+  display: flex;
+  border-radius: 50%;
+  text-align: center;
+  font-weight: bold;
+  width: 120px;
+  height: 120px;
+  border: 2px solid #007f73;
+  align-items: center;
+  justify-content: center;
+}
+.profile .nav-link {
+  color: black;
+  font-size: 18px;
+}
+.profile .nav-link:hover {
+  color: #007f73;
+}
+.profile .nav-link.active {
+  background-color: #007f73;
+  color: white;
+}
+.profile .table {
+  margin: 20px;
+}
+.profile .table tbody tr td {
+  padding: 5px;
+}
+.profile h3 {
+  padding-top: 20px;
+  font-weight: 600;
+}
+.profile .btn {
+  background: #007f73;
+  color: var(--contrast-color);
+  border: 0;
+  margin: 15px 0;
+  padding: 10px 20px;
+  transition: 0.4s;
+  border-radius: 50px;
+}
+.profile .btn:hover {
+  background: color-mix(in srgb, #007f73, transparent 20%);
+}
+.profile input,
+.profile textarea {
+  display: block;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #007f734f;
+  background-clip: padding-box;
+  border: 0.5px solid #007f73;
+  border-radius: 3px;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.profile input:focus,
+.profile textarea:focus {
+  border-color: #007f73;
+}
+.profile input::placeholder,
+.profile textarea::placeholder {
+  color: color-mix(in srgb, black, transparent 70%);
+}
+.profile button[type=submit] {
+  color: white;
+  background: #007f73;
+  border: 0;
+  padding: 10px 30px;
+  transition: 0.4s;
+  border-radius: 50px;
+}
+.profile button[type=submit]:hover {
+  background: color-mix(in srgb, #007f73, transparent 20%);
+}
+.profile .form-check {
+  margin-top: 15px;
+}
+.profile .form-check .form-check-input {
+  border: 1px solid #007f73;
+  padding: 10px;
+  margin: 0 5px;
+}
+.profile .form-check .form-check-input:checked {
+  background-color: #007f73;
+  border: 1px solid #007f73;
+}
+.profile .form-check .form-check-input:focus {
+  border-color: white;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+}*/
+
+/*input[type=text],
+input[type=password],
+textarea {
+    color: var(--default-color);
+    background-color: color-mix(in srgb, var(--background-color), transparent 50%);
+    border-color: color-mix(in srgb, var(--default-color), transparent 80%);
+    font-size: 14px;
+    padding: 10px 15px;
+    box-shadow: none;
+    border-radius: 0;
+
+    &:focus {
+        border-color: var(--accent-color);
+    }
+
+    &::placeholder {
+        color: color-mix(in srgb, var(--default-color), transparent 70%);
+    }
+}
+
+button[type="submit"] {
+    color: var(--contrast-color);
+    background: var(--accent-color);
+    border: 0;
+    padding: 10px 30px;
+    transition: 0.4s;
+    border-radius: 50px;
+
+    &:hover {
+        background: color-mix(in srgb, var(--accent-color), transparent 20%);
+    }
+}*/
+/*--------------------------------------------------------------
+# Email Section
+--------------------------------------------------------------*/
+.email .form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px 50px;
+  border-radius: 5px;
+}
+@media (max-width: 575px) {
+  .email .form {
+    padding: 20px;
+  }
+}
+.email .form input[type=email] {
+  width: 100%;
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--bs-body-color);
+  background-color: var(--bs-body-bg);
+  background-clip: padding-box;
+  border: var(--bs-border-width) solid var(--bs-border-color);
+  border-radius: var(--bs-border-radius);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+.email .btn-send {
+  background: var(--accent-color);
+  color: var(--contrast-color);
+  border: 0;
+  padding: 10px 30px;
+  transition: 0.4s;
+  border-radius: 50px;
+}
+.email .btn-send:hover {
+  background: color-mix(in srgb, var(--accent-color), transparent 20%);
+}
+.email .btn {
+  margin: 0 5px;
+}
+
+/*# sourceMappingURL=style.css.map */
