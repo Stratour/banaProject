@@ -186,7 +186,18 @@ section,
   background: color-mix(in srgb, #007f73, transparent 20%);
 }
 
-.profile .profile-img {
+.no-image {
+  display: flex;
+  border-radius: 50%;
+  text-align: center;
+  font-weight: bold;
+  width: 100px;
+  height: 100px;
+  border: 2px solid #007f73;
+  align-items: center;
+  justify-content: center;
+}
+/*.profile .profile-img {
   text-align: center;
   justify-items: center;
   margin-right: 35px;
@@ -296,7 +307,7 @@ section,
   border-color: white;
   outline: 0;
   box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
-}
+}*/
 
 /*input[type=text],
 input[type=password],

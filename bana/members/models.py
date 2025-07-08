@@ -32,9 +32,8 @@ class Members(models.Model):
     # Membres peuvent ne pas avoir de voiture, donc le champ est un booléen (pas de null)
     languages = models.ManyToManyField(Languages, related_name='members', blank=True)  # Les langues peuvent être vides
 
-
-def __int__(self):
-    return f"{self.memb_user_fk}"
+    def __int__(self):
+        return f"{self.memb_user_fk}"
 
 
 class Type(models.Model):
