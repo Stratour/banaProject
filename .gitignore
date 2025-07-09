@@ -17,3 +17,8 @@ node_modules/
 __pycache__/
 *.pyc
 **/__pycache__/
+
+# Ignorer les dossiers de backup
+backup/
+**/backup/
+*.bak
