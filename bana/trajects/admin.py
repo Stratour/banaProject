@@ -1,19 +1,11 @@
 from django.contrib import admin
-
 from members.models import Languages
 from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode
-
-
-
-
 
 @admin.register(Languages)
 class LanguagesAdmin(admin.ModelAdmin):
     list_display = ('name', )
     search_fields = ('name',)
-
-
-
 @admin.register(Traject)
 class TrajectAdmin(admin.ModelAdmin):
     list_display = ('start_name','start_street','end_name','end_street', 'get_proposed_users', 'get_researched_users')
