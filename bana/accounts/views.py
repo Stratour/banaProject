@@ -9,8 +9,9 @@ from .forms import UserUpdateForm, ProfileUpdateForm
 from accounts.models import Profile
 from allauth.account.forms import AddEmailForm
 from allauth.account.models import EmailAddress
-from allauth.account.utils import send_email_confirmation
+#from allauth.account.utils import send_email_confirmation
 from allauth.account.internal import flows
+from allauth.account.adapter import get_adapter
 
 #==================== LOGIN / LOGOUT / PROFILE (Nouveau)=========================#   
 
@@ -157,7 +158,8 @@ def email_edit(request):
                 )
 
                 if not obj.verified:
-                    send_email_confirmation(request, request.user, signup=False, email=email)
+                    # send_email_confirmation(request, request.user, signup=False, email=email)
+                    get_adapter(request).send_confirmation_mail(request, user)
 
             if request.headers.get("HX-Request"):
                 response = HttpResponse()
