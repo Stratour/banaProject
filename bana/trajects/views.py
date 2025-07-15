@@ -1,77 +1,140 @@
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from .models import Reservation
-from .forms import ResearchedTrajectForm
 from django.core.exceptions import ObjectDoesNotExist
 from .utils.geocoding import get_autocomplete_suggestions
 from django.conf import settings
-from django.shortcuts import redirect
 from django.contrib import messages
-from .models import Traject, Members
-from .forms import TrajectForm, ProposedTrajectForm
+from .models import Traject, Members, ProposedTraject, ResearchedTraject, TransportMode, Reservation
+from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm
 from django.db.models import Q
 from datetime import datetime
 from django.core.paginator import Paginator
-from django.shortcuts import render
-from .models import ProposedTraject, ResearchedTraject, TransportMode
 
 
 # ====================')= listing ====================')==== #
 def all_trajects(request):
-    print('=========================================== views :: all_trajects ====================')
+    print('============== views :: all_trajects ===================')
     active_tab = request.GET.get('active_tab', 'proposed')
     start_adress = request.GET.get('start_adress', '').strip()
     end_adress = request.GET.get('end_adress', '').strip()
-    start_region = request.GET.get('start_region', '').strip()
-    end_region = request.GET.get('end_region', '').strip()
     date_str = request.GET.get('date', '').strip()
-    transport_modes = request.GET.getlist('transport_modes')  # Récupérer les modes de transport sélectionnés
-    city_search = request.GET.get('city_search', '').strip()
-    postal_code_search = request.GET.get('postal_code_search', '').strip()
-
-    # Base querysets
+    transport_modes = request.GET.getlist('transport_modes') 
+    recurrence_type = request.GET.get('recurrence_type', '').strip()
+    recurrence_interval = request.GET.get('recurrence_interval', '').strip()
+    tr_weekdays = request.GET.getlist('tr_weekdays')
+    date_debut_str = request.GET.get('date_debut', '').strip()
+    date_fin_str = request.GET.get('date_fin', '').strip()
+    
     proposed_trajects_list = ProposedTraject.objects.all().order_by('-departure_time')
     researched_trajects_list = ResearchedTraject.objects.select_related('traject').all().order_by('-departure_time')
 
-    # Récupérer les objets TransportMode correspondants
-    transport_modes_objs = []
-    if transport_modes:
-        try:
-            transport_modes_objs = TransportMode.objects.filter(name__in=transport_modes)
-        except ObjectDoesNotExist:
-            transport_modes_objs = []
-
-    # Récupérer la région sélectionnée depuis la requête
-    region = request.GET.get('region', '').strip()
-
-    # Filtering based on start and end addresses
+    # Filtrage adresse global (query = adresse, ville, CP, etc.)
     if start_adress:
-        proposed_trajects_list = proposed_trajects_list.filter(
-            Q(traject__start_adress__icontains=start_adress) |
-            Q(traject__start_street__icontains=start_adress) |
-            Q(traject__start_locality__icontains=start_adress)
-        )
-        researched_trajects_list = researched_trajects_list.filter(
-            Q(traject__start_adress__icontains=start_adress) |
-            Q(traject__start_street__icontains=start_adress) |
-            Q(traject__start_locality__icontains=start_adress)
-        )
+        filters = Q(traject__start_adress__icontains=start_adress) | Q(traject__start_street__icontains=start_adress) | Q(traject__start_locality__icontains=start_adress) | Q(traject__start_cp__icontains=start_adress)
+        proposed_trajects_list = proposed_trajects_list.filter(filters)
+        researched_trajects_list = proposed_trajects_list.filter(filters)
 
     if end_adress:
-        proposed_trajects_list = proposed_trajects_list.filter(
-            Q(traject__end_adress__icontains=end_adress) |
-            Q(traject__end_street__icontains=end_adress) |
-            Q(traject__end_locality__icontains=end_adress)
-        )
-        researched_trajects_list = researched_trajects_list.filter(
-            Q(traject__end_adress__icontains=end_adress) |
-            Q(traject__end_street__icontains=end_adress) |
-            Q(traject__end_locality__icontains=end_adress)
-        )
+            filters = Q(traject__end_adress__icontains=end_adress) | Q(traject__end_street__icontains=end_adress) | Q(traject__end_locality__icontains=end_adress) | Q(traject__end_cp__icontains=end_adress)
+            proposed_trajects_list = proposed_trajects_list.filter(filters)
+            researched_trajects_list = researched_trajects_list.filter(filters)
+            
+    if recurrence_type:
+        proposed_trajects_list = proposed_trajects_list.filter(recurrence_type=recurrence_type)
 
-    # Filtering based on start and end regions
+    if recurrence_interval:
+        proposed_trajects_list = proposed_trajects_list.filter(recurrence_interval=recurrence_interval)
+
+    if tr_weekdays:
+        tr_weekdays = [int(day) for day in tr_weekdays]
+        proposed_trajects_list = proposed_trajects_list.filter(date__week_day__in=tr_weekdays)
+
+    # Filtrage par date
+    if date_str:
+        try:
+            date_obj = datetime.strptime(date_str, '%Y-%m-%d')  # Format de la date
+            proposed_trajects_list = proposed_trajects_list.filter(date=date_obj)
+            researched_trajects_list = researched_trajects_list.filter(date=date_obj)
+        except ValueError:
+            pass  # Si la date est mal formée, on ignore le filtrage
+
+     # --- Si l'utilisateur a choisi une date de début ---
+    if date_debut_str:
+        try:
+            date_debut = datetime.strptime(date_debut_str, '%Y-%m-%d').date()
+    
+            # Définir les bornes de la semaine (lundi au dimanche)
+            start_of_week = date_debut - timedelta(days=date_debut.weekday())   # Lundi
+            end_of_week = start_of_week + timedelta(days=6)                     # Dimanche
+    
+            if tr_weekdays:
+                # L'utilisateur a sélectionné des jours précis dans la semaine
+                tr_weekdays = [int(day) for day in tr_weekdays]  # ['2', '4'] → [2, 4]
+                matched_dates = []
+    
+                for day in tr_weekdays:
+                    offset = (day - 1) % 7  # car lundi = 1 → offset 0, dimanche = 7 → offset 6
+                    target_date = start_of_week + timedelta(days=offset)
+                    if start_of_week <= target_date <= end_of_week:
+                        matched_dates.append(target_date)
+    
+                # Appliquer le filtre sur les dates trouvées
+                proposed_trajects_list = proposed_trajects_list.filter(date__in=matched_dates)
+                researched_trajects_list = researched_trajects_list.filter(date__in=matched_dates)
+    
+            else:
+                # Aucun jour précis : on filtre tous les trajets dans cette semaine
+                proposed_trajects_list = proposed_trajects_list.filter(date__range=(start_of_week, end_of_week))
+                researched_trajects_list = researched_trajects_list.filter(date__range=(start_of_week, end_of_week))
+    
+        except ValueError:
+            pass  # Si date mal formée, on ignore le filtre
+    else:
+        # Si pas de date_debut => NE RIEN AFFICHER
+        proposed_trajects_list = proposed_trajects_list.none()
+        researched_trajects_list = researched_trajects_list.none()
+        
+   # Filtrage par modes de transport
+    if transport_modes:
+        transport_modes_objs = TransportMode.objects.filter(name__in=transport_modes)
+        proposed_trajects_list = proposed_trajects_list.filter(transport_modes__in=transport_modes_objs)
+        researched_trajects_list = researched_trajects_list.filter(transport_modes__in=transport_modes_objs)
+
+
+    # Pagination
+    proposed_trajects = Paginator(proposed_trajects_list, 10).get_page(request.GET.get('page1'))
+    researched_trajects = Paginator(researched_trajects_list, 10).get_page(request.GET.get('page2'))
+
+    context = {
+        'active_tab': active_tab,
+        'proposed_trajects': proposed_trajects,
+        'researched_trajects': researched_trajects,
+        'start_adress': start_adress,
+        'end_adress': end_adress,
+        'date': date_str,
+        'date_debut': date_debut_str,
+        'date_fin': date_fin_str,
+        'transport_modes': transport_modes,
+        'recurrence_type': recurrence_type,
+        'recurrence_interval': recurrence_interval,
+        'tr_weekdays': request.GET.getlist('tr_weekdays'),
+        'days_of_week': [
+            ('2', 'Lundi'),
+            ('3', 'Mardi'),
+            ('4', 'Mercredi'),
+            ('5', 'Jeudi'),
+            ('6', 'Vendredi'),
+            ('7', 'Samedi'),
+            ('1', 'Dimanche'),
+        ],
+
+
+    }
+    return render(request, 'trajects/trajects_page.html', context)
+
+'''# Filtering based on start and end regions
     if start_region:
         proposed_trajects_list = proposed_trajects_list.filter(
             Q(traject__start_region__icontains=start_region)
@@ -87,7 +150,7 @@ def all_trajects(request):
         researched_trajects_list = researched_trajects_list.filter(
             Q(traject__end_region__icontains=end_region)
         )
-    # Si une région est sélectionnée, filtrer les trajets en fonction de la région de départ et/ou d’arrivée
+    Si une région est sélectionnée, filtrer les trajets en fonction de la région de départ et/ou d’arrivée
     if region:
         proposed_trajects_list = proposed_trajects_list.filter(
             Q(traject__start_region__icontains=region) | Q(traject__end_region__icontains=region)
@@ -96,68 +159,24 @@ def all_trajects(request):
             Q(traject__start_region__icontains=region) | Q(traject__end_region__icontains=region)
         )
 
-        # Filtrer par ville si l'utilisateur entre une ville
-        if city_search:
-            proposed_trajects_list = proposed_trajects_list.filter(
-                Q(traject__start_locality__icontains=city_search) | Q(traject__end_locality__icontains=city_search)
-            )
-            researched_trajects_list = researched_trajects_list.filter(
-                Q(traject__start_locality__icontains=city_search) | Q(traject__end_locality__icontains=city_search)
-            )
-
-        # Filtrer par code postal si l'utilisateur entre un code postal
-        if postal_code_search:
-            proposed_trajects_list = proposed_trajects_list.filter(
-                Q(traject__start_zp__icontains=postal_code_search) | Q(
-                    traject__end_zp__icontains=postal_code_search)
-            )
-            researched_trajects_list = researched_trajects_list.filter(
-                Q(traject__start_zp__icontains=postal_code_search) | Q(
-                    traject__end_zp__icontains=postal_code_search)
-            )
-
-    # Filtering based on date
-    if date_str:
-        try:
-            date_obj = datetime.strptime(date_str, '%Y-%m-%d')  # Format de la date
-            proposed_trajects_list = proposed_trajects_list.filter(date=date_obj)
-            researched_trajects_list = researched_trajects_list.filter(date=date_obj)
-        except ValueError:
-            pass  # Si la date est mal formée, on ignore le filtrage
-
-    # Filtering based on transport modes
-    if transport_modes_objs:
+    # Filtrer par ville si l'utilisateur entre une ville
+    if city_search:
         proposed_trajects_list = proposed_trajects_list.filter(
-            traject__proposedtraject__transport_modes__in=transport_modes_objs
+            Q(traject__start_locality__icontains=city_search) | Q(traject__end_locality__icontains=city_search)
         )
         researched_trajects_list = researched_trajects_list.filter(
-            traject__researchedtraject__transport_modes__in=transport_modes_objs
+            Q(traject__start_locality__icontains=city_search) | Q(traject__end_locality__icontains=city_search)
         )
-
-    # Pagination for proposed trajects
-    paginator1 = Paginator(proposed_trajects_list, 10)  # Show 10 proposed trajects per page
-    page_number1 = request.GET.get('page1')
-    proposed_trajects = paginator1.get_page(page_number1)
-
-    # Pagination for researched trajects
-    paginator2 = Paginator(researched_trajects_list, 10)  # Show 10 researched trajects per page
-    page_number2 = request.GET.get('page2')
-    researched_trajects = paginator2.get_page(page_number2)
-
-    context = {
-        'active_tab': active_tab,
-        'proposed_trajects': proposed_trajects,
-        'researched_trajects': researched_trajects,
-        'start_adress': start_adress,
-        'end_adress': end_adress,
-        'date': date_str,
-        'transport_modes': transport_modes,
-        'start_region': start_region,
-        'end_region': end_region,
-        'region': region,
-    }
-    return render(request, 'trajects/trajects_page.html', context)
-
+    # Filtrer par code postal si l'utilisateur entre un code postal
+    if postal_code_search:
+        proposed_trajects_list = proposed_trajects_list.filter(
+            Q(traject__start_cp__icontains=postal_code_search) | Q(
+                traject__end_cp__icontains=postal_code_search)
+        )
+        researched_trajects_list = researched_trajects_list.filter(
+            Q(traject__start_cp__icontains=postal_code_search) | Q(
+                traject__end_cp__icontains=postal_code_search)
+        )'''
 
 def autocomplete_view(request):
     print('=========================================== views :: autocomplete_view ====================')
@@ -348,128 +367,132 @@ def manage_reservation(request, reservation_id, action):
 
 # ====================')= Utility functions ====================')==== #
 
-def generate_recurrent_trajects(request, recurrent_dates, traject, departure_time, arrival_time, number_of_places,
-                                details, recurrence_type, recurrence_interval, recurrence_days, date_debut, date_fin):
-    print('=========================================== views :: generate_recurrent_trajects ====================')
-    """Créer des trajets récurrents à partir des dates générées."""
+def generate_recurrent_trajects(request, recurrent_dates, traject, departure_time, arrival_time,
+                                number_of_places, details, recurrence_type, recurrence_interval,
+                                recurrence_days, date_debut, date_fin, cleaned_data):
+    print('=== views :: generate_recurrent_trajects ===')
     recurrent_trajects = []
-    print(request.user.id, request.user)
-    if recurrence_type == 'none':
-        # Si aucun type de récurrence, on crée juste un trajet avec la date fournie
+
+    for date in recurrent_dates:
         proposed_traject = ProposedTraject(
-            user=request.user,  # Utiliser l'utilisateur connecté
-            traject_id=traject.id,
-            date=date_debut,  # Utiliser la date de début comme unique date
+            user=request.user,
+            traject=traject,
+            date=date,
             departure_time=departure_time,
             arrival_time=arrival_time,
             number_of_places=number_of_places,
             details=details,
             recurrence_type=recurrence_type,
-            recurrence_interval=None,
-            recurrence_days=None,
-            date_debut=date_debut,
-            date_fin=date_fin
+            recurrence_interval=recurrence_interval if recurrence_type != 'none' else None,
+            recurrence_days=recurrence_days,
+            date_debut=date_debut if recurrence_type != 'none' else None,
+            date_fin=date_fin if recurrence_type != 'none' else None
         )
-        recurrent_trajects.append(proposed_traject)
         proposed_traject.save()
-        proposed_traject.transport_modes.set(request.POST.getlist('transport_modes'))  # Assigner les modes de transport
-    else:
-        # Gestion des trajets récurrents ici
-        for date in recurrent_dates:
-            proposed_traject = ProposedTraject(
-                user=request.user,  # Utiliser l'utilisateur connecté
-                traject_id=traject.id,
-                date=date,
-                departure_time=departure_time,
-                arrival_time=arrival_time,
-                number_of_places=number_of_places,
-                details=details,
-                recurrence_type=recurrence_type,
-                recurrence_interval=recurrence_interval,
-                recurrence_days=recurrence_days,
-                date_debut=date_debut,
-                date_fin=date_fin
-            )
-            recurrent_trajects.append(proposed_traject)
-            proposed_traject.save()
-            proposed_traject.transport_modes.set(
-                request.POST.getlist('transport_modes'))  # Assigner les modes de transport
+        proposed_traject.transport_modes.set(cleaned_data.get('transport_modes'))
+        proposed_traject.languages.set(cleaned_data.get('languages'))
+        recurrent_trajects.append(proposed_traject)
 
     return recurrent_trajects
 
 
+
 def handle_form_submission(request, traject_form, proposed_form):
-    print('=========================================== views :: handle_form_submission ====================')
-    """Traite la soumission du formulaire pour créer des trajets récurrents."""
+    print('=== views :: handle_form_submission ===')
     if traject_form.is_valid() and proposed_form.is_valid():
         traject = traject_form.save()
-        date = request.POST.get('date')
-        print(date)
-        recurrence_type = proposed_form.cleaned_data['recurrence_type']
-        recurrence_interval = proposed_form.cleaned_data['recurrence_interval']
-        recurrence_days = request.POST.getlist('tr_weekdays[]')
-        date_debut = proposed_form.cleaned_data['date_debut']
-        date_fin = proposed_form.cleaned_data['date_fin']
-        departure_time = request.POST.get('departure_time')
-        arrival_time = request.POST.get('arrival_time')
-        number_of_places = request.POST.get('number_of_places')
-        details = request.POST.get('details')
 
-        if date_debut is None:
-            date_debut = date
-        # Convertir les dates en objets datetime
-        if date_debut:
-            date_debut = datetime.strptime(str(date_debut), '%Y-%m-%d')
-        if date_fin:
-            date_fin = datetime.strptime(str(date_fin), '%Y-%m-%d')
+        # Données nettoyées
+        cleaned_data = proposed_form.cleaned_data
+        recurrence_type = cleaned_data.get('recurrence_type')
+        recurrence_interval = cleaned_data.get('recurrence_interval')
+        date_debut = cleaned_data.get('date_debut')
+        date_fin = cleaned_data.get('date_fin')
+        selected_days = request.POST.getlist('tr_weekdays')  # ['2', '4']
+        recurrence_days = "|" + "|".join(selected_days) + "|" if selected_days else None
 
-        if recurrence_type == 'none':
-            # Si la récurrence est "none", générer une seule date (date_debut)
-            recurrent_dates = [date]
-        else:
-            # Générer des dates récurrentes
-            recurrent_dates = generate_recurrent_dates(date_debut, date_fin, recurrence_type, recurrence_interval,
-                                                       recurrence_days)
+        departure_time = cleaned_data.get('departure_time')
+        arrival_time = cleaned_data.get('arrival_time')
+        number_of_places = cleaned_data.get('number_of_places')
+        details = cleaned_data.get('details')
 
-        recurrent_trajects = generate_recurrent_trajects(request, recurrent_dates, traject, departure_time,
-                                                         arrival_time, number_of_places, details, recurrence_type,
-                                                         recurrence_interval, recurrence_days, date_debut, date_fin)
+        # 🟠 Validation minimale
+        if not date_debut:
+            messages.error(request, "Veuillez choisir une date de départ.")
+            return None, False
+
+        if recurrence_type in ['weekly', 'biweekly'] and not date_fin:
+            messages.error(request, "Veuillez choisir une date de fin.")
+            return None, False
+
+        # 🟢 Pour "une semaine seulement", on considère date_debut == date_fin
+        if recurrence_type == 'one_week':
+            date_fin = date_debut
+
+        # Générer les dates récurrentes
+        recurrent_dates = generate_recurrent_dates(
+            date_debut=date_debut,
+            date_fin=date_fin,
+            recurrence_type=recurrence_type,
+            recurrence_interval=recurrence_interval,
+            specific_days=selected_days
+        )
+
+        # Création des objets ProposedTraject
+        recurrent_trajects = generate_recurrent_trajects(
+            request, recurrent_dates, traject,
+            departure_time, arrival_time, number_of_places,
+            details, recurrence_type, recurrence_interval,
+            recurrence_days, date_debut, date_fin, cleaned_data
+        )
 
         return recurrent_trajects, True
+
     return None, False
+
 
 
 from datetime import timedelta
 
-
-def generate_recurrent_dates(start_date, end_date, recurrence_type, recurrence_interval=None, specific_days=None):
-    print('=========================================== views :: generate_recurrent_dates ====================')
-    """Génère une liste de dates récurrentes en fonction du type de récurrence."""
-    current_date = start_date
+def generate_recurrent_dates(date_debut, date_fin, recurrence_type, recurrence_interval=None, specific_days=None):
+    print('=== views :: generate_recurrent_dates ===')
     recurrent_dates = []
 
-    if recurrence_type == 'weekly_interval':
-        # Calcul de la date de fin en fonction du nombre de semaines
-        if recurrence_interval and start_date:
-            end_date = start_date + timedelta(weeks=recurrence_interval)  # Calcul de la date de fin
-            # Assurer que l'intervalle est positif et réaliste
-            if end_date < start_date:
-                return recurrent_dates  # Aucun résultat si la date de fin est avant la date de départ
-
-    # On boucle jusqu'à ce que la date actuelle dépasse la date de fin
-    while current_date <= end_date:
-        if recurrence_type == 'weekly_interval':
-            recurrent_dates.append(current_date.date())
-            # On avance de l'intervalle de semaines
-            current_date += timedelta(days=1)  # L'intervalle est en jours ici
-        elif recurrence_type == 'specific_days':
-            weekday = str(current_date.weekday() + 1)
-            if weekday in specific_days:
-                recurrent_dates.append(current_date.date())
-            # On avance d'un jour pour vérifier les jours spécifiques
+    # Cas 1 : Une seule semaine => générer uniquement les jours choisis dans cette semaine
+    if recurrence_type == 'one_week':
+        current_date = date_debut
+        for i in range(7):  # Parcours les 7 jours de la semaine
+            weekday = str((current_date.weekday() + 1))  # Django : Lundi=0 → weekday=1
+            if specific_days and weekday in specific_days:
+                recurrent_dates.append(current_date)
             current_date += timedelta(days=1)
 
+    # Cas 2 : Toutes les semaines
+    elif recurrence_type == 'weekly':
+        current_date = date_debut
+        while current_date <= date_fin:
+            weekday = str((current_date.weekday() + 1))
+            if specific_days and weekday in specific_days:
+                recurrent_dates.append(current_date)
+            current_date += timedelta(days=1)
+
+    # Cas 3 : Une semaine sur deux
+    elif recurrence_type == 'biweekly':
+        current_date = date_debut
+        while current_date <= date_fin:
+            # Ajoute les jours spécifiés dans la semaine en cours
+            week_start = current_date
+            for i in range(7):
+                day = week_start + timedelta(days=i)
+                weekday = str((day.weekday() + 1))
+                if specific_days and weekday in specific_days and day <= date_fin:
+                    recurrent_dates.append(day)
+
+            # Sauter une semaine complète
+            current_date += timedelta(weeks=2)
+
     return recurrent_dates
+
 
 
 # ====================')= Main view function ====================')==== #
@@ -532,7 +555,16 @@ def proposed_traject(request, researchesTraject_id=None):
     context = {
         'traject_form': traject_form,
         'proposed_form': proposed_form,
-        'researched_traject': researched_traject
+        'researched_traject': researched_traject,
+        'days_of_week': [
+            ('2', 'Lundi'),
+            ('3', 'Mardi'),
+            ('4', 'Mercredi'),
+            ('5', 'Jeudi'),
+            ('6', 'Vendredi'),
+            ('7', 'Samedi'),
+            ('1', 'Dimanche'),
+        ],
     }
     return render(request, 'trajects/proposed_traject.html', context)
 
@@ -551,7 +583,7 @@ def searched_traject(request):
             searched.save()
             researched_form.save_m2m()  # Save many-to-many relationships
             messages.success(request, 'Searched Traject created successfully!')
-            return redirect('profile')
+            return redirect('accounts:profile')
         else:
             print("================Traject Form Errors:", traject_form.errors)
             print("================Proposed Form Errors:", researched_form.errors)

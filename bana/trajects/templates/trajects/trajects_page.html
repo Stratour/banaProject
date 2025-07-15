@@ -5,36 +5,43 @@
 {% block content %}
     <div class="bg-gray-100 min-h-screen p-6">
         <div class="container mx-auto">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6">All Trajects</h2>
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Rechercher un trajet</h2>
 
             <!-- Search Bar -->
             <form method="GET" action="{% url 'all_trajects' %}" class="bg-white shadow-lg rounded-lg p-6 mb-6">
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-
+                               
                     <!-- Starting Point -->
                     <div>
                         <label for="start_adress" class="block text-sm font-medium text-gray-700">🚀 Point de
                             départ</label>
                         <input type="text" name="start_adress" id="start_adress" value="{{ start_adress|default:'' }}"
                                class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                               placeholder="Entrez le point de départ" autocomplete="off"/>
+                               placeholder="Entrez le point de départ (Adresse, ville, code postal)" autocomplete="off"/>
                     </div>
 
+                    <!-- Bouton inverser -->
+                    <div class="flex items-center justify-center pt-6">
+                        <button type="button" onclick="swapAddresses()"
+                                class="text-indigo-600 hover:text-indigo-800 text-xl font-bold">
+                            🔄
+                        </button>
+                    </div>
                     <!-- Ending Point -->
                     <div>
                         <label for="end_adress" class="block text-sm font-medium text-gray-700">🎯 Point
                             d’arrivée</label>
                         <input type="text" name="end_adress" id="end_adress" value="{{ end_adress|default:'' }}"
                                class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                               placeholder="Entrez le point d’arrivée" autocomplete="off"/>
+                               placeholder="Entrez le point d’arrivée (Adresse, ville, code postal)" autocomplete="off"/>
                     </div>
 
-                    <!-- Date -->
+                    <!-- Date 
                     <div>
                         <label for="date" class="block text-sm font-medium text-gray-700">📅 Date</label>
                         <input type="date" name="date" id="date" value="{{ date|default:'' }}"
                                class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"/>
-                    </div>
+                    </div>-->
 
                     <!-- Transport Mode -->
                     <div>
@@ -42,56 +49,117 @@
                             transport</label>
                         <div class="mt-1 space-y-2">
                             <label class="inline-flex items-center">
-                                <input type="checkbox" name="transport_modes" value="transport" class="form-checkbox">
+                                <input type="checkbox" name="transport_modes" value="transport" class="form-checkbox" 
+                                {% if "transport" in transport_modes %}checked{% endif %}>
                                 <span class="ml-2">🚊 Transport en commun</span>
                             </label>
                             <label class="inline-flex items-center">
-                                <input type="checkbox" name="transport_modes" value="voiture" class="form-checkbox">
+                                <input type="checkbox" name="transport_modes" value="voiture" class="form-checkbox" 
+                                {% if "voiture" in transport_modes %}checked{% endif %}>
                                 <span class="ml-2">🚗 Voiture</span>
                             </label>
                             <label class="inline-flex items-center">
-                                <input type="checkbox" name="transport_modes" value="à vélo" class="form-checkbox">
+                                <input type="checkbox" name="transport_modes" value="vélo" class="form-checkbox"
+                                {% if "vélo" in transport_modes %}checked{% endif %}>
                                 <span class="ml-2">🚴‍♂️ À vélo</span>
                             </label>
                             <label class="inline-flex items-center">
-                                <input type="checkbox" name="transport_modes" value="à pied" class="form-checkbox">
+                                <input type="checkbox" name="transport_modes" value="pied" class="form-checkbox"
+                                {% if "pied" in transport_modes %}checked{% endif %}>
                                 <span class="ml-2">🚶‍♂️ À pied</span>
                             </label>
                         </div>
                     </div>
 
-                    <!-- Sélection de la région -->
-                    <div>
-                        <label for="region" class="block text-sm font-medium text-gray-700">🌍 Sélectionner une
-                            région</label>
-                        <select name="region" id="region" onchange="showSearchBars()"
-                                class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                            <option value="" {% if not region %}selected{% endif %}>Choisissez une région</option>
-                            <option value="Flandre" {% if region == 'Flandre' %}selected{% endif %}>Flandre</option>
-                            <option value="Wallonie" {% if region == 'Wallonie' %}selected{% endif %}>Wallonie</option>
-                            <option value="Bruxelles" {% if region == 'Bruxelles' %}selected{% endif %}>
-                                Bruxelles-Capitale
-                            </option>
-                        </select>
-                    </div>
-
-                    <!-- Recherche Ville & Code Postal -->
-                    <div id="search-options" style="display: {% if region %}block{% else %}none{% endif %};">
-                        <label for="city_search" class="block text-sm font-medium text-gray-700">🏙️ Rechercher par
-                            ville</label>
-                        <input type="text" name="city_search" id="city_search"
-                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                               placeholder="Entrez une ville" value="{{ city_search|default:'' }}" autocomplete="off"/>
-
-                        <label for="postal_code_search" class="block text-sm font-medium text-gray-700 mt-3">📮
-                            Rechercher par code postal</label>
-                        <input type="number" name="postal_code_search" id="postal_code_search"
-                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                               placeholder="Entrez un code postal" value="{{ postal_code_search|default:'' }}"
-                               autocomplete="off"/>
-                    </div>
+                    
+                    <fieldset>
+                <!-- Jours spécifiques -->
+                <div id="recurrence_days_container" class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Jours de la semaine</label>
+                    <ul class="grid grid-cols-2 gap-2">
+                        {% for i, day in days_of_week %}
+                        <li>
+                            <label>
+                                <input type="checkbox" name="tr_weekdays" value="{{ i }}" {% if i in tr_weekdays %}checked{% endif %}>
+                                {{ day }}
+                            </label>
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </div>
 
+                <!-- Type de récurrence -->
+                <legend class="block text-sm font-medium text-gray-700 mb-2">Fréquence du trajet</legend>
+
+                <label class="block mb-2">
+                    <input type="radio" name="recurrence_type" value="one_week" checked>
+                    Une semaine seulement
+                </label>
+
+                <label class="block mb-2">
+                    <input type="radio" name="recurrence_type" value="weekly">
+                    Toutes les semaines
+                </label>
+
+                <label class="block mb-4">
+                    <input type="radio" name="recurrence_type" value="biweekly">
+                    Une semaine sur deux
+                </label>
+
+                <!-- Date de début (toujours affichée) -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
+                    <input type="date" name="date_debut"
+                        value="{{ date_debut }}"
+                        class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    
+                </div>
+
+                <!-- Date de fin (masquée pour one_week) -->
+                <div id="date_fin_container" class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
+                    <input type="date" name="date_fin"
+                        value="{{ date_fin }}"
+                        class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+            </fieldset>
+                    {% comment "Ancien fonctionnement de récurence" %}
+                    
+                    <fieldset class="mb-4 border p-4 rounded">
+                        <legend class="font-semibold text-lg mb-2">Filtrer par récurrence</legend>
+                                    
+                    <!-- Type de récurrence -->
+                    <label for="recurrence_type" class="block text-sm font-medium text-gray-700">Type de récurrence</label>
+                    <select name="recurrence_type" id="recurrence_type" class="form-select mt-1 block w-full">
+                        <option value="">Tous</option>
+                        <option value="weekly_interval" {% if recurrence_type == 'weekly_interval' %}selected{% endif %}>Toutes les X semaines</option>
+                        <option value="specific_days" {% if recurrence_type == 'specific_days' %}selected{% endif %}>Jours spécifiques</option>
+                    </select>
+                
+                    <!-- Intervalle -->
+                    <div class="mt-4" id="recurrence_interval_container" style="display: none;">
+                        <label for="recurrence_interval" class="block text-sm font-medium text-gray-700">Intervalle (semaines)</label>
+                        <input type="number" name="recurrence_interval" id="recurrence_interval" min="1" class="form-input mt-1 block w-full" value="{{ recurrence_interval }}">
+                    </div>
+                
+                    <!-- Jours spécifiques -->
+                    <div class="mt-4" id="recurrence_days_container" style="display: none;">
+                        <label class="block text-sm font-medium text-gray-700">Jours spécifiques</label>
+                        <ul class="grid grid-cols-2 gap-2 mt-2">
+                            {% for i, day in days_of_week %}
+                                <li>
+                                    <label>
+                                        <input type="checkbox" name="tr_weekdays" value="{{ i }}" 
+                                            {% if i in tr_weekdays %}checked{% endif %}>
+                                        {{ day }}
+                                    </label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </fieldset>
+                {% endcomment %}
+                    
                 <!-- Submit Button -->
                 <div class="mt-6">
                     <button type="submit"
@@ -125,39 +193,33 @@
                                     <div>
                                         <h3 class="text-xl font-semibold text-gray-700">
                                             Membre :
-                                            {% if proposed.member.memb_user_fk.id == request.user.id %}
+                                            {% if proposed.user.id == request.user.id %}
                                                 <!--  Si c'est l'utilisateur lui-même, rediriger vers son profil -->
                                                 <a href="{% url 'profile' %}" class="text-blue-500 hover:underline">
-                                                    {{ proposed.member.memb_user_fk.username }}
+                                                    {{ proposed.user.username }}
                                                 </a>
                                             {% else %}
                                                 <!--  Sinon, aller vers le profil du membre avec avis -->
-                                                <a href="{% url 'profile_user' user_id=proposed.member.memb_user_fk.id %}"
+                                                <a href="{% url 'profile_user' user_id=proposed.user.id %}"
                                                    class="text-blue-500 hover:underline">
-                                                    {{ proposed.member.memb_user_fk.username }}
+                                                    {{ proposed.user.username }}
                                                 </a>
                                             {% endif %}
                                         </h3>
                                         <p class="text-gray-600">
                                             <strong>Adresse de départ:</strong>
-                                            {% if proposed.traject.start_adress %}
-                                                {{ proposed.traject.start_adress }}
-                                            {% else %}
-                                                {{ proposed.traject.start_street }},
-                                                {{ proposed.traject.start_locality }}
-                                                {{ proposed.traject.start_country }}
-                                            {% endif %}
+                                                {{ proposed.traject.start_adress }} | 
+                                                {{ proposed.traject.start_locality }},
+                                                {{ proposed.traject.start_cp }}
+                                            
                                         </p>
                                         <p class="text-gray-600">
                                             <strong>Adresse de destination:</strong>
-                                            {% if proposed.traject.end_adress %}
-                                                {{ proposed.traject.end_adress }}
-                                            {% else %}
-                                                {{ proposed.traject.end_street }}, {{ proposed.traject.end_locality }}
-                                                {{ proposed.traject.end_country }}
-                                            {% endif %}
+                                            {{ proposed.traject.end_adress }} | 
+                                                {{ proposed.traject.end_locality }},
+                                                {{ proposed.traject.end_cp }}
                                         </p>
-                                        <p class="text-gray-600"><strong>Date: </strong>{{ proposed.date }}</p>
+                                        <p class="text-gray-600"><strong>Date: </strong>{{ proposed.date|date:"l j F Y" }}</p>
                                         <p class="text-gray-600"><strong>Heure de
                                             départ:</strong> {{ proposed.departure_time }}</p>
                                         <p class="text-gray-600"><strong>Moyens de
@@ -165,19 +227,19 @@
                                         <p class="text-gray-600"><strong>Nombre de
                                             place:</strong> {{ proposed.number_of_places }}</p>
                                         <p class="text-gray-600"><strong>Langue parlée:</strong>
-                                            {% if proposed.member.languages.all %}
-                                                {% for language in proposed.member.languages.all %}
-                                                    {{ language.name }}{% if not forloop.last %}, {% endif %}
+                                            {% if proposed.languages.all %}
+                                                {% for language in proposed.languages.all %}
+                                                    {{ language.lang_name }}{% if not forloop.last %}, {% endif %}
                                                 {% endfor %}
                                             {% else %}
-                                                Aucune langue spécifiée
+                                                Aucune langue(s) spécifiée(s)
                                             {% endif %}
                                         </p>
                                     </div>
                                     <!-- Afficher "Gérer la réservation" ou "Rejoindre" en fonction de l'utilisateur -->
                                     <a href="{% url 'reserve_traject' proposed.id %}"
-                                       class="btn {% if proposed.member.memb_user_fk.id == request.user.id %}btn-warning{% else %}btn-primary{% endif %}">
-                                        {% if proposed.member.memb_user_fk.id == request.user.id %}
+                                       class="btn {% if proposed.user.id == request.user.id %}btn-warning{% else %}btn-primary{% endif %}">
+                                        {% if proposed.user.id == request.user.id %}
                                             Gérer la réservation
                                         {% else %}
                                             Rejoindre
@@ -198,7 +260,7 @@
                         </div>
 
                     {% else %}
-                        <p class="text-gray-600">No proposed trajects found.</p>
+                        <p class="text-gray-600">Aucun trajet disponible actuellement</p>
                     {% endif %}
                 </div>
             {% endif %}
@@ -213,35 +275,37 @@
                                 <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
                                     <div>
                                         <h3 class="text-xl font-semibold text-gray-700">
-                                            {{ researched.member.memb_user_fk.username }} {{ researched.traject.id }}
+                                            {{ researched.user.username }} {{ researched.traject.id }}
                                         </h3>
                                         <p class="text-gray-600">
                                             <strong>Adresse de départ:</strong>
-                                            {% if researched.traject.start_adress %}
-                                                {{ researched.traject.start_adress }}
-                                            {% else %}
-                                                {{ researched.traject.start_street }},
-                                                {{ researched.traject.start_locality }}
-                                                {{ researched.traject.start_country }}
-                                            {% endif %}
+                                                {{ researched.traject.start_adress }} | 
+                                                {{ researched.traject.start_locality }},
+                                                {{ researched.traject.start_cp }}
+                                            
                                         </p>
                                         <p class="text-gray-600">
                                             <strong>Adresse de destination:</strong>
-                                            {% if researched.traject.end_adress %}
-                                                {{ researched.traject.end_adress }}
-                                            {% else %}
-                                                {{ researched.traject.end_street }},
-                                                {{ researched.traject.end_locality }}
-                                                {{ researched.traject.end_country }}
-                                            {% endif %}
+                                            {{ researched.traject.end_adress }} | 
+                                                {{ researched.traject.end_locality }},
+                                                {{ researched.traject.end_cp }}
                                         </p>
-                                        <p class="text-gray-600"><strong>Date: </strong>{{ researched.date }}</p>
+                                        <p class="text-gray-600"><strong>Date: </strong>{{ researched.date|date:"l j F Y" }}</p>
                                         <p class="text-gray-600"><strong>Heure de
                                             départ:</strong> {{ researched.departure_time }}</p>
                                         <p class="text-gray-600"><strong>Moyens de
                                             transport:</strong> {{ researched.transport_modes.all|join:", " }}</p>
                                         <p class="text-gray-600"><strong>Nombre de
                                             place:</strong> {{ researched.number_of_places }}</p>
+                                        <p class="text-gray-600"><strong>Langue(s) parlée(s):</strong>
+                                            {% if researched.languages.all %}
+                                                {% for language in researched.languages.all %}
+                                                    {{ language.lang_name }}{% if not forloop.last %}, {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                Aucune langue(s) spécifiée(s)
+                                            {% endif %}
+                                        </p>
                                     </div>
                                     <div class="flex flex-col items-end space-y-2">
                                         <a href="{% url 'proposed_traject' researched.id %}" class="btn btn-primary"
@@ -301,38 +365,6 @@
             });
         });
 
-        function showSearchBars() {
-            var region = document.getElementById('region').value;
-            var searchOptions = document.getElementById('search-options');
-
-            // Afficher ou masquer la section de recherche avancée
-            searchOptions.style.display = region ? 'block' : 'none';
-
-            if (region) {
-                console.log('Région sélectionnée :', region);
-
-                var baseUrl = window.location.pathname; // On prend juste le chemin sans les paramètres existants
-                var params = new URLSearchParams(window.location.search);
-                params.set("region", region);  // Met à jour ou ajoute le paramètre "region"
-
-                // Détermine vers quelle liste scroller
-                var targetSection = window.location.search.includes("active_tab=researched") ? "#researched-list" : "#proposed-list";
-                console.log('Section cible :', targetSection);
-
-                var newUrl = baseUrl + "?" + params.toString() + targetSection;
-                console.log('🔗 Nouvelle URL :', newUrl);
-                // Met à jour l'URL sans recharger la page
-                history.pushState(null, null, newUrl);
-                    var targetElement = document.querySelector(targetSection);
-                    if (targetElement) {
-                        console.log('Scroll vers :', targetElement);
-                        targetElement.scrollIntoView({behavior: "smooth"});
-                    } else {
-                        console.warn('Élément non trouvé pour scroller !');
-                    }
-            }
-        }
-
         // Vérifie après le chargement si on doit scroller
         document.addEventListener("DOMContentLoaded", function () {
             var hash = window.location.hash;
@@ -346,5 +378,51 @@
                 }
             }
         });
+
+        function swapAddresses() {
+        const start = document.getElementById("start_adress");
+        const end = document.getElementById("end_adress");
+
+        const temp = start.value;
+        start.value = end.value;
+        end.value = temp;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        function toggleRecurrenceFields() {
+            const selectedType = document.querySelector('input[name="recurrence_type"]:checked')?.value;
+
+            // Toujours afficher les jours et date_debut
+            document.getElementById("recurrence_days_container").style.display = 'block';
+
+            // Afficher/Masquer uniquement date_fin
+            if (selectedType === "weekly" || selectedType === "biweekly") {
+                document.getElementById("date_fin_container").style.display = 'block';
+            } else {
+                document.getElementById("date_fin_container").style.display = 'none';
+            }
+        }
+
+        toggleRecurrenceFields();
+
+        document.querySelectorAll('input[name="recurrence_type"]').forEach(radio => {
+            radio.addEventListener("change", toggleRecurrenceFields);
+        });
+    });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        const typeSelect = document.getElementById("recurrence_type");
+        const intervalDiv = document.getElementById("recurrence_interval_container");
+        const daysDiv = document.getElementById("recurrence_days_container");
+
+        function toggleRFields() {
+            const val = typeSelect.value;
+            intervalDiv.style.display = val === "weekly_interval" ? "block" : "none";
+            daysDiv.style.display = val === "specific_days" ? "block" : "none";
+        }
+
+        typeSelect.addEventListener("change", toggleRFields);
+        toggleRFields(); // init au chargement
+        }); 
     </script>
-{% endblock %}
+{% endblock content%}

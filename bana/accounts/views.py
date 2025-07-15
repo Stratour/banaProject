@@ -164,7 +164,6 @@ def email_edit(request):
                 response["HX-Redirect"] = reverse("accounts:profile_security")
                 return response
 
-                return redirect("accounts:profile_security")
     else:
         form = AddEmailForm(user=request.user)
 
