@@ -211,8 +211,7 @@ def reserve_traject(request, id):
 def reserve_traject(request, id):
     print('=========================================== views :: reserve_traject ====================')
     traject = get_object_or_404(ProposedTraject, id=id)
-    user_member = Members.objects.get(memb_user_fk=request.user)
-    is_creator = traject.member == user_member
+    is_creator = traject.user == request.user  # Vérifier si l'utilisateur est le créateur du trajet
 
     # Si l'utilisateur n'est pas le créateur
     if not is_creator:
@@ -232,7 +231,7 @@ def reserve_traject(request, id):
             else:
                 # Créer la réservation
                 reservation = Reservation.objects.create(
-                    member=user_member,
+                    user=request.user,
                     traject=traject,
                     number_of_places=num_places
                 )
@@ -354,11 +353,11 @@ def generate_recurrent_trajects(request, recurrent_dates, traject, departure_tim
     print('=========================================== views :: generate_recurrent_trajects ====================')
     """Créer des trajets récurrents à partir des dates générées."""
     recurrent_trajects = []
-
+    print(request.user.id, request.user)
     if recurrence_type == 'none':
         # Si aucun type de récurrence, on crée juste un trajet avec la date fournie
         proposed_traject = ProposedTraject(
-            member_id=Members.objects.get(memb_user_fk=request.user).id,
+            user=request.user,  # Utiliser l'utilisateur connecté
             traject_id=traject.id,
             date=date_debut,  # Utiliser la date de début comme unique date
             departure_time=departure_time,
@@ -378,7 +377,7 @@ def generate_recurrent_trajects(request, recurrent_dates, traject, departure_tim
         # Gestion des trajets récurrents ici
         for date in recurrent_dates:
             proposed_traject = ProposedTraject(
-                member_id=Members.objects.get(memb_user_fk=request.user).id,
+                user=request.user,  # Utiliser l'utilisateur connecté
                 traject_id=traject.id,
                 date=date,
                 departure_time=departure_time,
@@ -491,7 +490,7 @@ def proposed_traject(request, researchesTraject_id=None):
             traject = Traject.objects.get(id=researched_traject.traject_id)
         except (ResearchedTraject.DoesNotExist, Traject.DoesNotExist) as e:
             messages.error(request, "Erreur lors de la récupération des trajets.")
-            return redirect('profile')
+            return redirect('accounts:profile')
 
     # Initialisation des données si `researched_traject` est trouvé
     initial_data = {}
@@ -522,7 +521,7 @@ def proposed_traject(request, researchesTraject_id=None):
 
         if success:
             messages.success(request, 'Proposed Trajects created successfully!')
-            return redirect('profile')
+            return redirect('accounts:profile')
         else:
             messages.error(request, 'There were errors in your form. Please fix them and try again.')
     else:
@@ -548,7 +547,7 @@ def searched_traject(request):
             traject = traject_form.save()
             searched = researched_form.save(commit=False)
             searched.traject = traject
-            searched.member = Members.objects.get(memb_user_fk=request.user)  # Assign the member
+            searched.user = request.user  # Assigner l'utilisateur connecté
             searched.save()
             researched_form.save_m2m()  # Save many-to-many relationships
             messages.success(request, 'Searched Traject created successfully!')
@@ -571,9 +570,9 @@ def searched_traject(request):
 def delete_traject(request, id, type):
     print('=========================================== views :: delete_traject ====================')
     if type == 'proposed':
-        traject = get_object_or_404(ProposedTraject, id=id, member=request.user.members)
+        traject = get_object_or_404(ProposedTraject, id=id, user=request.user)
     else:
-        traject = get_object_or_404(ResearchedTraject, id=id, member=request.user.members)
+        traject = get_object_or_404(ResearchedTraject, id=id, user=request.user)
 
     traject.delete()
     messages.success(request, 'Traject deleted successfully!')

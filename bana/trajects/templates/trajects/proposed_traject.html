@@ -7,15 +7,6 @@
         <div class="bg-white shadow-md rounded-lg p-8 max-w-4xl w-full">
             <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Create Proposed Traject</h2>
             <form method="post" action="
-
-
-
-
-
-
-
-
-
                     {% if researched_traject.id %}{% url 'proposed_traject' researched_traject.id %}{% else %}{% url 'proposed_traject' %}{% endif %}"
                   class="space-y-6">
                 {% csrf_token %}

@@ -197,7 +197,7 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # URL for login redirect 
 LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = '/accounts/login' 
+LOGIN_URL = '/accounts/login/' 
 ACCOUNT_LOGIN_METHODS = {"email", "username"} 
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
