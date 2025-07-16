@@ -14,4 +14,8 @@ urlpatterns = [
     # Dans urls.py
     path('reserve/researched/<int:researchedTraject_id>/', views.reserve_trajectResearched, name='reserve_trajectResearched'),
     path('manage_reservation/<int:reservation_id>/<str:action>/', views.manage_reservation, name='manage_reservation'),
+    
+    path('proposed/all/', views.all_proposed_trajects, name='all_proposed_trajects'),
+    path('researched/all/', views.all_researched_trajects, name='all_researched_trajects'),
+
 ]

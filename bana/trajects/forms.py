@@ -141,20 +141,12 @@ class ProposedTrajectForm(forms.ModelForm):
             self.fields['recurrence_interval'].initial = 1 if recurrence_type == 'weekly' else 2
         
 
-class ResearchedTrajectForm(forms.ModelForm):
+class ResearchedTrajectForm(forms.ModelForm):    
     transport_modes = forms.ModelMultipleChoiceField(
         queryset=TransportMode.objects.all(),
         widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-checkbox'}),
         label="Moyens de transport"
     )
-    
-    languages = forms.ModelMultipleChoiceField(
-        queryset=Languages.objects.all(),
-        widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-checkbox'}),
-        label="Langues parlées",
-        required=False
-    )
-    
     #detour_distance = forms.FloatField(
     #    widget=forms.NumberInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
     #    label="Détour maximum (km)",
@@ -175,19 +167,12 @@ class ResearchedTrajectForm(forms.ModelForm):
 
     recurrence_type = forms.ChoiceField(
         choices=[
-            ('none', 'Aucun'),  # Pas de récurrence
-            ('weekly_interval', 'Intervalle hebdomadaire'),  # Répétition hebdomadaire
-            ('specific_days', 'Jours spécifiques')  # Répétition sur des jours spécifiques
+            ('one_week', 'Une semaine seulement'),
+            ('weekly', 'Toutes les semaines'),
+            ('biweekly', 'Une semaine sur deux')
         ],
         widget=forms.Select(attrs={'class': 'form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
-        required=False
-    )
-
-    recurrence_interval = forms.IntegerField(
-        widget=forms.NumberInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
-        required=False,
-        label="Intervalle (semaines)",
-        min_value=1
+        required=True
     )
 
     tr_weekdays = forms.MultipleChoiceField(
@@ -214,36 +199,31 @@ class ResearchedTrajectForm(forms.ModelForm):
 
     class Meta:
         model = ResearchedTraject
-        fields = ['details', 'departure_time', 'arrival_time', 'transport_modes', 'languages',
-                  'number_of_places', 'date',
-                  'recurrence_type', 'recurrence_interval', 'date_debut', 'date_fin']
+        fields = ['departure_time', 'arrival_time', 'transport_modes',
+                  'recurrence_type', 'date_debut', 'date_fin']
         labels = {
-            'details': 'Détails',
             'departure_time': 'Heure de départ',
             'arrival_time': 'Heure d’arrivée',
-            'number_of_places': 'Nombre de places',
             'date': 'Date du trajet',
             'recurrence_type': 'Type de récurrence',
-            'recurrence_interval': 'Intervalle de récurrence (semaines)',
             'date_debut': 'Date de début de récurrence',
             'date_fin': 'Date de fin de récurrence',
-        }
-        widgets = {
-            'details': forms.Textarea(
-                attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
-                       'placeholder': 'Ajoutez des détails utiles pour le conducteur'}),
         }
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Initialiser les champs de récurrence selon le type sélectionné
-        recurrence_type = self.initial.get('recurrence_type', '') or self.instance.recurrence_type
+        #Initialiser les champs de récurrence selon le type sélectionné
+        recurrence_type = self.initial.get('recurrence_type', '') or self.data.get('recurrence_type')
 
-        if recurrence_type == 'weekly_interval':
-            self.fields['recurrence_interval'].required = True
-        elif recurrence_type == 'specific_days':
-            self.fields['recurrence_interval'].required = True
+        if recurrence_type == 'none':
+            self.fields['date_debut'].required = False
+            self.fields['date_fin'].required = False
+            self.fields['recurrence_interval'].initial = None
+        elif recurrence_type in ['weekly', 'biweekly']:
+            self.fields['date_debut'].required = True
+            self.fields['date_fin'].required = True
+            self.fields['recurrence_interval'].initial = 1 if recurrence_type == 'weekly' else 2
 
 
 class ReservationForm(forms.ModelForm):

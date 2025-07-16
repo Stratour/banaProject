@@ -6,6 +6,15 @@
 <div class="bg-gray-100 min-h-screen flex items-center justify-center p-6">
     <div class="bg-white shadow-md rounded-lg p-8 max-w-4xl w-full">
         <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Proposer un trajet</h2>
+        {% if messages %}
+        <ul class="mb-4">
+            {% for message in messages %}
+            <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
         <form method="post"
             action="
                     {% if researched_traject.id %}{% url 'proposed_traject' researched_traject.id %}{% else %}{% url 'proposed_traject' %}{% endif %}"
@@ -221,7 +230,7 @@
             </div>
             <!-- Submit Button -->
             <button type="submit" class="w-full py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                Create Proposed Traject
+                💾 Sauvegarder le trajet proposé
             </button>
         </form>
     </div>

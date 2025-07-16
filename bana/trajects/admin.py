@@ -52,8 +52,8 @@ class ProposedTrajectAdmin(admin.ModelAdmin):
 @admin.register(ResearchedTraject)
 class ResearchedTrajectAdmin(admin.ModelAdmin):
     list_display = (
-        'traject', 'details', 'get_user', 
-        'departure_time', 'arrival_time', 'get_transport_modes','number_of_places', 'get_languages'
+        'traject', 'get_user', 
+        'departure_time', 'arrival_time', 'get_transport_modes'
     )
     search_fields = ( 'traject__start_name','traject__end_name')
 
@@ -64,10 +64,7 @@ class ResearchedTrajectAdmin(admin.ModelAdmin):
     def get_transport_modes(self, obj):
         return ", ".join([mode.name for mode in obj.transport_modes.all()])
     get_transport_modes.short_description = 'Transport Modes'
-    
-    def get_languages(self, obj):
-        return ", ".join(lang.lang_name for lang in obj.languages.all())
-    get_languages.short_description = "Langues parlées"
+
 
 
 @admin.register(TransportMode)

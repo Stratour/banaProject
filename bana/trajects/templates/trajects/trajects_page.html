@@ -12,12 +12,22 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                                
                     <!-- Starting Point -->
-                    <div>
-                        <label for="start_adress" class="block text-sm font-medium text-gray-700">🚀 Point de
-                            départ</label>
-                        <input type="text" name="start_adress" id="start_adress" value="{{ start_adress|default:'' }}"
-                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                               placeholder="Entrez le point de départ (Adresse, ville, code postal)" autocomplete="off"/>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Point de départ -->
+                        <div>
+                            <label for="start_adress" class="block text-sm font-medium text-gray-700">🚀 Point de départ</label>
+                            <input type="text" name="start_adress" id="start_adress" value="{{ start_adress|default:'' }}"
+                                   class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                   placeholder="Entrez le point de départ (Adresse, ville, code postal)" autocomplete="on"/>
+                        </div>
+                    
+                        <!-- Heure de départ -->
+                        <div>
+                            <label for="departure_time" class="block text-sm font-medium text-gray-700">🕒 Heure de départ</label>
+                            <input type="time" name="departure_time" id="departure_time"
+                                   value="{{ departure_time|default:'' }}"
+                                   class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
                     </div>
 
                     <!-- Bouton inverser -->
@@ -33,7 +43,15 @@
                             d’arrivée</label>
                         <input type="text" name="end_adress" id="end_adress" value="{{ end_adress|default:'' }}"
                                class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                               placeholder="Entrez le point d’arrivée (Adresse, ville, code postal)" autocomplete="off"/>
+                               placeholder="Entrez le point d’arrivée (Adresse, ville, code postal)" autocomplete="on"/>
+                        
+                        <!-- Heure d'arrivée -->
+                        <div>
+                            <label for="arrival_time" class="block text-sm font-medium text-gray-700">🕒 Heure de départ</label>
+                            <input type="time" name="arrival_time" id="arrival_time"
+                                   value="{{ arrival_time|default:'' }}"
+                                   class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
                     </div>
 
                     <!-- Date 
@@ -73,6 +91,7 @@
 
                     
                     <fieldset>
+                        
                 <!-- Jours spécifiques -->
                 <div id="recurrence_days_container" class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Jours de la semaine</label>
@@ -92,17 +111,20 @@
                 <legend class="block text-sm font-medium text-gray-700 mb-2">Fréquence du trajet</legend>
 
                 <label class="block mb-2">
-                    <input type="radio" name="recurrence_type" value="one_week" checked>
+                    <input type="radio" name="recurrence_type" value="one_week"
+                    {% if recurrence_type == 'one_week' %}checked{% endif %}>
                     Une semaine seulement
                 </label>
 
                 <label class="block mb-2">
-                    <input type="radio" name="recurrence_type" value="weekly">
+                    <input type="radio" name="recurrence_type" value="weekly" 
+                    {% if recurrence_type == 'weekly' %}checked{% endif %}>
                     Toutes les semaines
                 </label>
 
                 <label class="block mb-4">
-                    <input type="radio" name="recurrence_type" value="biweekly">
+                    <input type="radio" name="recurrence_type" value="biweekly"
+                    {% if recurrence_type == 'biweekly' %}checked{% endif %}>
                     Une semaine sur deux
                 </label>
 

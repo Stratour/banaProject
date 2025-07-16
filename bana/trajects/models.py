@@ -94,49 +94,51 @@ class ProposedTraject(models.Model):
 
 
 class ResearchedTraject(models.Model):
-    NUMBER_PLACE = [(str(i), str(i)) for i in range(1, 8)]
-    
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='researched_trajects', null=True, blank=True)
     traject = models.ForeignKey(Traject, on_delete=models.CASCADE)
     
-    # Informations recherchées
-    date = models.DateField()
+    # Informations de base du trajet
     departure_time = models.TimeField()
     arrival_time = models.TimeField()
-    number_of_places = models.CharField(max_length=1, choices=NUMBER_PLACE)
-    details = models.TextField()
-    
-    languages = models.ManyToManyField(Languages, related_name='researched_trajects',blank=True)
 
     # Modes de transport souhaités
     transport_modes = models.ManyToManyField(TransportMode, related_name='researched_trajects')
     
-    # Récurrence (si applicable)
+    date = models.DateField(blank=True, null=True)
     date_debut = models.DateField(blank=True, null=True)
     date_fin = models.DateField(blank=True, null=True)
-    recurrence_type = models.CharField(
-        max_length=50,
-        choices=[
-            ('none', 'Aucune'),
-            ('weekly', 'Chaque semaine'),
-            ('weekly_interval', 'Toutes les x semaines'),
-            ('specific_days', 'Jours spécifiques')
-        ],
-        blank=True, null=True
-    )
     
-    # Si récurrence par intervalle de semaines
-    recurrence_interval = models.IntegerField(default=1, blank=True, null=True)  # Par exemple: toutes les 2 semaines
-
-    # Si récurrence par jours spécifiques
-    recurrence_days = models.CharField(max_length=255, blank=True, null=True)  # Jours spécifiques (ex: 'MO, WE, FR')
-
+    recurrence_type = models.CharField(
+        max_length=30,
+        choices=[
+            ('one_week', 'Une semaine seulement'),
+            ('weekly', 'Chaque semaine'),
+            ('biweekly', 'Une semaine sur deux'),
+        ],
+        default='none'
+    )
+    recurrence_interval = models.IntegerField(blank=True, null=True)
+    recurrence_days = models.CharField(max_length=255, blank=True, null=True)
+    
     def __str__(self):
-        return f"{self.user.username} cherche {self.number_of_places} place(s) ({self.date}) - {self.traject.start_adress} → {self.traject.end_adress}"
+        return f"{self.user.username} - ({self.date}) - {self.traject.start_adress} → {self.traject.end_adress}"
 
     @classmethod
     def get_researched_trajects_by_user(cls, user):
         return cls.objects.filter(user=user)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 class Reservation(models.Model):

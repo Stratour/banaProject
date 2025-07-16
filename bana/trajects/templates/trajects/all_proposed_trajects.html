@@ -1,0 +1,26 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Trajet proposé - BanaCommunity{% endblock %}
+
+{% block content %}
+
+<h2 class="text-xl font-semibold mb-4">🚗 Trajets proposés</h2>
+
+{% if proposed_trajects %}
+  <ul class="space-y-4">
+    {% for pt in proposed_trajects %}
+      <li class="p-4 border rounded shadow">
+        <p><strong>Date :</strong> {{ pt.date }}</p>
+        <p><strong>Heure :</strong> {{ pt.departure_time }} → {{ pt.arrival_time }}</p>
+        <p><strong>De :</strong> {{ pt.traject.start_adress }}</p>
+        <p><strong>À :</strong> {{ pt.traject.end_adress }}</p>
+        <p><strong>Places :</strong> {{ pt.number_of_places }}</p>
+        <p><strong>Par :</strong> {{ pt.user.first_name }} {{ pt.user.last_name }}</p>
+      </li>
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Aucun trajet proposé trouvé.</p>
+{% endif %}
+
+{% endblock %}
