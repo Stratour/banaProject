@@ -1,0 +1,15 @@
+<form 
+    hx-post="{% url 'accounts:profile_edit' %}" 
+    hx-target="#editable-profile-section" 
+    hx-swap="outerHTML"
+    method="POST"
+    enctype="multipart/form-data"
+    class="border p-4 rounded bg-white"
+>
+    {% csrf_token %}
+    {{ user_form.as_p }}
+    {{ profile_form.as_p }}
+{{ profile_form.languages }}
+
+    <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+</form>

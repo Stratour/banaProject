@@ -1,12 +1,12 @@
 <header>
-    <nav class="px-6 bg-[#007F73] text-white xl:px-24 py-4 flex items-center justify-between">
+    <nav class="px-6 bg-brand text-white xl:px-24 py-4 flex items-center justify-between">
         <!-- Logo and Branding -->
         <div class="flex items-center space-x-3">
             {% load static %}
             <img class="w-20 h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Logo Bana">
             <p class="hidden xl:block text-sm w-60">
                 Mobile babysitting platform for the
-                <span class="text-[#D7FC19] font-bold">home-school-activities kids' journeys</span>
+                <span class="text-brand-50 font-bold">home-school-activities kids' journeys</span>
             </p>
         </div>
 
@@ -41,6 +41,8 @@
             <a href="{% url 'home' %}">
                 <img class="w-7 h-7" src="{% static 'bana/img/icon/Icon_home.svg' %}" alt="Icon hut">
             </a>
+            <a href="{% url 'work' %}" class="hover:text-white hover:no-underline">How it works</a>
+            <a href="{% url 'parent' %}" class="hover:text-white hover:no-underline">Search or share</a>
             <a href="{% url 'about' %}" class="hover:text-white hover:no-underline">About</a>
             <a href="{% url 'contact' %}" class="hover:text-white hover:no-underline">Contact</a>
             <a href="{% url 'all_trajects' %}" class="hover:text-white hover:no-underline">All Trajects</a>
@@ -52,24 +54,24 @@
                 
                 {% if user.is_authenticated %}
                     <a href="{% url 'accounts:profile' %}"
-                        class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-[#3D4F00] hover:no-underline">
+                        class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
                         Profile
                     </a>
             
                     <a href="{% url 'account_logout' %}"
 
-                        class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-[#3D4F00] hover:no-underline">
+                        class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
                         Logout
                     </a>
                 {% else %}
                     <a href="{% url 'account_signup' %}"
-                        class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-[#3D4F00] hover:no-underline">
+                        class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
                         Register
                     </a>
             
                     <a href="{% url 'account_login' %}"
 
-                        class="relative bg-[#007F73] text-[#D7FC19] px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-[#D7FC19] hover:no-underline before:absolute before:inset-0 before:rounded-full before:border-2 before:border-[#D7FC19]">
+                        class="relative bg-brand text-brand-50 px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-50 hover:no-underline before:absolute before:inset-0 before:rounded-full before:border-2 before:border-brand-50">
                         Login
                     </a>
                 {% endif %}
@@ -97,7 +99,7 @@
     </nav>
 
     <!-- Mobile Dropdown Menu -->
-    <div id="mobile-menu" class="hidden bg-[#007F73] border-t border-[#D7FC19] text-white px-6 py-4 md:hidden">
+    <div id="mobile-menu" class="hidden bg-brand border-t border-brand-50 text-white px-6 py-4 md:hidden">
         <div class="flex flex-col space-y-4 font-bold">
             <a href="{% url 'home' %}" class="text-center hover:text-white hover:no-underline">Home</a>
             <a href="{% url 'about' %}" class="text-center hover:text-white hover:no-underline">About</a>
@@ -108,21 +110,21 @@
 
             <div class="flex flex-col items-center gap-4 md:flex-row justify-center p-6">
                 {% if user.is_authenticated %}
-                <a href="{% url 'profile' %}"
-                    class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
+                <a href="{% url 'accounts:profile' %}"
+                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
                     Profile
                 </a>
-                <a href="{% url 'logout' %}"
-                    class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
+                <a href="{% url 'accounts:logout' %}"
+                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
                     Logout
                 </a>
                 {% else %}
-                <a href="{% url 'register' %}"
-                    class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
+                <a href="{% url 'account_signup' %}"
+                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
                     Register
                 </a>
-                <a href="{% url 'login' %}"
-                    class="bg-[#D7FC19] text-[#007F73] px-4 py-2 rounded-full font-bold w-40 text-center hover:text-[#3D4F00] hover:no-underline">
+                <a href="{% url 'account_login' %}"
+                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
                     Login
                 </a>
                 {% endif %}

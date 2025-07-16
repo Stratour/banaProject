@@ -1,9 +1,112 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from allauth.account.forms import SignupForm
 from django.contrib.auth.models import User
-from accounts.models import Profile
+from accounts.models import Profile, Languages
 
-'''
+SERVICE_CHOICES = [
+('parent', 'Parent'),
+('mentor', 'Mentor'),
+]
+TRANSPORT_MODES_CHOICES = [
+('car', 'Car'),
+('bike', 'Bike'),
+('public_transport', 'Public Transport'),   
+('walking', 'Walking'),
+]
+
+class CustomSignupForm(SignupForm):
+    first_name = forms.CharField(max_length=30, required=True, label='First Name')
+    last_name = forms.CharField(max_length=30, required=True, label='Last Name')
+    profile_picture = forms.ImageField(required=False, label='Profile Picture')
+    address = forms.CharField(max_length=100, required=False, label='Address (city, country)')
+
+    service = forms.MultipleChoiceField(
+        choices=SERVICE_CHOICES,
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Services Offered"
+    )
+
+    transport_modes = forms.MultipleChoiceField(
+        choices=TRANSPORT_MODES_CHOICES,
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Preferred Transport Modes"
+    )
+
+    languages = forms.ModelMultipleChoiceField(
+        queryset=Languages.objects.all(),
+        label='Languages Spoken',
+        widget=forms.SelectMultiple(attrs={
+            'class': 'w-full border rounded px-2 py-1',
+            'size': 5
+        }),
+        required=False
+    )
+
+    def save(self, request):
+        user = super().save(request)
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.save()
+
+        # Création du profil lié à l'utilisateur
+        profile = Profile.objects.create(
+            user=user,
+            profile_picture=self.cleaned_data.get('profile_picture'),
+            address=self.cleaned_data.get('address'),
+            service=self.cleaned_data.get('service', []),
+            transport_modes=self.cleaned_data.get('transport_modes', []),
+        )
+
+        if self.cleaned_data.get('languages'):
+           profile.languages.set(self.cleaned_data['languages'])
+        return user
+
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username', 'first_name', 'last_name', 'email'] 
+
+class ProfileUpdateForm(forms.ModelForm):
+    
+    service = forms.MultipleChoiceField(
+        choices=SERVICE_CHOICES,
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Services proposés/recherchés"
+    )
+
+    transport_modes = forms.MultipleChoiceField(
+        choices=TRANSPORT_MODES_CHOICES,
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Modes de transport"
+    )
+
+    languages = forms.ModelMultipleChoiceField(
+        queryset=Languages.objects.all(),
+        widget=forms.SelectMultiple(attrs={'size': 5}),
+        required=False,
+        label="Langues parlées"
+    )
+    
+    class Meta:
+        model = Profile
+        fields = ['profile_picture', 'phone','address', 'service', 'languages', 'transport_modes', 'bio', ]
+        widgets = {
+            'service': forms.CheckboxSelectMultiple,
+            'transport_modes': forms.CheckboxSelectMultiple,
+        }
+        
+    def clean_service(self):
+        return self.cleaned_data['service'] or []
+
+    def clean_transport_modes(self):
+        return self.cleaned_data['transport_modes'] or []     
+        
+
+        '''
 class CustomAuthenticationForm(AuthenticationForm):
     print('============ AuthenticationFormLogin =========')
 
@@ -34,13 +137,3 @@ class CustomUserCreationForm(UserCreationForm):
             'password2': forms.PasswordInput(attrs={'class': 'form-control', 'id': 'id_password2_helptext'}),
         }
 '''
-
-class UserUpdateForm(forms.ModelForm):
-    class Meta:
-        model = User
-        fields = ['username', 'first_name', 'last_name'] 
-
-class ProfileUpdateForm(forms.ModelForm):
-    class Meta:
-        model = Profile
-        fields = ['image', 'bio', 'phone']

@@ -1,0 +1,18 @@
+
+<div class="border p-4 rounded-lg shadow bg-white">
+    <h3 class="text-xl font-semibold mb-3">Mon profil</h3>
+    {% if user.profile.profile_picture %}
+        <img src="{{ user.profile.profile_picture.url }}" alt="Photo de profil" class="w-20 h-20 object-cover rounded-full mb-4">
+    {% else %}
+        <h1 class="no-image">
+              {{ user.first_name.0 }}.{{ user.last_name.0 }}
+        </h1>
+    {% endif %}
+    <p class="text-lg font-medium">{{ user.first_name }} {{ user.last_name|slice:":1" }}.</p>
+    <p>{{ user.profile.address }}</p>
+    <p>Services : {{ user.profile.service|join:", " }}</p>
+    <p>Transports : {{ user.profile.transport_modes|join:", " }}</p>
+    <p>Langues parlées : {{ user.profile.languages.all|join:", " }}</p>
+    <p>Date d’inscription : {{ user.date_joined|date:"d/m/Y" }}</p>
+</div>
+

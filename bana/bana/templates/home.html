@@ -11,11 +11,11 @@
             <!-- Left Content -->
             <div class="flex flex-col items-center text-center md:text-left px-8 pb-4 md:mb-4 md:w-1/2 md:px-16 xl:px-32">
                 <h1 class="mt-4 text-4xl md:text-5xl font-bold">Are you looking for or are you offering a ride?</h1>
-                <h2 class="mt-2 mb-4 text-lg font-semibold text-[#007F73]">Shared mobility platform for children’s rides
+                <h2 class="mt-2 mb-4 text-lg font-semibold text-brand">Shared mobility platform for children’s rides
                 </h2>
                 <!-- Search Bar -->
                 <form id="searchForm" method="GET" action="{% url 'all_trajects' %}"
-                      class="bottom-8 left-4 bg-white/90 shadow-lg rounded-full p-4 w-[90%] md:w-auto">
+                      class="bottom-8 left-4 p-4 w-[90%] md:w-auto">
                     <div class="flex flex-wrap gap-8 items-end">
                         <!-- Starting Point -->
                         <div class="flex-1 min-w-[150px]">
@@ -62,12 +62,12 @@
                 </form>
                 <div class="mt-6 flex flex-col xl:flex-row gap-4 items-center">
                     <button id="submitButton"
-                            class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-[#007F73] rounded-full"
+                            class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-brand rounded-full"
                             aria-label="Find a ride">Find a ride
                     </button>
-                    <a href="/offer-ride"
-                       class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-[#1FAB89] rounded-full"
-                       aria-label="Offer a ride">Offer a ride</a>
+                    <a href="{% url 'proposed_traject' %}"
+                       class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-brand-200 rounded-full"
+                       aria-label="Offer a ride">Offer a ride</a> 
                 </div>
             </div>
             <!-- Right Content -->
@@ -89,7 +89,7 @@
         </div>
 
         <!-- Benefits Section -->
-        <div class="bg-[#007F73] md:h-[12rem] w-full flex flex-col md:flex-row relative overflow-hidden">
+        <div class="bg-brand md:h-[12rem] w-full flex flex-col md:flex-row relative overflow-hidden">
 
             <div class="hidden xl:block h-full">
                 <img class="h-full w-full object-cover" src="{% static 'bana/img/other/Bana_circle_right.png' %}"
@@ -106,7 +106,7 @@
                         <img class="w-10 h-10 mb-2" src="{% static benefit.img_src %}"
                              alt="{{ benefit.title }} feature icon">
                         <h3 class="text-lg font-bold">{{ benefit.title }}</h3>
-                        <p class="text-sm"><span class="text-[#D7FC19] font-semibold">{{ benefit.highlight }}</span>
+                        <p class="text-sm"><span class="text-brand-50 font-semibold">{{ benefit.highlight }}</span>
                             {{ benefit.description }}</p>
                     </div>
                 {% endfor %}
@@ -120,10 +120,10 @@
             </div>
             <div class="w-full p-6 md:w-auto">
                 <div>
-                    <h3 class="text-xl text-center md:text-left font-bold text-[#007F73] mb-2">
+                    <h3 class="text-xl text-center md:text-left font-bold text-brand mb-2">
                         Already in more than 55 cities in Belgium!
                     </h3>
-                    <p class="text-[#1FAB89] text-center md:text-left ">
+                    <p class="text-brand-200 text-center md:text-left ">
                         Our support is provided via all means of transport
                     </p>
                 </div>
@@ -138,10 +138,10 @@
                 </div>
                 <div class="flex flex-col items-center gap-4 mt-6 text-center md:flex-row">
                     <a href="/find-ride"
-                       class="w-60 px-6 py-3 font-semibold text-white bg-[#007F73] rounded-full md:w-48"
+                       class="w-60 px-6 py-3 font-semibold text-white bg-brand rounded-full md:w-48"
                        aria-label="Find a ride">Find a ride</a>
                     <a href="/offer-ride"
-                       class="w-60 px-6 py-3 font-semibold text-white bg-[#1FAB89] rounded-full md:w-48"
+                       class="w-60 px-6 py-3 font-semibold text-white bg-brand-200 rounded-full md:w-48"
                        aria-label="Offer a ride">Offer a ride</a>
                 </div>
             </div>
@@ -152,7 +152,7 @@
                 <div class="flex flex-col items-center">
                     <img src="{% static role.img_src %}" alt="{{ role.alt_text }}" class="w-50 h-50">
                     <a href="{{ role.link_url }}" class="mt-2 hover:no-underline drop-shadow-lg">
-                        <p class="font-bold text-[#007F73]">{{ role.link_text }}</p>
+                        <p class="font-bold text-brand">{{ role.link_text }}</p>
                     </a>
                 </div>
             {% endfor %}
@@ -164,12 +164,12 @@
             <div class="text-center">
                 <h3 class="text-xl font-bold text-white md:text-2xl">
                     According to a study conducted by the Family League,<br>
-                    <span class="text-[#D7FC19]">8 out of 10 parents make chain trips every day*</span>
+                    <span class="text-brand-50">8 out of 10 parents make chain trips every day*</span>
                 </h3>
                 <p class="mt-2 text-sm text-white">*nursery, school, work, children’s activities..</p>
             </div>
 
-            <div class="p-4 mt-6 text-center text-white font-medium bg-[#1FAB89] rounded-lg">
+            <div class="p-4 mt-6 text-center text-white font-medium bg-brand-200 rounded-lg">
                 <h5>
                     In practice, this sometimes means having to reduce work time or give up activities.<br>
                     Today, Bana makes life easier for families, without compromising!<br>
@@ -178,27 +178,27 @@
             </div>
 
             <div class="flex flex-wrap justify-center max-w-3xl mx-auto mt-6 -mx-2">
-                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-[#D7FC19] md:w-1/3">
+                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
                     “Beyond 1 child, it becomes very challenging logistically.”<br>
                     <span class="text-white">Céline, 33 years old, mother of 2 children</span>
                 </div>
-                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-[#D7FC19] md:w-1/3">
+                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
                     “Beyond 1 child, it becomes very challenging logistically.”<br>
                     <span class="text-white">Céline, 33 years old, mother of 2 children</span>
                 </div>
-                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-[#D7FC19] md:w-1/3">
+                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
                     “Beyond 1 child, it becomes very challenging logistically.”<br>
                     <span class="text-white">Céline, 33 years old, mother of 2 children</span>
                 </div>
-                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-[#D7FC19] md:w-1/3">
+                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
                     “Beyond 1 child, it becomes very challenging logistically.”<br>
                     <span class="text-white">Céline, 33 years old, mother of 2 children</span>
                 </div>
-                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-[#D7FC19] md:w-1/3">
+                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
                     “Beyond 1 child, it becomes very challenging logistically.”<br>
                     <span class="text-white">Céline, 33 years old, mother of 2 children</span>
                 </div>
-                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-[#D7FC19] md:w-1/3">
+                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
                     “Beyond 1 child, it becomes very challenging logistically.”<br>
                     <span class="text-white">Céline, 33 years old, mother of 2 children</span>
                 </div>

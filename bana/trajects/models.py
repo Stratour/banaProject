@@ -1,7 +1,9 @@
 import dateutil
 from dateutil.rrule import rrule, WEEKLY, DAILY
+from django.conf import settings
 from django.db import models
 from members.models import Members
+from django.contrib.auth.models import User
 
 
 class TransportMode(models.Model):
@@ -59,7 +61,7 @@ class Traject(models.Model):
 class ProposedTraject(models.Model):
     NUMBER_PLACE = [('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'), ('7', '7')]
     traject = models.ForeignKey(Traject, on_delete=models.CASCADE)
-    member = models.ForeignKey(Members, related_name='proposed_trajects', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="proposed_trajects", null=True, blank=True)
     transport_modes = models.ManyToManyField(TransportMode, related_name='proposed_trajects')
     departure_time = models.TimeField()
     arrival_time = models.TimeField()
