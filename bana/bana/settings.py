@@ -198,9 +198,13 @@ SOCIALACCOUNT_PROVIDERS = {
 # URL for login redirect 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login/' 
-ACCOUNT_LOGIN_METHODS = {"email", "username"} 
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_UNIQUE_EMAIL = True
 
 # 🧠 Email verification obligatoire
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
@@ -214,8 +218,7 @@ ACCOUNT_PREVENT_ENUMERATION = False  # sécurité activée
 # 🔐 Envoie un vrai lien sécurisé (sans stocker de clé en DB)
 ACCOUNT_EMAIL_CONFIRMATION_HMAC = True
 
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
-ACCOUNT_UNIQUE_EMAIL = True
+
 
 ACCOUNT_INACTIVE_USER_ERROR = "Ce compte est désactivé. Contacte un admin pour le réactiver."
 
@@ -238,6 +241,7 @@ EMAIL_HOST_USER = 'Lucacamilleri55@gmail.com'
 EMAIL_HOST_PASSWORD = 'bqyu cpzk looj hydh' 
 DEFAULT_FROM_EMAIL = "Lucacamilleri55@gmail.com"
 
-#ACCOUNT_FORMS = {
-#    'signup': 'accounts.forms.CustomSignupForm'
-#}
+ACCOUNT_FORMS = {
+    'signup': 'accounts.forms.CustomSignupForm'
+}
+

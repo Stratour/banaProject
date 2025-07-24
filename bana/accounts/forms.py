@@ -1,12 +1,13 @@
 from django import forms
 from allauth.account.forms import SignupForm
 from django.contrib.auth.models import User
-from accounts.models import Profile, Languages
+from accounts.models import Profile, Languages, Child
 
 SERVICE_CHOICES = [
-('parent', 'Parent'),
-('mentor', 'Mentor'),
+    ('parent', 'Parent'),
+    ('yaya', 'Yaya'),
 ]
+
 TRANSPORT_MODES_CHOICES = [
 ('car', 'Car'),
 ('bike', 'Bike'),
@@ -15,23 +16,25 @@ TRANSPORT_MODES_CHOICES = [
 ]
 
 class CustomSignupForm(SignupForm):
-    first_name = forms.CharField(max_length=30, required=True, label='First Name')
-    last_name = forms.CharField(max_length=30, required=True, label='Last Name')
+    first_name = forms.CharField(max_length=30, required=False, label='First Name')
+    last_name = forms.CharField(max_length=30, required=False, label='Last Name')
     profile_picture = forms.ImageField(required=False, label='Profile Picture')
     address = forms.CharField(max_length=100, required=False, label='Address (city, country)')
 
-    service = forms.MultipleChoiceField(
+    service = forms.ChoiceField(
         choices=SERVICE_CHOICES,
-        widget=forms.CheckboxSelectMultiple,
-        required=False,
-        label="Services Offered"
+        required=True,
+        label="Service",
+        widget=forms.Select(attrs={
+            'class': 'w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand'
+        })
     )
 
     transport_modes = forms.MultipleChoiceField(
         choices=TRANSPORT_MODES_CHOICES,
         widget=forms.CheckboxSelectMultiple,
         required=False,
-        label="Preferred Transport Modes"
+        label="Modes de transport"
     )
 
     languages = forms.ModelMultipleChoiceField(
@@ -55,9 +58,13 @@ class CustomSignupForm(SignupForm):
             user=user,
             profile_picture=self.cleaned_data.get('profile_picture'),
             address=self.cleaned_data.get('address'),
-            service=self.cleaned_data.get('service', []),
+            service=self.cleaned_data.get('service', ''),
+            
+
             transport_modes=self.cleaned_data.get('transport_modes', []),
         )
+        print("DEBUG >>> service =", self.cleaned_data.get('service'))
+        profile.save()
 
         if self.cleaned_data.get('languages'):
            profile.languages.set(self.cleaned_data['languages'])
@@ -69,13 +76,6 @@ class UserUpdateForm(forms.ModelForm):
         fields = ['username', 'first_name', 'last_name', 'email'] 
 
 class ProfileUpdateForm(forms.ModelForm):
-    
-    service = forms.MultipleChoiceField(
-        choices=SERVICE_CHOICES,
-        widget=forms.CheckboxSelectMultiple,
-        required=False,
-        label="Services proposés/recherchés"
-    )
 
     transport_modes = forms.MultipleChoiceField(
         choices=TRANSPORT_MODES_CHOICES,
@@ -105,6 +105,24 @@ class ProfileUpdateForm(forms.ModelForm):
     def clean_transport_modes(self):
         return self.cleaned_data['transport_modes'] or []     
         
+
+class ChildForm(forms.ModelForm):
+    class Meta:
+        model = Child
+        # Mettre à jour la liste des champs avec les nouveaux noms et le nouveau champ
+        fields = [
+            'chld_name', 
+            'chld_surname', 
+            'chld_birthdate',
+            'chld_gender', 
+            'chld_spcl_attention', 
+            'chld_seat'
+        ]
+        
+        # Mettre à jour le widget pour correspondre au nouveau nom de champ
+        widgets = {
+            'chld_birthdate': forms.DateInput(attrs={'type': 'date'}),
+        }
 
         '''
 class CustomAuthenticationForm(AuthenticationForm):

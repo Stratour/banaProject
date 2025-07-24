@@ -139,8 +139,47 @@ class ProposedTrajectForm(forms.ModelForm):
             self.fields['date_debut'].required = True
             self.fields['date_fin'].required = True
             self.fields['recurrence_interval'].initial = 1 if recurrence_type == 'weekly' else 2
-        
 
+class SimpleProposedTrajectForm(forms.ModelForm):
+    # Champs complémentaires (hors modèle)
+    transport_modes = forms.ModelMultipleChoiceField(
+        queryset=TransportMode.objects.all(),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-checkbox'}),
+        label="Moyens de transport"
+    )
+
+    tr_weekdays = forms.MultipleChoiceField(
+        choices=[(str(i), day) for i, day in
+                 enumerate(["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"], 1)],
+        widget=forms.CheckboxSelectMultiple,
+        label="Jours de la semaine"
+    )
+
+    date_debut = forms.DateField(
+        widget=forms.DateInput(attrs={
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+            'type': 'date'
+        }),
+        label="Date de début"
+    )
+
+    class Meta:
+        model = Traject
+        fields = ['start_adress']
+        labels = {
+            'start_adress': "Ville de départ",
+            
+        }
+        
+        widgets = {
+            'start_adress': forms.TextInput(attrs={
+                'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+                'id': 'start_adress',
+                'placeholder': 'Ville / Commune'
+            }),
+        }
+
+    
 class ResearchedTrajectForm(forms.ModelForm):    
     transport_modes = forms.ModelMultipleChoiceField(
         queryset=TransportMode.objects.all(),
@@ -159,11 +198,6 @@ class ResearchedTrajectForm(forms.ModelForm):
     arrival_time = forms.TimeField(
         widget=forms.TimeInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'time', 'placeholder': 'hh:mm'})
     )
-    date = forms.DateField(
-        widget=forms.DateInput(
-            attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
-                   'type': 'date', 'placeholder': 'dd:MM:yyyy'}),
-    )
 
     recurrence_type = forms.ChoiceField(
         choices=[
@@ -174,6 +208,14 @@ class ResearchedTrajectForm(forms.ModelForm):
         widget=forms.Select(attrs={'class': 'form-select mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
         required=True
     )
+    
+    recurrence_interval = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
+        required=False,
+        label="Intervalle (semaines)",
+        min_value=1
+    )
+
 
     tr_weekdays = forms.MultipleChoiceField(
         choices=[(str(i), day) for i, day in

@@ -56,10 +56,10 @@ class ProposedTraject(models.Model):
     traject = models.ForeignKey(Traject, on_delete=models.CASCADE)
 
     # Informations de base du trajet
-    departure_time = models.TimeField()
-    arrival_time = models.TimeField()
-    number_of_places = models.CharField(max_length=1, choices=NUMBER_PLACE)
-    details = models.TextField()
+    departure_time = models.TimeField(null=True, blank=True)
+    arrival_time = models.TimeField(null=True, blank=True)
+    number_of_places = models.CharField(max_length=1, choices=NUMBER_PLACE, null=True, blank=True)
+    details = models.TextField(max_length=255, null=True, blank=True)
     
     # Modes de transport
     transport_modes = models.ManyToManyField(TransportMode, related_name='proposed_trajects')
@@ -67,7 +67,7 @@ class ProposedTraject(models.Model):
     # Optionnel : distance de détour accepté
     detour_distance = models.FloatField(blank=True, null=True)
     
-    languages = models.ManyToManyField(Languages, related_name='proposed_trajects',blank=True)
+    languages = models.ManyToManyField(Languages, related_name='proposed_trajects')
     
     recurrence_type = models.CharField(
         max_length=30,
@@ -79,11 +79,13 @@ class ProposedTraject(models.Model):
         default='none'
     )
     recurrence_interval = models.IntegerField(blank=True, null=True)
-    recurrence_days = models.CharField(max_length=255, blank=True, null=True)  # Jours spécifiques (ex: 'MO, WE, FR')
+    recurrence_days = models.CharField(max_length=255, null=True, blank=True) 
 
     date = models.DateField(blank=True, null=True)
     date_debut = models.DateField(blank=True, null=True)
     date_fin = models.DateField(blank=True, null=True)
+    
+    is_simple = models.BooleanField(default=False)
     
     def __str__(self):
         return f"{self.user.username} - {self.traject.start_adress} → {self.traject.end_adress} ({self.date})"
@@ -103,7 +105,7 @@ class ResearchedTraject(models.Model):
     arrival_time = models.TimeField()
 
     # Modes de transport souhaités
-    transport_modes = models.ManyToManyField(TransportMode, related_name='researched_trajects')
+    transport_modes = models.ManyToManyField(TransportMode, related_name='researched_trajects', null=True, blank=True)
     
     date = models.DateField(blank=True, null=True)
     date_debut = models.DateField(blank=True, null=True)
@@ -129,51 +131,28 @@ class ResearchedTraject(models.Model):
         return cls.objects.filter(user=user)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 class Reservation(models.Model):
     STATUS_CHOICES = [
-        ('pending', 'Pending'),
-        ('confirmed', 'Confirmed'),
-        ('canceled', 'Canceled'),
+        ('pending', 'En attente'),
+        ('confirmed', 'Confirmée'),
+        ('canceled', 'Annulée'),
     ]
 
-    member = models.ForeignKey(Members, on_delete=models.CASCADE, verbose_name="User who made the reservation")
-    # Référence vers l'un ou l'autre des trajets (Proposé ou Recherché)
-    traject = models.ForeignKey(
-        ProposedTraject,  # Lien vers le modèle Traject (proposé ou recherché)
-        null=True,
-        blank=True,
-        on_delete=models.CASCADE
-    )
-
-    number_of_places = models.CharField(max_length=1,
-                                        choices=[('1', '1'), ('2', '2'), ('3', '3'), ('4', '4'), ('5', '5'), ('6', '6'),
-                                                 ('7', '7')])
-    
-    
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name="Utilisateur ayant réservé")
+    traject = models.ForeignKey(ProposedTraject, on_delete=models.CASCADE)
+    number_of_places = models.PositiveIntegerField(default=1)
     reservation_date = models.DateTimeField(auto_now_add=True)  # Date et heure de la réservation
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')  # Statut de la réservation
-    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Prix total (par défaut)
+    #total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Prix total (par défaut)
 
     def __str__(self):
-        return f"Reservation {self.id} by {self.member.memb_user_fk.username} for {self.number_of_places} places"
+        return f"Reservation {self.id} by {self.user.username} for {self.number_of_places} places"
 
-    def save(self, *args, **kwargs):
-        # Calculer le prix total ici si nécessaire
-        self.total_price = int(self.number_of_places) * 20.00  # Exemple de prix par place
-        super().save(*args, **kwargs)
+    #def save(self, *args, **kwargs):
+    #    # Calculer le prix total ici si nécessaire
+    #    self.total_price = int(self.number_of_places) * 20.00  # Exemple de prix par place
+    #    super().save(*args, **kwargs)
 
-    @classmethod
-    def get_reservation_by_member(cls, member):
-        return cls.objects.filter(member=member)
+    #@classmethod
+    #def get_reservation_by_member(cls, member):
+    #    return cls.objects.filter(member=member)

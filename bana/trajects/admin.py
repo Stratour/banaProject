@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode
+from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode, Reservation
 
 
     
@@ -71,3 +71,10 @@ class ResearchedTrajectAdmin(admin.ModelAdmin):
 class TransportModeAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
     search_fields = ('name',)
+    
+@admin.register(Reservation)
+class ReservationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'user', 'traject', 'number_of_places', 'status', 'reservation_date')
+    list_filter = ('status', 'reservation_date')
+    search_fields = ('user__username', 'traject__traject__start_adress', 'traject__traject__end_adress')
+    ordering = ('-reservation_date',)

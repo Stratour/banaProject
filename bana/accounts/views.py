@@ -5,14 +5,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from allauth.account.views import PasswordChangeView
 from django.urls import reverse, reverse_lazy
-from .forms import UserUpdateForm, ProfileUpdateForm
-from accounts.models import Profile
+from .forms import UserUpdateForm, ProfileUpdateForm, ChildForm
+from accounts.models import Profile, Child
 from allauth.account.forms import AddEmailForm
 from allauth.account.models import EmailAddress
 from allauth.account.utils import send_email_confirmation
 from allauth.account.internal import flows
 
-#==================== LOGIN / LOGOUT / PROFILE (Nouveau)=========================#   
+#==================== LOGIN / LOGOUT / PROFILE (Nouveau)=========================#
 
 @login_required(login_url='/accounts/login/')
 def profile_view(request):
@@ -168,3 +168,46 @@ def email_edit(request):
         form = AddEmailForm(user=request.user)
 
     return render(request, "account/email_change_form.html", {"form": form})
+
+
+#==================== ADD CHILDREN TO A PROFILE =========================#
+@login_required
+def profile_children_view(request):
+    # Récupérer tous les enfants liés à l'utilisateur connecté
+    children = request.user.children.all() # ou Child.objects.filter(user=request.user)
+    context = {
+        'children': children
+    }
+    #return render(request, 'account/partials/profile_child.html', context)
+    return render(request, 'account/profile/profile_children.html', context)
+
+@login_required
+def add_child_view(request):
+    """
+    Cette méthode affiche les enfants de l'utilisateur connecté sur sa page 'Profil'
+    Il peut ajouter d'autres enfants s'il le souhaite
+    !!! Les templates HTML se trouvent dans le dossier "account/profile/*.html"
+    Il y a doublon avec le lien du menu 'Mes enfants' créé par Luca
+    """
+    if request.method == 'POST':
+        form = ChildForm(request.POST)
+        if form.is_valid():
+            # Créer l'objet enfant sans le sauvegarder en base de données pour le moment
+            child = form.save(commit=False)
+            # Assigner l'utilisateur connecté comme parent de l'enfant
+            child.chld_user = request.user
+            # Sauvegarder l'objet complet en base de données
+            child.save()
+            # Rediriger vers la même page pour permettre d'ajouter un autre enfant
+            return redirect('accounts:add_child') 
+    else:
+        form = ChildForm()
+
+    # Récupérer et afficher les enfants déjà ajoutés sur la même page
+    children = request.user.children.all()
+    context = {
+        'form': form,
+        'children': children
+    }
+    #return render(request, 'account/partials/profil_add_child.html', context)
+    return render(request, 'account/profile/profil_add_child.html', context)

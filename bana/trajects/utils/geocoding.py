@@ -14,6 +14,9 @@ def get_autocomplete_suggestions(query):
         "input": query,             # Texte de la recherche
         "key": api_key,             # Clé API Google
         "components": "country:BE", # Restreint les résultats à la Belgique
+        "types": "geocode|establishment",
+        "language": "fr",
+        
     }
 
     try:
