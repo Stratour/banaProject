@@ -1,12 +1,13 @@
 from django.contrib  import messages
 from django.contrib.auth import logout
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.db.models import Avg
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from allauth.account.views import PasswordChangeView
 from django.urls import reverse, reverse_lazy
-from .forms import UserUpdateForm, ProfileUpdateForm, ChildForm
-from accounts.models import Profile, Child
+from .forms import UserUpdateForm, ProfileUpdateForm, ChildForm, ReviewForm
+from accounts.models import Profile, Child, User, Review
 from allauth.account.forms import AddEmailForm
 from allauth.account.models import EmailAddress
 from allauth.account.utils import send_email_confirmation
@@ -20,7 +21,51 @@ def profile_view(request):
     Profile.objects.get_or_create(user=request.user)
     return render(request, 'account/profile/profile.html')
 
-    
+
+@login_required
+def profile_user(request, user_id=None):
+    if user_id and user_id == request.user.id:
+        return redirect('accounts:profile')  # ou ton propre profil
+
+    user = get_object_or_404(User, id=user_id)
+    reviews = Review.objects.filter(reviewed_user=user)
+    average_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
+
+    existing_review = Review.objects.filter(reviewer=request.user, reviewed_user=user).first()
+    allow_review = existing_review is None
+
+    is_editing = 'edit_review' in request.GET and existing_review
+    form = ReviewForm(instance=existing_review if is_editing else None)
+
+    if request.method == 'POST':
+        form = ReviewForm(request.POST, instance=existing_review if is_editing else None)
+        if form.is_valid():
+            review = form.save(commit=False)
+            review.reviewer = request.user
+            review.reviewed_user = user
+            review.save()
+            messages.success(request, "Votre note a été mise à jour.")
+            return redirect('accounts:profile_user', user_id=user.id)
+
+    return render(request, 'account/profile/profile_user.html', {
+        'user': user,
+        'reviews': reviews,
+        'average_rating': round(average_rating, 1),
+        'allow_review': allow_review,
+        'existing_review': existing_review,
+        'form': form,
+        'is_editing': is_editing,
+    })
+
+@login_required
+def delete_review(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    review = Review.objects.filter(reviewer=request.user, reviewed_user=user).first()
+    if review:
+        review.delete()
+        messages.success(request, "Votre note a été supprimée.")
+    return redirect('accounts:profile_user', user_id=user.id)
+ 
 @login_required
 def profile_public(request):
     """

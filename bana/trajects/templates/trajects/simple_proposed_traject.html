@@ -63,9 +63,14 @@
         {{ form.transport_modes }}
       </div>
 
-      <div>
-        <label for="id_tr_weekdays" class="block font-medium text-gray-700">Jours de la semaine</label>
+      <div class="mb-4">
+        <label for="{{ form.tr_weekdays.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-2">
+          {{ form.tr_weekdays.label }}
+        </label>
         {{ form.tr_weekdays }}
+        {% if form.tr_weekdays.errors %}
+          <p class="text-sm text-red-600 mt-1">{{ form.tr_weekdays.errors.0 }}</p>
+        {% endif %}
       </div>
 
       <div>
@@ -119,7 +124,5 @@
             }
         });
     });
-
-
 </script>
 {% endblock %}

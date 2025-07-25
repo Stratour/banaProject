@@ -2,9 +2,8 @@ import dateutil
 from dateutil.rrule import rrule, WEEKLY, DAILY
 from django.conf import settings
 from django.db import models
-from members.models import Members
 from django.contrib.auth.models import User
-from accounts.models import Languages
+from accounts.models import Languages, Child
 
 class TransportMode(models.Model):
     name = models.CharField(max_length=100)
@@ -104,6 +103,10 @@ class ResearchedTraject(models.Model):
     departure_time = models.TimeField()
     arrival_time = models.TimeField()
 
+    # Id des enfants provenant de la table accounts.Child
+    children = models.ManyToManyField(Child, related_name='researched_trajects')
+
+
     # Modes de transport souhaités
     transport_modes = models.ManyToManyField(TransportMode, related_name='researched_trajects', null=True, blank=True)
     
@@ -141,6 +144,7 @@ class Reservation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name="Utilisateur ayant réservé")
     traject = models.ForeignKey(ProposedTraject, on_delete=models.CASCADE)
     number_of_places = models.PositiveIntegerField(default=1)
+    transport_modes = models.ManyToManyField(TransportMode, null=True, blank=True)
     reservation_date = models.DateTimeField(auto_now_add=True)  # Date et heure de la réservation
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')  # Statut de la réservation
     #total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Prix total (par défaut)
@@ -148,11 +152,3 @@ class Reservation(models.Model):
     def __str__(self):
         return f"Reservation {self.id} by {self.user.username} for {self.number_of_places} places"
 
-    #def save(self, *args, **kwargs):
-    #    # Calculer le prix total ici si nécessaire
-    #    self.total_price = int(self.number_of_places) * 20.00  # Exemple de prix par place
-    #    super().save(*args, **kwargs)
-
-    #@classmethod
-    #def get_reservation_by_member(cls, member):
-    #    return cls.objects.filter(member=member)

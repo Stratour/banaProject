@@ -7,8 +7,9 @@ from django.core.exceptions import ObjectDoesNotExist
 from .utils.geocoding import get_autocomplete_suggestions
 from django.conf import settings
 from django.contrib import messages
-from .models import Traject, Members, ProposedTraject, ResearchedTraject, TransportMode, Reservation
-from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm, SimpleProposedTrajectForm
+from accounts.models import Child
+from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode, Reservation
+from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm, SimpleProposedTrajectForm, ResearchedTrajectForm
 from django.db.models import Q
 from datetime import datetime, timedelta
 from django.core.paginator import Paginator
@@ -453,10 +454,16 @@ def researched_traject(request):
             }
             return render(request, 'trajects/searched_traject.html', context)
     else:
+        username = request.user.username
+        print("=============== request.user.username :: ", username)
         traject_form = TrajectForm()
         researched_form = ResearchedTrajectForm()
+        children_s_user = Child.objects.filter(chld_user__username=username)
+        print('============== Child of :: ', children_s_user)
+
 
         context = {
+            'childrens': children_s_user,
             'traject_form': traject_form,
             'researched_form': researched_form,
             'transport_modes': transport_modes,
@@ -593,7 +600,7 @@ def delete_researched_traject(request, pk):
     return redirect('my_researched_trajects')
 
 
-@login_required
+'''@login_required
 def modify_traject(request, id, type):
     print('=========================================== views :: modify_traject ====================')
     if type == 'proposed':
@@ -628,7 +635,7 @@ def modify_traject(request, id, type):
         'traject': traject_instance
     }
     return render(request, 'trajects/modify_traject.html', context)
-
+'''
 def autocomplete_view(request):
     print('=========================================== views :: autocomplete_view ====================')
     """
@@ -677,7 +684,7 @@ def reserve_traject(request, id):
 """
 
 
-@login_required
+'''@login_required
 def reserve_traject(request, id):
     print('=========================================== views :: reserve_traject ====================')
     traject = get_object_or_404(ProposedTraject, id=id)
@@ -751,7 +758,7 @@ def reserve_traject(request, id):
         context['reservation_count'] = reservation_count
 
     return render(request, 'trajects/reserve_traject.html', context)
-
+'''
 
 
 #@login_required
@@ -767,7 +774,7 @@ def reserve_traject(request, id):
 #        messages.error(request, "Ce trajet n'existe pas encore dans les trajets proposés.")
 #        return  all_trajects(request)
 
-@login_required
+'''@login_required
 def manage_reservation(request, reservation_id, action):
     # Récupérer la réservation
     reservation = get_object_or_404(Reservation, id=reservation_id)
@@ -812,7 +819,7 @@ def manage_reservation(request, reservation_id, action):
         messages.error(request, "Action invalide.")
 
     return redirect('my_reservations')
-
+'''
 
 
 @login_required
@@ -837,10 +844,13 @@ def auto_reserve(request, proposed_id):
         status='pending',
         reservation_date=now()
     )
-
+    
+    
     traject.number_of_places = str(available_places - requested_places)
     traject.save()
 
+    
+    
     if int(traject.number_of_places) <= 0:
         traject.is_active = False
         traject.save()

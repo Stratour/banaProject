@@ -34,13 +34,16 @@ print("37.187.94.53:8800")
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    
+    'channels',
+    
      #Authentification
     'accounts',
     'allauth',
@@ -58,7 +61,8 @@ INSTALLED_APPS = [
 
     # my apps 
     'bana',
-    'members.apps.MembersConfig',
+    'chat',
+    #'members.apps.MembersConfig',
     'trajects.apps.TrajectsConfig',
 
 
@@ -100,6 +104,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bana.wsgi.application'
 
+# Chemin vers l'application ASGI
+ASGI_APPLICATION = 'bana.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 

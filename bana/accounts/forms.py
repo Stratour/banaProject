@@ -1,7 +1,7 @@
 from django import forms
 from allauth.account.forms import SignupForm
 from django.contrib.auth.models import User
-from accounts.models import Profile, Languages, Child
+from accounts.models import Profile, Languages, Child, Review
 
 SERVICE_CHOICES = [
     ('parent', 'Parent'),
@@ -122,6 +122,26 @@ class ChildForm(forms.ModelForm):
         # Mettre à jour le widget pour correspondre au nouveau nom de champ
         widgets = {
             'chld_birthdate': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['rating', 'comment']
+        widgets = {
+            'rating': forms.Select(
+                choices=[(i, f"⭐ {i}") for i in range(1, 6)],
+                attrs={
+                    'class': 'form-select block w-full mt-1 p-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}
+            ),
+            'comment': forms.Textarea(
+                attrs={
+                    'class': 'form-textarea block w-full mt-1 p-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500',
+                    'rows': 4,
+                    'placeholder': 'Laissez un commentaire constructif...'
+                }
+            ),
         }
 
         '''

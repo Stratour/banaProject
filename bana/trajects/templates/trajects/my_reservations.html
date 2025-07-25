@@ -13,10 +13,17 @@
     <ul class="space-y-4">
       {% for r in made_reservations %}
         <li class="p-4 bg-white shadow rounded">
-          <p><strong>{{ r.user.profile.service | title }} :</strong> {{ r.user.first_name }} {{ user.last_name|slice:":1" }}.</p>
-          <p><strong>Trajet :</strong> {{ r.traject.traject.start_adress }} → {{ r.traject.traject.end_adress }}</p>
-          <p><strong>Date :</strong> {{ r.traject.date|date:"d/m/Y" }}</p>
-          <p><strong>Heure :</strong> {{ r.traject.departure_time }}</p>
+          <p><strong>{{ r.traject.user.profile.service | title }} :</strong> {{ r.traject.user.first_name }} {{ r.traject.user.last_name|slice:":1" }}.</p>
+          <p><strong>Trajet :</strong> {{ r.traject.traject.start_adress }} à {{ r.traject.departure_time }} → {{ r.traject.traject.end_adress }} à {{ r.traject.arrival_time }}</p>
+          <p><strong>Date :</strong> {{ r.traject.date|date:"l d F Y" }}</p>
+          <p> <strong>Transport :</strong> 
+                 {% for mode in request.transport_modes.all %}
+              {{ mode.name }}{% if not forloop.last %}, {% endif %}
+            {% empty %}
+              Non spécifié
+            {% endfor %}
+          </p>
+          <p><strong>Places :</strong> {{ r.number_of_places }}</p>
           <p><strong>Statut :</strong> 
             {% if r.status == 'confirmed' %}
               <span class="text-green-600 font-semibold">Confirmée</span>
@@ -41,11 +48,19 @@
     <ul class="space-y-4">
       {% for r in received_reservations %}
         <li class="p-4 bg-gray-100 rounded shadow">
-          <p><strong>{{ r.user.profile.service | title }} :</strong> {{ r.user.first_name }} {{ user.last_name|slice:":1" }}.</p>
-          <p><strong>Trajet :</strong> {{ r.traject.traject.start_adress }} → {{ r.traject.traject.end_adress }}</p>
-          <p><strong>Date :</strong> {{ r.traject.date|date:"d/m/Y" }} à {{ r.traject.departure_time }}</p>
+          <p><strong>{{ r.user.profile.service | title }} :</strong> {{ r.user.first_name }} {{ r.user.last_name|slice:":1" }}.</p>
+          <p><strong>Trajet :</strong> {{ r.traject.traject.start_adress }} à {{ r.traject.departure_time }} → {{ r.traject.traject.end_adress }} à {{ r.traject.arrival_time }}</p>
+          <p><strong>Date :</strong> {{ r.traject.date|date:"l d F Y" }}</p>
           <p><strong>Places :</strong> {{ r.number_of_places }}</p>
-          <p><strong>Statut :</strong> {{ r.status }}</p>
+          <p><strong>Statut :</strong> 
+            {% if r.status == 'confirmed' %}
+              <span class="text-green-600 font-semibold">Confirmée</span>
+            {% elif r.status == 'pending' %}
+              <span class="text-yellow-500 font-semibold">En attente</span>
+            {% else %}
+              <span class="text-red-600 font-semibold">Annulée</span>
+            {% endif %}
+          </p>
 
           {% if r.status == 'pending' %}
             <div class="mt-2 space-x-2">

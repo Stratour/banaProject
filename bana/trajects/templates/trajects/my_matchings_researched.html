@@ -35,16 +35,16 @@
     <ul class="space-y-4">
       {% for match in matches %}
         <li class="bg-white shadow-md rounded-lg p-4">
-          <h3 class="text-xl font-semibold text-gray-700 mb-2">Trajet prévu le {{ match.research.date|date:"l d F Y" }}
-            <a href="#" class="text-blue-500 hover:underline">
-            {{ proposal.user.username }}
-            </a>
+          <h3 class="text-xl font-semibold text-gray-700 mb-2">
+            Trajet prévu le {{ match.research.date|date:"l d F Y" }}
           </h3>
           {% for proposal in match.proposals %}
             <div class="border-t border-gray-200 pt-2 mt-2">
               <p class="text-sm text-gray-700">
                 <strong>{{ proposal.user.profile.service | title }} :</strong> 
-                {{ proposal.user.first_name }} {{ user.last_name|slice:":1" }}.
+                <a href="{% url 'accounts:profile_user' user_id=proposal.user.id%}" class="text-blue-600 hover:underline">
+                  {{ proposal.user.first_name }} {{ proposal.user.last_name|slice:":1" }}.
+                  </a>
               </p>
               <p class="text-sm text-gray-700">
                 <strong>Départ :</strong> 

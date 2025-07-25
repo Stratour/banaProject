@@ -1,0 +1,99 @@
+
+{% extends "allauth/layouts/base.html" %}
+{% load allauth i18n static %}
+{% block head_title %}
+{% trans "Profile" %}
+{% endblock head_title %}
+{% block content %}
+
+
+  {% include "./nav_profile.html" %}
+ 
+        
+<div class="bg-gray-100 min-h-screen p-6">
+    <div class="container mx-auto bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Profil de {{ user.first_name }} {{ user.last_name }}</h2>
+
+          <!-- 📸 Photo de profil -->
+        {% if user.profile.profile_picture %}
+          <img src="{{ user.profile.profile_picture.url }}" alt="Photo de profil"
+               class="w-32 h-32 rounded-full object-cover mb-4 border border-gray-300">
+        {% else %}
+          <div class="w-32 h-32 rounded-full bg-gray-200 mb-4 flex items-center justify-center text-gray-500">
+            <h1 class="no-image">
+              {{ user.first_name.0 }}.{{ user.last_name.0 }}
+        </h1>
+          </div>
+        {% endif %}
+        <!--  Infos utilisateur -->
+        <div class="mb-6">
+            <p class="text-lg"><strong>Email :</strong> {{ user.email }}</p>
+            <p class="text-lg"><strong>Status :</strong> {{ user.profile.service | title }}</p>
+            <p class="text-lg"><strong>Localisation :</strong> {{ user.profile.address }}</p>
+            <p class="text-lg"><strong>Langues parlées :</strong>
+                {% for language in user.profile.languages.all %}
+                    {{ language.lang_name }}{% if not forloop.last %}, {% endif %}
+                {% empty %}
+                    Non spécifié
+                {% endfor %}
+            </p>
+            <p class="text-lg"><strong>Date d'inscription :</strong> {{ user.date_joined|date:"d F Y" }}</p>
+
+        </div>
+    </div>
+    <div class="bg-gray-100 min-h-screen p-6">
+
+        <div class="container mx-auto bg-white shadow-md rounded-lg p-6">
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Avis</h2>
+
+        <!-- ⭐ Note moyenne -->
+        <p class="text-lg"><strong>Note Moyenne :</strong> {{ average_rating }}/5</p>
+
+        <!--  Avis reçus -->
+        <h3 class="text-2xl font-semibold text-gray-700 mt-4 mb-2">Avis reçus :</h3>
+        <ul class="bg-gray-50 p-4 rounded-md shadow-md">
+            {% for review in reviews %}
+                <li class="border-b py-2">
+                    <a href="{% url 'accounts:profile_user' user_id=review.reviewer.id%}" class="text-blue-600 hover:underline">
+                        <strong>{{ review.reviewer.first_name }} {{ review.reviewer.last_name|slice:'1' }}.</strong> 
+                    </a>
+                        - ⭐ {{ review.rating }}/5 : "{{ review.comment }}"
+                </li>
+            {% empty %}
+                <p class="text-gray-500">Aucun avis pour le moment.</p>
+            {% endfor %}
+        </ul>
+
+        <!--  Laisser un avis -->
+        {% if allow_review %}
+            <h3 class="text-2xl font-semibold text-gray-700 mt-4">Laisser un avis :</h3>
+            <form method="post" class="mt-4 bg-white p-4 rounded-md shadow">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">⭐ Noter</button>
+            </form>
+
+        {% elif existing_review %}
+            <h3 class="text-2xl font-semibold text-gray-700 mt-4">Votre avis :</h3>
+
+            {% if is_editing %}
+                <!--  Formulaire de modification -->
+                <form method="post" class="mt-4 bg-white p-4 rounded-md shadow">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">✅ Sauvegarder</button>
+                    <a href="{% url 'accounts:profile_user' user.id %}" class="text-gray-500 hover:underline text-lg ml-4">❌ Annuler</a>
+                </form>
+            {% else %}
+                <p class="mt-2">⭐ {{ existing_review.rating }}/5 - "{{ existing_review.comment }}"</p>
+
+                <!-- 🔄 Modifier -->
+                <a href="?edit_review=true" class="text-yellow-500 hover:underline text-lg">✏️ Modifier</a>
+
+                <!-- ❌ Supprimer -->
+                <a href="{% url 'accounts:delete_review' user_id=user.id %}" class="text-red-500 hover:underline text-lg ml-4">❌ Supprimer</a>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
