@@ -1,0 +1,450 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}All Trajects - BanaCommunity{% endblock %}
+
+{% block content %}
+    <div class="bg-gray-100 min-h-screen p-6">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Rechercher un trajet</h2>
+
+            <!-- Search Bar -->
+            <form method="GET" action="{% url 'all_trajects' %}" class="bg-white shadow-lg rounded-lg p-6 mb-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                               
+                    <!-- Starting Point -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Point de départ -->
+                        <div>
+                            <label for="start_adress" class="block text-sm font-medium text-gray-700">🚀 Point de départ</label>
+                            <input type="text" name="start_adress" id="start_adress" value="{{ start_adress|default:'' }}"
+                                   class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                   placeholder="Entrez le point de départ (Adresse, ville, code postal)" autocomplete="on"/>
+                        </div>
+                    
+                        <!-- Heure de départ -->
+                        <div>
+                            <label for="departure_time" class="block text-sm font-medium text-gray-700">🕒 Heure de départ</label>
+                            <input type="time" name="departure_time" id="departure_time"
+                                   value="{{ departure_time|default:'' }}"
+                                   class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+
+                    <!-- Bouton inverser -->
+                    <div class="flex items-center justify-center pt-6">
+                        <button type="button" onclick="swapAddresses()"
+                                class="text-indigo-600 hover:text-indigo-800 text-xl font-bold">
+                            🔄
+                        </button>
+                    </div>
+                    <!-- Ending Point -->
+                    <div>
+                        <label for="end_adress" class="block text-sm font-medium text-gray-700">🎯 Point
+                            d’arrivée</label>
+                        <input type="text" name="end_adress" id="end_adress" value="{{ end_adress|default:'' }}"
+                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                               placeholder="Entrez le point d’arrivée (Adresse, ville, code postal)" autocomplete="on"/>
+                        
+                        <!-- Heure d'arrivée -->
+                        <div>
+                            <label for="arrival_time" class="block text-sm font-medium text-gray-700">🕒 Heure de départ</label>
+                            <input type="time" name="arrival_time" id="arrival_time"
+                                   value="{{ arrival_time|default:'' }}"
+                                   class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                        </div>
+                    </div>
+
+                    <!-- Date 
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700">📅 Date</label>
+                        <input type="date" name="date" id="date" value="{{ date|default:'' }}"
+                               class="w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500"/>
+                    </div>-->
+
+                    <!-- Transport Mode -->
+                    <div>
+                        <label for="transport_modes" class="block text-sm font-medium text-gray-700">🚗 Mode de
+                            transport</label>
+                        <div class="mt-1 space-y-2">
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="transport_modes" value="transport" class="form-checkbox" 
+                                {% if "transport" in transport_modes %}checked{% endif %}>
+                                <span class="ml-2">🚊 Transport en commun</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="transport_modes" value="voiture" class="form-checkbox" 
+                                {% if "voiture" in transport_modes %}checked{% endif %}>
+                                <span class="ml-2">🚗 Voiture</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="transport_modes" value="vélo" class="form-checkbox"
+                                {% if "vélo" in transport_modes %}checked{% endif %}>
+                                <span class="ml-2">🚴‍♂️ À vélo</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="checkbox" name="transport_modes" value="pied" class="form-checkbox"
+                                {% if "pied" in transport_modes %}checked{% endif %}>
+                                <span class="ml-2">🚶‍♂️ À pied</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    
+                    <fieldset>
+                        
+                <!-- Jours spécifiques -->
+                <div id="recurrence_days_container" class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Jours de la semaine</label>
+                    <ul class="grid grid-cols-2 gap-2">
+                        {% for i, day in days_of_week %}
+                        <li>
+                            <label>
+                                <input type="checkbox" name="tr_weekdays" value="{{ i }}" {% if i in tr_weekdays %}checked{% endif %}>
+                                {{ day }}
+                            </label>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <!-- Type de récurrence -->
+                <legend class="block text-sm font-medium text-gray-700 mb-2">Fréquence du trajet</legend>
+
+                <label class="block mb-2">
+                    <input type="radio" name="recurrence_type" value="one_week"
+                    {% if recurrence_type == 'one_week' %}checked{% endif %}>
+                    Une semaine seulement
+                </label>
+
+                <label class="block mb-2">
+                    <input type="radio" name="recurrence_type" value="weekly" 
+                    {% if recurrence_type == 'weekly' %}checked{% endif %}>
+                    Toutes les semaines
+                </label>
+
+                <label class="block mb-4">
+                    <input type="radio" name="recurrence_type" value="biweekly"
+                    {% if recurrence_type == 'biweekly' %}checked{% endif %}>
+                    Une semaine sur deux
+                </label>
+
+                <!-- Date de début (toujours affichée) -->
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
+                    <input type="date" name="date_debut"
+                        value="{{ date_debut }}"
+                        class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                    
+                </div>
+
+                <!-- Date de fin (masquée pour one_week) -->
+                <div id="date_fin_container" class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
+                    <input type="date" name="date_fin"
+                        value="{{ date_fin }}"
+                        class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                </div>
+            </fieldset>
+                    {% comment "Ancien fonctionnement de récurence" %}
+                    
+                    <fieldset class="mb-4 border p-4 rounded">
+                        <legend class="font-semibold text-lg mb-2">Filtrer par récurrence</legend>
+                                    
+                    <!-- Type de récurrence -->
+                    <label for="recurrence_type" class="block text-sm font-medium text-gray-700">Type de récurrence</label>
+                    <select name="recurrence_type" id="recurrence_type" class="form-select mt-1 block w-full">
+                        <option value="">Tous</option>
+                        <option value="weekly_interval" {% if recurrence_type == 'weekly_interval' %}selected{% endif %}>Toutes les X semaines</option>
+                        <option value="specific_days" {% if recurrence_type == 'specific_days' %}selected{% endif %}>Jours spécifiques</option>
+                    </select>
+                
+                    <!-- Intervalle -->
+                    <div class="mt-4" id="recurrence_interval_container" style="display: none;">
+                        <label for="recurrence_interval" class="block text-sm font-medium text-gray-700">Intervalle (semaines)</label>
+                        <input type="number" name="recurrence_interval" id="recurrence_interval" min="1" class="form-input mt-1 block w-full" value="{{ recurrence_interval }}">
+                    </div>
+                
+                    <!-- Jours spécifiques -->
+                    <div class="mt-4" id="recurrence_days_container" style="display: none;">
+                        <label class="block text-sm font-medium text-gray-700">Jours spécifiques</label>
+                        <ul class="grid grid-cols-2 gap-2 mt-2">
+                            {% for i, day in days_of_week %}
+                                <li>
+                                    <label>
+                                        <input type="checkbox" name="tr_weekdays" value="{{ i }}" 
+                                            {% if i in tr_weekdays %}checked{% endif %}>
+                                        {{ day }}
+                                    </label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </fieldset>
+                {% endcomment %}
+                    
+                <!-- Submit Button -->
+                <div class="mt-6">
+                    <button type="submit"
+                            class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-500 transition duration-200 shadow-md">
+                        🔍 Rechercher
+                    </button>
+                </div>
+            </form>
+
+
+            <!-- Toggle buttons -->
+            <div class="flex justify-center mb-6">
+                <a href="?active_tab=researched"
+                   class="btn-toggle {% if active_tab == 'researched' %}border-indigo-600{% else %}border-transparent{% endif %} text-lg px-6 py-2 border-b-4 focus:outline-none">
+                    Trajets recherchés (PARENTS)
+                </a>
+                <a href="?active_tab=proposed"
+                   class="btn-toggle {% if active_tab == 'proposed' %}border-indigo-600{% else %}border-transparent{% endif %} text-lg px-6 py-2 border-b-4 focus:outline-none">
+                    Trajets proposés (YAYA)
+                </a>
+            </div>
+
+            <!-- Proposed Trajects -->
+            {% if active_tab == 'proposed' %}
+                <div id="proposed-list" class="traject-list">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Proposed Trajects</h2>
+                    {% if proposed_trajects %}
+                        <ul class="space-y-4">
+                            {% for proposed in proposed_trajects %}
+                                <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-gray-700">
+                                            Membre :
+                                            {% if proposed.user.id == request.user.id %}
+                                                <!--  Si c'est l'utilisateur lui-même, rediriger vers son profil -->
+                                                <a href="{% url 'profile' %}" class="text-blue-500 hover:underline">
+                                                    {{ proposed.user.username }}
+                                                </a>
+                                            {% else %}
+                                                <!--  Sinon, aller vers le profil du membre avec avis -->
+                                                <a href="{% url 'profile_user' user_id=proposed.user.id %}"
+                                                   class="text-blue-500 hover:underline">
+                                                    {{ proposed.user.username }}
+                                                </a>
+                                            {% endif %}
+                                        </h3>
+                                        <p class="text-gray-600">
+                                            <strong>Adresse de départ:</strong>
+                                                {{ proposed.traject.start_adress }} | 
+                                                {{ proposed.traject.start_locality }},
+                                                {{ proposed.traject.start_cp }}
+                                            
+                                        </p>
+                                        <p class="text-gray-600">
+                                            <strong>Adresse de destination:</strong>
+                                            {{ proposed.traject.end_adress }} | 
+                                                {{ proposed.traject.end_locality }},
+                                                {{ proposed.traject.end_cp }}
+                                        </p>
+                                        <p class="text-gray-600"><strong>Date: </strong>{{ proposed.date|date:"l j F Y" }}</p>
+                                        <p class="text-gray-600"><strong>Heure de
+                                            départ:</strong> {{ proposed.departure_time }}</p>
+                                        <p class="text-gray-600"><strong>Moyens de
+                                            transport:</strong> {{ proposed.transport_modes.all|join:", " }}</p>
+                                        <p class="text-gray-600"><strong>Nombre de
+                                            place:</strong> {{ proposed.number_of_places }}</p>
+                                        <p class="text-gray-600"><strong>Langue parlée:</strong>
+                                            {% if proposed.languages.all %}
+                                                {% for language in proposed.languages.all %}
+                                                    {{ language.lang_name }}{% if not forloop.last %}, {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                Aucune langue(s) spécifiée(s)
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <!-- Afficher "Gérer la réservation" ou "Rejoindre" en fonction de l'utilisateur -->
+                                    <a href="{% url 'reserve_traject' proposed.id %}"
+                                       class="btn {% if proposed.user.id == request.user.id %}btn-warning{% else %}btn-primary{% endif %}">
+                                        {% if proposed.user.id == request.user.id %}
+                                            Gérer la réservation
+                                        {% else %}
+                                            Rejoindre
+                                        {% endif %}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="pagination mt-4">
+                            {% for page_num in proposed_trajects.paginator.page_range %}
+                                {% if proposed_trajects.number == page_num %}
+                                    <span class="current">{{ page_num }}</span>
+                                {% else %}
+                                    <a href="?page1={{ page_num }}&active_tab={{ active_tab }}"
+                                       class="page-link">{{ page_num }}</a>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                    {% else %}
+                        <p class="text-gray-600">Aucun trajet disponible actuellement</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <!-- Researched Trajects -->
+            {% if active_tab == 'researched' %}
+                <div id="researched-list" class="traject-list">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Researched Trajects</h2>
+                    {% if researched_trajects %}
+                        <ul class="space-y-4">
+                            {% for researched in researched_trajects %}
+                                <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
+                                    <div>
+                                        <h3 class="text-xl font-semibold text-gray-700">
+                                            {{ researched.user.username }} {{ researched.traject.id }}
+                                        </h3>
+                                        <p class="text-gray-600">
+                                            <strong>Adresse de départ:</strong>
+                                                {{ researched.traject.start_adress }} | 
+                                                {{ researched.traject.start_locality }},
+                                                {{ researched.traject.start_cp }}
+                                            
+                                        </p>
+                                        <p class="text-gray-600">
+                                            <strong>Adresse de destination:</strong>
+                                            {{ researched.traject.end_adress }} | 
+                                                {{ researched.traject.end_locality }},
+                                                {{ researched.traject.end_cp }}
+                                        </p>
+                                        <p class="text-gray-600"><strong>Date: </strong>{{ researched.date|date:"l j F Y" }}</p>
+                                        <p class="text-gray-600"><strong>Heure de
+                                            départ:</strong> {{ researched.departure_time }}</p>
+                                        <p class="text-gray-600"><strong>Moyens de
+                                            transport:</strong> {{ researched.transport_modes.all|join:", " }}</p>
+                                        <p class="text-gray-600"><strong>Nombre de
+                                            place:</strong> {{ researched.number_of_places }}</p>
+                                        <p class="text-gray-600"><strong>Langue(s) parlée(s):</strong>
+                                            {% if researched.languages.all %}
+                                                {% for language in researched.languages.all %}
+                                                    {{ language.lang_name }}{% if not forloop.last %}, {% endif %}
+                                                {% endfor %}
+                                            {% else %}
+                                                Aucune langue(s) spécifiée(s)
+                                            {% endif %}
+                                        </p>
+                                    </div>
+                                    <div class="flex flex-col items-end space-y-2">
+                                        <a href="{% url 'proposed_traject' researched.id %}" class="btn btn-primary"
+                                           title="proposer mon aide directement">Proposer Trajet similaire</a>
+                                        <a href="{% url 'reserve_trajectResearched' researchedTraject_id=researched.id %}"
+                                           class="btn btn-primary" title="creer ce trajet ou un trajet similaire">Rejoindre
+                                            ce trajet</a>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <div class="pagination mt-4">
+                            {{ researched_trajects.paginator.page_range|join:" " }}
+                        </div>
+                    {% else %}
+                        <p class="text-gray-600">No researched trajects found.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll("#start_adress, #end_adress").forEach((inputField) => {
+            inputField.addEventListener("input", async (event) => {
+                const query = event.target.value;
+
+                if (query.length < 3) return; // Skip queries with fewer than 3 characters
+
+                try {
+                    const url = `{% url 'autocomplete' %}?query=${query}`; // Use the correct query value
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error("Error fetching suggestions");
+
+                    const data = await response.json();
+                    const suggestions = data.suggestions || [];
+
+                    // Determine which suggestion list to populate
+                    const suggestionListId = event.target.id === "start_adress" ? "start-suggestion-list" : "end-suggestion-list";
+                    const suggestionList = document.getElementById(suggestionListId);
+
+                    // Populate suggestions list
+                    suggestionList.innerHTML = ""; // Clear previous suggestions
+                    suggestions.forEach((suggestion) => {
+                        const li = document.createElement("li");
+                        li.textContent = suggestion;
+                        li.classList.add("cursor-pointer", "p-2", "hover:bg-gray-100");
+                        li.addEventListener("click", () => {
+                            inputField.value = suggestion; // Set input value
+                            suggestionList.innerHTML = ""; // Clear suggestions
+                        });
+                        suggestionList.appendChild(li);
+                    });
+                } catch (error) {
+                    console.error("Error fetching suggestions:", error);
+                }
+            });
+        });
+
+        // Vérifie après le chargement si on doit scroller
+        document.addEventListener("DOMContentLoaded", function () {
+            var hash = window.location.hash;
+            if (hash === "#proposed-list" || hash === "#researched-list") {
+                var targetElement = document.querySelector(hash);
+                if (targetElement) {
+                    console.log('📜 Scroll automatique vers :', hash);
+                    targetElement.scrollIntoView({behavior: "smooth"});
+                } else {
+                    console.warn('Hash trouvé mais aucun élément correspondant :', hash);
+                }
+            }
+        });
+
+        function swapAddresses() {
+        const start = document.getElementById("start_adress");
+        const end = document.getElementById("end_adress");
+
+        const temp = start.value;
+        start.value = end.value;
+        end.value = temp;
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        function toggleRecurrenceFields() {
+            const selectedType = document.querySelector('input[name="recurrence_type"]:checked')?.value;
+
+            // Toujours afficher les jours et date_debut
+            document.getElementById("recurrence_days_container").style.display = 'block';
+
+            // Afficher/Masquer uniquement date_fin
+            if (selectedType === "weekly" || selectedType === "biweekly") {
+                document.getElementById("date_fin_container").style.display = 'block';
+            } else {
+                document.getElementById("date_fin_container").style.display = 'none';
+            }
+        }
+
+        toggleRecurrenceFields();
+
+        document.querySelectorAll('input[name="recurrence_type"]').forEach(radio => {
+            radio.addEventListener("change", toggleRecurrenceFields);
+        });
+    });
+
+        document.addEventListener("DOMContentLoaded", function () {
+        const typeSelect = document.getElementById("recurrence_type");
+        const intervalDiv = document.getElementById("recurrence_interval_container");
+        const daysDiv = document.getElementById("recurrence_days_container");
+
+        function toggleRFields() {
+            const val = typeSelect.value;
+            intervalDiv.style.display = val === "weekly_interval" ? "block" : "none";
+            daysDiv.style.display = val === "specific_days" ? "block" : "none";
+        }
+
+        typeSelect.addEventListener("change", toggleRFields);
+        toggleRFields(); // init au chargement
+        }); 
+    </script>
+{% endblock content%}

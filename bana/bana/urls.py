@@ -31,8 +31,10 @@ urlpatterns = [
 
     path('contact/', views.contact, name='contact'),
     path('about/', views.about, name='about'),
-    path('profile/', include('members.urls')),
+    #path('profile/', include('members.urls')),
     path('trajects/', include('trajects.urls')),
+    path('chat/', include('chat.urls')),
+    #path('strip/', include('strip.urls')),
     path('work/', views.work, name='work'),
     path('parent/', views.parent, name='parent'),
 ] 

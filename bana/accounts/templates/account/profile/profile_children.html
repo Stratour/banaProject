@@ -1,4 +1,6 @@
+
 {% extends "allauth/layouts/base.html" %}
+{% comment %}
 {% load allauth i18n static %}
 {% block head_title %}
 {% trans "Mes enfants" %}
@@ -6,5 +8,40 @@
 {% block content %}
     <h1>{% trans "Mes enfants" %}</h1>
     <p>{% trans "Here you can manage your children's profiles." %}</p>
+    {% for i in children  %}
+    {{ i }}
+    {% endfor %}
 
 {% endblock content %}
+{% endcomment %}
+
+
+
+{% block content %}
+
+  {% include "./nav_profile.html" %}
+
+<div class="container mt-4">
+    <h1>Profil de {{ user.username }}</h1>
+    <p>Email : {{ user.email }}</p>
+    <hr>
+
+    <h2>Mes enfants</h2>
+    {% if children %}
+        <ul class="list-group mb-3">
+            {% for child in children %}
+                <li class="list-group-item">
+                    <strong>{{ child.chld_name }} {{ child.chld_surname }}</strong> né(e) le {{ child.chld_birthdate|date:"d/m/Y" }}
+                    {% if child.chld_seat %}
+                        <span class="badge bg-info text-dark">Siège enfant requis</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Vous n'avez pas encore ajouté d'enfant.</p>
+    {% endif %}
+
+    <a href="{% url 'accounts:add_child' %}" class="btn btn-primary">Ajouter un enfant</a>
+</div>
+{% endblock %}

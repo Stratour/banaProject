@@ -1,5 +1,6 @@
 import requests
 from django.conf import settings
+
 def get_autocomplete_suggestions(query):
     """
     Récupère les suggestions d'adresses via l'API Google Geocoding tout en limitant à la Belgique.
@@ -13,6 +14,9 @@ def get_autocomplete_suggestions(query):
         "input": query,             # Texte de la recherche
         "key": api_key,             # Clé API Google
         "components": "country:BE", # Restreint les résultats à la Belgique
+        "types": "geocode|establishment",
+        "language": "fr",
+        
     }
 
     try:

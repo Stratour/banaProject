@@ -1,0 +1,31 @@
+{% extends "allauth/layouts/base.html" %}
+{% block content %}
+  {% include "./nav_profile.html" %}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Ajouter un nouvel enfant</h2>
+            <form method="post" novalidate>
+                {% csrf_token %}
+                {{ form.as_p }} <button type="submit" class="btn btn-success">Ajouter l'enfant</button>
+            </form>
+            <a href="{% url 'accounts:profile' %}" class="btn btn-secondary mt-3">Retour au profil</a>
+        </div>
+        <div class="col-md-6">
+            <h2>Enfants déjà enregistrés</h2>
+            {% if children %}
+                <ul class="list-group">
+                    {% for child in children %}
+                        <li class="list-group-item">
+                            {{ child.chld_surname }} {{ child.chld_name }} ({{ child.chld_gender }})
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Aucun enfant enregistré pour le moment.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

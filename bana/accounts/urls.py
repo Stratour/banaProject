@@ -8,6 +8,8 @@ app_name='accounts'
 urlpatterns = [
     path('logout/', views.logout_user, name='logout'),
     path('profile/', views.profile_view, name='profile'),
+    path('profile/<int:user_id>/', views.profile_user, name='profile_user'),
+    path('profile/<int:user_id>/delete_review/', views.delete_review, name='delete_review'),
     path('profile/edit/', views.profile_edit, name='profile_edit'),
     path('profile/public/', views.profile_public, name='profile_public'),
     path('profile/info/', views.profile_info, name='profile_info'),
@@ -18,6 +20,8 @@ urlpatterns = [
     path('profile/security/deactivate/', views.deactivate_account, name='deactivate_account'),
     
     path('email/display/', views.email_display, name='email_display'),
-    path('email/edit/', views.email_edit, name='email_edit'),
-
+    path('email/edit/', views.email_edit, name='email_edit'), 
+    
+    path('profil_child/', views.profile_children_view, name='profile_child'),
+    path('add_child/', views.add_child_view, name='add_child'),
 ]

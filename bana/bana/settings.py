@@ -34,13 +34,16 @@ print("37.187.94.53:8800")
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    
+    'channels',
+    
      #Authentification
     'accounts',
     'allauth',
@@ -58,7 +61,8 @@ INSTALLED_APPS = [
 
     # my apps 
     'bana',
-    'members.apps.MembersConfig',
+    'chat',
+    'strip',
     'trajects.apps.TrajectsConfig',
 
 
@@ -100,6 +104,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'bana.wsgi.application'
 
+# Chemin vers l'application ASGI
+ASGI_APPLICATION = 'bana.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -148,7 +154,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR,'static')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'members','static'),    
+    #os.path.join(BASE_DIR, 'static'),    
     ]
 
 MEDIA_URL = "media/"
@@ -198,9 +204,11 @@ SOCIALACCOUNT_PROVIDERS = {
 # URL for login redirect 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login/' 
-ACCOUNT_LOGIN_METHODS = {"email", "username"} 
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 
 # 🧠 Email verification obligatoire
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
@@ -214,8 +222,7 @@ ACCOUNT_PREVENT_ENUMERATION = False  # sécurité activée
 # 🔐 Envoie un vrai lien sécurisé (sans stocker de clé en DB)
 ACCOUNT_EMAIL_CONFIRMATION_HMAC = True
 
-ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*', 'password2*']
-ACCOUNT_UNIQUE_EMAIL = True
+
 
 ACCOUNT_INACTIVE_USER_ERROR = "Ce compte est désactivé. Contacte un admin pour le réactiver."
 
@@ -238,6 +245,7 @@ EMAIL_HOST_USER = 'Lucacamilleri55@gmail.com'
 EMAIL_HOST_PASSWORD = 'bqyu cpzk looj hydh' 
 DEFAULT_FROM_EMAIL = "Lucacamilleri55@gmail.com"
 
-#ACCOUNT_FORMS = {
-#    'signup': 'accounts.forms.CustomSignupForm'
-#}
+ACCOUNT_FORMS = {
+    'signup': 'accounts.forms.CustomSignupForm'
+}
+
