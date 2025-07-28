@@ -62,7 +62,7 @@ INSTALLED_APPS = [
     # my apps 
     'bana',
     'chat',
-    #'members.apps.MembersConfig',
+    'strip',
     'trajects.apps.TrajectsConfig',
 
 
@@ -154,7 +154,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR,'static')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'members','static'),    
+    #os.path.join(BASE_DIR, 'static'),    
     ]
 
 MEDIA_URL = "media/"
@@ -207,10 +207,8 @@ LOGIN_URL = '/accounts/login/'
 
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_LOGIN_METHODS = {"email"}
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 
 # 🧠 Email verification obligatoire
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'

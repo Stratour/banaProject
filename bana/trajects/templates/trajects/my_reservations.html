@@ -17,7 +17,7 @@
           <p><strong>Trajet :</strong> {{ r.traject.traject.start_adress }} à {{ r.traject.departure_time }} → {{ r.traject.traject.end_adress }} à {{ r.traject.arrival_time }}</p>
           <p><strong>Date :</strong> {{ r.traject.date|date:"l d F Y" }}</p>
           <p> <strong>Transport :</strong> 
-                 {% for mode in request.transport_modes.all %}
+                 {% for mode in r.transport_modes.all %}
               {{ mode.name }}{% if not forloop.last %}, {% endif %}
             {% empty %}
               Non spécifié
@@ -33,6 +33,7 @@
               <span class="text-red-600 font-semibold">Annulée</span>
             {% endif %}
           </p>
+
         </li>
       {% endfor %}
     </ul>
@@ -52,6 +53,13 @@
           <p><strong>Trajet :</strong> {{ r.traject.traject.start_adress }} à {{ r.traject.departure_time }} → {{ r.traject.traject.end_adress }} à {{ r.traject.arrival_time }}</p>
           <p><strong>Date :</strong> {{ r.traject.date|date:"l d F Y" }}</p>
           <p><strong>Places :</strong> {{ r.number_of_places }}</p>
+          <p> <strong>Transport :</strong> 
+              {% for mode in r.transport_modes.all %}
+              {{ mode.name }}{% if not forloop.last %}, {% endif %}
+            {% empty %}
+              Non spécifié
+            {% endfor %}
+          </p>
           <p><strong>Statut :</strong> 
             {% if r.status == 'confirmed' %}
               <span class="text-green-600 font-semibold">Confirmée</span>
@@ -61,6 +69,7 @@
               <span class="text-red-600 font-semibold">Annulée</span>
             {% endif %}
           </p>
+
 
           {% if r.status == 'pending' %}
             <div class="mt-2 space-x-2">

@@ -59,7 +59,10 @@
           </p>
 
           <p class="text-sm text-gray-700">
-            <strong>Enfant(s) :</strong> {{ researched.number_of_places|default:"—" }}
+            <strong>Enfant(s) :</strong>
+              {% for child in researched.children.all %}
+              {{ child.chld_surname }} {{ child.chld_name }}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
           </p>
           
           <form method="POST" action="{% url 'delete_researched_traject' researched.id %}" onsubmit="return confirm('Supprimer cette recherche ?');">

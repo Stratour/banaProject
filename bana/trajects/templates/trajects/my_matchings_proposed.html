@@ -71,8 +71,9 @@
               </p>
               
               <p class="text-sm text-gray-700">
-              <strong>Enfant(s) :</strong> {{ request.number_of_places|default:"—" }}
-              </p>
+{% for request in reservation_requests %}
+  <strong>Enfant(s) :</strong> {{ request.number_of_places }}
+{% endfor %}              </p>
 
               <form method="POST" action="">
               {% csrf_token %}

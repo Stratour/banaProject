@@ -217,9 +217,11 @@ class ResearchedTrajectForm(forms.ModelForm):
     )
 
     children = forms.ModelMultipleChoiceField(
-        queryset=Child.objects.all(),
+        queryset=Child.objects.none(),
         widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-checkbox'}),
-        label="Choix du ou des enfants"
+        required=True,
+        label="Choix du ou des enfants",
+        error_messages={'required': "Vous devez sélectionner au moins un enfant."}
     )
  
     
@@ -290,7 +292,7 @@ class ResearchedTrajectForm(forms.ModelForm):
     class Meta:
         model = ResearchedTraject
         fields = ['departure_time', 'arrival_time', 'transport_modes',
-                  'recurrence_type', 'tr_weekdays', 'date_debut', 'date_fin']
+                  'recurrence_type', 'tr_weekdays', 'date_debut', 'date_fin', 'children']
         labels = {
             'departure_time': 'Heure de départ',
             'arrival_time': 'Heure d’arrivée',

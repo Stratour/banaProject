@@ -20,7 +20,6 @@ class Profile(models.Model):
     
     languages = models.ManyToManyField('Languages', blank=True)
     transport_modes = models.JSONField(default=list, blank=True)
-    
     bio = models.TextField(blank=True)
     phone = models.CharField(max_length=15, blank=True)
 

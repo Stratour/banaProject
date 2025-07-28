@@ -81,12 +81,12 @@
                 {{ proposal.details|default:"Pas de détails" }}
               </p>
            
-            {% if proposal.id %}
-            <form method="POST" action="{% url 'auto_reserve' proposal.id %}" class="mt-3">
+          {% if match.research and match.research.id %}
+            <form method="POST" action="{% url 'auto_reserve' proposal.id match.research.id %}">
               {% csrf_token %}
               <button type="submit" class="btn btn-primary">Réserver</button>
             </form>
-            {% endif %}
+          {% endif %}
           {% endfor %}
         </li>
       {% endfor %}

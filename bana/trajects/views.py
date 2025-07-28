@@ -20,15 +20,13 @@ def find_matching_trajects(obj):
     Retourne une queryset des trajets compatibles avec l'objet donné (proposé ou recherché),
     en adaptant les filtres selon qu'il s'agit d'un trajet simple ou complet.
     """
-    if not isinstance(obj, (ProposedTraject, ResearchedTraject)):
-        raise TypeError(f"❌ Objet invalide : {type(obj)} — {obj}")
 
     time_tolerance = timedelta(minutes=45)
     base_filter = Q()
 
     # 🎯 Matching depuis un trajet proposé
     if isinstance(obj, ProposedTraject):
-
+        
         if obj.is_simple:
             print("🔎 Matching depuis un trajet simple proposé")
             
@@ -69,7 +67,6 @@ def find_matching_trajects(obj):
 
     # 🎯 Matching depuis un trajet recherché
     elif isinstance(obj, ResearchedTraject):
-        print("🔎 Matching depuis un trajet recherché (parent)")
 
         if obj.date:
             base_filter &= Q(date=obj.date)
@@ -86,6 +83,9 @@ def find_matching_trajects(obj):
         if obj.arrival_time and obj.arrival_time != datetime.strptime("00:00", "%H:%M").time():
             at = datetime.combine(datetime.today(), obj.arrival_time)
             base_filter &= Q(arrival_time__range=((at - time_tolerance).time(), (at + time_tolerance).time()))
+
+        required_places = obj.children.count()
+        base_filter &= Q(number_of_places__gte=str(required_places))  
 
         return ProposedTraject.objects.filter(base_filter).distinct()
 
@@ -414,7 +414,7 @@ def researched_traject(request):
 
     if request.method == 'POST':
         traject_form = TrajectForm(request.POST)
-        researched_form = ResearchedTrajectForm(request.POST)
+        researched_form = ResearchedTrajectForm(request.POST, user=request.user)
         researched_trajects, success = save_researched_traject(request, traject_form, researched_form)
         
         if success:
@@ -457,13 +457,13 @@ def researched_traject(request):
         username = request.user.username
         print("=============== request.user.username :: ", username)
         traject_form = TrajectForm()
-        researched_form = ResearchedTrajectForm()
-        children_s_user = Child.objects.filter(chld_user__username=username)
-        print('============== Child of :: ', children_s_user)
+        researched_form = ResearchedTrajectForm(user=request.user)
+        #children_s_user = Child.objects.filter(chld_user__username=username)
+        #print('============== Child of :: ', children_s_user)
 
 
         context = {
-            'childrens': children_s_user,
+            #'childrens': children_s_user,
             'traject_form': traject_form,
             'researched_form': researched_form,
             'transport_modes': transport_modes,
@@ -559,6 +559,10 @@ def generate_recurrent_researches(request, recurrent_dates, traject,
         )
         researched.save()
         researched.transport_modes.set(cleaned_data.get('transport_modes'))
+        researched.children.set(cleaned_data.get('children'))
+
+        r = ResearchedTraject.objects.last()
+        print(r.children.all())  # ➜ doit afficher une queryset non vide
         recurrent_researches.append(researched)
     return recurrent_researches
 
@@ -654,127 +658,8 @@ def autocomplete_view(request):
 
 
 # ====================')= reservation page ====================')==== #
-""""
+
 @login_required
-def reserve_traject(request, id):
-    traject = get_object_or_404(ProposedTraject, id=id)
-    print("++++++++++++++++++++++ traject " + str(traject))
-    user_member = Members.objects.get(memb_user_fk=request.user)
-    is_creator = traject.member == user_member
-    print("++++++++++++++++++++++ traject.id " + str( traject.id))
-    print("++++++++++++++++++++++ traject.traject_id ' " + str( traject.traject_id))
-
-    context = {
-        'traject': traject,
-        'is_creator': is_creator,
-    }
-    if is_creator:
-        print('================ if')
-        # Add the list of reservation requests if the user is the creator
-        # Assuming you have a model for reservations, replace `ReservationRequest` with the actual model name
-        reservation_requests = ["member1","member2","member3"] #ReservationRequest.objects.filter(traject=traject)
-        context['reservation_requests'] = reservation_requests
-    else:
-        print('================ else')
-        # Add any other context needed for non-creator users
-        reservation_count = 3 #ReservationRequest.objects.filter(traject=traject).count()
-        context['reservation_count'] = reservation_count
-
-    return render(request, 'trajects/reserve_traject.html', context)
-"""
-
-
-'''@login_required
-def reserve_traject(request, id):
-    print('=========================================== views :: reserve_traject ====================')
-    traject = get_object_or_404(ProposedTraject, id=id)
-    is_creator = traject.user == request.user  # Vérifier si l'utilisateur est le créateur du trajet
-
-    # Si l'utilisateur n'est pas le créateur
-    if not is_creator:
-        print('=========================================== views :: reserve_traject > if not is_creator ==')
-        if request.method == 'POST':
-            # Récupérer le nombre de places demandées
-            try:
-                num_places = int(request.POST.get('num_places'))
-            except (ValueError, TypeError):
-                num_places = 0
-
-            # Vérifier si le nombre de places est valide
-            if num_places <= 0:
-                messages.error(request, "Le nombre de places doit être supérieur à 0.")
-            elif num_places > int(traject.number_of_places):
-                messages.error(request, "Il n'y a pas assez de places disponibles pour ce trajet.")
-            else:
-                # Créer la réservation
-                reservation = Reservation.objects.create(
-                    user=request.user,
-                    traject=traject,
-                    number_of_places=num_places
-                )
-
-                traject.save()
-
-                # Récupérer l'email de l'utilisateur et du créateur
-                user_email = request.user.email
-                creator_email = traject.member.memb_user_fk.email
-
-                # Afficher les emails dans la console pour débogage
-                print(f"Email de l'utilisateur (membre) : {user_email}")
-                print(f"Email du créateur du trajet : {creator_email}")
-
-                # Envoi d'une notification par email au membre
-                send_mail(
-                    'Confirmation de votre demande de réservation',
-                    f'Bonjour {request.user.username},\n\nVotre demande de réservation de {num_places} places pour le trajet "{traject.traject}" est en attente de confirmation.\n\nMerci.',
-                    settings.DEFAULT_FROM_EMAIL,
-                    [user_email]
-                )
-
-                # Envoi d'une notification par email au créateur du trajet
-                send_mail(
-                    'Nouvelle demande de réservation',
-                    f'Bonjour {traject.member.memb_user_fk.username},\n\nUn membre a fait une demande de réservation pour {num_places} places sur le trajet "{traject.traject}".\nVeuillez consulter la demande pour l\'approuver ou la refuser.\n\nMerci.',
-                    settings.DEFAULT_FROM_EMAIL,
-                    [creator_email]
-                )
-
-                messages.success(request,
-                                 f'Votre demande de réservation de {num_places} places est une attente de confirmation!')
-                return redirect('profile')  # Redirige vers une page de confirmation ou ailleurs
-
-    context = {
-        'traject': traject,
-        'is_creator': is_creator,
-    }
-
-    if is_creator:
-        print('=========================================== views :: reserve_traject > if is_creator ==')
-        reservation_requests = Reservation.objects.filter(traject=traject)
-        context['reservation_requests'] = reservation_requests
-    else:
-        reservation_count = Reservation.objects.filter(
-            traject=traject).count()  # Remplacer par le nombre réel de réservations
-        context['reservation_count'] = reservation_count
-
-    return render(request, 'trajects/reserve_traject.html', context)
-'''
-
-
-#@login_required
-#def reserve_trajectResearched(request, researchedTraject_id):
-#    researched_traject = get_object_or_404(ResearchedTraject, id=researchedTraject_id)
-#    # Vérifier si un trajet proposé correspondant existe
-#    try:
-#        proposed_traject = ProposedTraject.objects.get(traject_id=researched_traject.traject_id)
-#        print(proposed_traject)
-#
-#        return reserve_traject(request, proposed_traject.id)  # Appel direct pour éviter la répétition
-#    except ProposedTraject.DoesNotExist:
-#        messages.error(request, "Ce trajet n'existe pas encore dans les trajets proposés.")
-#        return  all_trajects(request)
-
-'''@login_required
 def manage_reservation(request, reservation_id, action):
     # Récupérer la réservation
     reservation = get_object_or_404(Reservation, id=reservation_id)
@@ -790,54 +675,51 @@ def manage_reservation(request, reservation_id, action):
         return redirect('my_reservations')
 
     if action == 'accept':
-        available_places = int(reservation.traject.number_of_places)
-        requested_places = reservation.number_of_places
+        reservation.status = 'confirmed'
+        reservation.save()
+        messages.success(request, "Réservation confirmée.")
 
-        if requested_places > available_places:
-            messages.error(request, "Pas assez de places disponibles.")
-        else:
-            # Confirmer la réservation
-            reservation.status = 'confirmed'
-            reservation.save()
-
-            # Mettre à jour les places restantes
-            reservation.traject.number_of_places = str(available_places - requested_places)
-            reservation.traject.save()
-
-            # Supprimer le trajet s’il n’y a plus de places
-            if int(reservation.traject.number_of_places) <= 0:
-                reservation.traject.delete()
-
-            messages.success(request, "Réservation confirmée.")
-    
     elif action == 'reject':
         reservation.status = 'canceled'
         reservation.save()
+        # Réattribuer les places libérées
+        reservation.traject.number_of_places += reservation.number_of_places
+        reservation.traject.save()
+
         messages.success(request, "Réservation refusée.")
 
     else:
         messages.error(request, "Action invalide.")
 
     return redirect('my_reservations')
-'''
+
 
 
 @login_required
-def auto_reserve(request, proposed_id):
+def auto_reserve(request, proposed_id, researched_id):
     traject = get_object_or_404(ProposedTraject, id=proposed_id)
 
     if traject.user == request.user:
         messages.error(request, "Vous ne pouvez pas réserver votre propre trajet.")
         return redirect('my_matchings_researched')
 
-    requested_places = 1
-    available_places = int(traject.number_of_places)
+    # ✅ On récupère précisément la demande faite par ce parent
+    researched = get_object_or_404(ResearchedTraject, id=researched_id, user=request.user)
 
-    if requested_places > available_places:
-        messages.error(request, "Plus assez de places disponibles.")
+    # ✅ Nombre d'enfants sélectionnés = nombre de places à réserver
+    requested_places = researched.children.count()
+    available_places = traject.number_of_places
+
+    if requested_places < 1:
+        messages.error(request, "Vous devez sélectionner au moins un enfant.")
         return redirect('my_matchings_researched')
 
-    Reservation.objects.create(
+    if requested_places > available_places:
+        messages.error(request, "Il n'y a pas assez de places disponibles pour vos enfants.")
+        return redirect('my_matchings_researched')
+
+    # ✅ Création de la réservation
+    reservation = Reservation.objects.create(
         user=request.user,
         traject=traject,
         number_of_places=requested_places,
@@ -845,33 +727,21 @@ def auto_reserve(request, proposed_id):
         reservation_date=now()
     )
     
-    
-    traject.number_of_places = str(available_places - requested_places)
+    reservation.transport_modes.set(researched.transport_modes.all())
+
+    # ✅ Décrémentation des places restantes
+    traject.number_of_places -= requested_places
     traject.save()
 
-    
-    
-    if int(traject.number_of_places) <= 0:
+    # ✅ Désactivation du trajet si complet
+    if traject.number_of_places <= 0:
         traject.is_active = False
         traject.save()
 
-    date_str = now().strftime("%d/%m/%Y à %H:%M")
+    # ✅ Optionnel : lier les enfants à la réservation (si tu ajoutes reservation.children)
+    # reservation.children.set(researched.children.all())
 
-    #send_mail(
-    #    subject="Réservation confirmée",
-    #    message=f"Réservation prise le {date_str} avec '{traject.user.username}'.",
-    #    from_email=settings.DEFAULT_FROM_EMAIL,
-    #    recipient_list=[request.user.email],
-    #)
-#
-    #send_mail(
-    #    subject="Nouvelle réservation reçue",
-    #    message=f"Une réservation a été effectuée par '{request.user.username}' le {date_str}.",
-    #    from_email=settings.DEFAULT_FROM_EMAIL,
-    #    recipient_list=[traject.user.email],
-    #)
-
-    messages.success(request, "Réservation confirmée.")
+    messages.success(request, "Votre demande de réservation a été envoyée.")
     return redirect('my_reservations')
 
 @login_required
