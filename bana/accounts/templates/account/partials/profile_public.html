@@ -5,14 +5,31 @@
         <img src="{{ user.profile.profile_picture.url }}" alt="Photo de profil" class="w-20 h-20 object-cover rounded-full mb-4">
     {% else %}
         <h1 class="no-image">
-              {{ user.first_name.0 }}.{{ user.last_name.0 }}
+              {{ user.profile.verified_first_name.0 }}.{{ user.profile.verified_last_name.0 }}
         </h1>
     {% endif %}
-    <p class="text-lg font-medium">{{ user.first_name }} {{ user.last_name|slice:":1" }}.</p>
-    <p>{{ user.profile.address }}</p>
+    {% if user.profile.is_verified %}
+    <p><strong>Statut :</strong> Identité vérifiée ✅</p>
+    {% else %}
+    <p><strong>Statut :</strong> Non vérifié ❌</p>
+    {% endif %}
+    <p class="text-lg font-medium">{{ user.profile.verified_first_name }} {{ user.profile.verified_first_name|slice:":1" }}.</p>
+    {% if user.profile.verified_address %}
+    {{ user.profile.verified_address.line1 }},
+    {{ user.profile.verified_address.postal_code }},
+    {{ user.profile.verified_address.city }},
+    {{ user.profile.verified_address.country }}
+    {% else %}
+    Non disponible
+    {% endif %}
     <p>Services : {{ user.profile.service }}</p>
     <p>Transports : {{ user.profile.transport_modes|join:", " }}</p>
     <p>Langues parlées : {{ user.profile.languages.all|join:", " }}</p>
     <p>Date d’inscription : {{ user.date_joined|date:"d/m/Y" }}</p>
+    {% if user.profile.document_image_url %}
+    <a href="{{ user.profile.document_image_url }}" target="_blank">Voir le document</a>
+    {% else %}
+    Non disponible
+    {% endif %}
 </div>
 

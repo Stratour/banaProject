@@ -19,4 +19,10 @@
     >
         ✏️ Modifier mon profil
     </button>
+
+    <form method="post" action="{% url 'create_verification_session' %}">
+    {% csrf_token %}
+    <button class="btn btn-success" type="submit">Vérifier mon identité</button>
+    </form>
+
 </div>

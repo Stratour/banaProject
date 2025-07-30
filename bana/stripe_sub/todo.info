@@ -1,0 +1,7 @@
+Dans la fonction 'create_verification_session', changer return_url avec l'url du site
+
+           return_url="http://37.187.94.53:9758/identity/complete/",
+
+======================================================================================
+
+Dans le .env, changer la clé secret du webhook

@@ -1,0 +1,11 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+
+<h2>Identité</h2>
+
+<h2>Merci !</h2>
+<p>Votre vérification est en cours ou a été terminée. Vous serez notifié une fois validée.</p>
+<a href="{% url 'accounts:profile' %}">Retour au profile</a>
+{% endblock %}
