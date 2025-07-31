@@ -1,1 +1,43 @@
-{% extends "layouts/base.html" %}
+{% load static tailwind_tags %}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    {% tailwind_css %}
+    <link href="{% static 'bana/css/style.css' %}" rel="stylesheet">
+
+    <title>{% block title %}Admin - Bana{% endblock %}</title>
+</head>
+<body class="relative min-h-screen md:flex"
+      style="background-image: url('{% static "bana/img/background/Bana_background_lime.png" %}');
+             background-repeat: no-repeat;
+             background-size: cover;
+             background-position: center;">
+
+    <!-- overlay appliqué au body -->
+    <div class="absolute inset-0 bg-white opacity-90 pointer-events-none z-0"></div>
+
+    <!-- Side navigation (desktop) -->
+    <aside class="hidden md:flex md:flex-col md:w-64 bg-white shadow-lg min-h-screen relative z-10">
+        {% include 'allauth/layouts/admin-side-nav.html' %}
+    </aside>
+
+    <!-- Contenu principal -->
+    <div class="flex-1 flex flex-col relative z-10">
+        {% include 'allauth/layouts/admin-header.html' %}
+
+        <main class="flex-1 p-4 md:p-6">
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
+    {% include 'allauth/layouts/admin-footer-mobile.html' %}
+
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="{% static 'bana/js/top-mobile-menu.js' %}"></script>
+</body>
+</html>

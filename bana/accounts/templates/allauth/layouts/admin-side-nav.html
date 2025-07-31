@@ -1,0 +1,134 @@
+<!-- Logo -->
+<div class="p-6 border-b flex justify-center">
+    {% load static %}
+    <img class="w-20 h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Logo Bana">
+</div>
+
+<!-- Navigation -->
+<nav class="flex-1 p-4 space-y-6 text-sm font-medium text-gray-800">
+    <div>
+        <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">Mon profil</p>
+        <ul class="space-y-1">
+            <li>
+                <a href="{% url 'accounts:profile' %}" 
+                   class="flex items-center gap-2 py-2 px-4 
+                          {% if request.path == '/accounts/profile/' %}
+                              rounded-full bg-brand text-brand-50 font-semibold
+                          {% else %}
+                              text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
+                          {% endif %}">
+                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    Mes informations
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'accounts:profile_child' %}" 
+                   class="flex items-center gap-2 py-2 px-4 
+                          {% if request.path == '/accounts/profile_child/' %}
+                              rounded-full bg-brand text-brand-50 font-semibold
+                          {% else %}
+                              text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
+                          {% endif %}">
+                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    Mes enfants
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div>
+        <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">Mes trajets</p>
+        <ul class="space-y-1">
+            <li>
+                <a href="{% url 'researched_traject' %}" 
+                   class="flex items-center gap-2 py-2 px-4 
+                          {% if request.path == '/researched_traject/' %}
+                              rounded-full bg-brand text-brand-50 font-semibold
+                          {% else %}
+                              text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
+                          {% endif %}">
+                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    Rechercher
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'proposed_traject' %}" 
+                   class="flex items-center gap-2 py-2 px-4 
+                          {% if request.path == '/proposed_traject/' %}
+                              rounded-full bg-brand text-brand-50 font-semibold
+                          {% else %}
+                              text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
+                          {% endif %}">
+                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    Proposer
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'index' %}" 
+                   class="flex items-center gap-2 py-2 px-4 
+                          {% if request.path == '/index/' %}
+                              rounded-full bg-brand text-brand-50 font-semibold
+                          {% else %}
+                              text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
+                          {% endif %}">
+                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    Messages
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'my_reservations' %}" 
+                   class="flex items-center gap-2 py-2 px-4 
+                          {% if request.path == '/my_reservations/' %}
+                              rounded-full bg-brand text-brand-50 font-semibold
+                          {% else %}
+                              text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
+                          {% endif %}">
+                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    Mes réservations
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div>
+        <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">Paramètres</p>
+        <ul class="space-y-1">
+            <li>
+                <a href="#" 
+                   class="flex items-center gap-2 py-2 px-4 
+                          {% if request.path == '/abonnement/' %}
+                              rounded-full bg-brand text-brand-50 font-semibold
+                          {% else %}
+                              text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
+                          {% endif %}">
+                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    Abonnement
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'accounts:profile_security' %}" 
+                   class="flex items-center gap-2 py-2 px-4 
+                          {% if request.path == '/accounts/profile_security/' %}
+                              rounded-full bg-brand text-brand-50 font-semibold
+                          {% else %}
+                              text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
+                          {% endif %}">
+                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    Sécurité et connexion
+                </a>
+            </li>
+            <li>
+                <a href="#" 
+                   class="flex items-center gap-2 py-2 px-4 
+                          {% if request.path == '/preferences/' %}
+                              rounded-full bg-brand text-brand-50 font-semibold
+                          {% else %}
+                              text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
+                          {% endif %}">
+                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    Préférences
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>

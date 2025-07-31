@@ -1,0 +1,13 @@
+<header class="bg-white shadow p-4 flex items-center justify-between">
+    <h1 class="text-lg font-bold text-gray-900">
+        {% block page_title %}Tableau de bord{% endblock %}
+    </h1>
+
+    <div class="flex items-center gap-4">
+        <div class="flex items-center gap-2">
+        {% load static %}
+            <img src="{% static 'bana/img/other/Nyota.png' %}" alt="User" class="w-16 h-16 rounded-full">
+            <span class="text-sm text-gray-700 font-medium">{{ request.user.first_name }}</span>
+        </div>
+    </div>
+</header>
