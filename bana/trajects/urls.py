@@ -28,11 +28,6 @@ urlpatterns = [
     
     #path('proposed/all/', views.all_proposed_trajects, name='all_proposed_trajects'),
     #path('researched/all/', views.all_researched_trajects, name='all_researched_trajects'),
-    
-
 
     path('reservation/auto/<int:proposed_id>/<int:researched_id>/', views.auto_reserve, name='auto_reserve'),
-
-
-
 ]

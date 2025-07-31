@@ -1,0 +1,263 @@
+<!-- templates/bug_tracker/partials/bug_status_badge.html -->
+<span class="badge status-{{ bug.status }} px-3 py-2">
+    {{ bug.get_status_display }}
+</span>
+
+<!-- templates/bug_tracker/partials/bug_assignee.html -->
+{% if bug.assigned_to %}
+    <div class="d-flex align-items-center">
+        <i class="bi bi-person-fill me-2"></i>
+        <span>{{ bug.assigned_to.username }}</span>
+        <button class="btn btn-sm btn-outline-secondary ms-2"
+                hx-get="{% url 'bug_tracker:bug_assign' bug.pk %}"
+                hx-target="#assign-modal-content"
+                data-bs-toggle="modal" data-bs-target="#assignModal">
+            <i class="bi bi-pencil"></i>
+        </button>
+    </div>
+{% else %}
+    <button class="btn btn-sm btn-outline-primary"
+            hx-get="{% url 'bug_tracker:bug_assign' bug.pk %}"
+            hx-target="#assign-modal-content"
+            data-bs-toggle="modal" data-bs-target="#assignModal">
+        <i class="bi bi-person-plus"></i> Assigner
+    </button>
+{% endif %}
+
+<!-- templates/bug_tracker/partials/comments_section.html -->
+{% for comment in comments %}
+<div class="comment-item mb-3">
+    <div class="d-flex justify-content-between align-items-start mb-2">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-person-circle me-2"></i>
+            <strong>{{ comment.author.username }}</strong>
+        </div>
+        <small class="text-muted">{{ comment.created_at|date:"d/m/Y H:i" }}</small>
+    </div>
+    <div class="comment-content">
+        {{ comment.content|linebreaks }}
+    </div>
+    {% if comment.updated_at != comment.created_at %}
+        <small class="text-muted">
+            <i class="bi bi-pencil"></i> Modifié le {{ comment.updated_at|date:"d/m/Y H:i" }}
+        </small>
+    {% endif %}
+</div>
+{% empty %}
+<p class="text-muted text-center py-3">
+    <i class="bi bi-chat"></i> Aucun commentaire pour le moment
+</p>
+{% endfor %}
+
+<!-- templates/bug_tracker/partials/attachments_section.html -->
+{% for attachment in attachments %}
+<div class="attachment-item">
+    <div class="me-3">
+        {% if attachment.filename|slice:"-4:" == ".pdf" %}
+            <i class="bi bi-file-pdf text-danger"></i>
+        {% elif attachment.filename|slice:"-4:" in ".jpg,.png,.gif" %}
+            <i class="bi bi-file-image text-success"></i>
+        {% elif attachment.filename|slice:"-4:" == ".zip" %}
+            <i class="bi bi-file-zip text-warning"></i>
+        {% else %}
+            <i class="bi bi-file-text text-primary"></i>
+        {% endif %}
+    </div>
+    <div class="flex-grow-1">
+        <div>
+            <a href="{{ attachment.file.url }}" target="_blank" class="text-decoration-none">
+                {{ attachment.filename }}
+            </a>
+        </div>
+        <small class="text-muted">
+            Ajouté par {{ attachment.uploaded_by.username }} le {{ attachment.uploaded_at|date:"d/m/Y H:i" }}
+        </small>
+    </div>
+    <div>
+        <a href="{{ attachment.file.url }}" download class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-download"></i>
+        </a>
+    </div>
+</div>
+{% empty %}
+<p class="text-muted text-center py-2">
+    <i class="bi bi-paperclip"></i> Aucune pièce jointe
+</p>
+{% endfor %}
+
+<!-- templates/bug_tracker/partials/bug_form.html -->
+<form {% if request.htmx %}hx-post="{% url 'bug_tracker:bug_create' %}"{% else %}method="post"{% endif %}>
+    {% csrf_token %}
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label class="form-label">{{ form.title.label }}</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <div class="text-danger">{{ form.title.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">{{ form.component.label }}</label>
+                {{ form.component }}
+                {% if form.component.errors %}
+                    <div class="text-danger">{{ form.component.errors }}</div>
+                {% endif %}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">{{ form.affected_version.label }}</label>
+                {{ form.affected_version }}
+                {% if form.affected_version.errors %}
+                    <div class="text-danger">{{ form.affected_version.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="form-label">{{ form.priority.label }}</label>
+                {{ form.priority }}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">{{ form.severity.label }}</label>
+                {{ form.severity }}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">{{ form.status.label }}</label>
+                {{ form.status }}
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">{{ form.description.label }}</label>
+            {{ form.description }}
+            {% if form.description.errors %}
+                <div class="text-danger">{{ form.description.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">{{ form.reproduction_steps.label }}</label>
+            {{ form.reproduction_steps }}
+            {% if form.reproduction_steps.errors %}
+                <div class="text-danger">{{ form.reproduction_steps.errors }}</div>
+            {% endif %}
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">{{ form.environment.label }}</label>
+                {{ form.environment }}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">{{ form.operating_system.label }}</label>
+                {{ form.operating_system }}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">{{ form.browser.label }}</label>
+                {{ form.browser }}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">{{ form.device.label }}</label>
+                {{ form.device }}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">{{ form.assigned_to.label }}</label>
+                {{ form.assigned_to }}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">{{ form.fixed_version.label }}</label>
+                {{ form.fixed_version }}
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save"></i> Créer le bug
+            <span class="htmx-indicator spinner-border spinner-border-sm ms-2"></span>
+        </button>
+    </div>
+</form>
+
+<!-- templates/bug_tracker/partials/bug_edit_form.html -->
+<form hx-post="{% url 'bug_tracker:bug_edit' bug.pk %}">
+    {% csrf_token %}
+    <div class="modal-body">
+        <!-- Même structure que bug_form.html mais avec les valeurs pré-remplies -->
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <label class="form-label">{{ form.title.label }}</label>
+                {{ form.title }}
+                {% if form.title.errors %}
+                    <div class="text-danger">{{ form.title.errors }}</div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">{{ form.component.label }}</label>
+                {{ form.component }}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">{{ form.affected_version.label }}</label>
+                {{ form.affected_version }}
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <label class="form-label">{{ form.priority.label }}</label>
+                {{ form.priority }}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">{{ form.severity.label }}</label>
+                {{ form.severity }}
+            </div>
+            <div class="col-md-4 mb-3">
+                <label class="form-label">{{ form.status.label }}</label>
+                {{ form.status }}
+            </div>
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">{{ form.description.label }}</label>
+            {{ form.description }}
+        </div>
+        
+        <div class="mb-3">
+            <label class="form-label">{{ form.reproduction_steps.label }}</label>
+            {{ form.reproduction_steps }}
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">{{ form.assigned_to.label }}</label>
+                {{ form.assigned_to }}
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label">{{ form.fixed_version.label }}</label>
+                {{ form.fixed_version }}
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+        <button type="submit" class="btn btn-primary">
+            <i class="bi bi-save"></i> Sauvegarder
+            <span class="htmx-indicator spinner-border spinner-border-sm ms-2"></span>
+        </button>
+    </div>
+</form>

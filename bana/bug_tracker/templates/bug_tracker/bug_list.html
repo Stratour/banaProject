@@ -1,0 +1,85 @@
+<!-- templates/bug_tracker/bug_list.html -->
+{% extends './base.html' %}
+
+{% block title %}Liste des Bugs - Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="bi bi-list-ul"></i> Liste des Bugs</h1>
+            <a href="{% url 'bug_tracker:bug_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nouveau Bug
+            </a>
+        </div>
+        
+        <!-- Filtres -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form id="filter-form" hx-get="{% url 'bug_tracker:bug_list' %}" hx-target="#bug-table">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label">Recherche</label>
+                            {{ form.search }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Statut</label>
+                            {{ form.status }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Priorité</label>
+                            {{ form.priority }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Composant</label>
+                            {{ form.component }}
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label">Assigné à</label>
+                            {{ form.assigned_to }}
+                        </div>
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button type="button" class="btn btn-outline-secondary" onclick="resetFilters()">
+                                <i class="bi bi-arrow-clockwise"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Indicateur de chargement -->
+        <div id="loading-indicator" class="text-center my-3 htmx-indicator">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Chargement...</span>
+            </div>
+        </div>
+        
+        <!-- Table des bugs -->
+        <div id="bug-table">
+            {% include 'bug_tracker/partials/bug_table.html' %}
+        </div>
+    </div>
+</div>
+
+<script>
+function resetFilters() {
+    document.getElementById('filter-form').reset();
+    htmx.trigger('#filter-form', 'submit');
+}
+
+// Ajouter l'indicateur de chargement aux requêtes HTMX
+document.addEventListener('htmx:beforeRequest', function(evt) {
+    if (evt.detail.target.id === 'bug-table') {
+        document.getElementById('loading-indicator').classList.add('htmx-request');
+    }
+});
+
+document.addEventListener('htmx:afterRequest', function(evt) {
+    if (evt.detail.target.id === 'bug-table') {
+        document.getElementById('loading-indicator').classList.remove('htmx-request');
+    }
+});
+</script>
+{% endblock %}

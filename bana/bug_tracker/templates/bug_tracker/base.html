@@ -1,0 +1,183 @@
+<!-- templates/base.html -->
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bug Tracker{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- HTMX -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/htmx/1.9.10/htmx.min.js"></script>
+    
+    <style>
+        .priority-low { color: #28a745; }
+        .priority-medium { color: #ffc107; }
+        .priority-high { color: #fd7e14; }
+        .priority-critical { color: #dc3545; }
+        
+        .severity-minor { background-color: #d1ecf1; color: #0c5460; }
+        .severity-normal { background-color: #d4edda; color: #155724; }
+        .severity-major { background-color: #fff3cd; color: #856404; }
+        .severity-critical { background-color: #f8d7da; color: #721c24; }
+        .severity-blocker { background-color: #f5c6cb; color: #721c24; font-weight: bold; }
+        
+        .status-open { background-color: #cce5ff; color: #004085; }
+        .status-in_progress { background-color: #fff3cd; color: #856404; }
+        .status-resolved { background-color: #d4edda; color: #155724; }
+        .status-closed { background-color: #e2e3e5; color: #495057; }
+        .status-reopened { background-color: #f8d7da; color: #721c24; }
+        .status-duplicate { background-color: #e2e3e5; color: #495057; }
+        .status-wont_fix { background-color: #f8d7da; color: #721c24; }
+        
+        .htmx-indicator {
+            opacity: 0;
+            transition: opacity 300ms ease-in;
+        }
+        .htmx-request .htmx-indicator {
+            opacity: 1;
+        }
+        .htmx-request.htmx-indicator {
+            opacity: 1;
+        }
+        
+        .bug-card {
+            transition: transform 0.2s;
+        }
+        .bug-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .sidebar {
+            min-height: calc(100vh - 56px);
+            background-color: #f8f9fa;
+        }
+        
+        .comment-item {
+            border-left: 3px solid #dee2e6;
+            padding-left: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .attachment-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'bug_tracker:dashboard' %}">
+                <i class="bi bi-bug"></i> Bug Tracker
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'bug_tracker:dashboard' %}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'bug_tracker:bug_list' %}">
+                            <i class="bi bi-list-ul"></i> Liste des Bugs
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'bug_tracker:bug_create' %}">
+                            <i class="bi bi-plus-circle"></i> Nouveau Bug
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#">Profil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'admin:logout' %}">Déconnexion</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin:login' %}">Connexion</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu principal -->
+    <div class="container-fluid mt-3">
+        {% if messages %}
+            <div id="messages">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- HTMX Extensions -->
+    <script>
+        // Configuration HTMX
+        document.addEventListener('htmx:configRequest', function(evt) {
+            evt.detail.headers['X-CSRFToken'] = document.querySelector('[name=csrfmiddlewaretoken]').value;
+        });
+        
+        // Auto-dismiss des messages après 5 secondes
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(function(alert) {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                });
+            }, 5000);
+        });
+        
+        // Animation pour les éléments qui se chargent via HTMX
+        document.addEventListener('htmx:afterSwap', function(evt) {
+            if (evt.detail.target.id === 'bug-table') {
+                evt.detail.target.style.opacity = '0';
+                setTimeout(function() {
+                    evt.detail.target.style.transition = 'opacity 0.3s';
+                    evt.detail.target.style.opacity = '1';
+                }, 50);
+            }
+        });
+    </script>
+    
+    {% block extra_js %}
+    {% endblock %}
+</body>
+</html>

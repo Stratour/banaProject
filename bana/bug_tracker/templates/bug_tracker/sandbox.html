@@ -1,0 +1,192 @@
+# urls.py (fichier principal du projet)
+from django.contrib import admin
+from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', include('bug_tracker.urls')),
+]
+
+# Servir les fichiers médias en développement
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# management/commands/load_sample_data.py
+from django.core.management.base import BaseCommand
+from django.contrib.auth.models import User
+from bug_tracker.models import Component, Version, Environment, Bug
+from faker import Faker
+import random
+
+class Command(BaseCommand):
+    help = 'Charge des données d\'exemple pour le bug tracker'
+    
+    def handle(self, *args, **options):
+        fake = Faker('fr_FR')
+        
+        # Créer des utilisateurs
+        self.stdout.write('Création des utilisateurs...')
+        users = []
+        for i in range(5):
+            username = fake.user_name()
+            user, created = User.objects.get_or_create(
+                username=username,
+                defaults={
+                    'email': fake.email(),
+                    'first_name': fake.first_name(),
+                    'last_name': fake.last_name(),
+                    'is_active': True
+                }
+            )
+            if created:
+                user.set_password('password123')
+                user.save()
+            users.append(user)
+        
+        # Créer un super utilisateur si nécessaire
+        admin_user, created = User.objects.get_or_create(
+            username='admin',
+            defaults={
+                'email': 'admin@example.com',
+                'first_name': 'Admin',
+                'last_name': 'User',
+                'is_staff': True,
+                'is_superuser': True,
+                'is_active': True
+            }
+        )
+        if created:
+            admin_user.set_password('admin123')
+            admin_user.save()
+        
+        # Créer des composants
+        self.stdout.write('Création des composants...')
+        components_data = [
+            ('Frontend', 'Interface utilisateur et expérience'),
+            ('Backend', 'API et logique métier'),
+            ('Base de données', 'Stockage et requêtes'),
+            ('Authentification', 'Connexion et sécurité'),
+            ('Notifications', 'Système de notifications'),
+            ('Rapports', 'Génération de rapports'),
+            ('Mobile', 'Application mobile'),
+            ('Infrastructure', 'Serveurs et déploiement')
+        ]
+        
+        components = []
+        for name, desc in components_data:
+            component, created = Component.objects.get_or_create(
+                name=name,
+                defaults={'description': desc}
+            )
+            components.append(component)
+        
+        # Créer des versions
+        self.stdout.write('Création des versions...')
+        versions_data = [
+            ('v1.0.0', '2024-01-15'),
+            ('v1.1.0', '2024-03-01'),
+            ('v1.2.0', '2024-05-15'),
+            ('v1.3.0', '2024-07-01'),
+            ('v2.0.0', '2024-09-01'),
+            ('v2.1.0', None)  # Version future
+        ]
+        
+        versions = []
+        for name, date in versions_data:
+            version, created = Version.objects.get_or_create(
+                name=name,
+                defaults={
+                    'release_date': date,
+                    'is_active': True
+                }
+            )
+            versions.append(version)
+        
+        # Créer des environnements
+        self.stdout.write('Création des environnements...')
+        environments_data = [
+            ('Production', 'Environnement de production'),
+            ('Staging', 'Environnement de pré-production'),
+            ('Développement', 'Environnement de développement'),
+            ('Test', 'Environnement de test')
+        ]
+        
+        environments = []
+        for name, desc in environments_data:
+            env, created = Environment.objects.get_or_create(
+                name=name,
+                defaults={'description': desc}
+            )
+            environments.append(env)
+        
+        # Créer des bugs
+        self.stdout.write('Création des bugs...')
+        statuses = ['open', 'in_progress', 'resolved', 'closed', 'reopened']
+        priorities = ['low', 'medium', 'high', 'critical']
+        severities = ['minor', 'normal', 'major', 'critical', 'blocker']
+        
+        os_list = [
+            'Windows 11', 'Windows 10', 'macOS 14.0', 'macOS 13.6',
+            'Ubuntu 22.04', 'Ubuntu 20.04', 'CentOS 8', 'Debian 11'
+        ]
+        
+        browsers = [
+            'Chrome 120.0', 'Firefox 121.0', 'Safari 17.1',
+            'Edge 120.0', 'Opera 105.0'
+        ]
+        
+        devices = [
+            'Desktop', 'Laptop', 'iPhone 15', 'iPhone 14', 'Samsung Galaxy S24',
+            'iPad Pro', 'Android Tablet', 'MacBook Pro', 'Surface Pro'
+        ]
+        
+        for i in range(50):
+            title = fake.sentence(nb_words=6).rstrip('.')
+            if random.choice([True, False]):
+                title = f"Erreur {fake.word()} dans {random.choice(components).name.lower()}"
+            
+            bug = Bug.objects.create(
+                title=title,
+                description=fake.text(max_nb_chars=500),
+                reproduction_steps='\n'.join([
+                    f"{j+1}. {fake.sentence()}" for j in range(random.randint(3, 6))
+                ]),
+                status=random.choice(statuses),
+                priority=random.choice(priorities),
+                severity=random.choice(severities),
+                component=random.choice(components),
+                affected_version=random.choice(versions[:-1]),  # Pas la version future
+                fixed_version=random.choice(versions) if random.random() > 0.6 else None,
+                assigned_to=random.choice(users) if random.random() > 0.3 else None,
+                reported_by=random.choice(users + [admin_user]),
+                environment=random.choice(environments),
+                operating_system=random.choice(os_list),
+                browser=random.choice(browsers) if random.random() > 0.3 else '',
+                device=random.choice(devices) if random.random() > 0.4 else ''
+            )
+            
+            # Ajouter des commentaires aléatoires
+            if random.random() > 0.5:
+                from bug_tracker.models import BugComment
+                for _ in range(random.randint(1, 4)):
+                    BugComment.objects.create(
+                        bug=bug,
+                        author=random.choice(users + [admin_user]),
+                        content=fake.text(max_nb_chars=200)
+                    )
+        
+        self.stdout.write(
+            self.style.SUCCESS(
+                f'✅ Données créées avec succès !\n'
+                f'- {len(users) + 1} utilisateurs\n'
+                f'- {len(components)} composants\n'
+                f'- {len(versions)} versions\n'
+                f'- {len(environments)} environnements\n'
+                f'- 50 bugs avec commentaires\n\n'
+                f'Utilisateurs créés:\n'
+                f'- admin / admin123 (superuser)\n'
+                f'- Autres utilisateurs / password123\n'
+            )
+        )

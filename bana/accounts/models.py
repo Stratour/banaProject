@@ -7,6 +7,39 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     address = models.CharField(max_length=100, blank=True)
+    ci_is_verified = models.BooleanField(default=False)
+    bvm_is_verified = models.BooleanField(default=False)
+    prfl_is_verified = models.BooleanField(default=False)
+    document_bvm = models.FileField(upload_to='bvm/', blank=True, null=True, verbose_name="Bonne vie et moers")
+
+    service = models.CharField(
+        max_length=30,
+        blank=False,
+        choices=[
+            ('parent', 'Parent'),
+            ('yaya', 'Yaya'),
+        ]
+    )
+
+    languages = models.ManyToManyField('Languages', blank=True)
+    transport_modes = models.JSONField(default=list, blank=True)
+    bio = models.TextField(blank=True)
+    phone = models.CharField(max_length=15, blank=True)
+
+    # ✅ Champs liés à Stripe Identity
+    verified_first_name = models.CharField(max_length=100, blank=True, null=True)
+    verified_last_name = models.CharField(max_length=100, blank=True, null=True)
+    verified_address = models.JSONField(blank=True, null=True)  # ex: dict Stripe (line1, city, country, etc.)
+    verified_dob = models.JSONField(blank=True, null=True)  # ex: {'day': 12, 'month': 5, 'year': 1998}
+    document_image_url = models.URLField(blank=True, null=True)  # Lien temporaire fourni par Stripe
+
+    def __str__(self):
+        return self.user.username
+
+    """
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
+    address = models.CharField(max_length=100, blank=True)
     
     
     service = models.CharField(
@@ -25,7 +58,7 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
-    
+    """
 class Languages(models.Model):
     lang_name = models.CharField(max_length=50, unique=True)
     lang_abbr = models.CharField(max_length=2, unique=True)

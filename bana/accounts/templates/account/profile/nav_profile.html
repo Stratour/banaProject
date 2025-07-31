@@ -1,22 +1,20 @@
-
-
-              <!-- Sidebar profil -->
-  <aside class="w-64 p-6 bg-white shadow-lg space-y-4">
-    <h2 class="text-xl font-bold">👤 Mon Profil</h2>
-    <nav class="space-y-2">
-      <a href="{% url 'accounts:profile' %}" >📝 Mes informations</a>
-      <a href="{% url 'accounts:profile_child' %}">👶 Mes enfants</a>
-      <a href="{% url 'accounts:profile_security' %}">🔐 Sécurité & connexion</a>
+<!-- Sidebar profil -->
+<li<aside class="w-64 p-6 bg-white shadow-lg space-y-4">
+  <h2 class="text-xl font-bold">👤 Mon Profil</h2>
+  <nav class="space-y-2">
+    <ul>
+      <li><a href="{% url 'accounts:profile' %}" >📝 Mes informations</a> </li>
+      <li><a href="{% url 'accounts:profile_child' %}">👶 Mes enfants</a> </li>
+      <li><a href="{% url 'accounts:profile_security' %}">🔐 Sécurité & connexion</a> </li>
       
       {% if request.user.profile.service == "parent" %}
-      <a href="{% url 'researched_traject' %}">Rechercher</a>
+      <li><a href="{% url 'researched_traject' %}">Rechercher</a> </li>
       {% endif %}
-      <a href="{% url 'proposed_traject' %}">Proposer</a>
-      <a href="{% url 'my_reservations' %}">Mes réservations</a>
-
-      <a href="">Abonnement</a>
-      <a href="{% url 'index' %}">Message</a>
-
-    </nav>
-  </aside>
+      <li><a href="{% url 'proposed_traject' %}">Proposer</a> </li>
+      <li><a href="{% url 'my_reservations' %}">Mes réservations</a> </li>
+      <li><a href="">Abonnement</a> </li>
+      <li><a href="{% url 'index' %}">Message</a> </li>
+    </ul>
+  </nav>
+</aside>
 

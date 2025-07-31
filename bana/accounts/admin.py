@@ -2,7 +2,66 @@ from django.contrib import admin
 from .models import Profile, Languages, Child  # Import du modèle Profile
 
 admin.site.register(Profile)  # Enregistrer le modèle dans l'admin
+class ProfileAdmin(admin.ModelAdmin):
+    # Champs affichés dans la liste des profils
+    list_display = (
+        'user',
+        'service',
+        'ci_is_verified',
+        'bvm_is_verified',
+        'prfl_is_verified',
+        'phone',
+        'address',
+    )
+    # Filtres disponibles sur le côté droit
+    list_filter = (
+        'service',
+        'ci_is_verified',
+        'bvm_is_verified',
+        'prfl_is_verified',
+    )
+    # Champs sur lesquels la barre de recherche peut opérer
+    search_fields = (
+        'user__username', # Permet de rechercher par le nom d'utilisateur associé
+        'user__first_name',
+        'user__last_name',
+        'phone',
+        'address',
+        'bio',
+        'verified_first_name',
+        'verified_last_name',
+    )
+    # Utilisation de raw_id_fields pour une meilleure performance avec beaucoup d'utilisateurs
+    raw_id_fields = ('user',)
+    # Organisation des champs dans le formulaire d'édition
+    fieldsets = (
+        (None, {
+            'fields': ('user', 'profile_picture', 'service', 'bio', 'phone', 'address')
+        }),
+        ('Statut de Vérification', {
+            'fields': ('ci_is_verified', 'bvm_is_verified', 'prfl_is_verified', 'document_bvm')
+        }),
+        ('Vérification Stripe Identity', {
+            'fields': (
+                'verified_first_name',
+                'verified_last_name',
+                'verified_address',
+                'verified_dob',
+                'document_image_url'
+            ),
+            'classes': ('collapse',) # Rend cette section pliable
+        }),
+        ('Préférences & Autres', {
+            'fields': ('languages', 'transport_modes')
+        }),
+    )
+    # Améliore le widget pour les champs ManyToMany
+    filter_horizontal = ('languages',)
+
 admin.site.register(Languages)  # Enregistrer le modèle dans l'admin
+class LanguagesAdmin(admin.ModelAdmin):
+    list_display = ('name',) # Supposons que 'name' est un champ de votre modèle Languages
+
 
 @admin.register(Child)
 class ChildAdmin(admin.ModelAdmin):

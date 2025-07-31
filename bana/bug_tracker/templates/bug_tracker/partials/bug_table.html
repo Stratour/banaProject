@@ -1,0 +1,207 @@
+<!-- templates/bug_tracker/partials/bug_table.html -->
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Titre</th>
+                        <th>Statut</th>
+                        <th>Priorité</th>
+                        <th>Sévérité</th>
+                        <th>Composant</th>
+                        <th>Assigné à</th>
+                        <th>Signalé par</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bug in bugs %}
+                    <tr class="bug-row" data-bug-id="{{ bug.id }}">
+                        <td>
+                            <strong>#{{ bug.id }}</strong>
+                        </td>
+                        <td>
+                            <a href="{% url 'bug_tracker:bug_detail' bug.pk %}" class="text-decoration-none">
+                                {{ bug.title|truncatechars:50 }}
+                            </a>
+                        </td>
+                        <td>
+                            <div class="status-container">
+                                <span class="badge status-{{ bug.status }} px-3 py-2">
+                                    {{ bug.get_status_display }}
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <i class="bi bi-exclamation-triangle priority-{{ bug.priority }}"></i>
+                            <span class="priority-{{ bug.priority }}">{{ bug.get_priority_display }}</span>
+                        </td>
+                        <td>
+                            <span class="badge severity-{{ bug.severity }} px-2 py-1">
+                                {{ bug.get_severity_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary">{{ bug.component.name }}</span>
+                        </td>
+                        <td>
+                            <div class="assignee-container">
+                                {% if bug.assigned_to %}
+                                    <div class="d-flex align-items-center">
+                                        <i class="bi bi-person-fill me-1"></i>
+                                        <span>{{ bug.assigned_to.username }}</span>
+                                        <button class="btn btn-sm btn-outline-secondary ms-2" 
+                                                hx-get="{% url 'bug_tracker:bug_assign' bug.pk %}"
+                                                hx-target="#assign-modal-content"
+                                                data-bs-toggle="modal" data-bs-target="#assignModal">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                    </div>
+                                {% else %}
+                                    <button class="btn btn-sm btn-outline-primary"
+                                            hx-get="{% url 'bug_tracker:bug_assign' bug.pk %}"
+                                            hx-target="#assign-modal-content"
+                                            data-bs-toggle="modal" data-bs-target="#assignModal">
+                                        <i class="bi bi-person-plus"></i> Assigner
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td>
+                            <small class="text-muted">
+                                <i class="bi bi-person"></i> {{ bug.reported_by.username }}
+                            </small>
+                        </td>
+                        <td>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar"></i> {{ bug.created_at|date:"d/m/Y H:i" }}
+                            </small>
+                        </td>
+                        <td>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{% url 'bug_tracker:bug_detail' bug.pk %}" 
+                                   class="btn btn-outline-primary" title="Voir">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                                <button class="btn btn-outline-secondary" 
+                                        hx-get="{% url 'bug_tracker:bug_edit' bug.pk %}"
+                                        hx-target="#edit-modal-content"
+                                        data-bs-toggle="modal" data-bs-target="#editModal"
+                                        title="Modifier">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-outline-success dropdown-toggle dropdown-toggle-split" 
+                                            data-bs-toggle="dropdown" title="Changer le statut">
+                                        <i class="bi bi-check-circle"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        {% for status_key, status_label in bug.STATUS_CHOICES %}
+                                            {% if status_key != bug.status %}
+                                            <li>
+                                                <button class="dropdown-item"
+                                                        hx-post="{% url 'bug_tracker:bug_status_update' bug.pk %}"
+                                                        hx-vals='{"status": "{{ status_key }}"}'
+                                                        hx-target="closest .status-container">
+                                                    {{ status_label }}
+                                                </button>
+                                            </li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="10" class="text-center py-4 text-muted">
+                            <i class="bi bi-inbox display-1"></i>
+                            <p class="mt-2">Aucun bug trouvé</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Pagination -->
+{% if bugs.has_other_pages %}
+<nav class="mt-4">
+    <ul class="pagination justify-content-center">
+        {% if bugs.has_previous %}
+            <li class="page-item">
+                <button class="page-link" 
+                        hx-get="{% url 'bug_tracker:bug_list' %}?page={{ bugs.previous_page_number }}"
+                        hx-target="#bug-table"
+                        hx-include="#filter-form">
+                    Précédent
+                </button>
+            </li>
+        {% endif %}
+
+        {% for num in bugs.paginator.page_range %}
+            {% if bugs.number == num %}
+                <li class="page-item active">
+                    <span class="page-link">{{ num }}</span>
+                </li>
+            {% elif num > bugs.number|add:'-3' and num < bugs.number|add:'3' %}
+                <li class="page-item">
+                    <button class="page-link"
+                            hx-get="{% url 'bug_tracker:bug_list' %}?page={{ num }}"
+                            hx-target="#bug-table"
+                            hx-include="#filter-form">
+                        {{ num }}
+                    </button>
+                </li>
+            {% endif %}
+        {% endfor %}
+
+        {% if bugs.has_next %}
+            <li class="page-item">
+                <button class="page-link"
+                        hx-get="{% url 'bug_tracker:bug_list' %}?page={{ bugs.next_page_number }}"
+                        hx-target="#bug-table"
+                        hx-include="#filter-form">
+                    Suivant
+                </button>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}
+
+<!-- Modal d'assignation -->
+<div class="modal fade" id="assignModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Assigner le bug</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div id="assign-modal-content">
+                <!-- Contenu chargé via HTMX -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal d'édition -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Modifier le bug</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div id="edit-modal-content">
+                <!-- Contenu chargé via HTMX -->
+            </div>
+        </div>
+    </div>
+</div>
