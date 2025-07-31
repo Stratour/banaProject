@@ -230,7 +230,7 @@ def create_verification_session(request):
     
 @login_required
 def identity_complete(request):
-    if request.user.profile.is_verified:
+    if request.user.profile.ci_is_verified:
         messages.success(request, "Votre identité a été vérifiée avec succès.")
     else:
         messages.error(request, "Votre vérification est en cours ou a échoué. Veuillez réessayer plus tard.")
@@ -257,7 +257,7 @@ def stripe_webhook(request):
             user = User.objects.get(id=user_id)
             profile = Profile.objects.get(user=user)
 
-            profile.is_verified = True
+            profile.ci_is_verified = True
             
             # Récupération des données d’identité
             report_id = session.get("last_verification_report")
@@ -268,7 +268,7 @@ def stripe_webhook(request):
                 profile.verified_first_name = document.get("first_name")
                 profile.verified_last_name = document.get("last_name")
                 profile.verified_address = document.get("address")
-
+                profile.verified_dob = document.get("dob")
                 # Récupérer l’image temporaire de la pièce d’identité
                 front_id = document.get("front")
                 if front_id:

@@ -8,10 +8,10 @@
               {{ user.profile.verified_first_name.0 }}.{{ user.profile.verified_last_name.0 }}
         </h1>
     {% endif %}
-    {% if user.profile.is_verified %}
-    <p><strong>Statut :</strong> Identité vérifiée ✅</p>
+    {% if user.profile.prfl_is_verified and user.profile.ci_is_verified and user.profile.bvm_is_verified %}
+    <p><strong>Statut :</strong> Profil vérifié ✅</p>
     {% else %}
-    <p><strong>Statut :</strong> Non vérifié ❌</p>
+    <p><strong>Statut :</strong> Profil non vérifié ❌</p>
     {% endif %}
     <p class="text-lg font-medium">{{ user.profile.verified_first_name }} {{ user.profile.verified_first_name|slice:":1" }}.</p>
     {% if user.profile.verified_address %}

@@ -7,7 +7,10 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     address = models.CharField(max_length=100, blank=True)
-    is_verified = models.BooleanField(default=False)
+    ci_is_verified = models.BooleanField(default=False)
+    bvm_is_verified = models.BooleanField(default=False)
+    prfl_is_verified = models.BooleanField(default=False)
+    document_bvm = models.FileField(upload_to='bvm/', blank=True, null=True, verbose_name="Bonne vie et moers")
     
     service = models.CharField(
         max_length=30,
@@ -27,7 +30,10 @@ class Profile(models.Model):
     verified_first_name = models.CharField(max_length=100, blank=True, null=True)
     verified_last_name = models.CharField(max_length=100, blank=True, null=True)
     verified_address = models.JSONField(blank=True, null=True)  # ex: dict Stripe (line1, city, country, etc.)
+    verified_dob = models.JSONField(blank=True, null=True)  # ex: {'day': 12, 'month': 5, 'year': 1998}
     document_image_url = models.URLField(blank=True, null=True)  # Lien temporaire fourni par Stripe
+    
+    
     
     def __str__(self):
         return self.user.username
