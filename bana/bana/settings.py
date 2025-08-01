@@ -61,6 +61,8 @@ INSTALLED_APPS = [
 
     # my apps 
     'bana',
+    'bana_admin',
+    'bug_tracker',
     'chat',
     'stripe_sub',
     'trajects.apps.TrajectsConfig',
@@ -135,16 +137,77 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+"""
+ICI COMMENCE L'AJOUT DE CODE POUR LE BUG TRACKER
+"""
+# Configuration de l'upload de fichiers
+FILE_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024  # 10MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10 * 1024 * 1024   # 10MB
+
+# Types de fichiers autorisés pour les pièces jointes
+ALLOWED_ATTACHMENT_TYPES = [
+    'image/jpeg', 'image/png', 'image/gif',
+    'application/pdf', 'text/plain', 'text/csv',
+    'application/zip', 'application/x-zip-compressed',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+]
+
+
+# Taille maximale des pièces jointes (5MB)
+MAX_ATTACHMENT_SIZE = 5 * 1024 * 1024
+
+# Configuration de pagination
+BUGS_PER_PAGE = 20
+
+# Configuration des emails (optionnel pour les notifications)
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Pour développement
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Pour production
+#EMAIL_HOST = 'localhost'
+#EMAIL_PORT = 1025
+#EMAIL_USE_TLS = False
+#DEFAULT_FROM_EMAIL = 'bugtracker@example.com'
+
+# Configuration HTMX
+HTMX_REQUIRE_CSRF = True
+
+# Configuration des logs
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'bug_tracker.log',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'bug_tracker': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+    }
+
+"""
+ICI TERMINE L'AJOUT DE CODE POUR LE BUG TRACKER
+"""
+
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'fr-fr'
-
-TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
+# Configuration de la timezone
+TIME_ZONE = 'UTC'
 USE_TZ = True
 
 

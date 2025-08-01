@@ -1,0 +1,13 @@
+Créer une app 'Opérations' pour logger dans la db tous les mouvements et opérations qui ont lieues sur l'application
+Créer une app 'Opérations'
+
+Configurer Postgres
+Relier l'app à Postgres avant de passer en production
+
+
+Green    #92E3A9    (146, 227, 169) 
+Dark Green    #00695C    (0, 105, 92)
+
+
+soft muted yellow    #FAF2D7    (250, 242, 215)
+light grey    #D3D3D3     (211, 211, 211?

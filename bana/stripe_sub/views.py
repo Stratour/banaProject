@@ -99,20 +99,9 @@ def payment_successful(request):
         current_period_end = None
         is_active = True
 
-        print(f"🔍 Session mode: {session.mode}")
-        print(f"🔍 Subscription ID: {subscription_id}")
-
         if subscription_id:
             # CAS 1: Abonnement récurrent (parent - 99€/an)
-            print("📋 Traitement d'un abonnement récurrent")
             subscription = stripe.Subscription.retrieve(subscription_id)
-
-            # Debug: afficher toutes les propriétés de l'abonnement
-            print(f"🧪 Données brutes subscription:")
-            print(f"  - current_period_start: {subscription.current_period_start}")
-            print(f"  - current_period_end: {subscription.current_period_end}")
-            print(f"  - status: {subscription.status}")
-            print(f"  - billing_cycle_anchor: {getattr(subscription, 'billing_cycle_anchor', 'N/A')}")
 
             # Conversion sécurisée des timestamps avec timezone
             if subscription.current_period_start:
@@ -133,9 +122,6 @@ def payment_successful(request):
                 # Récupérer les infos du prix pour connaître l'intervalle
                 subscription_item = subscription['items']['data'][0]
                 price = stripe.Price.retrieve(subscription_item.price.id)
-                
-                print(f"🔍 Intervalle de facturation: {price.recurring.interval}")
-                print(f"🔍 Nombre d'intervalles: {price.recurring.interval_count}")
                 
                 # Calculer la date de fin selon l'intervalle
                 if price.recurring.interval == 'year':

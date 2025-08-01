@@ -1,0 +1,244 @@
+<!-- templates/bug_tracker/bug_detail.html -->
+{% extends './base.html' %}
+
+{% block title %}Bug #{{ bug.id }} - {{ bug.title }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8">
+        <!-- En-tête du bug -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h2 class="mb-0">
+                    <i class="bi bi-bug"></i> #{{ bug.id }} - {{ bug.title }}
+                </h2>
+                <div>
+                    <a href="{% url 'bug_tracker:bug_edit' bug.pk %}" class="btn btn-outline-primary">
+                        <i class="bi bi-pencil"></i> Modifier
+                    </a>
+                    <a href="{% url 'bug_tracker:bug_list' %}" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left"></i> Retour
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <strong>Statut:</strong><br>
+                        <span id="bug-status">
+                            {% include 'bug_tracker/partials/bug_status_badge.html' %}
+                        </span>
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Priorité:</strong><br>
+                        <i class="bi bi-exclamation-triangle priority-{{ bug.priority }}"></i>
+                        <span class="priority-{{ bug.priority }}">{{ bug.get_priority_display }}</span>
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Sévérité:</strong><br>
+                        <span class="badge severity-{{ bug.severity }}">
+                            {{ bug.get_severity_display }}
+                        </span>
+                    </div>
+                    <div class="col-md-3">
+                        <strong>Composant:</strong><br>
+                        <span class="badge bg-secondary">{{ bug.component.name }}</span>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <strong>Assigné à:</strong><br>
+                        <div id="bug-assignee">
+                            {% include 'bug_tracker/partials/bug_assignee.html' %}
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Signalé par:</strong><br>
+                        <i class="bi bi-person"></i> {{ bug.reported_by.username }}
+                        <small class="text-muted">le {{ bug.created_at|date:"d/m/Y à H:i" }}</small>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="mb-3">
+                    <strong>Description:</strong>
+                    <div class="mt-2 p-3 bg-light rounded">
+                        {{ bug.description|linebreaks }}
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <strong>Étapes de reproduction:</strong>
+                    <div class="mt-2 p-3 bg-light rounded">
+                        {{ bug.reproduction_steps|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Commentaires -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-chat-dots"></i> Commentaires ({{ comments.count }})
+                </h5>
+            </div>
+            <div class="card-body">
+                <!-- Formulaire d'ajout de commentaire -->
+                <form hx-post="{% url 'bug_tracker:add_comment' bug.pk %}" 
+                      hx-target="#comments-section" 
+                      hx-swap="outerHTML">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        {{ comment_form.content }}
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-send"></i> Ajouter un commentaire
+                        <span class="htmx-indicator spinner-border spinner-border-sm ms-2"></span>
+                    </button>
+                </form>
+                
+                <hr>
+                
+                <!-- Liste des commentaires -->
+                <div id="comments-section">
+                    {% include 'bug_tracker/partials/comments_section.html' %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Informations techniques -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="bi bi-gear"></i> Informations techniques
+                </h6>
+            </div>
+            <div class="card-body">
+                <table class="table table-sm table-borderless">
+                    <tr>
+                        <td><strong>Version affectée:</strong></td>
+                        <td>{{ bug.affected_version.name }}</td>
+                    </tr>
+                    {% if bug.fixed_version %}
+                    <tr>
+                        <td><strong>Version corrigée:</strong></td>
+                        <td>{{ bug.fixed_version.name }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td><strong>Environnement:</strong></td>
+                        <td>{{ bug.environment.name }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>OS:</strong></td>
+                        <td>{{ bug.operating_system }}</td>
+                    </tr>
+                    {% if bug.browser %}
+                    <tr>
+                        <td><strong>Navigateur:</strong></td>
+                        <td>{{ bug.browser }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if bug.device %}
+                    <tr>
+                        <td><strong>Appareil:</strong></td>
+                        <td>{{ bug.device }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+        
+        <!-- Pièces jointes -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">
+                    <i class="bi bi-paperclip"></i> Pièces jointes ({{ attachments.count }})
+                </h6>
+                <button class="btn btn-sm btn-outline-primary" 
+                        data-bs-toggle="collapse" 
+                        data-bs-target="#upload-form">
+                    <i class="bi bi-plus"></i>
+                </button>
+            </div>
+            <div class="card-body">
+                <!-- Formulaire d'upload -->
+                <div class="collapse mb-3" id="upload-form">
+                    <form hx-post="{% url 'bug_tracker:upload_attachment' bug.pk %}" 
+                          hx-target="#attachments-section" 
+                          hx-encoding="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-2">
+                            <input type="file" class="form-control" name="file" required>
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-primary">
+                            <i class="bi bi-upload"></i> Uploader
+                            <span class="htmx-indicator spinner-border spinner-border-sm ms-1"></span>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Liste des pièces jointes -->
+                <div id="attachments-section">
+                    {% include 'bug_tracker/partials/attachments_section.html' %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Historique -->
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">
+                    <i class="bi bi-clock-history"></i> Historique récent
+                </h6>
+            </div>
+            <div class="card-body">
+                {% for entry in history %}
+                <div class="d-flex align-items-start mb-2">
+                    <div class="me-2">
+                        {% if entry.field_changed == 'created' %}
+                            <i class="bi bi-plus-circle text-success"></i>
+                        {% elif entry.field_changed == 'status' %}
+                            <i class="bi bi-arrow-right text-primary"></i>
+                        {% elif entry.field_changed == 'comment_added' %}
+                            <i class="bi bi-chat text-info"></i>
+                        {% elif entry.field_changed == 'attachment_added' %}
+                            <i class="bi bi-paperclip text-secondary"></i>
+                        {% else %}
+                            <i class="bi bi-pencil text-warning"></i>
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow-1">
+                        <small class="text-muted">
+                            <strong>{{ entry.user.username }}</strong>
+                            {% if entry.field_changed == 'created' %}
+                                a créé le bug
+                            {% elif entry.field_changed == 'status' %}
+                                a changé le statut de "{{ entry.old_value }}" vers "{{ entry.new_value }}"
+                            {% elif entry.field_changed == 'assigned_to' %}
+                                a assigné le bug de "{{ entry.old_value }}" vers "{{ entry.new_value }}"
+                            {% elif entry.field_changed == 'comment_added' %}
+                                a ajouté un commentaire
+                            {% elif entry.field_changed == 'attachment_added' %}
+                                a ajouté une pièce jointe
+                            {% else %}
+                                a modifié {{ entry.field_changed }}
+                            {% endif %}
+                            <br>
+                            <small class="text-muted">{{ entry.timestamp|timesince }} ago</small>
+                        </small>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted">Aucun historique</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

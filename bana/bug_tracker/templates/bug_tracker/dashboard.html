@@ -1,0 +1,127 @@
+<!-- templates/bug_tracker/dashboard.html -->
+{% extends './base.html' %}
+
+{% block title %}Dashboard - Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1><i class="bi bi-speedometer2"></i> Dashboard</h1>
+            <div>
+              <a href="{% url 'bana_admin:admin_view' %}" class="btn btn-primary">
+                  <i class="bi bi-arrow-left"></i> Admin
+              </a>
+
+                <button class="btn btn-outline-primary" 
+                        hx-get="{% url 'bug_tracker:bug_stats' %}"
+                        hx-target="#dashboard-stats">
+                    <i class="bi bi-arrow-clockwise"></i> Actualiser
+                </button>
+                <a href="{% url 'bug_tracker:bug_create' %}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle"></i> Nouveau Bug
+                </a>
+            </div>
+        </div>
+        
+        <!-- Statistiques principales -->
+        <div id="dashboard-stats">
+            {% include 'bug_tracker/partials/dashboard_stats.html' %}
+        </div>
+        
+        <!-- Actions rapides -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-lightning"></i> Actions rapides
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'bug_tracker:bug_list' %}?status=open" class="btn btn-outline-primary">
+                                <i class="bi bi-exclamation-circle"></i> Voir les bugs ouverts
+                            </a>
+                            <a href="{% url 'bug_tracker:bug_list' %}?assigned_to={{ user.id }}" class="btn btn-outline-success">
+                                <i class="bi bi-person-check"></i> Mes bugs assignés
+                            </a>
+                            <a href="{% url 'bug_tracker:bug_list' %}?priority=critical" class="btn btn-outline-danger">
+                                <i class="bi bi-exclamation-triangle"></i> Bugs critiques
+                            </a>
+                            <a href="{% url 'bug_tracker:bug_list' %}?status=in_progress" class="btn btn-outline-warning">
+                                <i class="bi bi-gear"></i> Bugs en cours
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-clock-history"></i> Activité récente
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="recent-activity">
+                            <!-- Chargement via HTMX -->
+                            <div class="text-center">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Chargement...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Charger l'activité récente au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    // Simuler le chargement de l'activité récente
+    setTimeout(function() {
+        document.getElementById('recent-activity').innerHTML = `
+            <div class="timeline">
+                <div class="d-flex align-items-start mb-3">
+                    <div class="me-3">
+                        <i class="bi bi-plus-circle text-success"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted">Il y a 2 heures</small><br>
+                        <strong>Bug #123</strong> créé par <em>john.doe</em>
+                    </div>
+                </div>
+                <div class="d-flex align-items-start mb-3">
+                    <div class="me-3">
+                        <i class="bi bi-arrow-right text-primary"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted">Il y a 4 heures</small><br>
+                        <strong>Bug #122</strong> statut changé vers "Résolu"
+                    </div>
+                </div>
+                <div class="d-flex align-items-start mb-3">
+                    <div class="me-3">
+                        <i class="bi bi-chat text-info"></i>
+                    </div>
+                    <div>
+                        <small class="text-muted">Il y a 6 heures</small><br>
+                        Nouveau commentaire sur <strong>Bug #121</strong>
+                    </div>
+                </div>
+            </div>
+        `;
+    }, 1000);
+});
+
+// Auto-refresh des stats toutes les 5 minutes
+setInterval(function() {
+    htmx.trigger('#dashboard-stats', 'refresh');
+}, 300000);
+</script>
+{% endblock %}

@@ -212,13 +212,15 @@ class SimpleProposedTrajectForm(forms.ModelForm):
 class ResearchedTrajectForm(forms.ModelForm):    
     transport_modes = forms.ModelMultipleChoiceField(
         queryset=TransportMode.objects.all(),
-        widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-checkbox'}),
-        label="Moyens de transport"
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'inline-flex items-center space-x-1'}),
+        label="Moyens de transport",
+        required=True,
+        error_messages={'required': "Veuillez sélectionner au moins un moyen de transport."}
     )
 
     children = forms.ModelMultipleChoiceField(
         queryset=Child.objects.none(),
-        widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-checkbox'}),
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'inline-flex items-center space-x-1'}),
         required=True,
         label="Choix du ou des enfants",
         error_messages={'required': "Vous devez sélectionner au moins un enfant."}
@@ -236,14 +238,16 @@ class ResearchedTrajectForm(forms.ModelForm):
             'class': 'w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500',
             'type': 'time',
             'placeholder': 'hh:mm'
-        })
+        }),
+        error_messages={'required': "Veuillez renseigner l'heure de départ."}
     )
     arrival_time = forms.TimeField(
         widget=forms.TimeInput(attrs={
             'class': 'w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500',
             'type': 'time',
             'placeholder': 'hh:mm'
-        })
+        }),
+        error_messages={'required': "Veuillez renseigner l'heure d’arrivée."}
     )
 
     recurrence_type = forms.ChoiceField(
@@ -258,14 +262,16 @@ class ResearchedTrajectForm(forms.ModelForm):
         required=True,
         initial='one_week'
     )
-    
+
     recurrence_interval = forms.IntegerField(
-        widget=forms.NumberInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
+        widget=forms.NumberInput(attrs={
+            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'
+        }),
         required=False,
         label="Intervalle (semaines)",
         min_value=1
     )
-
+    
     tr_weekdays = forms.MultipleChoiceField(
         choices=[(str(i), day) for i, day in
                  enumerate(["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"], 1)],
@@ -301,19 +307,11 @@ class ResearchedTrajectForm(forms.ModelForm):
             'date_debut': 'Date de début de récurrence',
             'date_fin': 'Date de fin de récurrence',
         }
-    
-    def clean_tr_weekdays(self):
-        days = self.cleaned_data.get('tr_weekdays')
-        if not days:
-            raise forms.ValidationError("Veuillez sélectionner au moins un jour de la semaine.")
-        return days
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-       
-        #Initialiser les champs de récurrence selon le type sélectionné
         recurrence_type = self.initial.get('recurrence_type', '') or self.data.get('recurrence_type')
 
         if recurrence_type == 'none':
@@ -327,25 +325,26 @@ class ResearchedTrajectForm(forms.ModelForm):
 
         if user:
             self.fields['children'].queryset = Child.objects.filter(chld_user=user)
-            # On peut aussi rendre le champ explicitement requis ici, même si c'est déjà le cas via le modèle
-            self.fields['children'].required = True
-            self.fields['children'].label = "Enfant(s) concerné(s) par le trajet 👶 (au moins un)"
-            self.fields['children'].error_messages = {
-                'required': "Veuillez sélectionner au moins un enfant pour ce trajet."
-            }
 
-        class Meta:
-            model = ResearchedTraject
-            fields = [
-                    'traject', 'departure_time', 'arrival_time', 'transport_modes',
-                    'date', 'date_debut', 'date_fin', 'recurrence_type',
-                    'recurrence_interval', 'recurrence_days', 'children'
-                    ]
-            widgets = {
-                    'children': forms.CheckboxSelectMultiple,
-                    # ... autres widgets ...
-                    }
-
+    def clean_tr_weekdays(self):
+        data = self.cleaned_data.get('tr_weekdays')
+        if not data:
+            raise forms.ValidationError("Veuillez sélectionner au moins un jour de la semaine.")
+        return data
+    
+    def clean(self):
+        cleaned_data = super().clean()
+        recurrence_type = cleaned_data.get("recurrence_type")
+        date_debut = cleaned_data.get("date_debut")
+        date_fin = cleaned_data.get("date_fin")
+    
+        if not date_debut:
+            self.add_error("date_debut", "Veuillez choisir une date de début.")
+    
+        if recurrence_type in ['weekly', 'biweekly'] and not date_fin:
+            self.add_error("date_fin", "Veuillez choisir une date de fin.")
+    
+        return cleaned_data
 
 class ReservationForm(forms.ModelForm):
     class Meta:

@@ -1,0 +1,6 @@
+Bug.objects.filter(title__icontains="")
+
+Bug.objects.filter(id=6).delete()
+
+Bug.objects.filter(id__gte=1, id__lte=5).delete()
+

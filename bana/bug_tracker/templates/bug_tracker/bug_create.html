@@ -1,0 +1,181 @@
+<!-- templates/bug_tracker/bug_create.html -->
+{% extends './base.html' %}
+
+{% block title %}Nouveau Bug - Bug Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="mb-0">
+                    <i class="bi bi-plus-circle"></i> Créer un nouveau bug
+                </h3>
+            </div>
+            
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="card-body">
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Informations principales -->
+                    <div class="row">
+                        <div class="col-12 mb-3">
+                            <label class="form-label required">{{ form.title.label }}</label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger small">{{ form.title.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required">{{ form.component.label }}</label>
+                            {{ form.component }}
+                            {% if form.component.errors %}
+                                <div class="text-danger small">{{ form.component.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required">{{ form.affected_version.label }}</label>
+                            {{ form.affected_version }}
+                            {% if form.affected_version.errors %}
+                                <div class="text-danger small">{{ form.affected_version.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <!-- Classification -->
+                    <h5 class="mt-4 mb-3">
+                        <i class="bi bi-tags"></i> Classification
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{ form.priority.label }}</label>
+                            {{ form.priority }}
+                            <small class="form-text text-muted">
+                                Impact sur les utilisateurs
+                            </small>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{ form.severity.label }}</label>
+                            {{ form.severity }}
+                            <small class="form-text text-muted">
+                                Gravité technique
+                            </small>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label class="form-label">{{ form.status.label }}</label>
+                            {{ form.status }}
+                        </div>
+                    </div>
+                    
+                    <!-- Description -->
+                    <h5 class="mt-4 mb-3">
+                        <i class="bi bi-file-text"></i> Description
+                    </h5>
+                    <div class="mb-3">
+                        <label class="form-label required">{{ form.description.label }}</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                            <div class="text-danger small">{{ form.description.errors.0 }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">
+                            Décrivez le problème de manière détaillée
+                        </small>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label required">{{ form.reproduction_steps.label }}</label>
+                        {{ form.reproduction_steps }}
+                        {% if form.reproduction_steps.errors %}
+                            <div class="text-danger small">{{ form.reproduction_steps.errors.0 }}</div>
+                        {% endif %}
+                        <small class="form-text text-muted">
+                            Listez les étapes pour reproduire le bug
+                        </small>
+                    </div>
+                    
+                    <!-- Environnement -->
+                    <h5 class="mt-4 mb-3">
+                        <i class="bi bi-gear"></i> Environnement
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required">{{ form.environment.label }}</label>
+                            {{ form.environment }}
+                            {% if form.environment.errors %}
+                                <div class="text-danger small">{{ form.environment.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label required">{{ form.operating_system.label }}</label>
+                            {{ form.operating_system }}
+                            {% if form.operating_system.errors %}
+                                <div class="text-danger small">{{ form.operating_system.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{ form.browser.label }}</label>
+                            {{ form.browser }}
+                            <small class="form-text text-muted">
+                                Si applicable
+                            </small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{ form.device.label }}</label>
+                            {{ form.device }}
+                            <small class="form-text text-muted">
+                                Type d'appareil utilisé
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <!-- Assignation -->
+                    <h5 class="mt-4 mb-3">
+                        <i class="bi bi-person"></i> Assignation
+                    </h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{ form.assigned_to.label }}</label>
+                            {{ form.assigned_to }}
+                            <small class="form-text text-muted">
+                                Optionnel - peut être assigné plus tard
+                            </small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{ form.fixed_version.label }}</label>
+                            {{ form.fixed_version }}
+                            <small class="form-text text-muted">
+                                Version cible pour la correction
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'bug_tracker:bug_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Annuler
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save"></i> Créer le bug
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+<style>
+</style>

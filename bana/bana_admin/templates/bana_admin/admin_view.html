@@ -1,0 +1,26 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Administration de Bana Community - BanaCommunity{% endblock %}
+
+{% block content %}
+    
+
+<div class="bg-gray-100 min-h-screen p-6">
+    <div class="container mx-auto">
+
+        <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center"> Administration de Bana Community</h2>
+        {% if messages %}
+        <ul class="mb-4">
+            {% for message in messages %}
+            <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+
+      {% include "./layout/nav_admin.html" %}
+
+      <h1> BANA ADMIN </h1>
+{% endblock %}

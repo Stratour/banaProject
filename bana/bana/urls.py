@@ -25,6 +25,10 @@ urlpatterns = [
     path('admin/', admin.site.urls), # django admin pannel
     # pages 
     path('', views.home, name='home'),
+    # Admin Interfaces
+    path('bana_admin/', include('bana_admin.urls')),
+    # Bug Tracker Interfaces
+    path('bug_tracker/', include('bug_tracker.urls')),
     # Authentification
     path('accounts/', include('accounts.urls')),
     path('accounts/', include('allauth.urls')),
@@ -39,6 +43,8 @@ urlpatterns = [
     path('parent/', views.parent, name='parent'),
 ] 
 
+# Servir les fichiers médias en développement
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    
+
+
