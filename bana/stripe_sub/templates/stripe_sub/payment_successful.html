@@ -1,0 +1,18 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+
+  <h2>Abonnement</h2>
+
+    <p>Payement accepté</p>
+Produit : {{ product }}
+Début : {{ start_date }}
+{% if end_date %}
+Fin : {{ end_date }}
+{% else %}
+Fin : Illimité
+{% endif %}
+    <a class="btn btn-success" href="{% url 'subscription' %}">Retour au menu de payement</a>
+
+{% endblock %}

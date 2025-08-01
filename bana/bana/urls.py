@@ -26,7 +26,7 @@ urlpatterns = [
     # pages 
     path('', views.home, name='home'),
     # Admin Interfaces
-    path('bana_admin/', include('bana_Admin.urls')),
+    path('bana_admin/', include('bana_admin.urls')),
     # Bug Tracker Interfaces
     path('bug_tracker/', include('bug_tracker.urls')),
     # Authentification
@@ -38,7 +38,7 @@ urlpatterns = [
     #path('profile/', include('members.urls')),
     path('trajects/', include('trajects.urls')),
     path('chat/', include('chat.urls')),
-    #path('strip/', include('strip.urls')),
+    path('', include('stripe_sub.urls')),
     path('work/', views.work, name='work'),
     path('parent/', views.parent, name='parent'),
 ] 

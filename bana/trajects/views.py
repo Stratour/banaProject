@@ -15,106 +15,134 @@ from datetime import datetime, timedelta
 from django.core.paginator import Paginator
 from django.utils.timezone import now
 
+
 def find_matching_trajects(obj):
     """
-    Retourne une queryset des trajets compatibles avec l'objet donné (proposé ou recherché),
-    en adaptant les filtres selon qu'il s'agit d'un trajet simple ou complet.
+    Fonction universelle de matching SYMÉTRIQUE sur les adresses de départ/arrivée.
+    - Marche pour une proposition classique, proposition simple, ou recherche parent.
+    - Matching dans les deux sens : 'a contient b' ou 'b contient a'.
     """
 
+    # Tolérance sur l'heure (± 45 minutes)
     time_tolerance = timedelta(minutes=45)
-    base_filter = Q()
+    results = set()  # Utilisé pour éviter les doublons dans les résultats
 
-    # 🎯 Matching depuis un trajet proposé
-    if isinstance(obj, ProposedTraject):
-        
-        if obj.is_simple:
-            print("🔎 Matching depuis un trajet simple proposé")
-            
-            # Date (obligatoire)
-            if obj.date:
-                base_filter &= Q(date=obj.date)
+    def normalize(ad):
+        """
+        Normalise une adresse pour comparaison : minuscule, espaces supprimés.
+        """
+        return ad.strip().lower() if ad else ''
 
-            # Start adresse
-            if obj.traject and obj.traject.start_adress:
-                base_filter &= Q(traject__start_adress__icontains=obj.traject.start_adress.strip())
+    # ============================
+    # 1. Cas où obj = ResearchedTraject (un parent recherche un trajet)
+    # ============================
+    if isinstance(obj, ResearchedTraject):
 
-            # Mode de transport
-            if obj.transport_modes.exists():
-                base_filter &= Q(transport_modes__in=obj.transport_modes.all())
-
-            return ResearchedTraject.objects.filter(base_filter).distinct()
-
-        else:
-            print("🔎 Matching depuis un trajet complet proposé")
-
-            if obj.date:
-                base_filter &= Q(date=obj.date)
-
-            if obj.traject and obj.traject.start_adress:
-                base_filter &= Q(traject__start_adress__icontains=obj.traject.start_adress.strip())
-            if obj.traject and obj.traject.end_adress:
-                base_filter &= Q(traject__end_adress__icontains=obj.traject.end_adress.strip())
-
-            if obj.departure_time and obj.departure_time != datetime.strptime("00:00", "%H:%M").time():
-                dt = datetime.combine(datetime.today(), obj.departure_time)
-                base_filter &= Q(departure_time__range=((dt - time_tolerance).time(), (dt + time_tolerance).time()))
-
-            if obj.arrival_time and obj.arrival_time != datetime.strptime("00:00", "%H:%M").time():
-                at = datetime.combine(datetime.today(), obj.arrival_time)
-                base_filter &= Q(arrival_time__range=((at - time_tolerance).time(), (at + time_tolerance).time()))
-
-            return ResearchedTraject.objects.filter(base_filter).distinct()
-
-    # 🎯 Matching depuis un trajet recherché
-    elif isinstance(obj, ResearchedTraject):
-
-        if obj.date:
-            base_filter &= Q(date=obj.date)
-
+        # --- SENS 1 : On récupère toutes les propositions qui CONTIENNENT l'adresse recherchée ---
+        qs1 = ProposedTraject.objects.filter(date=obj.date)
         if obj.traject and obj.traject.start_adress:
-            base_filter &= Q(traject__start_adress__icontains=obj.traject.start_adress.strip())
+            qs1 = qs1.filter(traject__start_adress__icontains=obj.traject.start_adress.strip())
         if obj.traject and obj.traject.end_adress:
-            base_filter &= Q(traject__end_adress__icontains=obj.traject.end_adress.strip())
-
-        if obj.departure_time and obj.departure_time != datetime.strptime("00:00", "%H:%M").time():
+            qs1 = qs1.filter(traject__end_adress__icontains=obj.traject.end_adress.strip())
+        if obj.departure_time:
             dt = datetime.combine(datetime.today(), obj.departure_time)
-            base_filter &= Q(departure_time__range=((dt - time_tolerance).time(), (dt + time_tolerance).time()))
-
-        if obj.arrival_time and obj.arrival_time != datetime.strptime("00:00", "%H:%M").time():
+            qs1 = qs1.filter(departure_time__range=((dt - time_tolerance).time(), (dt + time_tolerance).time()))
+        if obj.arrival_time:
             at = datetime.combine(datetime.today(), obj.arrival_time)
-            base_filter &= Q(arrival_time__range=((at - time_tolerance).time(), (at + time_tolerance).time()))
+            qs1 = qs1.filter(arrival_time__range=((at - time_tolerance).time(), (at + time_tolerance).time()))
+        results.update(list(qs1))  # On ajoute les résultats au set
 
-        required_places = obj.children.count()
-        base_filter &= Q(number_of_places__gte=str(required_places))  
+        # --- SENS 2 : On récupère toutes les propositions, puis on garde celles où L'ADRESSE DU PROPOSÉ contient l'adresse recherchée ---
+        all_proposed = ProposedTraject.objects.filter(date=obj.date)
+        for proposed in all_proposed:
+            parent_dep = normalize(obj.traject.start_adress if obj.traject else '')
+            prop_dep = normalize(proposed.traject.start_adress if proposed.traject else '')
+            parent_arr = normalize(obj.traject.end_adress if obj.traject else '')
+            prop_arr = normalize(proposed.traject.end_adress if proposed.traject else '')
 
-        return ProposedTraject.objects.filter(base_filter).distinct()
+            # Test symétrique dans les deux sens (adresse de départ et d'arrivée)
+            match_dep = (parent_dep in prop_dep or prop_dep in parent_dep) if parent_dep and prop_dep else True
+            match_arr = (parent_arr in prop_arr or prop_arr in parent_arr) if parent_arr and prop_arr else True
 
-    return ProposedTraject.objects.none()
-    
+            # Debug pour voir exactement ce qui matche ou non
+            print(f"[MATCHING][parent] dep:'{parent_dep}' <-> '{prop_dep}' => {match_dep} | arr:'{parent_arr}' <-> '{prop_arr}' => {match_arr}")
+
+            # Si départ ET arrivée matche, on garde la proposition
+            if match_dep and match_arr:
+                results.add(proposed)
+
+        return list(results)
+
+    # ============================
+    # 2. Cas où obj = ProposedTraject (un yaya ou parent propose un trajet)
+    # ============================
+    elif isinstance(obj, ProposedTraject):
+
+        # --- SENS 1 : On récupère toutes les recherches qui CONTIENNENT l'adresse proposée ---
+        qs1 = ResearchedTraject.objects.filter(date=obj.date)
+        if obj.traject and obj.traject.start_adress:
+            qs1 = qs1.filter(traject__start_adress__icontains=obj.traject.start_adress.strip())
+        if obj.traject and obj.traject.end_adress:
+            qs1 = qs1.filter(traject__end_adress__icontains=obj.traject.end_adress.strip())
+        if obj.departure_time:
+            dt = datetime.combine(datetime.today(), obj.departure_time)
+            qs1 = qs1.filter(departure_time__range=((dt - time_tolerance).time(), (dt + time_tolerance).time()))
+        if obj.arrival_time:
+            at = datetime.combine(datetime.today(), obj.arrival_time)
+            qs1 = qs1.filter(arrival_time__range=((at - time_tolerance).time(), (at + time_tolerance).time()))
+        results.update(list(qs1))
+
+        # --- SENS 2 : On récupère toutes les recherches, puis on garde celles où l'adresse proposée contient la recherche ---
+        all_researched = ResearchedTraject.objects.filter(date=obj.date)
+        for researched in all_researched:
+            yaya_dep = normalize(obj.traject.start_adress if obj.traject else '')
+            req_dep = normalize(researched.traject.start_adress if researched.traject else '')
+            yaya_arr = normalize(obj.traject.end_adress if obj.traject else '')
+            req_arr = normalize(researched.traject.end_adress if researched.traject else '')
+
+            match_dep = (yaya_dep in req_dep or req_dep in yaya_dep) if yaya_dep and req_dep else True
+            match_arr = (yaya_arr in req_arr or req_arr in yaya_arr) if yaya_arr and req_arr else True
+
+            # Debug
+            print(f"[MATCHING][proposed] dep:'{yaya_dep}' <-> '{req_dep}' => {match_dep} | arr:'{yaya_arr}' <-> '{req_arr}' => {match_arr}")
+
+            if match_dep and match_arr:
+                results.add(researched)
+
+        return list(results)
+
+    # Si obj n'est ni une recherche ni une proposition, on retourne une liste vide
+    return []
+
 @login_required
 def my_matchings_researched(request):
+    '''PArent recherche'''
     user = request.user
     matches = []
 
     researched_matches = ResearchedTraject.objects.filter(user=user)
+    print('============== parent :: my_matchings_researched :: researched_matches', len(researched_matches))
     for research in researched_matches:
         matched = find_matching_trajects(research)
-        if matched.exists():
+        print('for parent', len(matched))
+        if matched:
+            print('matched parent ok')
             matches.append({'research': research, 'proposals': matched})
-
+    
     return render(request, 'trajects/my_matchings_researched.html', {'matches': matches})
 
 
 @login_required
 def my_matchings_proposed(request):
+    '''yaya/parent recherche'''
     matches = []
     proposed_matches = ProposedTraject.objects.filter(user=request.user)
+    print('============== yaya :: my_matchings_proposed :: proposed_matches', len(proposed_matches))
     for proposed in proposed_matches:
-        print("🧪 TYPE DE proposed =", proposed, type(proposed))
         matched = find_matching_trajects(proposed)
-        assert not callable(proposed), "🚨 ERREUR : variable 'proposed' contient une fonction"
-
-        if matched.exists():
+        print('for yaya')
+        if matched:
+            print('matched yaya ok')
             matches.append({'proposal': proposed, 'requests': matched})
 
     return render(request, 'trajects/my_matchings_proposed.html', {'matches': matches})
@@ -206,7 +234,7 @@ def proposed_traject(request, researchesTraject_id=None):
         if success:
             for proposed in proposed_trajects:
                 matches = find_matching_trajects(proposed)
-                if matches.exists():
+                if matches:
                     messages.success(request, "Un ou des matchings ont été trouvés. Attendez la demande du parent")
                     return redirect('my_matchings_proposed')
                 else:
@@ -276,7 +304,7 @@ def simple_proposed_traject(request):
 
                 # 🔁 MATCHING automatique
                 matches = find_matching_trajects(proposed)
-                if matches.exists():
+                if matches:
                     matched_any = True
 
                 created_count += 1
@@ -420,7 +448,7 @@ def researched_traject(request):
         if success:
             for researched in researched_trajects:
                 matches = find_matching_trajects(researched)
-                if matches.exists():
+                if matches:
                     messages.success(request, "Un ou des matchings ont été trouvés. Faites votre choix")
                     return redirect('my_matchings_researched')
                 else:
@@ -458,12 +486,8 @@ def researched_traject(request):
         print("=============== request.user.username :: ", username)
         traject_form = TrajectForm()
         researched_form = ResearchedTrajectForm(user=request.user)
-        #children_s_user = Child.objects.filter(chld_user__username=username)
-        #print('============== Child of :: ', children_s_user)
-
 
         context = {
-            #'childrens': children_s_user,
             'traject_form': traject_form,
             'researched_form': researched_form,
             'transport_modes': transport_modes,
@@ -503,14 +527,6 @@ def save_researched_traject(request, traject_form, researched_form):
 
         departure_time = cleaned_data.get('departure_time')
         arrival_time = cleaned_data.get('arrival_time')
-        
-        if not date_debut:
-            messages.error(request, "Veuillez choisir une date de début.")
-            return None, False
-
-        if recurrence_type in ['weekly', 'biweekly'] and not date_fin:
-            messages.error(request, "Veuillez choisir une date de fin.")
-            return None, False
         
         recurrent_dates = generate_recurrent_dates(
             date_debut=date_debut,

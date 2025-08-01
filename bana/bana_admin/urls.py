@@ -5,7 +5,7 @@ app_name = 'bana_admin'
 
 print('================ admin_urls.py :: ')
 urlpatterns = [
-    path('', views.bana_admin, name='admin_views'),
+    path('bana_admin', views.bana_admin, name='bana_admin'),
     path('admin_view', views.admin_view, name='admin_view'),
     path('validate_members', views.validate_members, name='validate_members'),
     path('admin-panel/verify-prfl/<int:profile_id>/', views.verify_profile_prfl, name='verify_profile_prfl'),

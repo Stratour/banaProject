@@ -61,10 +61,10 @@ INSTALLED_APPS = [
 
     # my apps 
     'bana',
-    'bana_Admin',
+    'bana_admin',
     'bug_tracker',
     'chat',
-    'strip',
+    'stripe_sub',
     'trajects.apps.TrajectsConfig',
 
 
@@ -311,4 +311,8 @@ DEFAULT_FROM_EMAIL = "Lucacamilleri55@gmail.com"
 ACCOUNT_FORMS = {
     'signup': 'accounts.forms.CustomSignupForm'
 }
+
+STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY_TEST",default="secret")
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY_TEST",default="secret")
+STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET_TEST",default="secret")
 

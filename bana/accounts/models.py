@@ -56,6 +56,15 @@ class Profile(models.Model):
     bio = models.TextField(blank=True)
     phone = models.CharField(max_length=15, blank=True)
 
+    # ✅ Champs liés à Stripe Identity
+    verified_first_name = models.CharField(max_length=100, blank=True, null=True)
+    verified_last_name = models.CharField(max_length=100, blank=True, null=True)
+    verified_address = models.JSONField(blank=True, null=True)  # ex: dict Stripe (line1, city, country, etc.)
+    verified_dob = models.JSONField(blank=True, null=True)  # ex: {'day': 12, 'month': 5, 'year': 1998}
+    document_image_url = models.URLField(blank=True, null=True)  # Lien temporaire fourni par Stripe
+    
+    
+    
     def __str__(self):
         return self.user.username
     """

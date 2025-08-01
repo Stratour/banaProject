@@ -22,7 +22,7 @@ def bana_admin(request):
     print('================== Users :: ', users)
     print('================== Profiles :: ', profiles)
     
-    return render(request, 'bana_Admin/bana_admin.html', context)
+    return render(request, 'bana_admin/bana_admin.html', context)
 
 
 def admin_view(request):
@@ -35,7 +35,7 @@ def admin_view(request):
     print('================== Users :: ', users)
     print('================== Profiles :: ', profiles)
     
-    return render(request, 'bana_Admin/admin_view.html', context)
+    return render(request, 'bana_admin/admin_view.html', context)
 
 
 def validate_members(request):
@@ -48,7 +48,7 @@ def validate_members(request):
     print('================== Users :: ', users)
     print('================== Profiles :: ', profiles)
     
-    return render(request, 'bana_Admin/validate_members.html', context)
+    return render(request, 'bana_admin/validate_members.html', context)
 
 
 def verify_profile_prfl(request, profile_id): #, profile_id
@@ -69,7 +69,7 @@ def verify_profile_prfl(request, profile_id): #, profile_id
 
         # Rediriger l'utilisateur vers la page de liste des profils après la modification
         #return redirect('admin_panel') # Assurez-vous que c'est le nom de votre URL pour admin_views
-        return render(request, 'bana_Admin/bana_admin.html')
+        return render(request, 'bana_admin/bana_admin.html')
 
     # Si la requête n'est pas POST, rediriger ou afficher une erreur
     messages.error(request, 'Méthode de requête non autorisée.')
