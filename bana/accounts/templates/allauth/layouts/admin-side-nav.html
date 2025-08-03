@@ -17,7 +17,7 @@
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
                           {% endif %}">
-                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    <img src="{% static 'bana/img/icon/Icon_profile.svg' %}" class="w-5 h-5" alt="">
                     Mes informations
                 </a>
             </li>
@@ -29,7 +29,7 @@
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
                           {% endif %}">
-                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    <img src="{% static 'bana/img/icon/Icon_message.svg' %}" class="w-5 h-5" alt="">
                     Mes enfants
                 </a>
             </li>
@@ -39,6 +39,7 @@
     <div>
         <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">Mes trajets</p>
         <ul class="space-y-1">
+            {% if request.user.profile.service == "parent" %}
             <li>
                 <a href="{% url 'researched_traject' %}" 
                    class="flex items-center gap-2 py-2 px-4 
@@ -51,10 +52,11 @@
                     Rechercher
                 </a>
             </li>
+            {% endif %}
             <li>
                 <a href="{% url 'proposed_traject' %}" 
                    class="flex items-center gap-2 py-2 px-4 
-                          {% if request.path == '/proposed_traject/' %}
+                          {% if request.path == '/trajects/proposed_traject/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
@@ -66,7 +68,7 @@
             <li>
                 <a href="{% url 'index' %}" 
                    class="flex items-center gap-2 py-2 px-4 
-                          {% if request.path == '/index/' %}
+                          {% if request.path == '/chat/chat/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
@@ -78,7 +80,7 @@
             <li>
                 <a href="{% url 'my_reservations' %}" 
                    class="flex items-center gap-2 py-2 px-4 
-                          {% if request.path == '/my_reservations/' %}
+                          {% if request.path == '/trajects/my_reserve/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
@@ -94,9 +96,9 @@
         <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">Paramètres</p>
         <ul class="space-y-1">
             <li>
-                <a href="#" 
+                <a href="{% url 'subscription' %}" 
                    class="flex items-center gap-2 py-2 px-4 
-                          {% if request.path == '/abonnement/' %}
+                          {% if request.path == '/subscription/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
@@ -108,7 +110,7 @@
             <li>
                 <a href="{% url 'accounts:profile_security' %}" 
                    class="flex items-center gap-2 py-2 px-4 
-                          {% if request.path == '/accounts/profile_security/' %}
+                          {% if request.path == '/accounts/profile/security/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full

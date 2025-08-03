@@ -1,29 +1,20 @@
 <div id="editable-profile-section" class="border p-4 rounded-lg shadow bg-white">
     <h3 class="text-xl font-semibold mb-3">Mes informations</h3>
-
+    
+    {% if user.profile.ci_is_verified %}
     <p><strong>Prénom :</strong> {{ user.profile.verified_first_name }}</p>
     <p><strong>Nom :</strong> {{ user.profile.verified_last_name }}</p>
-    <p><strong>Date de naissance :</strong> {% if user.profile.verified_dob %}
-    {{ user.profile.verified_dob.day }}/{{ user.profile.verified_dob.month }}/{{ user.profile.verified_dob.year }}
-  {% else %}
-    Non disponible
-  {% endif %}</p>
-    <p><strong>Lien photo :</strong> {{ user.profile.profile_picture.name }}</p>
-    <p><strong>Adresse :</strong> {{ user.profile.address }}</p>
+    <p><strong>Adresse :</strong> {{ user.profile.verified_address }}</p>
+    {% else %}
+    <p><strong>Prénom :</strong> {{ user.first_name }}</p>
+    <p><strong>Nom :</strong> {{ user.last_name }}</p>  
+    <p><strong>Adresse :</strong> {{ user.profile.address }}</p> 
+    {% endif %}
+
+    <!--<p><strong>Téléphone :</strong> {{ user.profile.phone }}</p>-->
     <p><strong>Langues :</strong> {{ user.profile.languages.all|join:", " }}</p>
-    <p><strong>Moyens de transport :</strong> {{ user.profile.transport_modes|join:", " }}</p>
+    <!--<p><strong>Moyens de transport :</strong> {{ user.profile.transport_modes|join:", " }}</p>-->
     <p><strong>Bio :</strong> {{ user.profile.bio }}</p>
-    <p><strong>Téléphone :</strong> {{ user.profile.phone }}</p>
-    {% if user.profile.ci_is_verified %}
-    <p><strong>Statut :</strong> Identité vérifiée ✅</p>
-    {% else %}
-    <p><strong>Statut :</strong> Identité non vérifiée ❌</p>
-    {% endif %}
-    {% if user.profile.bvm_is_verified %}
-    <p><strong>Statut :</strong> Certificat de bonne vie et moers vérifié ✅</p>
-    {% else %}
-    <p><strong>Statut :</strong> Certificat de bonne vie et moers non vérifié ❌</p>
-    {% endif %}
     <button 
         hx-get="{% url 'accounts:profile_edit' %}" 
         hx-target="#editable-profile-section" 
@@ -33,9 +24,27 @@
         ✏️ Modifier mon profil
     </button>
 
+    {% if user.profile.ci_is_verified %}
+    <p><strong>Statut :</strong> Identité vérifiée ✅</p>
+    {% else %}
+    <p><strong>Statut :</strong> Identité non vérifiée ❌</p>
+    {% endif %}
     <form method="post" action="{% url 'create_verification_session' %}">
     {% csrf_token %}
     <button class="btn btn-success" type="submit">Vérifier mon identité</button>
     </form>
+
+    {% if user.profile.bvm_is_verified %}
+    <p><strong>Statut :</strong> Certificat de bonne vie et moers vérifié ✅</p>
+    {% else %}
+    <p><strong>Statut :</strong> Certificat de bonne vie et moers non vérifié ❌</p>
+    {% endif %}
+    {% if user.profile.document_bvm %}
+    <a href="{{ user.profile.document_bvm.url }}" target="_blank" class="text-blue-600 underline ml-2">Voir le document</a>
+    {% endif %}
+
+
+
+
 
 </div>

@@ -71,9 +71,16 @@ class CustomSignupForm(SignupForm):
         return user
 
 class UserUpdateForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Ajoute les classes Tailwind à tous les champs
+        for field in self.fields.values():
+            field.widget.attrs.update({
+                'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50'
+            })
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'last_name', 'email'] 
+        fields = [ 'first_name', 'last_name', 'email'] 
 
 class ProfileUpdateForm(forms.ModelForm):
 
@@ -91,19 +98,21 @@ class ProfileUpdateForm(forms.ModelForm):
         label="Langues parlées"
     )
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for name, field in self.fields.items():
+            if not field.widget.attrs.get('class'):
+                field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50'
+    
     class Meta:
         model = Profile
-        fields = ['profile_picture', 'phone','address', 'service', 'languages', 'transport_modes', 'bio', ]
-        widgets = {
-            'service': forms.CheckboxSelectMultiple,
-            'transport_modes': forms.CheckboxSelectMultiple,
-        }
-        
-    def clean_service(self):
-        return self.cleaned_data['service'] or []
+        fields = ['profile_picture','address', 'languages', 'bio', 'document_bvm' ]
 
-    def clean_transport_modes(self):
-        return self.cleaned_data['transport_modes'] or []     
+    #def clean_service(self):
+    #    return self.cleaned_data['service'] or []
+#
+    #def clean_transport_modes(self):
+    #    return self.cleaned_data['transport_modes'] or []     
         
 
 class ChildForm(forms.ModelForm):

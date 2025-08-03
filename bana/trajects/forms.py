@@ -46,8 +46,10 @@ class TrajectForm(forms.ModelForm):
 class ProposedTrajectForm(forms.ModelForm):
     transport_modes = forms.ModelMultipleChoiceField(
         queryset=TransportMode.objects.all(),
-        widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-checkbox'}),
-        label="Moyens de transport"
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'inline-flex items-center space-x-1'}),
+        label="Moyens de transport",
+        required=True,
+        error_messages={'required': "Veuillez sélectionner au moins un moyen de transport."}
     )
     
     languages = forms.ModelMultipleChoiceField(
@@ -161,10 +163,21 @@ class SimpleProposedTrajectForm(forms.ModelForm):
     # Champs complémentaires (hors modèle)
     transport_modes = forms.ModelMultipleChoiceField(
         queryset=TransportMode.objects.all(),
-        widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-checkbox'}),
-        label="Moyens de transport"
+        widget=forms.CheckboxSelectMultiple(attrs={'class': 'inline-flex items-center space-x-1'}),
+        label="Moyens de transport",
+        required=True,
+        error_messages={'required': "Veuillez sélectionner au moins un moyen de transport."}
     )
 
+    number_of_places = forms.ChoiceField(
+        choices=[('', '-- Sélectionnez le nombre de places --')] + ProposedTraject.NUMBER_PLACE,
+        widget=forms.Select(attrs={
+            'class': 'block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500'
+        }),
+        required=False,
+        label="Nombre de places"
+    )
+    
     tr_weekdays = forms.ChoiceField(
         choices=[
             ("", "-- Sélectionnez un jour --"),
@@ -193,10 +206,10 @@ class SimpleProposedTrajectForm(forms.ModelForm):
 
     class Meta:
         model = Traject
-        fields = ['start_adress']
+        fields = ['start_adress',"number_of_places"]
         labels = {
-            'start_adress': "Ville de départ",
-            
+            'start_adress': "Ville de départ", 
+            'number_of_places': 'Nombre de places',
         }
         
         widgets = {

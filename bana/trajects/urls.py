@@ -30,7 +30,7 @@ urlpatterns = [
     #path('researched/all/', views.all_researched_trajects, name='all_researched_trajects'),
     
 
-
+    path('propose-help/<int:researched_id>/', views.propose_help, name='propose_help'),
     path('reservation/auto/<int:proposed_id>/<int:researched_id>/', views.auto_reserve, name='auto_reserve'),
 
 

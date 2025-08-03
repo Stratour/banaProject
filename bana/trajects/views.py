@@ -232,14 +232,30 @@ def proposed_traject(request, researchesTraject_id=None):
         proposed_trajects, success = save_proposed_traject(request, traject_form, proposed_form)
         
         if success:
+            matched_any = False
+            created_count = 0
+            total_matches = 0
+            
             for proposed in proposed_trajects:
                 matches = find_matching_trajects(proposed)
-                if matches:
-                    messages.success(request, "Un ou des matchings ont été trouvés. Attendez la demande du parent")
-                    return redirect('my_matchings_proposed')
-                else:
-                    messages.warning(request, "Aucun matching trouvé, votre proposition a été enregistrée.")
-            return redirect('my_proposed_trajects')
+                match_count = len(matches)
+                if match_count > 0:
+                    matched_any = True
+                    total_matches += match_count
+                created_count += 1
+                
+            if matched_any:
+                messages.success(
+                    request,
+                    f"{created_count} proposition(s) enregistrée(s) avec {total_matches} matching(s) trouvés."
+                )
+                return redirect('my_matchings_proposed')
+            else:
+                messages.warning(
+                    request,
+                    f"{created_count} proposition(s) enregistrée(s), mais aucun matching trouvé."
+                )
+                return redirect('my_proposed_trajects')
                     
         else:
             messages.error(request, "Erreur lors de la création du/des trajet(s)")
@@ -274,20 +290,25 @@ def simple_proposed_traject(request):
     if request.method == 'POST':
         form = SimpleProposedTrajectForm(request.POST)
 
+    if request.method == 'POST':
+        form = SimpleProposedTrajectForm(request.POST)
+
         if form.is_valid():
             user = request.user
             start_adress = form.cleaned_data['start_adress']
             transport_modes = form.cleaned_data['transport_modes']
             weekdays = form.cleaned_data['tr_weekdays']
             date_debut = form.cleaned_data['date_debut']
+            number_of_places = form.cleaned_data['number_of_places']
 
             traject = Traject.objects.create(
                 start_adress=start_adress,
-                end_adress="",  # volontairement vide
+                end_adress="",
             )
 
             matched_any = False
             created_count = 0
+            total_matches = 0  # compteur pour tous les matchings
 
             for weekday in weekdays:
                 day_offset = (int(weekday) - date_debut.isoweekday()) % 7
@@ -299,18 +320,21 @@ def simple_proposed_traject(request):
                     date=date,
                     recurrence_type='one_week',
                     is_simple=True,
+                    number_of_places=number_of_places
                 )
                 proposed.transport_modes.set(transport_modes)
 
                 # 🔁 MATCHING automatique
                 matches = find_matching_trajects(proposed)
-                if matches:
+                match_count = len(matches)
+                if match_count > 0:
                     matched_any = True
+                    total_matches += match_count
 
                 created_count += 1
 
             if matched_any:
-                messages.success(request, f"{created_count} proposition(s) enregistrée(s) avec des correspondances trouvées.")
+                messages.success(request, f"{created_count} proposition(s) enregistrée(s) avec {total_matches} matching(s) trouvés.")
                 return redirect('my_matchings_proposed')
             else:
                 messages.warning(request, f"{created_count} proposition(s) enregistrée(s), mais aucun matching trouvé.")
@@ -324,7 +348,8 @@ def simple_proposed_traject(request):
     return render(request, 'trajects/simple_proposed_traject.html', {
         'form': form
     })
-
+    
+    
 def save_proposed_traject(request, traject_form, proposed_form):
     """
     Enregistre un ou plusieurs ProposedTrajects avec récurrence (pour les yayas).
@@ -446,14 +471,30 @@ def researched_traject(request):
         researched_trajects, success = save_researched_traject(request, traject_form, researched_form)
         
         if success:
+            matched_any = False
+            created_count = 0
+            total_matches = 0 
+            
             for researched in researched_trajects:
                 matches = find_matching_trajects(researched)
-                if matches:
-                    messages.success(request, "Un ou des matchings ont été trouvés. Faites votre choix")
-                    return redirect('my_matchings_researched')
-                else:
-                    messages.warning(request, "Aucun matching trouvé. Votre demande a été enregistrée.")
-            return redirect('my_researched_trajects')
+                match_count = len(matches)
+                if match_count > 0:
+                    macthed_any = True
+                    total_matches += match_count
+                created_count += 1
+                
+            if matched_any:
+                messages.success(
+                    request,
+                    f"{created_count} recherche(s) enregistrée(s) avec {total_matches} matching(s) trouvés."
+                )
+                return redirect('my_matchings_reserched')
+            else:
+                messages.warning(
+                    request,
+                    f"{created_count} recherche(s) enregistrée(s), mais aucun matching trouvé."
+                )
+                return redirect('my_matchings_reserched')
         else:
             messages.error(request, "Erreur dans le formulaire. Veuillez corriger les champs.")
 
@@ -691,17 +732,65 @@ def manage_reservation(request, reservation_id, action):
         return redirect('my_reservations')
 
     if action == 'accept':
+        requested_places = reservation.number_of_places
+        available_places = reservation.traject.number_of_places
+        
+        if requested_places > available_places:
+            messages.error(request, "Il n'y a plus assez de places disponibles.")
+            return redirect('my_reservations')
+        
         reservation.status = 'confirmed'
         reservation.save()
+
+         # ✅ Envoi d'un email de confirmation au parent
+        parent_email = reservation.user.email
+        yaya_name = request.user.username
+        trajet_info = f"{reservation.traject.traject.start_adress} → {reservation.traject.traject.end_adress}"
+        nb_enfants = reservation.number_of_places
+
+        send_mail(
+            subject="Votre réservation a été confirmée sur Bana",
+            message=(
+                f"Bonjour {reservation.user.first_name},\n\n"
+                f"Votre demande de réservation pour le trajet {trajet_info} "
+                f"({nb_enfants} enfant(s)) a été confirmée par {yaya_name}.\n\n"
+                "Connectez-vous à Bana pour plus d'informations. http://37.187.94.53:9758/trajects/my_reserve/"
+            ),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[parent_email],
+            fail_silently=False,
+        )
+        reservation.traject.number_of_places -= requested_places
+        reservation.traject.save()
+        
+        # ✅ Désactiver le trajet si complet
+        if reservation.traject.number_of_places <= 0:
+            reservation.traject.is_active = False
+            reservation.traject.save()
+                    
         messages.success(request, "Réservation confirmée.")
 
     elif action == 'reject':
         reservation.status = 'canceled'
         reservation.save()
-        # Réattribuer les places libérées
-        reservation.traject.number_of_places += reservation.number_of_places
-        reservation.traject.save()
 
+        parent_email = reservation.user.email
+        yaya_name = request.user.get_full_name() or request.user.username
+        trajet_info = f"{reservation.traject.traject.start_adress} → {reservation.traject.traject.end_adress}"
+        nb_enfants = reservation.number_of_places
+
+        send_mail(
+            subject="Votre réservation a été refusée ou le trajet n'est plus disponible",
+            message=(
+                f"Bonjour {reservation.user.first_name},\n\n"
+                f"Nous sommes désolés, mais votre demande de réservation pour le trajet {trajet_info} "
+                f"({nb_enfants} enfant(s)) a été déclinée ou le trajet n'est plus disponible.\n\n"
+                "N'hésitez pas à rechercher un autre accompagnateur ou à refaire une demande sur Bana."
+            ),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[parent_email],
+            fail_silently=False,
+        )
         messages.success(request, "Réservation refusée.")
 
     else:
@@ -724,15 +813,6 @@ def auto_reserve(request, proposed_id, researched_id):
 
     # ✅ Nombre d'enfants sélectionnés = nombre de places à réserver
     requested_places = researched.children.count()
-    available_places = traject.number_of_places
-
-    if requested_places < 1:
-        messages.error(request, "Vous devez sélectionner au moins un enfant.")
-        return redirect('my_matchings_researched')
-
-    if requested_places > available_places:
-        messages.error(request, "Il n'y a pas assez de places disponibles pour vos enfants.")
-        return redirect('my_matchings_researched')
 
     # ✅ Création de la réservation
     reservation = Reservation.objects.create(
@@ -745,20 +825,70 @@ def auto_reserve(request, proposed_id, researched_id):
     
     reservation.transport_modes.set(researched.transport_modes.all())
 
-    # ✅ Décrémentation des places restantes
-    traject.number_of_places -= requested_places
-    traject.save()
-
-    # ✅ Désactivation du trajet si complet
-    if traject.number_of_places <= 0:
-        traject.is_active = False
-        traject.save()
-
     # ✅ Optionnel : lier les enfants à la réservation (si tu ajoutes reservation.children)
     # reservation.children.set(researched.children.all())
 
+    # --- Envoi d'un email au yaya ---
+    proposer_email = traject.user.email
+    parent_name = request.user.get_full_name() or request.user.username
+    trajet_info = f"{traject.traject.start_adress} → {traject.traject.end_adress}"
+    nb_enfants = requested_places
+
+    send_mail(
+        subject="Nouvelle demande de réservation reçue sur Bana",
+        message=(
+            f"Bonjour {traject.user.first_name},\n\n"
+            f"Vous avez reçu une nouvelle demande de réservation de la part de {parent_name}.\n\n"
+            f"Détails du trajet : {trajet_info}\n"
+            f"Nombre d'enfant(s) demandé(s) : {nb_enfants}\n\n"
+            "Connectez-vous à Bana pour accepter ou refuser la demande."
+            "http://37.187.94.53:9758/trajects/my_reserve/"
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[proposer_email],
+        fail_silently=False,
+    )
+    
     messages.success(request, "Votre demande de réservation a été envoyée.")
     return redirect('my_reservations')
+
+@login_required
+def propose_help(request, researched_id):
+    research = get_object_or_404(ResearchedTraject, id=researched_id)
+
+    # Ici tu peux lier ce yaya à cette recherche (si tu as un modèle de "proposition d'aide", crée-le ici)
+    # Exemple simple : on crée un trajet proposé associé à la recherche (ou toute autre logique)
+    proposed, created = ProposedTraject.objects.get_or_create(
+        user=request.user,
+        traject=research.traject,
+        date=research.date,
+        defaults={'is_simple': True}
+    )
+
+    # Tu peux ici créer une vraie liaison si tu as un modèle intermédiaire "HelpRequest" ou autre
+
+    # Envoi du mail au parent
+    parent_email = research.user.email
+    yaya_name = request.user.get_full_name() or request.user.username
+    trajet_info = f"{research.traject.start_adress} → {research.traject.end_adress}"
+    date_str = research.date.strftime("%d/%m/%Y") if research.date else ""
+    heure_depart = research.departure_time.strftime("%H:%M") if research.departure_time else "—"
+
+    send_mail(
+        subject="Un accompagnateur a répondu à votre recherche de trajet",
+        message=(
+            f"Bonjour {research.user.first_name},\n\n"
+            f"Bonne nouvelle ! Un accompagnateur ({yaya_name}) a proposé son aide pour votre trajet "
+            f"{trajet_info} le {date_str} (départ à {heure_depart}).\n\n"
+            "Connectez-vous à Bana pour consulter cette proposition et valider votre réservation."
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[parent_email],
+        fail_silently=False,
+    )
+
+    messages.success(request, "Votre aide a été proposée et le parent a été informé par email.")
+    return redirect('my_matchings_proposed')  # ou la page de ton choix
 
 @login_required
 def my_reservations(request):

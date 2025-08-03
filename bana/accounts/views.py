@@ -1,3 +1,4 @@
+from math import floor
 from django.contrib  import messages
 from django.contrib.auth import logout
 from django.http import HttpResponse
@@ -30,8 +31,13 @@ def profile_user(request, user_id=None):
 
     user = get_object_or_404(User, id=user_id)
     reviews = Review.objects.filter(reviewed_user=user)
+    reviews_count = reviews.count()
     average_rating = reviews.aggregate(Avg('rating'))['rating__avg'] or 0
 
+    # Calcul des étoiles pour l'affichage
+    full_stars = int(floor(average_rating))
+    has_half_star = (average_rating - full_stars) >= 0.5
+    empty_stars = 5 - full_stars - (1 if has_half_star else 0)
     existing_review = Review.objects.filter(reviewer=request.user, reviewed_user=user).first()
     allow_review = existing_review is None
 
@@ -52,6 +58,10 @@ def profile_user(request, user_id=None):
         'user': user,
         'reviews': reviews,
         'average_rating': round(average_rating, 1),
+        'reviews_count': reviews_count,
+        'full_stars': full_stars,
+        'has_half_star': has_half_star,
+        'empty_stars': empty_stars,
         'allow_review': allow_review,
         'existing_review': existing_review,
         'form': form,

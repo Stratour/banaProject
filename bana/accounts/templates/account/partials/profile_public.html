@@ -1,6 +1,6 @@
 
 <div class="border p-4 rounded-lg shadow bg-white">
-    <h3 class="text-xl font-semibold mb-3">Mon profil</h3>
+    <h3 class="text-xl font-semibold mb-3">Mon profil public</h3>
     {% if user.profile.profile_picture %}
         <img src="{{ user.profile.profile_picture.url }}" alt="Photo de profil" class="w-20 h-20 object-cover rounded-full mb-4">
     {% else %}
@@ -8,28 +8,33 @@
               {{ user.profile.verified_first_name.0 }}.{{ user.profile.verified_last_name.0 }}
         </h1>
     {% endif %}
+    <!-- Ajouter la pastie verte de validation sur la photo de profile -->
     {% if user.profile.prfl_is_verified and user.profile.ci_is_verified and user.profile.bvm_is_verified %}
-    <p><strong>Statut :</strong> Profil vérifié ✅</p>
+    <p><strong>Statut :</strong> Profil vérifié </p>
     {% else %}
     <p><strong>Statut :</strong> Profil non vérifié ❌</p>
     {% endif %}
-    <p class="text-lg font-medium">{{ user.profile.verified_first_name }} {{ user.profile.verified_first_name|slice:":1" }}.</p>
-    {% if user.profile.verified_address %}
-    {{ user.profile.verified_address.line1 }},
-    {{ user.profile.verified_address.postal_code }},
-    {{ user.profile.verified_address.city }},
-    {{ user.profile.verified_address.country }}
+
+    {% if user.profile.ci_is_verified %}
+    <p>{{ user.profile.verified_first_name }} {{ user.profile.verified_first_name|slice:":1" }}.</p>
+    <p>{{ user.profile.verified_address.postal_code }},
+        {{ user.profile.verified_address.city }},
+        {{ user.profile.verified_address.country }}
+    </p>
     {% else %}
-    Non disponible
+    <p><strong>Prénom :</strong> {{ user.first_name }}</p>
+    <p><strong>Nom :</strong> {{ user.last_name }}</p>  
+    <p><strong>Adresse :</strong> {{ user.profile.address }}</p>     
     {% endif %}
-    <p>Services : {{ user.profile.service }}</p>
-    <p>Transports : {{ user.profile.transport_modes|join:", " }}</p>
-    <p>Langues parlées : {{ user.profile.languages.all|join:", " }}</p>
-    <p>Date d’inscription : {{ user.date_joined|date:"d/m/Y" }}</p>
-    {% if user.profile.document_image_url %}
-    <a href="{{ user.profile.document_image_url }}" target="_blank">Voir le document</a>
-    {% else %}
-    Non disponible
-    {% endif %}
+
+    <p><strong>Services :</strong> {{ user.profile.service | title }}</p>
+    <!--<p>Transports : {{ user.profile.transport_modes|join:", " }}</p>-->
+    <p><strong>Langues parlées :</strong> 
+    {% for language in user.profile.languages.all %}
+    {{ language.lang_abbr }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+</p>
+    <p><strong>Date d’inscription :</strong> {{ user.date_joined|date:"d/m/Y" }}</p>
+    
 </div>
 

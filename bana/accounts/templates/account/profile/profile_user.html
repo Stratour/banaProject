@@ -9,7 +9,14 @@
         
 <div class="bg-gray-100 min-h-screen p-6">
     <div class="container mx-auto bg-white shadow-md rounded-lg p-6">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">Profil de {{ user.first_name }} {{ user.last_name }}</h2>
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Profil de 
+            {% if user.profile.ci_is_verified %}
+            {{ user.profile.verified_first_name }}
+            {{ user.profile.verified_last_name|slice:"1" }}.
+            {% else %}
+            {{ user.first_name }} {{ user.last_name }}
+            {% endif %}
+        </h2>
 
           <!-- 📸 Photo de profil -->
         {% if user.profile.profile_picture %}
@@ -26,13 +33,19 @@
         <div class="mb-6">
             <p class="text-lg"><strong>Email :</strong> {{ user.email }}</p>
             <p class="text-lg"><strong>Status :</strong> {{ user.profile.service | title }}</p>
-            <p class="text-lg"><strong>Localisation :</strong> {{ user.profile.address }}</p>
+            <p class="text-lg"><strong>Localisation :</strong> 
+                {% if user.profile.ci_is_verified %}
+                {{ user.profile.verified_address.postal_code }},
+                {{ user.profile.verified_address.city }},
+                {{ user.profile.verified_address.country }}
+                {% else %}
+                {{ user.profile.address }}
+                {% endif %}
+            </p>
             <p class="text-lg"><strong>Langues parlées :</strong>
-                {% for language in user.profile.languages.all %}
-                    {{ language.lang_name }}{% if not forloop.last %}, {% endif %}
-                {% empty %}
-                    Non spécifié
-                {% endfor %}
+            {% for language in user.profile.languages.all %}
+            {{ language.lang_abbr }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
             </p>
             <p class="text-lg"><strong>Date d'inscription :</strong> {{ user.date_joined|date:"d F Y" }}</p>
 
@@ -41,7 +54,37 @@
     <div class="bg-gray-100 min-h-screen p-6">
 
         <div class="container mx-auto bg-white shadow-md rounded-lg p-6">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">Avis</h2>
+        <h2 class="text-3xl font-bold text-gray-800 mb-6">Avis </h2>
+        
+        {% if reviews_count > 0 %}
+          <div class="flex items-center gap-2 my-2">
+            <strong>Note moyenne&nbsp;:</strong>
+            {% for i in "12345" %}
+              {% if forloop.counter <= full_stars %}
+                <span style="color: #facc15; font-size:1.3em;">★</span>
+              {% elif forloop.counter == full_stars|add:'1' and has_half_star %}
+                <!-- Demi-étoile SVG -->
+                <span style="display:inline-block;vertical-align:middle;">
+                  <svg width="21" height="21" viewBox="0 0 24 24">
+                    <defs>
+                      <linearGradient id="half">
+                        <stop offset="50%" stop-color="#facc15" />
+                        <stop offset="50%" stop-color="#d1d5db" />
+                      </linearGradient>
+                    </defs>
+                    <polygon fill="url(#half)" points="12,2 15,9 22,9.2 17,14.1 18.2,21 12,17.8 5.8,21 7,14.1 2,9.2 9,9"/>
+                  </svg>
+                </span>
+              {% else %}
+                <span style="color: #d1d5db; font-size:1.3em;">★</span>
+              {% endif %}
+            {% endfor %}
+            <span class="ml-2 text-gray-600">({{ average_rating|floatformat:"1" }}/5, {{ reviews_count }} avis)</span>
+          </div>
+        {% else %}
+          <p class="text-gray-500"><strong>Note moyenne :</strong> Pas encore d'avis</p>
+        {% endif %}
+
 
         <!-- ⭐ Note moyenne -->
         <p class="text-lg"><strong>Note Moyenne :</strong> {{ average_rating }}/5</p>

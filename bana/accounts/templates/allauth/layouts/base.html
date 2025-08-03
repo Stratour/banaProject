@@ -8,7 +8,6 @@
 
     {% tailwind_css %}
     <link href="{% static 'bana/css/style.css' %}" rel="stylesheet">
-
     <title>{% block title %}Admin - Bana{% endblock %}</title>
 </head>
 <body class="relative min-h-screen md:flex"
@@ -17,8 +16,13 @@
              background-size: cover;
              background-position: center;">
 
+    <!-- Ajouter la bare de navigation de bana -->
+
+
+    
     <!-- overlay appliqué au body -->
     <div class="absolute inset-0 bg-white opacity-90 pointer-events-none z-0"></div>
+    
 
     <!-- Side navigation (desktop) -->
     <aside class="hidden md:flex md:flex-col md:w-64 bg-white shadow-lg min-h-screen relative z-10">

@@ -7,9 +7,63 @@
     class="border p-4 rounded bg-white"
 >
     {% csrf_token %}
-    {{ user_form.as_p }}
-    {{ profile_form.as_p }}
-{{ profile_form.languages }}
+    {% if user_form.errors %}
+  <div class="alert alert-danger">{{ user_form.errors }}</div>
+{% endif %}
+{% if profile_form.errors %}
+  <div class="alert alert-danger">{{ profile_form.errors }}</div>
+{% endif %}
 
-    <button type="submit" class="btn btn-primary">💾 Enregistrer</button>
+<!-- Prénom / Nom -->
+    <p><strong>Prénom :</strong>
+    {% if user.profile.ci_is_verified == False %}
+      {{ user_form.first_name }}
+    {% else %}
+      {{ user.profile.verified_first_name }}
+    {% endif %}
+    </p>
+    <p><strong>Nom :</strong>
+    {% if user.profile.ci_is_verified == False %}
+      {{ user_form.last_name }}
+    {% else %}
+       {{ user.profile.verified_last_name }}
+    {% endif %}
+    </p>
+
+    <!-- Adresse -->
+    <p><strong>Adresse :</strong> 
+    {% if user.profile.ci_is_verified == False %}
+      <div>
+        {{ profile_form.address }}
+      </div>
+    {% else %}
+      <!--{{ user.profile.verified_address.line1 }},-->
+      {{ user.profile.verified_address.postal_code }},
+      {{ user.profile.verified_address.city }},
+      {{ user.profile.verified_address.country }}
+    {% endif %}
+    </p>
+
+    <!-- Photo de profil -->
+      <p><strong>Photo de profile :</strong>
+      {{ profile_form.profile_picture }}   
+    </p>
+    <!-- Langues parlées -->
+    <p><strong>Langues parlées :</strong>
+      {{ profile_form.languages }}
+    </p>
+    
+    <!-- Bio -->
+    <strong>Biographie :</strong>
+      {{ profile_form.bio }}
+    
+      <div class="mb-4">
+  {{ profile_form.document_bvm.label_tag }}
+  {{ profile_form.document_bvm }}
+  {% if user.profile.document_bvm %}
+    <a href="{{ user.profile.document_bvm.url }}" target="_blank" class="text-blue-600 underline ml-2">Voir le document</a>
+  {% endif %}
+</div>
+    
+    <button type="submit" class="btn btn-primary mt-4">💾 Enregistrer</button>
 </form>

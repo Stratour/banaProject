@@ -1,17 +1,36 @@
-{% extends 'layouts/base.html' %}
+{% extends '/home/bana_community/banaProject/bana/accounts/templates/allauth/layouts/base.html' %}
 
 {% block content %}
 
 <div class="container mx-auto py-8">
   <h2 class="text-2xl font-bold mb-6">Mes Réservations</h2>
 
+          {% if messages %}
+        <ul class="mb-4">
+            {% for message in messages %}
+            <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">
+                {{ message }}
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        
   <!-- En tant que parent -->
   <h3 class="text-xl font-semibold mb-2">Réservations effectuées</h3>
   {% if made_reservations %}
     <ul class="space-y-4">
       {% for r in made_reservations %}
         <li class="p-4 bg-white shadow rounded">
-          <p><strong>{{ r.traject.user.profile.service | title }} :</strong> {{ r.traject.user.first_name }} {{ r.traject.user.last_name|slice:":1" }}.</p>
+          <p class="text-sm text-gray-700">
+                <strong>{{ r.traject.user.profile.service | title }} :</strong> 
+                <a href="{% url 'accounts:profile_user' user_id=r.traject.user.id%}" class="text-blue-600 hover:underline">
+                  {% if r.traject.user.profile.ci_is_verified %}
+                  {{ r.traject.user.profile.verified_first_name }} {{ r.traject.user.profile.verified_last_name|slice:":1" }}.
+                  {% else %}
+                  {{ r.traject.user.first_name }} {{ r.traject.user.last_name|slice:":1" }}.
+                  {% endif %}
+                  </a>
+              </p>
           <p><strong>Trajet :</strong> {{ r.traject.traject.start_adress }} à {{ r.traject.departure_time }} → {{ r.traject.traject.end_adress }} à {{ r.traject.arrival_time }}</p>
           <p><strong>Date :</strong> {{ r.traject.date|date:"l d F Y" }}</p>
           <p> <strong>Transport :</strong> 
@@ -21,7 +40,9 @@
               Non spécifié
             {% endfor %}
           </p>
-          <p><strong>Places :</strong> {{ r.number_of_places }}</p>
+          <p><strong>Places demandée :</strong> {{ r.number_of_places }}</p>
+          <p><strong>Places restante :</strong> {{ r.traject.number_of_places }}</p>
+
           <p><strong>Statut :</strong> 
             {% if r.status == 'confirmed' %}
               <span class="text-green-600 font-semibold">Confirmée</span>
@@ -47,10 +68,14 @@
     <ul class="space-y-4">
       {% for r in received_reservations %}
         <li class="p-4 bg-gray-100 rounded shadow">
-          <p><strong>{{ r.user.profile.service | title }} :</strong> {{ r.user.first_name }} {{ r.user.last_name|slice:":1" }}.</p>
+          <p><strong>{{ r.user.profile.service | title }} :</strong> 
+            <a href="{% url 'accounts:profile_user' user_id=r.user.id%}" class="text-blue-600 hover:underline">
+              {{ r.user.first_name }} {{ r.user.last_name|slice:":1" }}.
+            </a>
+            </p>
           <p><strong>Trajet :</strong> {{ r.traject.traject.start_adress }} à {{ r.traject.departure_time }} → {{ r.traject.traject.end_adress }} à {{ r.traject.arrival_time }}</p>
           <p><strong>Date :</strong> {{ r.traject.date|date:"l d F Y" }}</p>
-          <p><strong>Places :</strong> {{ r.number_of_places }}</p>
+          <p><strong>Places demandée :</strong> {{ r.number_of_places }}</p>
           <p> <strong>Transport :</strong> 
               {% for mode in r.transport_modes.all %}
               {{ mode.name }}{% if not forloop.last %}, {% endif %}
