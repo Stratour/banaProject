@@ -76,7 +76,7 @@ class UserUpdateForm(forms.ModelForm):
         # Ajoute les classes Tailwind à tous les champs
         for field in self.fields.values():
             field.widget.attrs.update({
-                'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50'
+                'class': 'mt-1 block w-full rounded-full border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50'
             })
     class Meta:
         model = User
@@ -102,7 +102,7 @@ class ProfileUpdateForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         for name, field in self.fields.items():
             if not field.widget.attrs.get('class'):
-                field.widget.attrs['class'] = 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50'
+                field.widget.attrs['class'] = 'mt-1 block w-full rounded-full border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50'
     
     class Meta:
         model = Profile
@@ -130,7 +130,27 @@ class ChildForm(forms.ModelForm):
         
         # Mettre à jour le widget pour correspondre au nouveau nom de champ
         widgets = {
-            'chld_birthdate': forms.DateInput(attrs={'type': 'date'}),
+            'chld_name': forms.TextInput(attrs={
+                'class': 'w-full rounded-full border-gray-300 px-4 py-2 shadow-sm focus:border-brand focus:ring focus:ring-brand'
+            }),
+            'chld_surname': forms.TextInput(attrs={
+                'class': 'w-full rounded-full border-gray-300 px-4 py-2 shadow-sm focus:border-brand focus:ring focus:ring-brand'
+            }),
+            'chld_birthdate': forms.DateInput(attrs={
+                'type': 'date',
+                'class': 'w-full rounded-full border-gray-300 px-4 py-2 shadow-sm focus:border-brand focus:ring focus:ring-brand'
+            }),
+            'chld_gender': forms.Select(attrs={
+                'class': 'w-full rounded-full border-gray-300 px-4 py-2 bg-white shadow-sm focus:border-brand focus:ring focus:ring-brand'
+            }),
+            'chld_spcl_attention': forms.Textarea(attrs={
+                'class': 'w-full rounded-full border-gray-300 px-4 py-2 shadow-sm focus:border-brand focus:ring focus:ring-brand',
+                'rows': 3,
+                'placeholder': 'Indiquez les besoins particuliers éventuels...'
+            }),
+            'chld_seat': forms.CheckboxInput(attrs={
+                'class': 'form-checkbox h-5 w-5 text-brand'
+            }),
         }
 
 
@@ -142,11 +162,11 @@ class ReviewForm(forms.ModelForm):
             'rating': forms.Select(
                 choices=[(i, f"⭐ {i}") for i in range(1, 6)],
                 attrs={
-                    'class': 'form-select block w-full mt-1 p-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500'}
+                    'class': 'form-select block w-full mt-1 p-2 border-gray-300 rounded-full shadow-sm focus:ring-blue-500 focus:border-blue-500'}
             ),
             'comment': forms.Textarea(
                 attrs={
-                    'class': 'form-textarea block w-full mt-1 p-2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500',
+                    'class': 'form-textarea block w-full mt-1 p-2 border-gray-300 rounded-full shadow-sm focus:ring-blue-500 focus:border-blue-500',
                     'rows': 4,
                     'placeholder': 'Laissez un commentaire constructif...'
                 }
