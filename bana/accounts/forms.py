@@ -37,15 +37,15 @@ class CustomSignupForm(SignupForm):
         label="Modes de transport"
     )
 
-    languages = forms.ModelMultipleChoiceField(
+    languages = forms.ModelChoiceField(
         queryset=Languages.objects.all(),
-        label='Languages Spoken',
-        widget=forms.SelectMultiple(attrs={
-            'class': 'w-full border rounded px-2 py-1',
-            'size': 5
+        widget=forms.Select(attrs={
+            'class': 'block w-full mt-1 rounded-full border-brand shadow-sm focus:ring-brand focus:border-brand'
         }),
-        required=False
+        required=False,
+        label="Langue parlée"
     )
+
 
     def save(self, request):
         user = super().save(request)

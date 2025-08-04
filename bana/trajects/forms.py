@@ -52,11 +52,14 @@ class ProposedTrajectForm(forms.ModelForm):
         error_messages={'required': "Veuillez sélectionner au moins un moyen de transport."}
     )
     
-    languages = forms.ModelMultipleChoiceField(
+    languages = forms.ModelChoiceField(
         queryset=Languages.objects.all(),
-        widget=forms.SelectMultiple(attrs={'size': 5}),
+        widget=forms.Select(attrs={
+            'class': 'block w-full mt-1 rounded-full border-brand shadow-sm focus:ring-brand focus:border-brand'
+        }),
         required=False,
-        label="Langues parlées"
+        empty_label="-- Sélectionnez la langue --",
+        label="Langue parlée"
     )
 
     departure_time = forms.TimeField(
