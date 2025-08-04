@@ -7,22 +7,22 @@
 
 <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
   {% if messages %}
-    <ul class="mb-4 space-y-2">
-      {% for message in messages %}
-        <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
-      {% endfor %}
-    </ul>
+  <ul class="mb-4 space-y-2">
+    {% for message in messages %}
+    <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
+    {% endfor %}
+  </ul>
   {% endif %}
-
+  
   {% include "./component_traject_tabs.html" %}
-
+  
   <form class="my-12 space-y-16" method="post" action="{% url 'proposed_traject' %}">
     {% csrf_token %}
-
+    
     <!-- Étape 1 : départ / arrivée -->
     <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
       <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/Icon/Icon_step_path.svg' %}" alt="Logo Bana">
-
+      
       <div class="flex-1 space-y-6 w-full">
         <div>
           <label class="block text-sm font-bold text-brand uppercase mb-1">Départ</label>
@@ -31,7 +31,7 @@
             <div class="w-full sm:w-[110px]">{{ proposed_form.departure_time }}</div>
           </div>
         </div>
-
+        
         <div>
           <label class="block text-sm font-bold text-brand uppercase mb-1">Arrivée</label>
           <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
@@ -41,13 +41,13 @@
         </div>
       </div>
     </div>
-
+    
     <hr class="my-10">
-
+    
     <!-- Étape 2 : calendrier -->
     <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
       <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/Icon/Icon_step_calendar.svg' %}" alt="Logo Bana">
-
+      
       <div class="flex-1 space-y-6 w-full">
         <div>
           <label class="block text-sm font-bold text-brand uppercase mb-1">Jours de la semaine</label>
@@ -67,25 +67,6 @@
 </div>
         </div>
 
-                <!-- Type de récurrence -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Type de récurrence</label>
-                  {% for radio in proposed_form.recurrence_type %}
-                    <label class="block">
-                      {{ radio.tag }}
-                      {{ radio.choice_label }}
-                    </label>
-                  {% endfor %}
-                </div>
-
-                <!-- Date de début (toujours affichée) -->
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
-                    {{ proposed_form.date_debut }}
-                    {% if proposed_form.date_debut.errors %}
-                    <p class="text-sm text-red-600 mt-1">{{ proposed_form.date_debut.errors.0 }}</p>
-                    {% endif %}
-                </div>
         <div class="flex flex-col md:flex-row gap-6">
           <div class="flex-1">
             <label class="block text-sm font-medium uppercase text-brand">Récurrence</label>
@@ -129,13 +110,6 @@
           </div>
         </div>
 
-                <!-- Date de fin (masquée pour one_week) -->
-                <div id="date_fin_container" class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
-                    {{ proposed_form.date_fin }}
-                    
-                </div>
-            </fieldset>
         <div class="flex flex-col md:flex-row gap-6">
           <div class="flex-1">
             <label class="block text-sm font-medium uppercase text-brand">Langue(s)</label>
@@ -166,16 +140,16 @@
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const labels = document.querySelectorAll('#weekday-selector label');
-
+    
     labels.forEach(label => {
       label.addEventListener('click', () => {
         const input = label.querySelector('input');
         input.checked = !input.checked;
-
+        
         label.classList.toggle('bg-brand-50', input.checked);
         label.classList.toggle('text-brand', input.checked);
         label.classList.toggle('border-brand', input.checked);
-
+        
         label.classList.toggle('text-gray-400', !input.checked);
         label.classList.toggle('border-gray-300', !input.checked);
       });

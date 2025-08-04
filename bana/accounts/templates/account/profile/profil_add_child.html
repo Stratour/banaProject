@@ -1,30 +1,103 @@
 {% extends "allauth/layouts/base.html" %}
-{% block content %}
+{% load static %}
 
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-6">
-            <h2>Ajouter un nouvel enfant</h2>
-            <form method="post" novalidate>
-                {% csrf_token %}
-                {{ form.as_p }} <button type="submit" class="btn btn-success">Ajouter l'enfant</button>
-            </form>
-            <a href="{% url 'accounts:profile' %}" class="btn btn-secondary mt-3">Retour au profil</a>
+{% block content %}
+<div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+
+  <form method="post" novalidate class="space-y-16">
+    {% csrf_token %}
+
+    <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
+      <!-- Image illustrant le formulaire -->
+      <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/Icon/Icon_step_child.svg' %}" alt="Icône Enfant">
+
+      <!-- Formulaire à droite -->
+      <div class="flex-1 space-y-6 w-full">
+
+        <!-- Prénom -->
+        <div>
+          <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_name.id_for_label }}">
+            Prénom
+          </label>
+          {{ form.chld_name }}
+          {% if form.chld_name.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ form.chld_name.errors }}</p>
+          {% endif %}
         </div>
-        <div class="col-md-6">
-            <h2>Enfants déjà enregistrés</h2>
-            {% if children %}
-                <ul class="list-group">
-                    {% for child in children %}
-                        <li class="list-group-item">
-                            {{ child.chld_surname }} {{ child.chld_name }} ({{ child.chld_gender }})
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>Aucun enfant enregistré pour le moment.</p>
-            {% endif %}
+
+        <!-- Nom -->
+        <div>
+          <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_surname.id_for_label }}">
+            Nom
+          </label>
+          {{ form.chld_surname }}
+          {% if form.chld_surname.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ form.chld_surname.errors }}</p>
+          {% endif %}
         </div>
+
+        <!-- Date de naissance -->
+        <div>
+          <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_birthdate.id_for_label }}">
+            Date de naissance
+          </label>
+          {{ form.chld_birthdate }}
+          {% if form.chld_birthdate.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ form.chld_birthdate.errors }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Genre (select) -->
+        <div>
+          <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_gender.id_for_label }}">
+            Genre
+          </label>
+          {{ form.chld_gender }}
+          {% if form.chld_gender.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ form.chld_gender.errors }}</p>
+          {% endif %}
+        </div>
+
+        <!-- Siège enfant (checkbox) -->
+        <div>
+          <label class="inline-flex items-center space-x-2">
+            {{ form.chld_seat }}
+            <span class="text-sm font-medium text-brand uppercase">Siège enfant requis</span>
+          </label>
+          {% if form.chld_seat.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ form.chld_seat.errors }}</p>
+          {% endif %}
+        </div>
+      </div>
     </div>
+
+    <!-- Boutons -->
+    <div class="flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
+      <a href="{% url 'accounts:profile' %}" class="px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-full hover:bg-gray-300 transition">
+        ← Retour au profil
+      </a>
+      <button type="submit" class="px-6 py-3 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition">
+        Ajouter l'enfant
+      </button>
+    </div>
+  </form>
+
+  <!-- Liste des enfants déjà enregistrés -->
+  {% if children %}
+  <div class="pt-12 border-t">
+    <h2 class="text-xl font-semibold text-brand mb-6">Enfants déjà enregistrés</h2>
+    <ul class="space-y-4">
+      {% for child in children %}
+        <li class="p-4 border rounded-lg shadow-sm bg-gray-50">
+          <p class="text-sm">
+            <strong>{{ child.chld_surname }} {{ child.chld_name }}</strong>
+            — {{ child.chld_gender }}
+          </p>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
 </div>
 {% endblock %}
