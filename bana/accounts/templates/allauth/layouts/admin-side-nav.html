@@ -1,7 +1,7 @@
 <!-- Logo -->
 <div class="p-6 border-b flex justify-center">
     {% load static %}
-    <img class="w-20 h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Logo Bana">
+    <img class="w-20 h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}?v={{ timestamp }} " alt="Logo Bana">
 </div>
 
 <!-- Navigation -->
@@ -10,26 +10,34 @@
         <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">Mon profil</p>
         <ul class="space-y-1">
             <li>
-                <a href="{% url 'accounts:profile' %}" 
+                <a href="{% url 'accounts:profile' %}"
                    class="flex items-center gap-2 py-2 px-4 
                           {% if request.path == '/accounts/profile/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
                           {% endif %}">
-                    <img src="{% static 'bana/img/icon/Icon_profile.svg' %}" class="w-5 h-5" alt="">
+                    {% if request.path == '/accounts/profile/' %}
+                        <img src="{% static 'bana/img/icon/Icon_data_active.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% else %}
+                        <img src="{% static 'bana/img/icon/Icon_data.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% endif %}
                     Mes informations
                 </a>
             </li>
             <li>
-                <a href="{% url 'accounts:profile_child' %}" 
+                <a href="{% url 'accounts:profile_child' %}"
                    class="flex items-center gap-2 py-2 px-4 
                           {% if request.path == '/accounts/profile_child/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
                           {% endif %}">
-                    <img src="{% static 'bana/img/icon/Icon_message.svg' %}" class="w-5 h-5" alt="">
+                    {% if request.path == '/accounts/profile_child/' %}
+                        <img src="{% static 'bana/img/icon/Icon_child_active.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% else %}
+                        <img src="{% static 'bana/img/icon/Icon_child.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% endif %}
                     Mes enfants
                 </a>
             </li>
@@ -41,51 +49,67 @@
         <ul class="space-y-1">
             {% if request.user.profile.service == "parent" %}
             <li>
-                <a href="{% url 'researched_traject' %}" 
+                <a href="{% url 'researched_traject' %}"
                    class="flex items-center gap-2 py-2 px-4 
                           {% if request.path == '/researched_traject/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
                           {% endif %}">
-                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    {% if request.path == '/researched_traject/' %}
+                        <img src="{% static 'bana/img/icon/Icon_search_active.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% else %}
+                        <img src="{% static 'bana/img/icon/Icon_search.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% endif %}
                     Rechercher
                 </a>
             </li>
             {% endif %}
             <li>
-                <a href="{% url 'proposed_traject' %}" 
+                <a href="{% url 'proposed_traject' %}"
                    class="flex items-center gap-2 py-2 px-4 
                           {% if request.path == '/trajects/proposed_traject/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
                           {% endif %}">
-                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    {% if request.path == '/trajects/proposed_traject/' %}
+                        <img src="{% static 'bana/img/icon/Icon_offer_active.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% else %}
+                        <img src="{% static 'bana/img/icon/Icon_offer.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% endif %}
                     Proposer
                 </a>
             </li>
             <li>
-                <a href="{% url 'index' %}" 
+                <a href="{% url 'index' %}"
                    class="flex items-center gap-2 py-2 px-4 
                           {% if request.path == '/chat/chat/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
                           {% endif %}">
-                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    {% if request.path == '/chat/chat/' %}
+                        <img src="{% static 'bana/img/icon/Icon_conversation_active.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% else %}
+                        <img src="{% static 'bana/img/icon/Icon_conversation.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% endif %}
                     Messages
                 </a>
             </li>
             <li>
-                <a href="{% url 'my_reservations' %}" 
+                <a href="{% url 'my_reservations' %}"
                    class="flex items-center gap-2 py-2 px-4 
                           {% if request.path == '/trajects/my_reserve/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
                           {% endif %}">
-                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    {% if request.path == '/trajects/my_reserve/' %}
+                        <img src="{% static 'bana/img/icon/Icon_reservation_active.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% else %}
+                        <img src="{% static 'bana/img/icon/Icon_reservation.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% endif %}
                     Mes réservations
                 </a>
             </li>
@@ -96,38 +120,50 @@
         <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">Paramètres</p>
         <ul class="space-y-1">
             <li>
-                <a href="{% url 'subscription' %}" 
+                <a href="{% url 'subscription' %}"
                    class="flex items-center gap-2 py-2 px-4 
                           {% if request.path == '/subscription/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
                           {% endif %}">
-                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    {% if request.path == '/subscription/' %}
+                        <img src="{% static 'bana/img/icon/Icon_premium_active.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% else %}
+                        <img src="{% static 'bana/img/icon/Icon_premium.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% endif %}
                     Abonnement
                 </a>
             </li>
             <li>
-                <a href="{% url 'accounts:profile_security' %}" 
+                <a href="{% url 'accounts:profile_security' %}"
                    class="flex items-center gap-2 py-2 px-4 
                           {% if request.path == '/accounts/profile/security/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
                           {% endif %}">
-                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    {% if request.path == '/accounts/profile/security/' %}
+                        <img src="{% static 'bana/img/icon/Icon_security_active.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% else %}
+                        <img src="{% static 'bana/img/icon/Icon_security.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% endif %}
                     Sécurité et connexion
                 </a>
             </li>
             <li>
-                <a href="#" 
+                <a href="#"
                    class="flex items-center gap-2 py-2 px-4 
                           {% if request.path == '/preferences/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
                           {% endif %}">
-                    <img src="{% static 'bana/img/icon/icon_message.svg' %}" class="w-5 h-5" alt="">
+                    {% if request.path == '/preferences/' %}
+                        <img src="{% static 'bana/img/icon/Icon_settings_active.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% else %}
+                        <img src="{% static 'bana/img/icon/Icon_settings.svg' %}?v={{ timestamp }}" class="w-5 h-5" alt="">
+                    {% endif %}
                     Préférences
                 </a>
             </li>

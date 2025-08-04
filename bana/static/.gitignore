@@ -1,5 +1,0 @@
-# Ignorer les fichiers compilés Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd

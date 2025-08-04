@@ -10,35 +10,35 @@ class TrajectForm(forms.ModelForm):
         widgets = {
             'start_adress': forms.TextInput(attrs={
                 'id': 'start_adress',
-                'class': 'w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500',
+                'class': 'w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand',
                 'placeholder': 'Entrez le point de départ (Adresse, ville, code postal)',
-                'autocomplete': 'off'
+                'autocomplete': 'on'
             }),
             'end_adress': forms.TextInput(attrs={
                 'id': 'end_adress',
-                'class': 'w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500',
+                'class': 'w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand',
                 'placeholder': 'Entrez le point d’arrivée (Adresse, ville, code postal)',
-                'autocomplete': 'off'
+                'autocomplete': 'on'
             }),
             
             'start_cp': forms.NumberInput(attrs={
                 'id': 'start_cp',
-                'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+                'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm',
                 'placeholder': 'Code postal'
             }),
             'end_cp': forms.NumberInput(attrs={
                 'id': 'end_cp',
-                'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+                'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm',
                 'placeholder': 'Code postal'
             }),
             'start_locality': forms.TextInput(attrs={
                 'id': 'start_locality',
-                'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+                'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm',
                 'placeholder': 'Ville / Commune'
             }),
             'end_locality': forms.TextInput(attrs={
                 'id': 'end_locality',
-                'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+                'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm',
                 'placeholder': 'Ville / Commune'
             }),
         }
@@ -60,20 +60,25 @@ class ProposedTrajectForm(forms.ModelForm):
     )
 
     departure_time = forms.TimeField(
-        widget=forms.TimeInput(
-            attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'time',
-                   'placeholder': 'hh:mm'})
+        widget=forms.TimeInput(attrs={
+            'type': 'time',
+            'class': 'w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand',
+            'placeholder': 'hh:mm'
+        })
     )
+
     arrival_time = forms.TimeField(
-        widget=forms.TimeInput(
-            attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'time',
-                   'placeholder': 'hh:mm'})
+        widget=forms.TimeInput(attrs={
+            'type': 'time',
+            'class': 'w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand',
+            'placeholder': 'hh:mm'
+        })
     )
 
     number_of_places = forms.ChoiceField(
         choices=[('', '-- Sélectionnez le nombre de places --')] + ProposedTraject.NUMBER_PLACE,
         widget=forms.Select(attrs={
-            'class': 'block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500'
+            'class': 'block w-full mt-1 rounded-full border-brand shadow-sm focus:ring-brand focus:border-brand'
         }),
         required=False,
         label="Nombre de places"
@@ -93,7 +98,7 @@ class ProposedTrajectForm(forms.ModelForm):
     )
 
     recurrence_interval = forms.IntegerField(
-        widget=forms.NumberInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
+        widget=forms.NumberInput(attrs={'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm'}),
         required=False,
         label="Intervalle (semaines)",
         min_value=1
@@ -107,13 +112,13 @@ class ProposedTrajectForm(forms.ModelForm):
     )
     date_debut = forms.DateField(
         widget=forms.DateInput(
-            attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'date'}),
+            attrs={'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm', 'type': 'date'}),
         label="Date de début"
     )
 
     date_fin = forms.DateField(
         widget=forms.DateInput(
-            attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'date'}),
+            attrs={'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm', 'type': 'date'}),
         required=False,
         label="Date de fin"
     )
@@ -135,7 +140,7 @@ class ProposedTrajectForm(forms.ModelForm):
         }
         widgets = {
             'details': forms.Textarea(
-                attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+                attrs={'class': 'form-input mt-1 block w-full border-brand shadow-sm',
                        'placeholder': 'Ajoutez des détails utiles pour les passagers'}),
         }
     def clean_tr_weekdays(self):
@@ -172,7 +177,7 @@ class SimpleProposedTrajectForm(forms.ModelForm):
     number_of_places = forms.ChoiceField(
         choices=[('', '-- Sélectionnez le nombre de places --')] + ProposedTraject.NUMBER_PLACE,
         widget=forms.Select(attrs={
-            'class': 'block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500'
+            'class': 'block w-full mt-1 rounded-full border-brand shadow-sm focus:ring-brand focus:border-brand'
         }),
         required=False,
         label="Nombre de places"
@@ -190,7 +195,7 @@ class SimpleProposedTrajectForm(forms.ModelForm):
             ("7", "Dimanche")
         ],
         widget=forms.Select(attrs={
-            'class': 'block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500'
+            'class': 'block w-full mt-1 rounded-full border-brand shadow-sm focus:ring-brand focus:border-brand'
         }),
         label="Jour de la semaine",
         required=True
@@ -198,7 +203,7 @@ class SimpleProposedTrajectForm(forms.ModelForm):
 
     date_debut = forms.DateField(
         widget=forms.DateInput(attrs={
-            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
+            'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm',
             'type': 'date'
         }),
         label="Date de début"
@@ -215,9 +220,9 @@ class SimpleProposedTrajectForm(forms.ModelForm):
         widgets = {
             'start_adress': forms.TextInput(attrs={
                 'id': 'start_adress',
-                'class': 'w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500',
+                'class': 'w-full p-3 mt-1 border-brand rounded-lg shadow-sm rounded-full focus:ring-brand focus:border-brand',
                 'placeholder': 'Entrez le point de départ (Adresse, ville, code postal)',
-                'autocomplete': 'off'
+                'autocomplete': 'on'
             }),
         }
 
@@ -241,14 +246,14 @@ class ResearchedTrajectForm(forms.ModelForm):
  
     
     #detour_distance = forms.FloatField(
-    #    widget=forms.NumberInput(attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'}),
+    #    widget=forms.NumberInput(attrs={'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm'}),
     #    label="Détour maximum (km)",
     #    required=False
     #)
 
     departure_time = forms.TimeField(
         widget=forms.TimeInput(attrs={
-            'class': 'w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500',
+            'class': 'w-full p-3 mt-1 border-brand rounded-lg shadow-sm rounded-full focus:ring-brand focus:border-brand',
             'type': 'time',
             'placeholder': 'hh:mm'
         }),
@@ -256,7 +261,7 @@ class ResearchedTrajectForm(forms.ModelForm):
     )
     arrival_time = forms.TimeField(
         widget=forms.TimeInput(attrs={
-            'class': 'w-full p-3 mt-1 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500',
+            'class': 'w-full p-3 mt-1 border-brand rounded-lg shadow-sm rounded-full focus:ring-brand focus:border-brand',
             'type': 'time',
             'placeholder': 'hh:mm'
         }),
@@ -278,7 +283,7 @@ class ResearchedTrajectForm(forms.ModelForm):
 
     recurrence_interval = forms.IntegerField(
         widget=forms.NumberInput(attrs={
-            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'
+            'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm'
         }),
         required=False,
         label="Intervalle (semaines)",
@@ -295,7 +300,7 @@ class ResearchedTrajectForm(forms.ModelForm):
     date_debut = forms.DateField(
         widget=forms.DateInput(attrs={
             'type': 'date',
-            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'
+            'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm'
         }),
         required=False
     )
@@ -303,7 +308,7 @@ class ResearchedTrajectForm(forms.ModelForm):
     date_fin = forms.DateField(
         widget=forms.DateInput(attrs={
             'type': 'date',
-            'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm'
+            'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm'
         }),
         required=False
     )

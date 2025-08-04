@@ -22,3 +22,11 @@ __pycache__/
 backup/
 **/backup/
 *.bak
+
+# Fichiers CSS/SCSS inutilisés ou générés automatiquement
+bana/static/bana/css/style.css
+bana/static/css/dist/styles.css
+bana/static/members/css/
+bana/static/members/scss/
+bana/static/static_pages/css/
+bana/theme/static/css/dist/styles.css
