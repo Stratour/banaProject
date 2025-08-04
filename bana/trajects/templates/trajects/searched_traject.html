@@ -1,318 +1,147 @@
-{% extends '/home/bana_community/banaProject/bana/accounts/templates/allauth/layouts/base.html' %}
+{% extends "allauth/layouts/base.html" %}
+{% load static %}
 
 {% block title %}Créer une demande de trajet | BanaCommunity{% endblock %}
 
 {% block content %}
+<div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+  {% if messages %}
+  <ul class="mb-4 space-y-2">
+    {% for message in messages %}
+    <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
 
-    <div class="bg-gray-100 min-h-screen p-6">
-        <div class="container mx-auto">
-            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center"> 🚗 Recherche de trajets</h2>
-            
-        {% if messages %}
-        <ul class="mb-4">
-            {% for message in messages %}
-            <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">
-                {{ message }}
-            </li>
-            {% endfor %}
-        </ul>
-        {% endif %}
-            <ul class="flex border-b border-gray-300">
-                <li class="mr-4">
-                    <a href="{% url 'researched_traject' %}"
-                        class="inline-block px-4 py-2 text-gray-700 font-medium border-b-2 border-indigo-600">
-                        🔎 Nouveau trajet
-                    </a>
-                </li>
-                <li class="mr-4">
-                    <a href="{% url 'my_researched_trajects' %}"
-                        class="inline-block px-4 py-2 text-gray-600 hover:text-indigo-600 hover:border-b-2 hover:border-indigo-400 transition">
-                        📋 Mes demandes
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'my_matchings_researched' %}"
-                        class="inline-block px-4 py-2 text-gray-600 hover:text-indigo-600 hover:border-b-2 hover:border-indigo-400 transition">
-                        🤝 Mes correspondances
-                    </a>
-                </li>
-            </ul>
+  {% include "./component_researched_tabs.html" %}
 
-            
-            <!-- Search Bar -->
-            <form method="POST" action="{% url 'researched_traject' %}" class="bg-white shadow-lg rounded-lg p-6 mb-6">
-                {% csrf_token %}
-                        <!-- Point de départ -->
-                        <div>
-                            <label for="start_adress" class="block text-sm font-medium text-gray-700">🚀 Point de départ</label>
-                            {{ traject_form.start_adress }}
-                            <div>
-                                <ul id="start-suggestion-list" class="bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-48 overflow-auto"></ul>
-                            </div>
-                        </div>
+  <form method="POST" action="{% url 'researched_traject' %}" class="my-12 space-y-16">
+    {% csrf_token %}
 
-                        <!-- Heure de départ -->
-                        <div>
-                            <label for="departure_time" class="block text-sm font-medium text-gray-700">🕒 Heure de départ</label>
-                            {{ researched_form.departure_time }}
-                        </div>
-
-                    <!-- Bouton inverser -->
-                    <div class="flex items-center justify-center pt-6">
-                        <button type="button" onclick="swapAddresses()"
-                                class="text-indigo-600 hover:text-indigo-800 text-xl font-bold">
-                            🔄
-                        </button>
-                    </div>
-                    <!-- Ending Point -->
-                        
-                        <div>
-                            <label for="end_adress" class="block text-sm font-medium text-gray-700">🎯 Point d’arrivée</label>
-                            {{ traject_form.end_adress }}
-                            <div>
-                                <ul id="end-suggestion-list" class="bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-48 overflow-auto"></ul>
-                            </div>
-                               
-                        </div>
-                        <!-- Heure d'arrivée -->
-                        <div>
-                            <label for="arrival_time" class="block text-sm font-medium text-gray-700">🕒 Heure d'arrivée</label>
-                            {{ researched_form.arrival_time }}
-                        </div>
-
-			<br>
-			<br>
-                    <!-- Transport Mode -->
-                    <div>
-                        <label for="transport_modes" class="block text-sm font-medium text-gray-700">🚗 Mode de transport</label>
-                            {{ researched_form.transport_modes }}
-                            {% if researched_form.transport_modes.errors %}
-                              <p class="text-sm text-red-600 mt-1">{{ researched_form.transport_modes.errors.0 }}</p>
-                            {% endif %}
-                    </div>
-
-		<br>
-		<br>
-                    <div>
-                        <label for="childrens" class="block text-sm font-medium text-gray-700"> 👶 Enfants()</label>
-                            {{ researched_form.children }}
-                            {% if researched_form.children.errors %}
-                              <p class="text-sm text-red-600 mt-1">{{ researched_form.children.errors.0 }}</p>
-                            {% endif %}
-                    </div>
-                    
-                    <div id="recurrence_days_container" class="mb-6">
-                      <label class="block text-sm font-medium text-gray-700 mb-1">Jours de la semaine</label>
-                      <div class="flex flex-wrap gap-4">
-                        {% for i, day in days_of_week %}
-                          <label class="inline-flex items-center space-x-1">
-                            <input type="checkbox" name="tr_weekdays" value="{{ i }}"
-                                   class="form-checkbox text-indigo-600"
-                                   {% if i in tr_weekdays %}checked{% endif %}>
-                            <span>{{ day }}</span>
-                          </label>
-                        {% endfor %}
-                            {% if researched_form.tr_weekdays.errors %}
-                              <p class="text-sm text-red-600 mt-1">{{ researched_form.tr_weekdays.errors.0 }}</p>
-                            {% endif %}
-                      </div>
-                    </div>
-
-                <!-- Type de récurrence -->
-                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Type de récurrence</label>
-                  {% for radio in researched_form.recurrence_type %}
-                    <label class="block">
-                      {{ radio.tag }}
-                      {{ radio.choice_label }}
-                    </label>
-                  {% endfor %}
-                </div>
-		<br>
-                <!-- Date de début -->
-                <div class="mb-4">
-                  <label for="date_debut" class="block text-sm font-medium text-gray-700 mb-1">Date de début</label>
-                  {{ researched_form.date_debut }}
-                  {% if researched_form.date_debut.errors %}
-                    <p class="text-sm text-red-600 mt-1">{{ researched_form.date_debut.errors.0 }}</p>
-                  {% endif %}
-                </div>
-
-                <!-- Date de fin -->
-                <div id="date_fin_container" class="mb-4">
-                  <label for="date_fin" class="block text-sm font-medium text-gray-700 mb-1">Date de fin</label>
-                  {{ researched_form.date_fin }}
-                  {% if researched_form.date_fin.errors %}
-                    <p class="text-sm text-red-600 mt-1">{{ researched_form.date_fin.errors.0 }}</p>
-                  {% endif %}
-
-                    
-                </div>
-            </fieldset>
-                    
-                <!-- Submit Button -->
-                <div class="mt-6">
-                    <button type="submit"
-                            class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-500 transition duration-200 shadow-md">
-                        💾 Enregistrer la demande de trajet
-                    </button>
-                </div>
-    </form>
-            
-
+    <!-- Étape 1 : départ / arrivée -->
+    <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
+      <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/Icon/Icon_step_path.svg' %}" alt="Logo Bana">
+      <div class="flex-1 space-y-6 w-full">
+        <div>
+          <label class="block text-sm font-bold text-brand uppercase mb-1">Départ</label>
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+            <div class="w-full sm:w-2/3">{{ traject_form.start_adress }}</div>
+            <div class="w-full sm:w-[110px]">{{ researched_form.departure_time }}</div>
+          </div>
         </div>
+        <div>
+          <label class="block text-sm font-bold text-brand uppercase mb-1">Arrivée</label>
+          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+            <div class="w-full sm:w-2/3">{{ traject_form.end_adress }}</div>
+            <div class="w-full sm:w-[110px]">{{ researched_form.arrival_time }}</div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <script>
-  document.querySelectorAll("#start_adress, #end_adress").forEach((inputField) => {
-    let activeIndex = -1;
-    let currentSuggestions = [];
+    <hr class="my-10">
 
-    inputField.addEventListener("input", async (event) => {
-        const query = event.target.value;
-        if (query.length < 3) return;
+    <!-- Étape 2 : calendrier -->
+    <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
+      <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/Icon/Icon_step_calendar.svg' %}" alt="Calendrier">
+      <div class="flex-1 space-y-6 w-full">
+        <div>
+          <label class="block text-sm font-bold text-brand uppercase mb-1">Jours de la semaine</label>
+          <div class="flex flex-wrap gap-2" id="weekday-selector">
+            {% for i, day in days_of_week %}
+            <label data-index="{{ i }}"
+              class="w-10 h-10 flex items-center justify-center text-xs font-semibold 
+              rounded-full cursor-pointer border border-gray-300 text-gray-400
+              {% if i in tr_weekdays %}
+                bg-brand-50 text-brand border-brand
+              {% endif %}">
+              {{ day|slice:":2" }}
+              <input type="checkbox" name="tr_weekdays" value="{{ i }}" class="hidden"
+              {% if i in tr_weekdays %}checked{% endif %}>
+            </label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="flex flex-col md:flex-row gap-6">
+          <div class="flex-1">
+            <label class="block text-sm font-medium uppercase text-brand">Récurrence</label>
+            {% for radio in researched_form.recurrence_type %}
+              <label class="block text-sm">{{ radio.tag }} {{ radio.choice_label }}</label>
+            {% endfor %}
+          </div>
+          <div class="flex-1">
+            <label class="block text-sm font-medium uppercase text-brand">Date de début</label>
+            {{ researched_form.date_debut }}
+          </div>
+          <div class="flex-1" id="date_fin_container">
+            <label class="block text-sm font-medium uppercase text-brand">Date de fin</label>
+            {{ researched_form.date_fin }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium uppercase text-brand mb-1">Moyen de transport</label>
+          {{ researched_form.transport_modes }}
+        </div>
+      </div>
+    </div>
 
-        try {
-            const url = "/trajects/autocomplete/?query=" + encodeURIComponent(query);
-            const response = await fetch(url);
-            if (!response.ok) throw new Error("Error fetching suggestions");
+    <hr class="my-10">
 
-            const data = await response.json();
-            const suggestions = data.suggestions || [];
+    <!-- Étape 3 : enfants -->
+    <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
+      <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/Icon/Icon_step_child.svg' %}" alt="Enfants">
+      <div class="flex-1 space-y-6 w-full">
+        <div>
+          <label class="block text-sm font-bold text-brand uppercase mb-1">Enfants à accompagner</label>
+          <div class="space-y-2">
+            {% for checkbox in researched_form.children %}
+              <label class="inline-flex items-center space-x-2">
+                {{ checkbox.tag }}
+                <span>{{ checkbox.choice_label }}</span>
+              </label>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
 
-            currentSuggestions = suggestions;
-            activeIndex = -1; // reset
-            const suggestionListId = inputField.id === "start_adress" ? "start-suggestion-list" : "end-suggestion-list";
-            const suggestionList = document.getElementById(suggestionListId);
-            suggestionList.innerHTML = "";
+    <div class="text-center">
+      <button type="submit" class="w-full sm:w-auto px-6 py-3 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition">
+        Enregistrer la demande de trajet
+      </button>
+    </div>
+  </form>
+</div>
 
-            suggestions.forEach((suggestion, index) => {
-                const li = document.createElement("li");
-                li.textContent = suggestion;
-                li.classList.add("cursor-pointer", "p-2", "hover:bg-gray-100");
-                li.dataset.index = index;
-                li.addEventListener("click", () => {
-                    inputField.value = suggestion;
-                    suggestionList.innerHTML = "";
-                });
-                suggestionList.appendChild(li);
-            });
-
-        } catch (error) {
-            console.error("Error fetching suggestions:", error);
-        }
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const labels = document.querySelectorAll('#weekday-selector label');
+    labels.forEach(label => {
+      label.addEventListener('click', () => {
+        const input = label.querySelector('input');
+        input.checked = !input.checked;
+        label.classList.toggle('bg-brand-50', input.checked);
+        label.classList.toggle('text-brand', input.checked);
+        label.classList.toggle('border-brand', input.checked);
+        label.classList.toggle('text-gray-400', !input.checked);
+        label.classList.toggle('border-gray-300', !input.checked);
+      });
     });
 
-    // Navigation clavier
-    inputField.addEventListener("keydown", (event) => {
-        const suggestionListId = inputField.id === "start_adress" ? "start-suggestion-list" : "end-suggestion-list";
-        const suggestionList = document.getElementById(suggestionListId);
-        const items = suggestionList.querySelectorAll("li");
-
-        if (!items.length) return;
-
-        if (event.key === "ArrowDown") {
-            event.preventDefault();
-            if (activeIndex < items.length - 1) activeIndex++;
-        } else if (event.key === "ArrowUp") {
-            event.preventDefault();
-            if (activeIndex > 0) activeIndex--;
-        } else if (event.key === "Enter") {
-            event.preventDefault();
-            if (activeIndex >= 0 && activeIndex < currentSuggestions.length) {
-                inputField.value = currentSuggestions[activeIndex];
-                suggestionList.innerHTML = "";
-                activeIndex = -1;
-                return;
-            }
-        }
-
-        // Met à jour les classes CSS
-        items.forEach((item, i) => {
-            if (i === activeIndex) {
-                item.classList.add("bg-blue-100");
-            } else {
-                item.classList.remove("bg-blue-100");
-            }
-        });
-    });
-});
-
-
-        
-document.addEventListener("DOMContentLoaded", function () {
     const dateFinContainer = document.getElementById("date_fin_container");
     const recurrenceRadios = document.querySelectorAll('input[name="recurrence_type"]');
-    const weekdayCheckboxes = document.querySelectorAll('input[name="tr_weekdays"]');
-
-    function toggleRecurrenceFields() {
-        const selectedType = document.querySelector('input[name="recurrence_type"]:checked')?.value;
-        const selectedDaysCount = Array.from(weekdayCheckboxes).filter(cb => cb.checked).length;
-
-        // 1. Afficher/cacher date_fin
-        if (selectedType === "weekly" || selectedType === "biweekly") {
-            dateFinContainer.style.display = 'block';
-        } else if (selectedType === "one_week") {
-            dateFinContainer.style.display = selectedDaysCount > 1 ? 'block' : 'none';
-        } else {
-            dateFinContainer.style.display = 'none';
-        }
-
-        // 2. Modifier dynamiquement le texte du label "one_week"
-        const oneWeekInput = document.querySelector('input[name="recurrence_type"][value="one_week"]');
-        if (oneWeekInput) {
-            const oneWeekLabel = oneWeekInput.closest("label");
-            const newText = selectedDaysCount > 1 ? "Plusieurs jours" : "Un jour";
-
-            // Supprimer les anciens noeuds après l'input
-            while (oneWeekInput.nextSibling) {
-                oneWeekLabel.removeChild(oneWeekInput.nextSibling);
-            }
-
-            // Ajouter le nouveau texte
-            oneWeekLabel.appendChild(document.createTextNode(" " + newText));
-        }
-    }
-
-    // Initialisation
-    toggleRecurrenceFields();
-
-    // Écouteurs d'événements
-    recurrenceRadios.forEach(radio => {
-        radio.addEventListener("change", toggleRecurrenceFields);
-    });
-
-    weekdayCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener("change", toggleRecurrenceFields);
-    });
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    const dateFinContainer = document.getElementById("date_fin_container");
-
-    const radios = document.querySelectorAll('input[name="recurrence_type"]');
-
     function toggleDateFin() {
-        const selected = document.querySelector('input[name="recurrence_type"]:checked');
-        if (!selected) return;
-
-        const value = selected.value;
-
-        if (value === "weekly" || value === "biweekly") {
-            dateFinContainer.style.display = "block";
-        } else {
-            dateFinContainer.style.display = "none";
-        }
+      const selected = document.querySelector('input[name="recurrence_type"]:checked');
+      if (!selected) return;
+      const value = selected.value;
+      if (value === "weekly" || value === "biweekly") {
+        dateFinContainer.style.display = "block";
+      } else {
+        dateFinContainer.style.display = "none";
+      }
     }
-
-    // Initialisation
     toggleDateFin();
-
-    // Ajout des écouteurs
-    radios.forEach(radio => {
-        radio.addEventListener("change", toggleDateFin);
-    });
-});
-
-    </script>
-{% endblock content%}
+    recurrenceRadios.forEach(radio => radio.addEventListener("change", toggleDateFin));
+  });
+</script>
+{% endblock %}

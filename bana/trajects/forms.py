@@ -233,14 +233,14 @@ class SimpleProposedTrajectForm(forms.ModelForm):
         model = Traject
         fields = ['start_adress',"number_of_places"]
         labels = {
-            'start_adress': "Ville de départ", 
+            'start_adress': "Ville de départ",
             'number_of_places': 'Nombre de places',
         }
         
         widgets = {
             'start_adress': forms.TextInput(attrs={
                 'id': 'start_adress',
-                'class': 'w-full p-3 mt-1 border-brand rounded-lg shadow-sm rounded-full focus:ring-brand focus:border-brand',
+                'class': 'w-full p-3 mt-1 border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand',
                 'placeholder': 'Entrez le point de départ (Adresse, ville, code postal)',
                 'autocomplete': 'on'
             }),

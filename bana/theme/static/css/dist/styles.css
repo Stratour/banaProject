@@ -1698,6 +1698,12 @@ select {
   margin-bottom: calc(2rem * var(--tw-space-y-reverse));
 }
 
+.space-y-3 > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-y-reverse: 0;
+  margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+  margin-bottom: calc(0.75rem * var(--tw-space-y-reverse));
+}
+
 .divide-y > :not([hidden]) ~ :not([hidden]) {
   --tw-divide-y-reverse: 0;
   border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
@@ -2132,6 +2138,10 @@ select {
   padding-top: 3rem;
 }
 
+.pb-2 {
+  padding-bottom: 0.5rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -2491,6 +2501,12 @@ select {
   border-color: rgb(215 252 25 / var(--tw-border-opacity, 1));
 }
 
+.hover\:scale-110:hover {
+  --tw-scale-x: 1.1;
+  --tw-scale-y: 1.1;
+  transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+}
+
 .hover\:border-b-2:hover {
   border-bottom-width: 2px;
 }
@@ -2513,6 +2529,11 @@ select {
 .hover\:border-brand-200:hover {
   --tw-border-opacity: 1;
   border-color: rgb(31 171 137 / var(--tw-border-opacity, 1));
+}
+
+.hover\:border-brand:hover {
+  --tw-border-opacity: 1;
+  border-color: rgb(0 127 115 / var(--tw-border-opacity, 1));
 }
 
 .hover\:bg-blue-700:hover {
@@ -2757,6 +2778,11 @@ select {
 
   .sm\:p-8 {
     padding: 2rem;
+  }
+
+  .sm\:text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
   }
 }
 
