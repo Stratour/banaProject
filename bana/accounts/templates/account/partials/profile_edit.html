@@ -54,11 +54,11 @@
     </p>
     
     <!-- Bio -->
-    <strong>Biographie :</strong>
+    <p><strong>Biographie :</strong></p>
       {{ profile_form.bio }}
     
       <div class="mb-4">
-  {{ profile_form.document_bvm.label_tag }}
+  <p><strong>Bonne vie et moeurs (extrait 596.2, utilisé dans le cadre de l'encadrement de mineurs)</strong></p>
   {{ profile_form.document_bvm }}
   {% if user.profile.document_bvm %}
     <a href="{{ user.profile.document_bvm.url }}" target="_blank" class="text-blue-600 underline ml-2">Voir le document</a>

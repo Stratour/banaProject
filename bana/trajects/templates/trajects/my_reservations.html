@@ -22,15 +22,19 @@
       {% for r in made_reservations %}
         <li class="p-4 bg-white shadow rounded">
           <p class="text-sm text-gray-700">
-                <strong>{{ r.traject.user.profile.service | title }} :</strong> 
-                <a href="{% url 'accounts:profile_user' user_id=r.traject.user.id%}" class="text-blue-600 hover:underline">
-                  {% if r.traject.user.profile.ci_is_verified %}
-                  {{ r.traject.user.profile.verified_first_name }} {{ r.traject.user.profile.verified_last_name|slice:":1" }}.
-                  {% else %}
-                  {{ r.traject.user.first_name }} {{ r.traject.user.last_name|slice:":1" }}.
-                  {% endif %}
-                  </a>
-              </p>
+            <strong>{{ r.traject.user.profile.service | title }} :</strong> 
+	    {% if is_abonned == True %}
+	      <a href="{% url 'accounts:profile_user' user_id=r.traject.user.id%}" class="text-blue-600 hover:underline">
+               {% if r.traject.user.profile.ci_is_verified %}
+                 {{ r.traject.user.profile.verified_first_name }} {{ r.traject.user.profile.verified_last_name|slice:":1" }}.
+               {% else %}
+                 {{ r.traject.user.first_name }} {{ r.traject.user.last_name|slice:":1" }}.
+                {% endif %}
+               </a>
+            {% else %}
+	    <span class="text-red-700 px-4 py-3 rounded relative">Vous devez vous abonner pour pouvoir entrer en contact avec le Yaya</a>
+            {% endif %}
+          </p>
           <p><strong>Trajet :</strong> {{ r.traject.traject.start_adress }} à {{ r.traject.departure_time }} → {{ r.traject.traject.end_adress }} à {{ r.traject.arrival_time }}</p>
           <p><strong>Date :</strong> {{ r.traject.date|date:"l d F Y" }}</p>
           <p> <strong>Transport :</strong> 

@@ -1,10 +1,9 @@
 from django.db import models
-
 from django.contrib.auth.models import User
 
 # Create your models here.
 
-class Subscription(models.Model):        
+class Subscription(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     stripe_customer_id = models.CharField(max_length=255, blank=True, null=True)
     stripe_subscription_id = models.CharField(max_length=255, blank=True, null=True)
@@ -19,6 +18,22 @@ class Subscription(models.Model):
 
     def __str__(self):
         return f"{self.user.username} — {self.product_name} - {'Actif' if self.is_active else 'Inactif'}"
+    
+    # Méthode de classe pour vérifier l'abonnement
+    # Dans views.py
+    # from stripe_sub.models import Subscription
+    # is_abonned = Subscription.is_user_abonned(user)
+
+    @classmethod
+    def is_user_abonned(cls, user_instance):
+        """
+        Vérifie si l'utilisateur a un abonnement actif.
+        Renvoie True ou False.
+        """
+        if user_instance is None or not user_instance.is_authenticated:
+            return False
+            
+        return cls.objects.filter(user=user_instance, is_active=True).exists()
     
     #def check_if_expired(self):
     #    from django.utils import timezone

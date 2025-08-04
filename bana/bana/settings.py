@@ -276,6 +276,7 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True  # auto-confirmation au clic
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "/accounts/profile/" 
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3  # (par défaut, 3 jours)
 
 # 🔒 Empêche que des bots puissent détecter les emails existants
 ACCOUNT_PREVENT_ENUMERATION = False  # sécurité activée
@@ -310,7 +311,7 @@ ACCOUNT_FORMS = {
     'signup': 'accounts.forms.CustomSignupForm'
 }
 
-STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY_TEST",default="secret")
-STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY_TEST",default="secret")
-STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET_TEST",default="secret")
+STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY",default="secret")
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY",default="secret")
+STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET_TEST2",default="secret")
 

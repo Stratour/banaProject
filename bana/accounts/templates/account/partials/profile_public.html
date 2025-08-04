@@ -23,7 +23,7 @@
     </p>
     {% else %}
     <p><strong>Prénom :</strong> {{ user.first_name }}</p>
-    <p><strong>Nom :</strong> {{ user.last_name }}</p>  
+    <p><strong>Nom :</strong> {{ user.last_name|slice:"1" }}.</p>  
     <p><strong>Adresse :</strong> {{ user.profile.address }}</p>     
     {% endif %}
 

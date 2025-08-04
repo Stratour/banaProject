@@ -22,8 +22,8 @@ def subscription(request):
 
     # Associer les bons IDs selon le rôle
     product_ids = {
-        'yaya': 'prod_SlMhIVC2sprior',
-        'parent': 'prod_SlKb8ZQdG6holQ',
+        'yaya': 'prod_SnxoCNepc3XzFh',
+        'parent': 'prod_SnxmIb87vsH2dh',
     }
 
     product_id = product_ids.get(status)
@@ -253,7 +253,7 @@ def stripe_webhook(request):
 
                 profile.verified_first_name = document.get("first_name")
                 profile.verified_last_name = document.get("last_name")
-                profile.verified_address = document.get("address")
+                #profile.verified_address = document.get("address")
                 profile.verified_dob = document.get("dob")
                 # Récupérer l’image temporaire de la pièce d’identité
                 front_id = document.get("front")

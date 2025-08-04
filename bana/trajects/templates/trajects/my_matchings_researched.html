@@ -48,8 +48,18 @@
             <div class="border-t border-gray-200 pt-2 mt-2">
               <p class="text-sm text-gray-700">
                 <strong>{{ proposal.user.profile.service | title }} :</strong> 
-                <a href="{% url 'accounts:profile_user' user_id=proposal.user.id%}" class="text-blue-600 hover:underline">
-                  {{ proposal.user.profile.verified_first_name }} {{ proposal.user.last_name|slice:":1" }}.
+
+                {% if is_abonned == True %}
+                  <a href="{% url 'accounts:profile_user' user_id=proposal.user.id%}" class="text-blue-600 hover:underline">
+                  {% if proposal.user.profile.ci_verified %}
+                    {{ proposal.user.verified_first_name }} {{ proposal.user.verified_last_name|slice:":1" }}.
+                  {% else %}
+                    {{ proposal.user.first_name }} {{ proposal.user.last_name|slice:":1" }}.
+                  {% endif %}
+                {% else %} 
+		  <span class="text-red-700 px-4 py-3 rounded relative">Vous devez vous abonner pour pouvoir entrer en contact avec le Yaya</a>
+                {% endif %}
+                  
                   </a>
               </p>
               <p class="text-sm text-gray-700">
@@ -95,28 +105,31 @@
               </p>
 
               <p class="text-sm text-gray-700">
-  <strong>Enfant(s) sélectionné(s) :</strong>
-  {% if match.research.children.all %}
-    {% for child in match.research.children.all %}
-      {{ child.chld_surname }} {{ child.chld_name }}{% if not forloop.last %}, {% endif %}
-    {% endfor %}
-  {% else %}
-    Aucun enfant sélectionné
-  {% endif %}
-</p>
-           
-          {% if match.research and match.research.id %}
-            {% if proposal.number_of_places|add:'0' > 0 %}
-            <form method="POST" action="{% url 'auto_reserve' proposal.id match.research.id %}">
-              {% csrf_token %}
-              <button type="submit" class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-green-600">Demander une réservation</button>
-            </form>
-            {% else %}
-              <p class="mt-3 inline-block px-4 py-2 bg-red-200 text-red-800 font-semibold rounded">
-                Complet
+	        <strong>Enfant(s) sélectionné(s) :</strong>
+                {% if match.research.children.all %}
+                  {% for child in match.research.children.all %}
+                    {{ child.chld_surname }} {{ child.chld_name }}{% if not forloop.last %}, {% endif %}
+                  {% endfor %}
+                {% else %}
+                  Aucun enfant sélectionné
+                {% endif %}
               </p>
+            {% if match.research and match.research.id %}
+              {% if proposal.number_of_places|add:'0' > 0 %}
+
+                {% if is_abonned == True %}
+	          <form method="POST" action="{% url 'auto_reserve' proposal.id match.research.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-green-600">Demander une réservation</button>
+                  </form>
+                {% else %}
+  		  <a href="{% url 'subscription' %}"><button type="submit" class="mt-3 px-4 py-2 bg-blue-500 text-white rounded hover:bg-green-600">M'abonner</button></a>
+                {% endif %}
+
+              {% else %}
+                <p class="mt-3 inline-block px-4 py-2 bg-red-200 text-red-800 font-semibold rounded"> Complet </p>
+              {% endif %}
             {% endif %}
-          {% endif %}
           {% endfor %}
         </li>
       {% endfor %}

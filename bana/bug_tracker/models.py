@@ -59,8 +59,8 @@ class Bug(models.Model):
     
     # Informations de base
     title = models.CharField(max_length=200)
-    description = models.TextField()
-    reproduction_steps = models.TextField(verbose_name="Étapes de reproduction", blank=True, null=True)
+    description = models.TextField(max_length=500, blank=True, null=True)
+    reproduction_steps = models.TextField(max_length=500, blank=True, null=True, verbose_name="Étapes de reproduction")
     
     # Classification et priorisation
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='open')
@@ -104,9 +104,9 @@ class Bug(models.Model):
     
     # Environnement
     environment = models.ForeignKey(Environment, on_delete=models.CASCADE)
-    operating_system = models.CharField(max_length=100, verbose_name="Système d'exploitation")
-    browser = models.CharField(max_length=100, blank=True)
-    device = models.CharField(max_length=100, blank=True, verbose_name="Appareil")
+    operating_system = models.CharField(max_length=10, blank=True, null=True, verbose_name="Système d'exploitation", default="-")
+    browser = models.CharField(max_length=100, blank=True, null=True, default="-")
+    device = models.CharField(max_length=100, blank=True, null=True, verbose_name="Appareil", default="-")
     
     def __str__(self):
         return f"#{self.id} - {self.title}"

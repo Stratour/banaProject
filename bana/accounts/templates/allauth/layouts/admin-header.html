@@ -6,8 +6,15 @@
     <div class="flex items-center gap-4">
         <div class="flex items-center gap-2">
         {% load static %}
-            <img src="{% static 'bana/img/other/Nyota.png' %}" alt="User" class="w-16 h-16 rounded-full">
+        {% if user.profile.profile_picture %}
+            <a href="{% url 'accounts:profile' %}"><img src="{{ user.profile.profile_picture.url }}" alt="User" class="w-16 h-16 rounded-full"></a>
             <span class="text-sm text-gray-700 font-medium">{{ request.user.first_name }}</span>
+        {% else %}
+            <a href="{% url 'accounts:profile' %}"><h1 class="no-image">
+              {{ user.profile.verified_first_name.0 }}.{{ user.profile.verified_last_name.0 }}
+            </h1></a>
+            <span class="text-sm text-gray-700 font-medium">{{ request.user.first_name }}</span>
+        {% endif %}
         </div>
     </div>
 </header>

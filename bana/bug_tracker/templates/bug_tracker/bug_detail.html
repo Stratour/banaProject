@@ -22,6 +22,19 @@
                 </div>
             </div>
             <div class="card-body">
+                <div class="mb-3">
+                    <strong>Description:</strong>
+                    <div class="mt-2 p-3 bg-light rounded">
+                        {{ bug.description|linebreaks }}
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <strong>Étapes de reproduction:</strong>
+                    <div class="mt-2 p-3 bg-light rounded">
+                        {{ bug.reproduction_steps|linebreaks }}
+                    </div>
+                </div>
+                <hr>
                 <div class="row mb-3">
                     <div class="col-md-3">
                         <strong>Statut:</strong><br>
@@ -45,7 +58,7 @@
                         <span class="badge bg-secondary">{{ bug.component.name }}</span>
                     </div>
                 </div>
-                
+                <hr>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <strong>Assigné à:</strong><br>
@@ -59,21 +72,6 @@
                         <small class="text-muted">le {{ bug.created_at|date:"d/m/Y à H:i" }}</small>
                     </div>
                 </div>
-                
-                <hr>
-                
-                <div class="mb-3">
-                    <strong>Description:</strong>
-                    <div class="mt-2 p-3 bg-light rounded">
-                        {{ bug.description|linebreaks }}
-                    </div>
-                </div>
-                
-                <div class="mb-3">
-                    <strong>Étapes de reproduction:</strong>
-                    <div class="mt-2 p-3 bg-light rounded">
-                        {{ bug.reproduction_steps|linebreaks }}
-                    </div>
                 </div>
             </div>
         </div>

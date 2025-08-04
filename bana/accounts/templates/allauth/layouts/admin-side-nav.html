@@ -1,7 +1,7 @@
 <!-- Logo -->
 <div class="p-6 border-b flex justify-center">
     {% load static %}
-    <img class="w-20 h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}?v={{ timestamp }} " alt="Logo Bana">
+    <a href="{% url 'home' %}"><img class="w-20 h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Logo Bana"></a>
 </div>
 
 <!-- Navigation -->
@@ -28,7 +28,7 @@
             <li>
                 <a href="{% url 'accounts:profile_child' %}"
                    class="flex items-center gap-2 py-2 px-4 
-                          {% if request.path == '/accounts/profile_child/' %}
+                          {% if request.path == '/accounts/profil_child/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
@@ -51,7 +51,7 @@
             <li>
                 <a href="{% url 'researched_traject' %}"
                    class="flex items-center gap-2 py-2 px-4 
-                          {% if request.path == '/researched_traject/' %}
+                          {% if request.path == '/trajects/researched_traject/' or request.path == '/trajects/researched/mine/' or request.path == '/trajects/matchings/parent/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
@@ -68,7 +68,7 @@
             <li>
                 <a href="{% url 'proposed_traject' %}"
                    class="flex items-center gap-2 py-2 px-4 
-                          {% if request.path == '/trajects/proposed_traject/' %}
+                          {% if request.path == '/trajects/proposed_traject/' or request.path == '/trajects/proposed/mine/' or request.path == '/trajects/matchings/yaya/' %}
                               rounded-full bg-brand text-brand-50 font-semibold
                           {% else %}
                               text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full
