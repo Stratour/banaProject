@@ -10,7 +10,7 @@ class Profile(models.Model):
     ci_is_verified = models.BooleanField(default=False)
     bvm_is_verified = models.BooleanField(default=False)
     prfl_is_verified = models.BooleanField(default=False)
-    document_bvm = models.FileField(upload_to='bvm/', blank=True, null=True, verbose_name="Bonne vie et moers")
+    document_bvm = models.FileField(upload_to='bvm/', blank=True, null=True, verbose_name="Bonne vie et moeurs (extrait 596.2, utilisé dans le cadre de l'encadrement de mineurs)")
 
     service = models.CharField(
         max_length=30,

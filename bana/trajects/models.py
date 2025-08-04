@@ -87,6 +87,7 @@ class ProposedTraject(models.Model):
     date_fin = models.DateField(blank=True, null=True)
     
     is_simple = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     
     def __str__(self):
         return f"{self.user.username} - {self.traject.start_adress} → {self.traject.end_adress} ({self.date})"
@@ -115,6 +116,7 @@ class ResearchedTraject(models.Model):
     date = models.DateField(blank=True, null=True)
     date_debut = models.DateField(blank=True, null=True)
     date_fin = models.DateField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
     
     recurrence_type = models.CharField(
         max_length=30,

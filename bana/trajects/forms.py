@@ -1,7 +1,7 @@
 from django import forms
 from accounts.models import Languages, Child
 from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode, Reservation
-
+from django.core.exceptions import ValidationError
 
 class TrajectForm(forms.ModelForm):
     class Meta:
@@ -54,9 +54,9 @@ class ProposedTrajectForm(forms.ModelForm):
     
     languages = forms.ModelMultipleChoiceField(
         queryset=Languages.objects.all(),
-        widget=forms.CheckboxSelectMultiple(attrs={'class': 'form-checkbox'}),
-        label="Langues parlées",
-        required=False
+        widget=forms.SelectMultiple(attrs={'size': 5}),
+        required=False,
+        label="Langues parlées"
     )
 
     departure_time = forms.TimeField(
@@ -110,6 +110,15 @@ class ProposedTrajectForm(forms.ModelForm):
             attrs={'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm', 'type': 'date'}),
         label="Date de début"
     )
+    
+    def clean_date_debut(self):
+        date_debut = self.cleaned_data.get('date_debut')
+
+        if date_debut and date_debut < date.today():
+            raise ValidationError("La date de début ne peut pas être antérieure à la date d'aujourd'hui.")
+
+        return date_debut
+
 
     date_fin = forms.DateField(
         widget=forms.DateInput(
@@ -158,7 +167,7 @@ class ProposedTrajectForm(forms.ModelForm):
             self.fields['date_debut'].required = True
             self.fields['date_fin'].required = True
             self.fields['recurrence_interval'].initial = 1 if recurrence_type == 'weekly' else 2
-
+from datetime import date 
 class SimpleProposedTrajectForm(forms.ModelForm):
     # Champs complémentaires (hors modèle)
     transport_modes = forms.ModelMultipleChoiceField(
@@ -195,7 +204,7 @@ class SimpleProposedTrajectForm(forms.ModelForm):
         label="Jour de la semaine",
         required=True
     )
-
+    
     date_debut = forms.DateField(
         widget=forms.DateInput(attrs={
             'class': 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm',
@@ -203,6 +212,14 @@ class SimpleProposedTrajectForm(forms.ModelForm):
         }),
         label="Date de début"
     )
+
+    def clean_date_debut(self):
+        date_debut = self.cleaned_data.get('date_debut')
+
+        if date_debut and date_debut < date.today():
+            raise ValidationError("La date de début ne peut pas être antérieure à la date d'aujourd'hui.")
+
+        return date_debut
 
     class Meta:
         model = Traject
@@ -299,6 +316,15 @@ class ResearchedTrajectForm(forms.ModelForm):
         }),
         required=False
     )
+    
+    def clean_date_debut(self):
+        date_debut = self.cleaned_data.get('date_debut')
+
+        if date_debut and date_debut < date.today():
+            raise ValidationError("La date de début ne peut pas être antérieure à la date d'aujourd'hui.")
+
+        return date_debut
+
 
     date_fin = forms.DateField(
         widget=forms.DateInput(attrs={

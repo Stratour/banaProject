@@ -268,3 +268,114 @@ def add_child_view(request):
     }
     #return render(request, 'account/partials/profil_add_child.html', context)
     return render(request, 'account/profile/profil_add_child.html', context)
+
+
+from django.contrib.auth.models import User
+from accounts.models import Profile  # Remplacez 'monapp' par le nom de votre application
+import random
+import json
+
+def pop_profile(request):
+    """
+    """
+
+    # --- Liste de vraies adresses de lieux publics à Bruxelles (au format JSON simulé) ---
+    adresses_bruxelles = [
+        {
+            "line1": "Place de la Bourse",
+            "city": "Bruxelles",
+            "country": "BE",
+            "postal_code": "1000"
+        },
+        {
+            "line1": "Grand-Place",
+            "city": "Bruxelles",
+            "country": "BE",
+            "postal_code": "1000"
+        },
+        {
+            "line1": "Rue du Marché aux Herbes 61",
+            "city": "Bruxelles",
+            "country": "BE",
+            "postal_code": "1000"
+        },
+        {
+            "line1": "Avenue Louise 23",
+            "city": "Ixelles",
+            "country": "BE",
+            "postal_code": "1050"
+        },
+        {
+            "line1": "Rue de la Loi 1",
+            "city": "Bruxelles",
+            "country": "BE",
+            "postal_code": "1000"
+        },
+        {
+            "line1": "Chaussée de Wavre 25",
+            "city": "Ixelles",
+            "country": "BE",
+            "postal_code": "1050"
+        },
+        {
+            "line1": "Rue Neuve",
+            "city": "Bruxelles",
+            "country": "BE",
+            "postal_code": "1000"
+        },
+        {
+            "line1": "Chaussée de Charleroi 154",
+            "city": "Saint-Gilles",
+            "country": "BE",
+            "postal_code": "1060"
+        },
+        {
+            "line1": "Avenue des Saisons 123",
+            "city": "Ixelles",
+            "country": "BE",
+            "postal_code": "1050"
+        },
+        {
+            "line1": "Place Flagey",
+            "city": "Ixelles",
+            "country": "BE",
+            "postal_code": "1050"
+        },
+        {
+            "line1": "Place Brugmann 18",
+            "city": "Ixelles",
+            "country": "BE",
+            "postal_code": "1050"
+        },
+    ]
+    
+    # Options pour les champs "service" et "transport_modes"
+    services = ['parent', 'yaya']
+    transports = ['voiture', 'transport en commun', 'vélo', 'à pied']
+    
+    
+    # --- Récupération des utilisateurs et création des profils ---
+    users = list(User.objects.filter(username__startswith='lambda_'))
+    random.shuffle(adresses_bruxelles) # Mélanger la liste pour des adresses aléatoires
+    
+    # Utilisation d'une compréhension de liste pour créer les objets Profile
+    profiles_to_create = [
+        Profile(
+            user=user,
+            # On choisit une adresse et on la sérialise en JSON
+            address=json.dumps(adresses_bruxelles.pop()),
+            ci_is_verified=True,
+            service=random.choice(services),
+            transport_modes=random.sample(transports, random.randint(1, 3)),
+            bio=f"Bonjour, je suis {user.first_name}. Je recherche des services de garde d'enfants.",
+            phone=f"04{random.randint(70, 79)}{random.randint(100000, 999999)}"
+        ) for user in users
+    ]
+    
+    # Insertion des profils dans la base de données en une seule requête
+    Profile.objects.bulk_create(profiles_to_create)
+    
+    # --- Vérification finale ---
+    print(f"Création de {len(profiles_to_create)} profils terminée.")
+    for p in Profile.objects.all():
+        print(f"Profil pour l'utilisateur '{p.user.username}' créé. Adresse: {json.loads(p.address)['line1']}, {json.loads(p.address)['city']}.")

@@ -14,7 +14,7 @@ from django.db.models import Q
 from datetime import datetime, timedelta
 from django.core.paginator import Paginator
 from django.utils.timezone import now
-
+from datetime import date
 
 def find_matching_trajects(obj):
     """
@@ -39,7 +39,7 @@ def find_matching_trajects(obj):
     if isinstance(obj, ResearchedTraject):
 
         # --- SENS 1 : On récupère toutes les propositions qui CONTIENNENT l'adresse recherchée ---
-        qs1 = ProposedTraject.objects.filter(date=obj.date)
+        qs1 = ProposedTraject.objects.filter(date=obj.date, date_debut__gte=date.today())
         if obj.traject and obj.traject.start_adress:
             qs1 = qs1.filter(traject__start_adress__icontains=obj.traject.start_adress.strip())
         if obj.traject and obj.traject.end_adress:
@@ -53,7 +53,7 @@ def find_matching_trajects(obj):
         results.update(list(qs1))  # On ajoute les résultats au set
 
         # --- SENS 2 : On récupère toutes les propositions, puis on garde celles où L'ADRESSE DU PROPOSÉ contient l'adresse recherchée ---
-        all_proposed = ProposedTraject.objects.filter(date=obj.date)
+        all_proposed = ProposedTraject.objects.filter(date=obj.date, date_debut__gte=date.today())
         for proposed in all_proposed:
             parent_dep = normalize(obj.traject.start_adress if obj.traject else '')
             prop_dep = normalize(proposed.traject.start_adress if proposed.traject else '')
@@ -79,7 +79,7 @@ def find_matching_trajects(obj):
     elif isinstance(obj, ProposedTraject):
 
         # --- SENS 1 : On récupère toutes les recherches qui CONTIENNENT l'adresse proposée ---
-        qs1 = ResearchedTraject.objects.filter(date=obj.date)
+        qs1 = ResearchedTraject.objects.filter(date=obj.date, date_debut__gte=date.today())
         if obj.traject and obj.traject.start_adress:
             qs1 = qs1.filter(traject__start_adress__icontains=obj.traject.start_adress.strip())
         if obj.traject and obj.traject.end_adress:
@@ -93,7 +93,7 @@ def find_matching_trajects(obj):
         results.update(list(qs1))
 
         # --- SENS 2 : On récupère toutes les recherches, puis on garde celles où l'adresse proposée contient la recherche ---
-        all_researched = ResearchedTraject.objects.filter(date=obj.date)
+        all_researched = ResearchedTraject.objects.filter(date=obj.date, date_debut__gte=date.today())
         for researched in all_researched:
             yaya_dep = normalize(obj.traject.start_adress if obj.traject else '')
             req_dep = normalize(researched.traject.start_adress if researched.traject else '')
@@ -120,7 +120,7 @@ def my_matchings_researched(request):
     user = request.user
     matches = []
 
-    researched_matches = ResearchedTraject.objects.filter(user=user)
+    researched_matches = ResearchedTraject.objects.filter(user=user, is_active=True, date__gte=date.today())
     print('============== parent :: my_matchings_researched :: researched_matches', len(researched_matches))
     for research in researched_matches:
         matched = find_matching_trajects(research)
@@ -136,7 +136,7 @@ def my_matchings_researched(request):
 def my_matchings_proposed(request):
     '''yaya/parent recherche'''
     matches = []
-    proposed_matches = ProposedTraject.objects.filter(user=request.user)
+    proposed_matches = ProposedTraject.objects.filter(user=request.user, is_active=True, date__gte=date.today())
     print('============== yaya :: my_matchings_proposed :: proposed_matches', len(proposed_matches))
     for proposed in proposed_matches:
         matched = find_matching_trajects(proposed)
@@ -447,7 +447,9 @@ def generate_recurrent_trajects(request, recurrent_dates, traject, departure_tim
 
 @login_required
 def my_proposed_trajects(request):
-    user_trajects = ProposedTraject.objects.filter(user=request.user).order_by('date', 'departure_time')
+    user_trajects = ProposedTraject.objects.filter(user=request.user, is_active=True, date__gte=date.today()).order_by('date', 'departure_time')
+    # La requete qui suit affiche tous les enregistrements dont la date de départ est indérieure à la date d'aujourd'hui
+    #user_past_trajects = ProposedTraject.objects.filter(user=request.user, is_active=True, date_debut__lt=date.today()).order_by('date', 'departure_time')
     return render(request, 'trajects/my_proposed_trajects.html', {
         'proposed_trajects': user_trajects
     })
@@ -494,7 +496,7 @@ def researched_traject(request):
                     request,
                     f"{created_count} recherche(s) enregistrée(s), mais aucun matching trouvé."
                 )
-                return redirect('my_matchings_reserched')
+                return redirect('my_researched_trajects')
         else:
             messages.error(request, "Erreur dans le formulaire. Veuillez corriger les champs.")
 
@@ -625,7 +627,7 @@ def generate_recurrent_researches(request, recurrent_dates, traject,
 
 @login_required
 def my_researched_trajects(request):
-    user_trajects = ResearchedTraject.objects.filter(user=request.user).order_by('date', 'departure_time')
+    user_trajects = ResearchedTraject.objects.filter(user=request.user, is_active=True, date__gte=date.today()).order_by('date', 'departure_time')
     return render(request, 'trajects/my_researched_trajects.html', {
         'researched_trajects': user_trajects
         

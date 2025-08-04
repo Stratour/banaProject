@@ -35,9 +35,9 @@
     </form>
 
     {% if user.profile.bvm_is_verified %}
-    <p><strong>Statut :</strong> Certificat de bonne vie et moers vérifié ✅</p>
+    <p><strong>Statut :</strong> Certificat de bonne vie et moeurs vérifié ✅</p>
     {% else %}
-    <p><strong>Statut :</strong> Certificat de bonne vie et moers non vérifié ❌</p>
+    <p><strong>Statut :</strong> Certificat de bonne vie et moeurs non vérifié ❌</p>
     {% endif %}
     {% if user.profile.document_bvm %}
     <a href="{{ user.profile.document_bvm.url }}" target="_blank" class="text-blue-600 underline ml-2">Voir le document</a>

@@ -27,9 +27,10 @@
             <th>Utilisateur</th>
             <th>Nom</th>
             <th>Prénom</th>
-            <th>Carte identité</th>
-            <th>Bonne vie & moers</th>
-            <th>Profil</th>
+            <th>CI Vérifiée</th>
+            <th>BVM Vérifié</th>
+            <th>DOC BVM</th>
+            <th>Profil vérifié</th>
         </tr>
     </thead>
     <tbody>
@@ -56,13 +57,24 @@
                 {% endif %}
             </td>
             <td>
+	      {% if user.document_bvm %}
+                <a href="{{ user.document_bvm.url }}" target="_blank" class="btn btn-info">Afficher</a>
+                <a href="{{ user.document_bvm.url }}" download class="btn btn-success">Télécharger</a>
+              {% else %}
+	        <span class="verified-badge verified-false">Non</span>
+              {% endif %}
+            </td>
+            <td>
                 {% if user.prfl_is_verified %}
                     <span class="verified-badge verified-true">Oui</span>
                 {% else %}
+                  {% comment %}
                     <span class="verified-badge verified-false">Non</span>
-		    <form method="post" action="{% url 'bana_admin:verify_profile_prfl' user.id %}">
+                  {% endcomment %}
+		   
+		  <form method="post" action="{% url 'bana_admin:verify_profile_prfl' user.id %}">
 		    {% csrf_token %}
-		    <button type="submit" class="verify-button">Vérifier Profil</button>
+		    <button type="submit" class="verify-button">Valider Profil</button>
 	          </form>
                 {% endif %}
 	    </td>
