@@ -6,9 +6,19 @@
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl p-16 space-y-10">
 
+  {% if messages %}
+    <ul class="mb-6">
+      {% for message in messages %}
+        <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">
+          {{ message }}
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+  
   <!-- Onglets -->
-  {% include "./component_traject_tabs.html" %}
-
+  {% include "./component_proposed_tabs.html" %}
+  
   <!-- Liste des trajets proposés -->
   {% if proposed_trajects %}
   <ul class="space-y-6">
@@ -17,42 +27,42 @@
       <h3 class="text-lg font-bold text-brand mb-2">
         🗓️ {{ proposed.date|date:"l d F Y" }}
       </h3>
-
+      
       <p class="text-sm text-gray-700 mb-1">
         <strong>Départ :</strong>
         {{ proposed.traject.start_adress }} à {{ proposed.departure_time|default:"—" }}
       </p>
-
+      
       {% if not proposed.is_simple %}
       <p class="text-sm text-gray-700 mb-1">
         <strong>Arrivée :</strong>
         {{ proposed.traject.end_adress }} à {{ proposed.arrival_time|default:"—" }}
       </p>
       {% endif %}
-
+      
       <p class="text-sm text-gray-700 mb-1">
         <strong>Transport :</strong>
         {% for mode in proposed.transport_modes.all %}
-          {{ mode.name }}{% if not forloop.last %}, {% endif %}
+        {{ mode.name }}{% if not forloop.last %}, {% endif %}
         {% empty %}Non spécifié{% endfor %}
       </p>
-
+      
       {% if not proposed.is_simple %}
       <p class="text-sm text-gray-700 mb-1">
         <strong>Places disponibles :</strong> {{ proposed.number_of_places|default:"—" }}
       </p>
-
+      
       <p class="text-sm text-gray-700 mb-1">
         <strong>Langue(s) parlée(s) :</strong>
         {% if proposed.languages.all %}
-          {% for language in proposed.languages.all %}
-            {{ language.lang_name }}{% if not forloop.last %}, {% endif %}
-          {% endfor %}
+        {% for language in proposed.languages.all %}
+        {{ language.lang_name }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
         {% else %}
-          Aucune spécifiée
+        Aucune spécifiée
         {% endif %}
       </p>
-
+      
       <p class="text-sm text-gray-700 mb-1">
         <strong>Détails :</strong> {{ proposed.details|default:"—" }}
       </p>
@@ -61,7 +71,7 @@
         Trajet simplifié
       </span>
       {% endif %}
-
+      
       <form method="POST" action="{% url 'delete_proposed_traject' proposed.id %}" onsubmit="return confirm('Supprimer ce trajet ?');">
         {% csrf_token %}
         <button type="submit" class="mt-4 px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600">
@@ -72,7 +82,7 @@
     {% endfor %}
   </ul>
   {% else %}
-    <p class="text-center text-gray-500">Vous n’avez proposé aucun trajet pour l’instant.</p>
+  <p class="text-center text-gray-500">Vous n’avez proposé aucun trajet pour l’instant.</p>
   {% endif %}
 </div>
 {% endblock %}

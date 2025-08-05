@@ -3,7 +3,12 @@
 {% url 'accounts:profile' as profile_url %}
 {% url 'accounts:profile_child' as profile_child_url %}
 {% url 'researched_traject' as researched_traject_url %}
+{% url 'my_researched_trajects' as my_researched_trajects_url %}
+{% url 'my_matchings_researched' as my_matchings_researched_url %}
 {% url 'proposed_traject' as proposed_traject_url %}
+{% url 'my_proposed_trajects' as my_proposed_trajects_url %}
+{% url 'my_matchings_proposed' as my_matchings_proposed_url %}
+{% url 'simple_proposed_traject' as simple_proposed_traject_url %}
 {% url 'index' as index_url %}
 {% url 'my_reservations' as my_reservations_url %}
 {% url 'subscription' as subscription_url %}
@@ -11,8 +16,9 @@
 
 <!-- Logo -->
 <div class="p-6 border-b flex justify-center">
-    {% load static %}
-    <a href="{% url 'home' %}"><img class="w-20 h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Logo Bana"></a>
+  <a href="{% url 'home' %}">
+    <img class="w-20 h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Logo Bana">
+  </a>
 </div>
 
 <!-- Navigation -->
@@ -25,18 +31,14 @@
       <li>
         <a href="{{ profile_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == profile_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          {% with 'bana/img/icon/Icon_data' as icon %}
-            <img src="{% static icon %}{% if request.path == profile_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          {% endwith %}
+          <img src="{% static 'bana/img/icon/Icon_data' %}{% if request.path == profile_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           Mes informations
         </a>
       </li>
       <li>
         <a href="{{ profile_child_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == profile_child_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          {% with 'bana/img/icon/Icon_child' as icon %}
-            <img src="{% static icon %}{% if request.path == profile_child_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          {% endwith %}
+          <img src="{% static 'bana/img/icon/Icon_child' %}{% if request.path == profile_child_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           Mes enfants
         </a>
       </li>
@@ -50,38 +52,30 @@
       {% if request.user.profile.service == "parent" %}
       <li>
         <a href="{{ researched_traject_url }}"
-           class="flex items-center gap-2 py-2 px-4 {% if request.path == researched_traject_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          {% with 'bana/img/icon/Icon_search' as icon %}
-            <img src="{% static icon %}{% if request.path == researched_traject_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          {% endwith %}
+           class="flex items-center gap-2 py-2 px-4 {% if request.path == researched_traject_url or request.path == my_researched_trajects_url or request.path == my_matchings_researched_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
+          <img src="{% static 'bana/img/icon/Icon_search' %}{% if request.path == researched_traject_url or request.path == my_researched_trajects_url or request.path == my_matchings_researched_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           Rechercher
         </a>
       </li>
       {% endif %}
       <li>
         <a href="{{ proposed_traject_url }}"
-           class="flex items-center gap-2 py-2 px-4 {% if request.path == proposed_traject_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          {% with 'bana/img/icon/Icon_offer' as icon %}
-            <img src="{% static icon %}{% if request.path == proposed_traject_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          {% endwith %}
+           class="flex items-center gap-2 py-2 px-4 {% if request.path == proposed_traject_url or request.path == my_proposed_trajects_url or request.path == my_matchings_proposed_url or request.path == simple_proposed_traject_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
+          <img src="{% static 'bana/img/icon/Icon_offer' %}{% if request.path == proposed_traject_url or request.path == my_proposed_trajects_url or request.path == my_matchings_proposed_url or request.path == simple_proposed_traject_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           Proposer
         </a>
       </li>
       <li>
         <a href="{{ index_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == '/chat/chat/' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          {% with 'bana/img/icon/Icon_conversation' as icon %}
-            <img src="{% static icon %}{% if request.path == '/chat/chat/' %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          {% endwith %}
+          <img src="{% static 'bana/img/icon/Icon_conversation' %}{% if request.path == '/chat/chat/' %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           Messages
         </a>
       </li>
       <li>
         <a href="{{ my_reservations_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == '/trajects/my_reserve/' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          {% with 'bana/img/icon/Icon_reservation' as icon %}
-            <img src="{% static icon %}{% if request.path == '/trajects/my_reserve/' %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          {% endwith %}
+          <img src="{% static 'bana/img/icon/Icon_reservation' %}{% if request.path == '/trajects/my_reserve/' %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           Mes réservations
         </a>
       </li>
@@ -95,18 +89,14 @@
       <li>
         <a href="{{ subscription_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == subscription_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          {% with 'bana/img/icon/Icon_premium' as icon %}
-            <img src="{% static icon %}{% if request.path == subscription_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          {% endwith %}
+          <img src="{% static 'bana/img/icon/Icon_premium' %}{% if request.path == subscription_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           Abonnement
         </a>
       </li>
       <li>
         <a href="{{ profile_security_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == profile_security_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          {% with 'bana/img/icon/Icon_security' as icon %}
-            <img src="{% static icon %}{% if request.path == profile_security_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          {% endwith %}
+          <img src="{% static 'bana/img/icon/Icon_security' %}{% if request.path == profile_security_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           Sécurité et connexion
         </a>
       </li>

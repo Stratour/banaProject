@@ -4,66 +4,66 @@
 
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl p-16 space-y-10">
-
+  
   {% if messages %}
-    <ul class="mb-6">
-      {% for message in messages %}
-        <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">
-          {{ message }}
-        </li>
-      {% endfor %}
-    </ul>
+  <ul class="mb-6">
+    {% for message in messages %}
+    <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">
+      {{ message }}
+    </li>
+    {% endfor %}
+  </ul>
   {% endif %}
-
+  
   <!-- Onglets navigation -->
-  {% include "./component_traject_tabs.html" %}
-
+  {% include "./component_proposed_tabs.html" %}
+  
   {% if matches %}
   <ul class="space-y-4">
     {% for match in matches %}
-      <li class="bg-white shadow rounded-lg p-6 border border-brand-100">
-        <h3 class="text-xl font-semibold text-gray-800 mb-4">Trajet prévu le {{ match.proposal.date|date:"l d F Y" }}</h3>
-
-        {% for request in match.requests %}
-        <div class="border-t border-gray-200 pt-4 mt-4 space-y-2">
-          <p class="text-sm text-gray-700">
-            <strong>Parent :</strong>
-            <a href="{% url 'accounts:profile_user' user_id=request.user.id %}" class="text-blue-600 hover:underline">
-              {{ request.user.first_name }} {{ request.user.last_name|slice:":1" }}.
-            </a>
-          </p>
-          <p class="text-sm text-gray-700">
-            <strong>Départ :</strong> {{ request.traject.start_adress }} à {{ request.departure_time|default:"—" }}
-          </p>
-          <p class="text-sm text-gray-700">
-            <strong>Arrivée :</strong> {{ request.traject.end_adress }} à {{ request.arrival_time|default:"—" }}
-          </p>
-          <p class="text-sm text-gray-700">
-            <strong>Transport :</strong>
-            {% for mode in request.transport_modes.all %}
-              {{ mode.name }}{% if not forloop.last %}, {% endif %}
-            {% empty %}
-              Non spécifié
-            {% endfor %}
-          </p>
-          <p class="text-sm text-gray-700">
-            <strong>Nombre d'enfant(s) :</strong> {{ request.children.count }}
-          </p>
-
-          <form method="post" action="{% url 'propose_help' request.id %}">
-            {% csrf_token %}
-            <button type="submit" class="mt-3 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
-              Proposer son aide
-            </button>
-          </form>
-        </div>
-        {% endfor %}
-      </li>
+    <li class="bg-white shadow rounded-lg p-6 border border-brand-100">
+      <h3 class="text-xl font-semibold text-gray-800 mb-4">Trajet prévu le {{ match.proposal.date|date:"l d F Y" }}</h3>
+      
+      {% for request in match.requests %}
+      <div class="border-t border-gray-200 pt-4 mt-4 space-y-2">
+        <p class="text-sm text-gray-700">
+          <strong>Parent :</strong>
+          <a href="{% url 'accounts:profile_user' user_id=request.user.id %}" class="text-blue-600 hover:underline">
+            {{ request.user.first_name }} {{ request.user.last_name|slice:":1" }}.
+          </a>
+        </p>
+        <p class="text-sm text-gray-700">
+          <strong>Départ :</strong> {{ request.traject.start_adress }} à {{ request.departure_time|default:"—" }}
+        </p>
+        <p class="text-sm text-gray-700">
+          <strong>Arrivée :</strong> {{ request.traject.end_adress }} à {{ request.arrival_time|default:"—" }}
+        </p>
+        <p class="text-sm text-gray-700">
+          <strong>Transport :</strong>
+          {% for mode in request.transport_modes.all %}
+          {{ mode.name }}{% if not forloop.last %}, {% endif %}
+          {% empty %}
+          Non spécifié
+          {% endfor %}
+        </p>
+        <p class="text-sm text-gray-700">
+          <strong>Nombre d'enfant(s) :</strong> {{ request.children.count }}
+        </p>
+        
+        <form method="post" action="{% url 'propose_help' request.id %}">
+          {% csrf_token %}
+          <button type="submit" class="mt-3 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+            Proposer son aide
+          </button>
+        </form>
+      </div>
+      {% endfor %}
+    </li>
     {% endfor %}
   </ul>
   {% else %}
-    <p class="text-center text-gray-600">Aucune correspondance trouvée.</p>
+  <p class="text-center text-gray-600">Aucune correspondance trouvée.</p>
   {% endif %}
-
+  
 </div>
 {% endblock %}

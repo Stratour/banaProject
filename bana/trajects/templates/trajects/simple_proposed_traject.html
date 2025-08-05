@@ -12,77 +12,77 @@
     {% endfor %}
   </ul>
   {% endif %}
-
-  {% include "./component_traject_tabs.html" %}
-
+  
+  {% include "./component_proposed_tabs.html" %}
+  
   <form class="my-12 space-y-16" method="post" action="{% url 'simple_proposed_traject' %}">
     {% csrf_token %}
-
+    
     <!-- Étape 1 : ville de départ -->
     <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
       <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/Icon/Icon_step_path.svg' %}" alt="Départ">
-
+      
       <div class="flex-1 space-y-6 w-full">
         <div>
           <label class="block text-sm font-bold text-brand uppercase mb-1">Ville de départ</label>
           {{ form.start_adress }}
           <ul id="start-suggestion-list"
-              class="bg-white rounded-full shadow-md mt-1 max-h-48 overflow-auto"></ul>
+          class="bg-white rounded-full shadow-md mt-1 max-h-48 overflow-auto"></ul>
         </div>
       </div>
     </div>
-
+    
     <hr class="my-10">
-
+    
     <!-- Étape 2 : informations -->
     <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
       <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/Icon/Icon_step_calendar.svg' %}" alt="Infos">
-
+      
       <div class="flex-1 space-y-6 w-full">
-
+        
         <div>
           <label class="block text-sm font-medium uppercase text-brand">Modes de transport</label>
           {{ form.transport_modes }}
         </div>
-
+        
         <div class="flex flex-col md:flex-row gap-6">
           <div class="flex-1">
             <label class="block text-sm font-medium uppercase text-brand">Places disponibles</label>
             {{ form.number_of_places }}
             {% if form.number_of_places.errors %}
-              <p class="text-sm text-red-600 mt-1">{{ form.number_of_places.errors.0 }}</p>
+            <p class="text-sm text-red-600 mt-1">{{ form.number_of_places.errors.0 }}</p>
             {% endif %}
           </div>
-
+          
           <div class="flex-1">
             <label class="block text-sm font-medium uppercase text-brand">{{ form.date_debut.label }}</label>
             {{ form.date_debut }}
             {% for error in form.date_debut.errors %}
-              <p class="text-sm text-red-600 mt-1">{{ error }}</p>
+            <p class="text-sm text-red-600 mt-1">{{ error }}</p>
             {% endfor %}
           </div>
         </div>
-
+        
         <div>
           <label for="{{ form.tr_weekdays.id_for_label }}" class="block text-sm font-medium uppercase text-brand mb-2">
             {{ form.tr_weekdays.label }}
           </label>
           {{ form.tr_weekdays }}
           {% if form.tr_weekdays.errors %}
-            <p class="text-sm text-red-600 mt-1">{{ form.tr_weekdays.errors.0 }}</p>
+          <p class="text-sm text-red-600 mt-1">{{ form.tr_weekdays.errors.0 }}</p>
           {% endif %}
         </div>
       </div>
     </div>
-
+    
     <!-- Bouton -->
     <div class="text-center">
       <button type="submit"
-              class="w-full sm:w-auto px-6 py-3 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition">
-        Enregistrer ce trajet
-      </button>
-    </div>
-  </form>
+      class="w-full sm:w-auto px-6 py-3 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition">
+      Enregistrer ce trajet
+    </button>
+  </div>
+</form>
 </div>
 
 <script>
@@ -90,19 +90,19 @@
     inputField.addEventListener("input", async (event) => {
       const query = event.target.value;
       if (query.length < 3) return;
-
+      
       try {
         const url = `{% url 'autocomplete' %}?query=${query}`;
         const response = await fetch(url);
         if (!response.ok) throw new Error("Erreur lors de la récupération");
-
+        
         const data = await response.json();
         const suggestions = data.suggestions || [];
-
+        
         const suggestionListId = event.target.id === "start_adress"
-          ? "start-suggestion-list" : "end-suggestion-list";
+        ? "start-suggestion-list" : "end-suggestion-list";
         const suggestionList = document.getElementById(suggestionListId);
-
+        
         suggestionList.innerHTML = "";
         suggestions.forEach((suggestion) => {
           const li = document.createElement("li");

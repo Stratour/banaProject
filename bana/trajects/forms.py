@@ -273,7 +273,7 @@ class ResearchedTrajectForm(forms.ModelForm):
 
     departure_time = forms.TimeField(
         widget=forms.TimeInput(attrs={
-            'class': 'w-full p-3 mt-1 border-brand rounded-lg shadow-sm rounded-full focus:ring-brand focus:border-brand',
+            'class': 'w-full p-3 mt-1 border-brand rounded-full shadow-sm rounded-full focus:ring-brand focus:border-brand',
             'type': 'time',
             'placeholder': 'hh:mm'
         }),
@@ -281,7 +281,7 @@ class ResearchedTrajectForm(forms.ModelForm):
     )
     arrival_time = forms.TimeField(
         widget=forms.TimeInput(attrs={
-            'class': 'w-full p-3 mt-1 border-brand rounded-lg shadow-sm rounded-full focus:ring-brand focus:border-brand',
+            'class': 'w-full p-3 mt-1 border-brand rounded-full shadow-sm rounded-full focus:ring-brand focus:border-brand',
             'type': 'time',
             'placeholder': 'hh:mm'
         }),

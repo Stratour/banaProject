@@ -3,66 +3,60 @@
 {% block title %}Trajet demandé - BanaCommunity{% endblock %}
 
 {% block content %}
-<div class="bg-gray-100 min-h-screen p-6">
-  <div class="container mx-auto">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">🚗 Recherche de trajets</h2>
-
-    {% if messages %}
-    <ul class="mb-4">
-      {% for message in messages %}
-      <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">
-        {{ message }}
-      </li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-
-    {% include "./component_researched_tabs.html" %}
-
-    {% if researched_trajects %}
-    <ul class="space-y-6">
-      {% for researched in researched_trajects %}
-      <li class="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
-        <div>
-          <h3 class="text-lg font-bold text-indigo-600 mb-3">
-            Trajet prévu le {{ researched.date|date:"l d F Y" }}
-          </h3>
-          <p class="text-sm text-gray-700">
-            <strong>Départ :</strong>
-            {{ researched.traject.start_adress }} à {{ researched.departure_time|default:"—" }}
-          </p>
-          <p class="text-sm text-gray-700">
-            <strong>Arrivée:</strong>
-            {{ researched.traject.end_adress }} à {{ researched.arrival_time|default:"—" }}
-          </p>
-          <p class="text-sm text-gray-700">
-            <strong>Transport :</strong>
-            {% for mode in researched.transport_modes.all %}
-              {{ mode.name }}{% if not forloop.last %}, {% endif %}
-            {% empty %}
-              Non spécifié
-            {% endfor %}
-          </p>
-          <p class="text-sm text-gray-700">
-            <strong>Enfant(s) :</strong>
-            {% for child in researched.children.all %}
-              {{ child.chld_surname }} {{ child.chld_name }}{% if not forloop.last %}, {% endif %}
-            {% endfor %}
-          </p>
-          <form method="POST" action="{% url 'delete_researched_traject' researched.id %}" onsubmit="return confirm('Supprimer cette recherche ?');">
-            {% csrf_token %}
-            <button type="submit" class="mt-4 px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600">
-              Supprimer
-            </button>
-          </form>
-        </div>
-      </li>
-      {% endfor %}
-    </ul>
-    {% else %}
-    <p class="text-center text-gray-600">Vous ne recherchez aucun trajet pour l’instant.</p>
-    {% endif %}
-  </div>
+<div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+  {% if messages %}
+  <ul class="mb-4 space-y-2">
+    {% for message in messages %}
+    <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  
+  {% include "./component_researched_tabs.html" %}
+  
+  {% if researched_trajects %}
+  <ul class="space-y-6">
+    {% for researched in researched_trajects %}
+    <li class="bg-gray-50 p-6 rounded-lg border border-gray-200">
+      <div>
+        <h3 class="text-lg font-bold text-brand mb-3">
+          Trajet prévu le {{ researched.date|date:"l d F Y" }}
+        </h3>
+        <p class="text-sm text-gray-700">
+          <strong>Départ :</strong>
+          {{ researched.traject.start_adress }} à {{ researched.departure_time|default:"—" }}
+        </p>
+        <p class="text-sm text-gray-700">
+          <strong>Arrivée:</strong>
+          {{ researched.traject.end_adress }} à {{ researched.arrival_time|default:"—" }}
+        </p>
+        <p class="text-sm text-gray-700">
+          <strong>Transport :</strong>
+          {% for mode in researched.transport_modes.all %}
+          {{ mode.name }}{% if not forloop.last %}, {% endif %}
+          {% empty %}
+          Non spécifié
+          {% endfor %}
+        </p>
+        <p class="text-sm text-gray-700">
+          <strong>Enfant(s) :</strong>
+          {% for child in researched.children.all %}
+          {{ child.chld_surname }} {{ child.chld_name }}{% if not forloop.last %}, {% endif %}
+          {% endfor %}
+        </p>
+        <form method="POST" action="{% url 'delete_researched_traject' researched.id %}" onsubmit="return confirm('Supprimer cette recherche ?');">
+          {% csrf_token %}
+          <button type="submit" class="mt-4 px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600">
+            Supprimer
+          </button>
+        </form>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="text-center text-gray-600">Vous ne recherchez aucun trajet pour l’instant.</p>
+  {% endif %}
 </div>
 {% endblock %}
 
