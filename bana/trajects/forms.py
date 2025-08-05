@@ -12,13 +12,13 @@ class TrajectForm(forms.ModelForm):
                 'id': 'start_adress',
                 'class': 'w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand',
                 'placeholder': 'Entrez le point de départ (Adresse, ville, code postal)',
-                'autocomplete': 'on'
+                'autocomplete': 'off'
             }),
             'end_adress': forms.TextInput(attrs={
                 'id': 'end_adress',
                 'class': 'w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand',
                 'placeholder': 'Entrez le point d’arrivée (Adresse, ville, code postal)',
-                'autocomplete': 'on'
+                'autocomplete': 'off'
             }),
             
             'start_cp': forms.NumberInput(attrs={
@@ -52,13 +52,13 @@ class ProposedTrajectForm(forms.ModelForm):
         error_messages={'required': "Veuillez sélectionner au moins un moyen de transport."}
     )
     
-    languages = forms.ModelChoiceField(
+    languages = forms.ModelMultipleChoiceField(
         queryset=Languages.objects.all(),
-        widget=forms.Select(attrs={
+        widget=forms.SelectMultiple(attrs={
             'class': 'block w-full mt-1 rounded-full border-brand shadow-sm focus:ring-brand focus:border-brand'
         }),
         required=False,
-        empty_label="-- Sélectionnez la langue --",
+        #empty_label="-- Sélectionnez la langue --",
         label="Langue parlée"
     )
 

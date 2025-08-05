@@ -19,7 +19,7 @@ class CustomSignupForm(SignupForm):
     first_name = forms.CharField(max_length=30, required=False, label='First Name')
     last_name = forms.CharField(max_length=30, required=False, label='Last Name')
     profile_picture = forms.ImageField(required=False, label='Profile Picture')
-    address = forms.CharField(max_length=100, required=False, label='Address (city, country)')
+    address = forms.CharField(max_length=100, required=False, label='code postal, ville')
 
     service = forms.ChoiceField(
         choices=SERVICE_CHOICES,
