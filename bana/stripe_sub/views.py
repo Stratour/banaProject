@@ -204,7 +204,7 @@ def create_verification_session(request):
     
     if request.method == "POST":
         session = stripe.identity.VerificationSession.create(
-            type="document",
+            verification_flow=settings.STRIPE_IDENTITY_FLUX,
             return_url="http://37.187.94.53:9758/identity/complete/",
             metadata={
                 "user_id": str(request.user.id)
@@ -216,11 +216,11 @@ def create_verification_session(request):
     
 @login_required
 def identity_complete(request):
-    if request.user.profile.ci_is_verified:
-        messages.success(request, "Votre identité a été vérifiée avec succès.")
-    else:
-        messages.error(request, "Votre vérification est en cours ou a échoué. Veuillez réessayer plus tard.")
-    return render(request, 'stripe_sub/identity_complete.html') 
+    profile = request.user.profile
+    is_verified = profile.ci_is_verified
+    return render(request, 'stripe_sub/identity_complete.html', {
+        'is_verified': is_verified,
+    })
 
 
 @csrf_exempt
@@ -253,7 +253,7 @@ def stripe_webhook(request):
 
                 profile.verified_first_name = document.get("first_name")
                 profile.verified_last_name = document.get("last_name")
-                #profile.verified_address = document.get("address")
+                profile.verified_address = document.get("address")
                 profile.verified_dob = document.get("dob")
                 # Récupérer l’image temporaire de la pièce d’identité
                 front_id = document.get("front")
@@ -264,6 +264,9 @@ def stripe_webhook(request):
             profile.save()
 
     except Exception as e:
+        import traceback
+        print("❌ Erreur webhook :", str(e))
+        traceback.print_exc() 
         return HttpResponse("Webhook error", status=500, content_type="text/plain")
 
     return HttpResponse("OK", status=200, content_type="text/plain")

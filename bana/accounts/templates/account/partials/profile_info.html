@@ -19,7 +19,7 @@
         hx-get="{% url 'accounts:profile_edit' %}" 
         hx-target="#editable-profile-section" 
         hx-swap="innerHTML"
-        class="btn btn-primary mt-4"
+        class="px-3 py-2 bg-blue-500 text-white font-semibold rounded-full hover:bg-blue-900 transition"
     >
         ✏️ Modifier mon profil
     </button>
@@ -31,7 +31,7 @@
     {% endif %}
     <form method="post" action="{% url 'create_verification_session' %}">
     {% csrf_token %}
-    <button class="btn btn-success" type="submit">Vérifier mon identité</button>
+    <button class="px-3 py-2 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition" type="submit">Vérifier mon identité</button>
     </form>
 
     {% if user.profile.bvm_is_verified %}

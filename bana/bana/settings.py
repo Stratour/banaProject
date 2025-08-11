@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*umwdzm=4)s(*x)hq1_)yd(6mtbrwy5gh8%b^_d(kn8xnspgc('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '37.187.94.53']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '37.187.94.53', 'bana.mobi', 'www.bana.mobi']
 
 print("37.187.94.53:8800")
 
@@ -117,6 +117,19 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'bana',
+        'USER': 'banacommunity',
+        'PASSWORD': 'Ny0t@S^p€rC00lAdm1n',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
+"""
+
 
 
 # Password validation
@@ -216,7 +229,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [ BASE_DIR / 'bana/static' ]
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = '/home/bana_community/banaProject/bana/static_collected'
+
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -311,7 +326,7 @@ ACCOUNT_FORMS = {
     'signup': 'accounts.forms.CustomSignupForm'
 }
 
-STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY",default="secret")
-STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY",default="secret")
+STRIPE_PUBLISHABLE_KEY = config("STRIPE_PUBLISHABLE_KEY_TEST",default="secret")
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY_TEST",default="secret")
 STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET_TEST2",default="secret")
-
+STRIPE_IDENTITY_FLUX = config("STRIPE_IDENTITY_FLUX_TEST",default="secret")

@@ -485,7 +485,7 @@ def researched_traject(request):
                 matches = find_matching_trajects(researched)
                 match_count = len(matches)
                 if match_count > 0:
-                    macthed_any = True
+                    matched_any = True
                     total_matches += match_count
                 created_count += 1
                 
@@ -494,7 +494,7 @@ def researched_traject(request):
                     request,
                     f"{created_count} recherche(s) enregistrée(s) avec {total_matches} matching(s) trouvés."
                 )
-                return redirect('my_matchings_reserched')
+                return redirect('my_matchings_researched')
             else:
                 messages.warning(
                     request,
