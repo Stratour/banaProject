@@ -1,0 +1,61 @@
+{# Email settings fragment — injecté dans #email-edit via HTMX #}
+<div class="max-w-md space-y-5">
+
+  {# État actuel #}
+  <div class="rounded-xl border border-gray-200 p-4">
+    <p class="text-sm text-gray-600">
+      <span class="font-semibold text-gray-900">{% trans "Adresse e-mail actuelle" %}</span><br>
+      <span class="text-gray-900">{{ request.user.email }}</span>
+      {% with emails=request.user.emailaddress_set.all %}
+        {% if emails %}
+          {% for e in emails %}
+            {% if e.email == request.user.email %}
+              {% if e.verified %}
+                <span class="ml-2 inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-2 py-0.5 text-xs font-semibold">
+                  {% trans "Vérifiée" %}
+                </span>
+              {% else %}
+                <span class="ml-2 inline-flex items-center rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 px-2 py-0.5 text-xs font-semibold">
+                  {% trans "Non vérifiée" %}
+                </span>
+                <button
+                  class="ml-2 inline-flex items-center gap-1 rounded-full border border-yellow-300 text-yellow-800 px-2.5 py-0.5 text-xs font-semibold hover:bg-yellow-50"
+                  hx-post="{% url 'accounts:email_display' %}"
+                  hx-vals='{"resend":"1"}'
+                  hx-target="#email-edit" hx-swap="innerHTML">
+                  {% trans "Renvoyer la vérification" %}
+                </button>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </p>
+  </div>
+
+  {# Formulaire mise à jour — POST sur la même vue pour renvoyer le fragment #}
+  <form
+    method="post"
+    action="{% url 'accounts:email_display' %}"
+    hx-post="{% url 'accounts:email_display' %}"
+    hx-target="#email-edit" hx-swap="innerHTML"
+    class="space-y-3">
+    {% csrf_token %}
+
+    <label class="block text-sm font-semibold text-gray-900">{% trans "Changer d’e-mail" %}</label>
+    <input
+      type="email" name="email"
+      required
+      placeholder="{% trans 'nouvelle adresse e-mail' %}"
+      class="mt-1 w-full border border-brand px-4 py-2 shadow-sm rounded-full focus:ring-brand focus:border-brand" />
+
+    <div class="flex items-center gap-3 pt-1">
+      <button type="submit"
+              class="inline-flex items-center gap-2 rounded-full bg-brand text-white px-5 py-2 text-sm font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+        {% trans "Mettre à jour" %}
+      </button>
+      <span class="text-xs text-gray-500">{% trans "Un e-mail de confirmation peut être envoyé." %}</span>
+    </div>
+  </form>
+
+</div>

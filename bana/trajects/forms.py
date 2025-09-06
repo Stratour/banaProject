@@ -55,7 +55,7 @@ class ProposedTrajectForm(forms.ModelForm):
     languages = forms.ModelMultipleChoiceField(
         queryset=Languages.objects.all(),
         widget=forms.SelectMultiple(attrs={
-            'class': 'block w-full mt-1 rounded-full border-brand shadow-sm focus:ring-brand focus:border-brand'
+            'class': 'block w-full mt-1 border-brand shadow-sm focus:ring-brand focus:border-brand'
         }),
         required=False,
         #empty_label="-- Sélectionnez la langue --",

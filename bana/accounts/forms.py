@@ -3,19 +3,71 @@ from allauth.account.forms import SignupForm
 from django.contrib.auth.models import User
 from accounts.models import Profile, Languages, Child, Review
 
+
 SERVICE_CHOICES = [
     ('parent', 'Parent'),
     ('yaya', 'Yaya'),
 ]
 
 TRANSPORT_MODES_CHOICES = [
-('car', 'Car'),
-('bike', 'Bike'),
-('public_transport', 'Public Transport'),   
-('walking', 'Walking'),
+    ('car', 'Car'),
+    ('bike', 'Bike'),
+    ('public_transport', 'Public Transport'),
+    ('walking', 'Walking'),
 ]
 
-class CustomSignupForm(SignupForm):
+
+# ---------- Mixin : règles globales ----------
+class TailwindFormMixin:
+    """
+    Règles:
+      - Inputs (Text/Email/Password/Date/Time/Number...)  -> rounded-full
+      - Select / SelectMultiple / Textarea                 -> rounded-none
+      - Checkbox / CheckboxSelectMultiple                  -> form-checkbox h-5 w-5 text-brand (pas de w-full)
+    Si un widget a déjà 'class', on le respecte (pas d'écrasement).
+    """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        base_input = "mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand"
+        base_select = "mt-1 w-full border border-brand px-4 py-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-none"
+        base_textarea = "mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-none"
+        base_checkbox = "form-checkbox h-5 w-5 text-brand"
+
+        for name, field in self.fields.items():
+            w = field.widget
+
+            # Ne pas écraser si classes déjà posées explicitement
+            if "class" in w.attrs:
+                continue
+
+            # Checkboxes (unitaire)
+            if isinstance(w, forms.CheckboxInput):
+                w.attrs["class"] = base_checkbox
+                continue
+
+            # Groupes de checkboxes
+            if isinstance(w, forms.CheckboxSelectMultiple):
+                # Django appliquera cette classe aux <input type="checkbox"> enfants
+                w.attrs["class"] = base_checkbox
+                continue
+
+            # Selects (liste déroulante)
+            if isinstance(w, (forms.Select, forms.SelectMultiple)):
+                w.attrs["class"] = base_select
+                continue
+
+            # Textarea
+            if isinstance(w, forms.Textarea):
+                w.attrs["class"] = base_textarea
+                continue
+
+            # Autres (inputs classiques)
+            w.attrs["class"] = f"{base_input} rounded-full"
+
+
+# ---------- Signup ----------
+class CustomSignupForm(TailwindFormMixin, SignupForm):
     first_name = forms.CharField(max_length=30, required=False, label='First Name')
     last_name = forms.CharField(max_length=30, required=False, label='Last Name')
     profile_picture = forms.ImageField(required=False, label='Profile Picture')
@@ -25,25 +77,28 @@ class CustomSignupForm(SignupForm):
         choices=SERVICE_CHOICES,
         required=True,
         label="Service",
+        # SELECT => no rounded
         widget=forms.Select(attrs={
-            'class': 'w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand'
+            'class': 'mt-1 w-full border border-brand px-4 py-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-none'
         })
     )
 
+    # CustomSignupForm
     transport_modes = forms.MultipleChoiceField(
         choices=TRANSPORT_MODES_CHOICES,
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(attrs={  # pas de classes ici
+            # 'class': 'flex flex-wrap gap-4'  # <- ok si tu veux gérer le layout ici
+        }),
         required=False,
         label="Modes de transport"
     )
 
-    languages = forms.ModelChoiceField(
-        queryset=Languages.objects.all(),
-        widget=forms.Select(attrs={
-            'class': 'block w-full mt-1 rounded-full border-brand shadow-sm focus:ring-brand focus:border-brand'
-        }),
+    # ProfileUpdateForm
+    transport_modes = forms.MultipleChoiceField(
+        choices=TRANSPORT_MODES_CHOICES,
+        widget=forms.CheckboxSelectMultiple(attrs={}),  # neutre
         required=False,
-        label="Langue parlée"
+        label="Modes de transport"
     )
 
 
@@ -53,154 +108,123 @@ class CustomSignupForm(SignupForm):
         user.last_name = self.cleaned_data['last_name']
         user.save()
 
-        # Création du profil lié à l'utilisateur
         profile = Profile.objects.create(
             user=user,
             profile_picture=self.cleaned_data.get('profile_picture'),
             address=self.cleaned_data.get('address'),
             service=self.cleaned_data.get('service', ''),
-            
-
             transport_modes=self.cleaned_data.get('transport_modes', []),
         )
-        print("DEBUG >>> service =", self.cleaned_data.get('service'))
         profile.save()
 
         if self.cleaned_data.get('languages'):
-           profile.languages.set(self.cleaned_data['languages'])
+            profile.languages.set(self.cleaned_data['languages'])
         return user
 
-class UserUpdateForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Ajoute les classes Tailwind à tous les champs
-        for field in self.fields.values():
-            field.widget.attrs.update({
-                'class': 'mt-1 block w-full rounded-full border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50'
-            })
+
+# ---------- User update ----------
+class UserUpdateForm(TailwindFormMixin, forms.ModelForm):
     class Meta:
         model = User
-        fields = [ 'first_name', 'last_name', 'email'] 
+        fields = ['first_name', 'last_name', 'email']
+        # Mixin applique rounded-full aux inputs, pas d'arrondi aux select/textarea (si un jour tu en ajoutes)
 
-class ProfileUpdateForm(forms.ModelForm):
 
+# ---------- Profile update ----------
+class ProfileUpdateForm(TailwindFormMixin, forms.ModelForm):
     transport_modes = forms.MultipleChoiceField(
         choices=TRANSPORT_MODES_CHOICES,
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(attrs={
+            'class': 'form-checkbox h-5 w-5 text-brand'
+        }),
         required=False,
         label="Modes de transport"
     )
 
     languages = forms.ModelMultipleChoiceField(
         queryset=Languages.objects.all(),
-        widget=forms.SelectMultiple(attrs={'size': 5}),
+        # SELECT multiple => no rounded
+        widget=forms.SelectMultiple(attrs={
+            'size': 5,
+            'class': 'mt-1 w-full border border-brand px-4 py-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-none'
+        }),
         required=False,
         label="Langues parlées"
     )
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for name, field in self.fields.items():
-            if not field.widget.attrs.get('class'):
-                field.widget.attrs['class'] = 'mt-1 block w-full rounded-full border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50'
-    
+
     class Meta:
         model = Profile
-        fields = ['profile_picture','address', 'languages', 'bio', 'document_bvm' ]
+        fields = ['profile_picture', 'address', 'languages', 'bio', 'document_bvm']
+        widgets = {
+            # TEXTAREA => no rounded
+            'bio': forms.Textarea(attrs={
+                'class': 'mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-none',
+                'rows': 5,
+                'placeholder': "Présente-toi en quelques lignes..."
+            }),
+        }
 
-    #def clean_service(self):
-    #    return self.cleaned_data['service'] or []
-#
-    #def clean_transport_modes(self):
-    #    return self.cleaned_data['transport_modes'] or []     
-        
 
-class ChildForm(forms.ModelForm):
+# ---------- Child ----------
+class ChildForm(TailwindFormMixin, forms.ModelForm):
     class Meta:
         model = Child
-        # Mettre à jour la liste des champs avec les nouveaux noms et le nouveau champ
         fields = [
-            'chld_name', 
-            'chld_surname', 
+            'chld_name',
+            'chld_surname',
             'chld_birthdate',
-            'chld_gender', 
-            'chld_spcl_attention', 
+            'chld_gender',
+            'chld_spcl_attention',
             'chld_seat'
         ]
-        
-        # Mettre à jour le widget pour correspondre au nouveau nom de champ
         widgets = {
+            # Inputs => rounded-full (mixin aussi, mais on laisse explicite ici)
             'chld_name': forms.TextInput(attrs={
-                'class': 'w-full rounded-full border-gray-300 px-4 py-2 shadow-sm focus:border-brand focus:ring focus:ring-brand'
+                'class': 'mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-full'
             }),
             'chld_surname': forms.TextInput(attrs={
-                'class': 'w-full rounded-full border-gray-300 px-4 py-2 shadow-sm focus:border-brand focus:ring focus:ring-brand'
+                'class': 'mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-full'
             }),
             'chld_birthdate': forms.DateInput(attrs={
                 'type': 'date',
-                'class': 'w-full rounded-full border-gray-300 px-4 py-2 shadow-sm focus:border-brand focus:ring focus:ring-brand'
+                'class': 'mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-full'
             }),
+            # Select => no rounded
             'chld_gender': forms.Select(attrs={
-                'class': 'w-full rounded-full border-gray-300 px-4 py-2 bg-white shadow-sm focus:border-brand focus:ring focus:ring-brand'
+                'class': 'mt-1 w-full border border-brand px-4 py-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-none'
             }),
+            # Textarea => no rounded
             'chld_spcl_attention': forms.Textarea(attrs={
-                'class': 'w-full rounded-full border-gray-300 px-4 py-2 shadow-sm focus:border-brand focus:ring focus:ring-brand',
+                'class': 'mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-none',
                 'rows': 3,
                 'placeholder': 'Indiquez les besoins particuliers éventuels...'
             }),
+            # Checkbox => pas de w-full
             'chld_seat': forms.CheckboxInput(attrs={
                 'class': 'form-checkbox h-5 w-5 text-brand'
             }),
         }
 
 
-class ReviewForm(forms.ModelForm):
+# ---------- Review ----------
+class ReviewForm(TailwindFormMixin, forms.ModelForm):
     class Meta:
         model = Review
         fields = ['rating', 'comment']
         widgets = {
+            # Select => no rounded
             'rating': forms.Select(
                 choices=[(i, f"⭐ {i}") for i in range(1, 6)],
                 attrs={
-                    'class': 'form-select block w-full mt-1 p-2 border-gray-300 rounded-full shadow-sm focus:ring-blue-500 focus:border-blue-500'}
+                    'class': 'mt-1 w-full border border-brand p-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-none'
+                }
             ),
+            # Textarea => no rounded
             'comment': forms.Textarea(
                 attrs={
-                    'class': 'form-textarea block w-full mt-1 p-2 border-gray-300 rounded-full shadow-sm focus:ring-blue-500 focus:border-blue-500',
+                    'class': 'mt-1 w-full border border-brand p-2 shadow-sm focus:ring-brand focus:border-brand rounded-none',
                     'rows': 4,
                     'placeholder': 'Laissez un commentaire constructif...'
                 }
             ),
         }
-
-        '''
-class CustomAuthenticationForm(AuthenticationForm):
-    print('============ AuthenticationFormLogin =========')
-
-    username = forms.CharField(
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'id': 'form2Example1',
-        })
-    )
-    password = forms.CharField(
-        widget=forms.PasswordInput(attrs={
-            'class': 'form-control',
-            'id': 'form2Example2',
-        })
-    )
-
-
-class CustomUserCreationForm(UserCreationForm):
-    print('============ CustomUserCreationForm =========')
-
-    class Meta:
-        model = User  # Associe ce formulaire au modèle User de Django
-        fields = ['username', 'email','password1', 'password2']  # Champs inclus dans le formulaire
-        widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control', 'id': 'id_username_helptext'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'id': 'id_email_helptext'}),
-            'password1': forms.PasswordInput(attrs={'class': 'form-control', 'id': 'id_password1_helptext'}),
-            'password2': forms.PasswordInput(attrs={'class': 'form-control', 'id': 'id_password2_helptext'}),
-        }
-'''

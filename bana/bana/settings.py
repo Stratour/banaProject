@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*umwdzm=4)s(*x)hq1_)yd(6mtbrwy5gh8%b^_d(kn8xnspgc('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+#DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '37.187.94.53', 'bana.mobi', 'www.bana.mobi']
 
@@ -233,7 +233,7 @@ STATICFILES_DIRS = [ BASE_DIR / 'bana/static' ]
 STATIC_ROOT = '/home/bana_community/banaProject/bana/static_collected'
 
 
-MEDIA_URL = "media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type

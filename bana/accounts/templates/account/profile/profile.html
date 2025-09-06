@@ -1,133 +1,240 @@
-
 {% extends "allauth/layouts/base.html" %}
 {% load allauth i18n static %}
-{% block head_title %}
-{% trans "Profile" %}
-{% endblock head_title %}
+
+{% block head_title %}{% trans "Profile" %}{% endblock head_title %}
+
 {% block content %}
+<section class="section profile">
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
 
-    <section class="section profile">
-       
-<div class="container" data-aos="fade-up" data-aos-delay="100">
-    <div class="max-w-4xl mx-auto px-4 py-6 space-y-10">
-      <!-- ✅ SECTION PUBLIQUE EN HAUT -->
-      <div 
-          id="public-profile-section"
-          hx-get="{% url 'accounts:profile_public' %}" 
-          hx-trigger="load" 
-          hx-swap="outerHTML"
-          class="border rounded-lg shadow-md bg-white p-6"
-      >
-          Chargement du profil public...
-      </div>
-    
-      <!-- ✅ SECTION PRIVÉE EN DESSOUS -->
-      <div 
-          id="editable-profile-section"
-          hx-get="{% url 'accounts:profile_info' %}" 
-          hx-trigger="load" 
-          hx-swap="outerHTML"
-          class="border rounded-lg shadow-md bg-white p-6"
-      >
-          Chargement des infos privées...
-      </div>
-    </div>
+      {# ——— Messages ——— #}
+      {% if messages %}
+      <ul class="mb-2 space-y-2">
+        {% for message in messages %}
+        <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
 
+      <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+        <h2 class="text-xl font-semibold text-brand">{% trans "Mon profil" %}</h2>
 
-            {% comment "" %}
-            <div id="profile-edit-section">
-                <div hx-get="{% url 'accounts:edit_profile' %}" hx-trigger="load" hx-target="this" hx-swap="innerHTML" class="col-lg-12" >
-                </div>
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <!-- Left: avatar + identity -->
+          <div class="flex items-start gap-5">
+            <div class="relative shrink-0">
+              {% if profile.profile_picture %}
+              <img src="{{ profile.profile_picture.url }}" alt="{% trans 'Photo de profil' %}"
+                class="h-24 w-24 sm:h-28 sm:w-28 rounded-full object-cover ring-4 ring-[#E9F5F1]" />
+              {% else %}
+              <img src="{% static 'bana/img/placeholder-avatar.png' %}" alt="{% trans 'Photo de profil' %}"
+                class="h-24 w-24 sm:h-28 sm:w-28 rounded-full object-cover ring-4 ring-[#E9F5F1]" />
+              {% endif %}
+
+              {% if profile.is_verified or profile.ci_is_verified %}
+              <span class="absolute -top-1 -left-1 inline-flex h-8 w-8 rounded-full bg-white ring-4 ring-white shadow">
+                <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
+                  <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </span>
+              {% endif %}
             </div>
-            {% endcomment %}
-            
-            
 
-                {% comment "" %}
-                
-                <div class="col-lg-2 profile-img">
-	        {% if profile.profile_picture %}
-	            <img src="{{ profile.profile_picture.url }}" alt="Photo de profil" class="image_profil_xl">
-	        {% else %}
-              <h1 class="no-image">
-              {{ user.first_name.0 }}.{{ user.last_name.0 }}
-              </h1>
-            {% endif %}                    
-            <h2>{{ user.username }}</h2>
-            <a href="{% url 'account_email' %}" class="btn">{% trans 'Configurer email' %}</a>
+            <div class="min-w-0">
+              <!-- Nom + rating -->
+              <div class="flex items-center gap-3 flex-wrap">
+                <p class="text-xl sm:text-2xl font-extrabold text-gray-800 leading-tight truncate">
+                  {{ user.get_full_name|default:user.username }}
+                </p>
+
+                <div class="flex items-center" aria-label="{% trans 'Note utilisateur' %}">
+                  {% with r=profile.rating|default:0 %}
+                  {% for i in "12345" %}
+                  {% if forloop.counter <= r %} <svg class="h-6 w-6 text-brand" viewBox="0 0 20 20" fill="currentColor"
+                    aria-hidden="true">
+                    <path
+                      d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.802 2.036a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118L10 13.347l-2.985 2.136c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L3.38 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    {% else %}
+                    <svg class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"
+                        stroke="currentColor" stroke-width="2" fill="none" />
+                    </svg>
+                    {% endif %}
+                    {% endfor %}
+                    {% endwith %}
                 </div>
+              </div>
 
-                <div class="col-lg-6">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <button class="nav-link active" data-bs-toggle="tab"
-                                hx-get="{% url 'accounts:profile_overview' %}" hx-target="#profile-content"
-                                hx-swap="innerHTML">Infos profile</button>
-                        </li>
+              <!-- Rôle + localisation -->
+              <p class="text-gray-500 -mt-1">
+                {{ profile.role_label|default:_("Accompagnateur·rice") }}
+                {% if profile.city or profile.country %}
+                <span class="mx-2 text-gray-300">|</span>
+                {{ profile.city }}{% if profile.city and profile.country %}, {% endif %}{{ profile.country }}
+                {% endif %}
+              </p>
 
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" hx-get="{% url 'accounts:update_user' %}"
-                                hx-target="#profile-content" hx-swap="innerHTML">{% trans 'Modifier Profile' %}</button>
-                        </li>
+              <!-- Tags: langues & transports -->
+              <div class="flex items-center gap-3 mt-3 flex-wrap">
+                {% if profile.languages %}
+                {% if profile.languages.all %}
+                {% for l in profile.languages.all %}
+                <span
+                  class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1 text-sm text-brand font-semibold">
+                  {{ l }}
+                </span>
+                {% endfor %}
+                {% else %}
+                {% for l in profile.languages %}
+                <span
+                  class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1 text-sm text-brand font-semibold">
+                  {{ l }}
+                </span>
+                {% endfor %}
+                {% endif %}
+                {% endif %}
 
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" hx-get="{% url 'account_change_password' %}"
-                                hx-target="#profile-content" hx-swap="innerHTML">{% trans 'Change Password' %}</button>
-                        </li>
-                    </ul>
-                    <div class="tab-content pt-2" id="profile-content">
-                        <div class="tab-pane fade show active profile-overview" id="profile-overview">
-                        
+                {% if profile.transport_modes %}
+                {% if profile.transport_modes.all %}
+                {% for m in profile.transport_modes.all %}
+                <span
+                  class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1 text-sm text-brand font-semibold">
+                  {{ m }}
+                </span>
+                {% endfor %}
+                {% else %}
+                {% for m in profile.transport_modes %}
+                <span
+                  class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1 text-sm text-brand font-semibold">
+                  {{ m }}
+                </span>
+                {% endfor %}
+                {% endif %}
+                {% endif %}
+              </div>
+            </div>
+          </div>
 
-                            <!-- Contenu de départ -->
-                            <table class="table" id="profile-overview">
-                                <h3 class="text-lg-center">{% trans 'Profile Details' %}</h3>
-                                <tbody>
-                                    <tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Full Name' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ user.get_full_name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Email' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ user.email }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Phone' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ profile.phone }}</td>
-                                    </tr>
-                                    <tr><tr><tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Address' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ profile.address }}</td>
-                                    </tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Service' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ profile.service|join:", " }}</td>
-                                    </tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Languages' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ profile.languages|join:", " }}</td>
-                                    </tr>
-
-                                    <tr></tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Transport' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ profile.transport_modes|join:", " }}</td>
-                                    </tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Bio' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ profile.bio }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="col-lg-3 col-md-4">{% trans 'Inscription' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ user.date_joined|date:"d M Y" }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="col-lg-3 col-md-4">{% trans 'Last connection' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ user.last_login|date:"d M Y H:i" }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div><!-- End Bordered Tabs -->
-                </div>
-                {% endcomment %}
+          <!-- Right: stats -->
+          <div class="min-w-[220px] md:text-right">
+            <p class="text-brand font-extrabold text-xl">
+              {{ profile.trips_count|default:0 }} {% trans "trajets effectués" %}
+            </p>
+            <p class="text-gray-500">
+              {% trans "Membre depuis le" %} {{ user.date_joined|date:"d F Y" }}
+            </p>
+          </div>
         </div>
-    </section>
+      </div>
 
+
+      {# ——— INFOS PRIVÉES (restructurée, carte blanche) ——— #}
+      <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-8">
+        <h2 class="text-xl font-semibold text-brand">{% trans "Infos privées" %}</h2>
+
+        <div class="grid gap-6 md:grid-cols-3">
+          {# —— Coordonnées —— #}
+          <section class="rounded-xl border border-gray-200 p-4 space-y-4">
+            <div>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Email" %}</p>
+              <p>{{ user.email }}</p>
+            </div>
+
+            <div class="border-t border-gray-100"></div>
+
+            <div>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Téléphone" %}</p>
+              <p>{{ profile.phone|default:"—" }}</p>
+            </div>
+          </section>
+
+          {# —— Adresse —— #}
+          <section class="rounded-xl border border-gray-200 p-4">
+            <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Adresse" %}</p>
+            {% if profile.ci_is_verified and profile.verified_address %}
+            <p>
+              {# {{ profile.verified_address.line1 }}, #}
+              {{ profile.verified_address.postal_code }},
+              {{ profile.verified_address.city }},
+              {{ profile.verified_address.country }}
+            </p>
+            {% else %}
+            <p>{{ profile.address|default:"—" }}</p>
+            {% endif %}
+          </section>
+
+          {# —— Services & Langues —— #}
+          <section class="rounded-xl border border-gray-200 p-4 space-y-4">
+            <div>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Services" %}</p>
+              <p>
+                {% if profile.service %}{{ profile.service }}
+                {% elif profile.services %}{{ profile.services }}
+                {% else %}—{% endif %}
+              </p>
+            </div>
+
+            <div class="border-t border-gray-100"></div>
+
+            <div>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Langues" %}</p>
+              <p>
+                {% if profile.languages.all %}
+                {% for l in profile.languages.all %}
+                {{ l }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+                {% else %}
+                {{ profile.languages|join:", " }}
+                {% endif %}
+              </p>
+            </div>
+          </section>
+
+          {# —— Bio (large) —— #}
+          <section class="md:col-span-2 rounded-xl border border-gray-200 p-4">
+            <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Bio" %}</p>
+            <p>{{ profile.bio|default:"—" }}</p>
+          </section>
+
+          {# —— Dernière connexion & BVM —— #}
+          <section class="rounded-xl border border-gray-200 p-4 space-y-4">
+            <div>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Dernière connexion" %}</p>
+              <p>{{ user.last_login|date:"d M Y H:i" }}</p>
+            </div>
+
+            <div class="border-t border-gray-100"></div>
+
+            <div>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">
+                {% trans "Bonne vie et mœurs (extrait 596.2)" %}
+              </p>
+              {% if profile.document_bvm %}
+              <a href="{{ profile.document_bvm.url }}" target="_blank" class="hover:underline">
+                {% trans "Voir le document" %}
+              </a>
+              {% else %}
+              <p>—</p>
+              {% endif %}
+            </div>
+          </section>
+        </div>
+
+        <div class="pt-2">
+          <a href="{% url 'accounts:profile_edit' %}"
+            class="inline-flex items-center px-5 py-2 rounded-full bg-brand text-white hover:bg-brand-dark font-semibold transition">
+            {% trans "Modifier mon profil" %}
+          </a>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</section>
 {% endblock content %}

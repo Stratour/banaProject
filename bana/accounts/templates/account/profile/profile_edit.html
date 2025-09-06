@@ -1,0 +1,216 @@
+{% extends "allauth/layouts/base.html" %}
+{% load allauth i18n static %}
+
+{% block head_title %}{% trans "Modifier mon profil" %}{% endblock head_title %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+  {% if messages %}
+    <ul class="mb-6 space-y-2">
+      {% for message in messages %}
+        <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <article class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+
+    <header class="flex items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">
+          {% trans "Modifier mon profil" %}
+        </h1>
+        <p class="mt-1 text-sm text-gray-500">
+          {% trans "Mettez à jour vos informations publiques et vos préférences." %}
+        </p>
+      </div>
+      {# pas d’aperçu photo ici, comme demandé #}
+    </header>
+
+    <form method="post" enctype="multipart/form-data" class="mt-10">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="p-3 rounded bg-red-50 text-red-700 text-sm">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      {# ========== Section Identité (flex, champs empilés) ========== #}
+      <section class="space-y-6">
+        <h2 class="text-sm font-bold uppercase text-brand tracking-wider flex items-center gap-2">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/>
+            <circle cx="9" cy="7" r="4" stroke-width="2"/>
+          </svg>
+          {% trans "Identité" %}
+        </h2>
+
+        <div class="flex flex-col gap-6">
+          <div class="max-w-md">
+            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Photo de profil" %}</label>
+            {{ form.profile_picture }}
+            {% if form.profile_picture.errors %}<p class="mt-1 text-xs text-red-600">{{ form.profile_picture.errors }}</p>{% endif %}
+            <p class="mt-1 text-xs text-gray-500">{% trans "PNG, JPG, ou GIF." %}</p>
+          </div>
+
+          <div class="max-w-md">
+            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Rôle" %}</label>
+            {{ form.role_label }}
+            {% if form.role_label.errors %}<p class="mt-1 text-xs text-red-600">{{ form.role_label.errors }}</p>{% endif %}
+          </div>
+
+          <div class="max-w-md">
+            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Téléphone" %}</label>
+            {{ form.phone }}
+            {% if form.phone.errors %}<p class="mt-1 text-xs text-red-600">{{ form.phone.errors }}</p>{% endif %}
+          </div>
+        </div>
+      </section>
+
+      <div class="border-t border-gray-100"></div>
+
+      {# ========== Section Localisation (flex, champs empilés) ========== #}
+      <section class="space-y-6">
+        <h2 class="text-sm font-bold uppercase text-brand tracking-wider flex items-center gap-2">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 20l-5.447-2.724A2 2 0 013 15.382V6.618a2 2 0 011.105-1.789L9 2l6 3 6-3v12l-6 3-6-3z"/>
+          </svg>
+          {% trans "Localisation" %}
+        </h2>
+
+        <div class="flex flex-col gap-6">
+          <div class="max-w-md">
+            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Ville" %}</label>
+            {{ form.city }}
+            {% if form.city.errors %}<p class="mt-1 text-xs text-red-600">{{ form.city.errors }}</p>{% endif %}
+          </div>
+
+          <div class="max-w-md">
+            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Pays" %}</label>
+            {{ form.country }}
+            {% if form.country.errors %}<p class="mt-1 text-xs text-red-600">{{ form.country.errors }}</p>{% endif %}
+          </div>
+
+          <div class="max-w-xl">
+            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Adresse" %}</label>
+            {{ form.address }}
+            {% if form.address.errors %}<p class="mt-1 text-xs text-red-600">{{ form.address.errors }}</p>{% endif %}
+          </div>
+        </div>
+      </section>
+
+      <div class="border-t border-gray-100"></div>
+
+      {# ========== Section Préférences (flex, champs empilés) ========== #}
+      <section class="space-y-6">
+        <h2 class="text-sm font-bold uppercase text-brand tracking-wider flex items-center gap-2">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-width="2" d="M4 7h16M4 12h16M4 17h16"/>
+            <circle cx="9" cy="7" r="2" stroke-width="2"/>
+            <circle cx="14" cy="12" r="2" stroke-width="2"/>
+            <circle cx="8" cy="17" r="2" stroke-width="2"/>
+          </svg>
+          {% trans "Préférences" %}
+        </h2>
+
+        <div class="flex flex-col gap-6">
+          <div class="max-w-md">
+            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Services" %}</label>
+            {{ form.service }}
+            {% if form.service.errors %}<p class="mt-1 text-xs text-red-600">{{ form.service.errors }}</p>{% endif %}
+          </div>
+
+          <div class="max-w-md">
+            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Langues" %}</label>
+            {{ form.languages }}
+            {% if form.languages.errors %}<p class="mt-1 text-xs text-red-600">{{ form.languages.errors }}</p>{% endif %}
+          </div>
+
+          <div class="max-w-xl">
+            <label class="block text-sm font-semibold text-gray-900 mb-2">{% trans "Modes de transport" %}</label>
+            <div class="flex flex-wrap gap-2">
+              {% for cb in form.transport_modes %}
+                <label class="inline-flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-gray-50 cursor-pointer">
+                  {{ cb.tag }}
+                  <span class="text-gray-700">{{ cb.choice_label }}</span>
+                </label>
+              {% endfor %}
+            </div>
+            {% if form.transport_modes.errors %}<p class="mt-1 text-xs text-red-600">{{ form.transport_modes.errors }}</p>{% endif %}
+          </div>
+        </div>
+      </section>
+
+      <div class="border-t border-gray-100"></div>
+
+      {# ========== Section Bio ========== #}
+      <section class="space-y-3">
+        <h2 class="text-sm font-bold uppercase text-brand tracking-wider flex items-center gap-2">
+          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M7 7h10M7 11h10M7 15h7"/>
+          </svg>
+          {% trans "Bio" %}
+        </h2>
+        <div class="max-w-xl">
+          {{ form.bio }}
+          {% if form.bio.errors %}<p class="mt-1 text-xs text-red-600">{{ form.bio.errors }}</p>{% endif %}
+          <p class="mt-1 text-xs text-gray-500">
+            {% trans "Présentez-vous en quelques lignes (centres d’intérêt, dispo, expérience…)" %}
+          </p>
+        </div>
+      </section>
+
+      <div class="border-t border-gray-100"></div>
+
+      {# ========== Documents ========== #}
+      <section class="space-y-6 max-w-2xl">
+        <h2 class="text-sm font-bold uppercase text-brand tracking-wider">
+          Bonne vie et mœurs
+        </h2>
+
+        <div class="flex flex-col gap-2">
+          <label class="block text-sm font-semibold text-gray-900">
+            Extrait 596.2 — encadrement de mineurs
+          </label>
+
+          {{ form.document_bvm }}
+          {% if form.document_bvm.errors %}
+            <p class="mt-1 text-xs text-red-600">{{ form.document_bvm.errors }}</p>
+          {% endif %}
+
+          {% if profile.document_bvm %}
+            <a href="{{ profile.document_bvm.url }}" target="_blank"
+              class="inline-flex items-center gap-2 text-brand hover:underline">
+              Voir le document
+            </a>
+          {% endif %}
+
+          <p class="text-xs text-gray-500">
+            Formats acceptés : PDF, JPG, PNG. Ce document reste privé.
+          </p>
+        </div>
+      </section>
+
+      {# ========== Boutons ========== #}
+      <footer class="mt-8">
+
+
+      <footer class="pt-4 flex items-center justify-between">
+        <a href="{% url 'accounts:profile' %}"
+           class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+          {% trans "Annuler" %}
+        </a>
+        <button type="submit"
+                class="inline-flex items-center gap-2 rounded-full bg-brand text-white px-6 py-2 text-sm font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+          {% trans "Enregistrer" %}
+        </button>
+      </footer>
+    </form>
+  </article>
+</div>
+{% endblock content %}

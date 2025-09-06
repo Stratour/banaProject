@@ -65,6 +65,7 @@
           Proposer
         </a>
       </li>
+      {% comment %}
       <li>
         <a href="{{ index_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == '/chat/chat/' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
@@ -72,6 +73,7 @@
           Messages
         </a>
       </li>
+      {% endcomment %}
       <li>
         <a href="{{ my_reservations_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == '/trajects/my_reserve/' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">

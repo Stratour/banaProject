@@ -41,9 +41,11 @@
             <a href="{% url 'home' %}">
                 <img class="w-7 h-7" src="{% static 'bana/img/icon/Icon_home.svg' %}" alt="Icon hut">
             </a>
-            <a href="{% url 'work' %}" class="hover:text-white hover:no-underline">How it works</a>
-            <a href="{% url 'parent' %}" class="hover:text-white hover:no-underline">Search or share</a>
-            <a href="{% url 'about' %}" class="hover:text-white hover:no-underline">About</a>
+            {% comment %}
+                <a href="{% url 'work' %}" class="hover:text-white hover:no-underline">How it works</a>
+                <a href="{% url 'parent' %}" class="hover:text-white hover:no-underline">Search or share</a>
+                <a href="{% url 'about' %}" class="hover:text-white hover:no-underline">About</a>
+            {% endcomment %}
             <a href="{% url 'contact' %}" class="hover:text-white hover:no-underline">Contact</a>
         </div>
 
@@ -104,7 +106,9 @@
     <div id="mobile-menu" class="hidden bg-brand border-t border-brand-50 text-white px-6 py-4 md:hidden">
         <div class="flex flex-col space-y-4 font-bold">
             <a href="{% url 'home' %}" class="text-center hover:text-white hover:no-underline">Home</a>
-            <a href="{% url 'about' %}" class="text-center hover:text-white hover:no-underline">About</a>
+            {% comment %}
+                <a href="{% url 'about' %}" class="text-center hover:text-white hover:no-underline">About</a>
+            {% endcomment %}
             <a href="{% url 'contact' %}" class="text-center hover:text-white hover:no-underline">Contact</a>
             
 
