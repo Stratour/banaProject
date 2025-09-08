@@ -862,15 +862,16 @@ def auto_reserve(request, proposed_id, researched_id):
 def propose_help(request, researched_id):
     research = get_object_or_404(ResearchedTraject, id=researched_id)
 
-    # Ici tu peux lier ce yaya à cette recherche (si tu as un modèle de "proposition d'aide", crée-le ici)
-    # Exemple simple : on crée un trajet proposé associé à la recherche (ou toute autre logique)
-    proposed, created = ProposedTraject.objects.get_or_create(
-        user=request.user,
-        traject=research.traject,
-        date=research.date,
-        defaults={'is_simple': True}
-    )
+    #Vérification pour éviter les notifications multiples
+    session_key = f"help_notified_{request.user.id}_{researched_id}"
+    
+    if request.session.get(session_key, False):
+        messages.info(request, "Vous avez déjà signalé votre disponibilité pour ce trajet.")
+        return redirect('my_matchings_proposed')
 
+    # Marquer comme notifié dans cette session
+    request.session[session_key] = True
+    
     # Tu peux ici créer une vraie liaison si tu as un modèle intermédiaire "HelpRequest" ou autre
 
     # Envoi du mail au parent

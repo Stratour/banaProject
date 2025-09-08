@@ -12,6 +12,8 @@ from datetime import datetime, timedelta
 import pytz
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import get_user_model
+from django.views.decorators.http import require_POST
+
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -199,74 +201,108 @@ def payment_cancelled(request):
     return render(request, 'stripe_sub/payment_cancelled.html')
 
 
+logger = logging.getLogger(__name__)
+
+
 @login_required
 def create_verification_session(request):
-    
     if request.method == "POST":
-        session = stripe.identity.VerificationSession.create(
-            verification_flow=settings.STRIPE_IDENTITY_FLUX,
-            return_url="http://37.187.94.53:9758/identity/complete/",
-            metadata={
-                "user_id": str(request.user.id)
-            }
-        )
-        return redirect(session.url)
-    return redirect("accounts:profile") 
-    
-    
-@login_required
-def identity_complete(request):
-    profile = request.user.profile
-    is_verified = profile.ci_is_verified
-    return render(request, 'stripe_sub/identity_complete.html', {
-        'is_verified': is_verified,
-    })
+        try:
+            session = stripe.identity.VerificationSession.create(
+                verification_flow=settings.STRIPE_IDENTITY_FLUX,
+                return_url="https://www.bana.mobi/identity/complete/",
+                metadata={"user_id": str(request.user.id)},
+            )
+            return redirect(session.url)
+        except Exception as e:
+            logger.error("Erreur lors de la création de session Stripe Identity", exc_info=True)
+            messages.error(request, "Impossible de démarrer la vérification pour le moment.")
+            return redirect("accounts:profile")
+
+    return redirect("accounts:profile")
 
 
 @csrf_exempt
+@require_POST
 def stripe_webhook(request):
-    try:
-        payload = request.body
-        sig_header = request.META.get("HTTP_STRIPE_SIGNATURE", "")
-        endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
+    payload = request.body
+    sig_header = request.META.get("HTTP_STRIPE_SIGNATURE", "")
+    endpoint_secret = settings.STRIPE_WEBHOOK_SECRET
 
+    try:
         event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
 
+        # Vérification réussie
         if event["type"] == "identity.verification_session.verified":
             session = event["data"]["object"]
-            user_id = session.get("metadata", {}).get("user_id")
+            _handle_identity_success(session)
 
-            if user_id is None:
-                raise ValueError("user_id manquant dans metadata Stripe.")
+        # Vérification échouée (document rejeté, photo illisible, etc.)
+        elif event["type"] == "identity.verification_session.requires_input":
+            session = event["data"]["object"]
+            _handle_identity_failure(session, reason="requires_input")
 
-            User = get_user_model()
-            user = User.objects.get(id=user_id)
-            profile = Profile.objects.get(user=user)
+        # Vérification annulée par l’utilisateur
+        elif event["type"] == "identity.verification_session.canceled":
+            session = event["data"]["object"]
+            _handle_identity_failure(session, reason="canceled")
 
-            profile.ci_is_verified = True
-            
-            # Récupération des données d’identité
-            report_id = session.get("last_verification_report")
-            if report_id:
-                report = stripe.identity.VerificationReport.retrieve(report_id)
-                document = report.get("document", {})
-
-                profile.verified_first_name = document.get("first_name")
-                profile.verified_last_name = document.get("last_name")
-                profile.verified_address = document.get("address")
-                profile.verified_dob = document.get("dob")
-                # Récupérer l’image temporaire de la pièce d’identité
-                front_id = document.get("front")
-                if front_id:
-                    file = stripe.File.retrieve(front_id)
-                    profile.document_image_url = file.get("url")
-                    
-            profile.save()
-
-    except Exception as e:
-        import traceback
-        print("❌ Erreur webhook :", str(e))
-        traceback.print_exc() 
+    except Exception:
+        logger.error("❌ Erreur webhook Stripe", exc_info=True)
         return HttpResponse("Webhook error", status=500, content_type="text/plain")
 
     return HttpResponse("OK", status=200, content_type="text/plain")
+
+
+def _handle_identity_success(session):
+    user_id = session.get("metadata", {}).get("user_id")
+    if not user_id:
+        raise ValueError("user_id manquant dans metadata Stripe.")
+
+    User = get_user_model()
+    user = User.objects.get(id=user_id)
+    profile = Profile.objects.get(user=user)
+
+    profile.ci_is_verified = True
+
+    # Récupération des données d’identité
+    report_id = session.get("last_verification_report")
+    if report_id:
+        report = stripe.identity.VerificationReport.retrieve(report_id)
+        document = report.get("document", {})
+
+        profile.verified_first_name = document.get("first_name")
+        profile.verified_last_name = document.get("last_name")
+        profile.verified_address = document.get("address")
+        profile.verified_dob = document.get("dob")
+
+        # Image temporaire (protégée par Stripe, nécessite FileLink pour accès public)
+        front_id = document.get("front")
+        if front_id:
+            file_link = stripe.FileLink.create(file=front_id)
+            profile.document_image_url = file_link.get("url")
+
+    profile.save()
+
+
+def _handle_identity_failure(session, reason="unknown"):
+    user_id = session.get("metadata", {}).get("user_id")
+    if not user_id:
+        raise ValueError("user_id manquant dans metadata Stripe.")
+
+    User = get_user_model()
+    user = User.objects.get(id=user_id)
+    profile = Profile.objects.get(user=user)
+
+    profile.ci_is_verified = False
+    profile.save()
+
+    logger.warning(f"⚠️ Vérification échouée/annulée pour user_id={user_id}, raison={reason}")
+
+
+@login_required
+def identity_complete(request):
+    profile = request.user.profile
+    return render(request, "stripe_sub/identity_complete.html", {
+        "is_verified": profile.ci_is_verified,
+    })

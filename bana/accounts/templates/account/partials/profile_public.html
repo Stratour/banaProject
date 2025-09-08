@@ -16,18 +16,15 @@
     {% endif %}
 
     {% if user.profile.ci_is_verified %}
-    <p>{{ user.profile.verified_first_name }} {{ user.profile.verified_first_name|slice:":1" }}.</p>
-    <p>{{ user.profile.verified_address.postal_code }},
-        {{ user.profile.verified_address.city }},
-        {{ user.profile.verified_address.country }}
-    </p>
+    <p><strong>Profil :</strong> {{ user.profile.verified_first_name }} {{ user.profile.verified_last_name|slice:":1" }}.</p>
     {% else %}
     <p><strong>Prénom :</strong> {{ user.first_name }}</p>
     <p><strong>Nom :</strong> {{ user.last_name|slice:"1" }}.</p>  
-    <p><strong>Adresse :</strong> {{ user.profile.address }}</p>     
     {% endif %}
+    <p><strong>Ville :</strong> {{ user.profile.address }}</p>     
 
-    <p><strong>Services :</strong> {{ user.profile.service | title }}</p>
+
+    <p><strong>Rôle:</strong> {{ user.profile.service | title }}</p>
     <!--<p>Transports : {{ user.profile.transport_modes|join:", " }}</p>-->
     <p><strong>Langues parlées :</strong> 
     {% for language in user.profile.languages.all %}
