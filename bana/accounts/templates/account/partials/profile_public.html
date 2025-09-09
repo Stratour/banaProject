@@ -1,4 +1,120 @@
+{% load i18n static %}
 
+      <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+        <h2 class="text-xl font-semibold text-brand">{% trans "Mon profil" %}</h2>
+
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+          <!-- Left: avatar + identity -->
+          <div class="flex items-start gap-5">
+            <div class="relative shrink-0">
+              {% if user.profile.profile_picture %}
+              <img src="{{ user.profile.profile_picture.url }}" alt="{% trans 'Photo de profil' %}"
+                class="h-24 w-24 sm:h-28 sm:w-28 rounded-full object-cover ring-4 ring-[#E9F5F1]" />
+              {% else %}
+              <img src="{% static 'bana/img/placeholder-avatar.png' %}" alt="{% trans 'Photo de profil' %}"
+                class="h-24 w-24 sm:h-28 sm:w-28 rounded-full object-cover ring-4 ring-[#E9F5F1]" />
+              {% endif %}
+
+              {% if profile.is_verified %}
+              <span class="absolute -top-1 -left-1 inline-flex h-8 w-8 rounded-full bg-white ring-4 ring-white shadow">
+                <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
+                  <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+              </span>
+              {% endif %}
+            </div>
+
+            <div class="min-w-0">
+              <!-- Nom + rating -->
+              <div class="flex items-center gap-3 flex-wrap">
+                <p class="text-xl sm:text-2xl font-extrabold text-gray-800 leading-tight truncate">
+                  {% if user.profile.ci_is_verified %}
+                  {{ user.profile.verified_first_name }} {{ user.profile.verified_last_name|slice:":1" }}.
+                  {% elif user.first_name %}
+                  {{ user.first_name }} {{ user.last_name }}
+                  {% else %}
+                  {{ user.get_full_name|default:user.username }}
+                  {% endif %}
+                    
+                </p>
+
+                <div class="flex items-center" aria-label="{% trans 'Note utilisateur' %}">
+                  {% with r=profile.rating|default:0 %}
+                  {% for i in "12345" %}
+                  {% if forloop.counter <= r %} <svg class="h-6 w-6 text-brand" viewBox="0 0 20 20" fill="currentColor"
+                    aria-hidden="true">
+                    <path
+                      d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.802 2.036a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118L10 13.347l-2.985 2.136c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L3.38 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                    </svg>
+                    {% else %}
+                    <svg class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"
+                        stroke="currentColor" stroke-width="2" fill="none" />
+                    </svg>
+                    {% endif %}
+                    {% endfor %}
+                    {% endwith %}
+                </div>
+              </div>
+
+              <!-- Rôle + localisation -->
+              <p class="text-gray-500 -mt-1">
+                {{ user.profile.service }}
+                <span class="mx-2 text-gray-300">|</span>
+                {{ user.profile.address|default:"—" }}
+              </p>
+
+              <!-- Tags: langues & transports -->
+              <div class="flex items-center gap-3 mt-3 flex-wrap">
+                {% if user.profile.languages %}
+                {% if user.profile.languages.all %}
+                {% for l in user.profile.languages.all %}
+                <span
+                  class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1 text-sm text-brand font-semibold">
+                  {{ l }}
+                </span>
+                {% endfor %}
+                {% else %}
+                {% for l in user.profile.languages %}
+                <span
+                  class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1 text-sm text-brand font-semibold">
+                  {{ l }}
+                </span>
+                {% endfor %}
+                {% endif %}
+                {% endif %}
+                
+                {% if user.profile.transport_modes %}
+                  {% for m in user.profile.transport_modes %}
+                    <span class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1 text-sm text-brand font-semibold">
+                      {{ m }}
+                    </span>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: stats -->
+          <div class="min-w-[220px] md:text-right">
+            <p class="text-brand font-extrabold text-xl">
+              {{ profile.trips_count|default:0 }} {% trans "trajets effectués" %}
+            </p>
+            <p class="text-gray-500">
+              {% trans "Membre depuis le" %} {{ user.date_joined|date:"d F Y" }}
+            </p>
+
+            <p class="text-gray-500">{% trans "Dernière connexion" %} :
+            {{ user.last_login|date:"d M Y H:i" }}
+            </p>
+            
+          </div>
+        </div>
+      </div>
+{% comment "" %}
 <div class="border p-4 rounded-lg shadow bg-white">
     <h3 class="text-xl font-semibold mb-3">Mon profil public</h3>
     {% if user.profile.profile_picture %}
@@ -34,4 +150,5 @@
     <p><strong>Date d’inscription :</strong> {{ user.date_joined|date:"d/m/Y" }}</p>
     
 </div>
+{% endcomment %}
 

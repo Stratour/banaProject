@@ -19,35 +19,40 @@
     {% csrf_token %}
     
     <!-- Étape 1 : départ / arrivée -->
-    <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
-      <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/icon/Icon_step_path.svg' %}" alt="Logo Bana">
-      <div class="flex-1 space-y-6 w-full">
-        <div>
-          <label class="block text-sm font-bold text-brand uppercase mb-1">Départ</label>
-          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-            <div class="w-full sm:w-2/3">{{ traject_form.start_adress }}
-              <ul id="start-suggestion-list"
-              class="bg-white shadow-md mt-1 max-h-48 overflow-auto"></ul>
-            </div>
-            <div>
-              
-            </div>
-            <div class="w-full rounded-full sm:w-[110px]">{{ researched_form.departure_time }}</div>
-          </div>
+<div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
+  <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0"
+       src="{% static 'bana/img/icon/Icon_step_path.svg' %}" alt="Logo Bana">
+
+  <div class="flex-1 space-y-6 w-full">
+    <div>
+      <label class="block text-sm font-bold text-brand uppercase mb-1">Départ</label>
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+        <div class="w-full sm:w-2/3">
+          {{ traject_form.start_adress }}
+          <ul id="start-suggestion-list" class="bg-white shadow-md mt-1 max-h-48 overflow-auto"></ul>
         </div>
-        <div>
-          <label class="block text-sm font-bold text-brand uppercase mb-1">Arrivée</label>
-          <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
-            <div class="w-full sm:w-2/3">{{ traject_form.end_adress }}
-              <ul id="end-suggestion-list"
-          class="bg-white  shadow-md mt-1 max-h-48 overflow-auto"></ul>
-            </div>
-           
-            <div class="w-fullrounded-full sm:w-[110px]">{{ researched_form.arrival_time }}</div>
-          </div>
+        <!-- ⬇️ pas de div vide ici -->
+        <div class="w-full sm:w-[110px]">
+          {{ researched_form.departure_time }}
         </div>
       </div>
     </div>
+
+    <div>
+      <label class="block text-sm font-bold text-brand uppercase mb-1">Arrivée</label>
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+        <div class="w-full sm:w-2/3">
+          {{ traject_form.end_adress }}
+          <ul id="end-suggestion-list" class="bg-white shadow-md mt-1 max-h-48 overflow-auto"></ul>
+        </div>
+        <div class="w-full sm:w-[110px]">
+          {{ researched_form.arrival_time }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
     
     <hr class="my-10">
     

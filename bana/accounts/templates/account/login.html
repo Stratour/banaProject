@@ -1,203 +1,104 @@
 {% extends 'layouts/base.html' %}
-{% load i18n static %}
-{% load allauth account %}
+{% load allauth i18n account static %}
 
 {% block head_title %}
-{% trans "Login" %}
+{% trans "Sign In" %}
 {% endblock head_title %}
 
 {% block content %}
+<div class="bg-gray-100 md:min-h-screen flex items-center justify-center">
+  <div class="flex flex-col items-center justify-center bg-white shadow-md rounded-lg p-8 w-full md:mx-12 lg:w-1/2">
+    <h1 class="text-brand text-3xl font-bold text-center">{% trans 'Sign In' %}</h1>
+    <h2 class="text-brand-200 text-1xl font-bold mb-12 text-center">{% trans "Bienvenue" %}</h2>
 
-<!-- Login Section -->
-<section id="login" class="login section">
+    {% url 'account_login' as login_url %}
+    <form method="post" class="lg:w-1/2" action="{{ login_url }}">
+      {% csrf_token %}
 
-    <!-- Page Title -->
-    <header class="container section-title" data-aos="fade">
-        <hgroup>
-            <h1>{% trans 'Login' %}</h1>
-            <hr>
-            <p class="text-center">
-                {% trans "Please enter your credentials to access your account." %}
-            </p>
-        </hgroup>
-	{% comment %}
-        ADMIN -- BanaAdmin    ::    banaadmin@gmail.com    ::    B@n@Adm1n
-	<br>
-	PARENTS ==  rj@digit-up.be    ::    B@n@Adm1n
-	<br>
-	NyotaTestOne Ny0t@T€$tOn€ :: nyota@testone.com
-        <br>
-	{% endcomment %}
-    </header><!-- End Page Title -->
-
-    <div class="container" data-aos="fade-up" data-aos-delay="100">
-
-        <!-- Login Form -->
-        {% url 'account_login' as login_url %}
-        <div class="row justify-content-center">
-            <div class="col-lg-6">
-                <form method="post" class="form" action="{{ login_url }}">
-                    {% csrf_token %}
-                    {% if form.non_field_errors %}
-                    <div class="errorlist text-danger">
-                        {% for error in form.non_field_errors %}
-                        <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-
-                    <!-- Email Input -->
-                    <div class="form-group mb-3">
-                        <label for="loginName" class="form-label">{% trans 'Email' %}</label>
-                        <input type="text" name="login" id="loginName" class="form-control" required>
-
-                    </div>
-
-                    <!-- Password Input -->
-                    <div class="form-group mb-3">
-                        <label for="loginPassword" class="form-label">{% trans 'Password' %}</label>
-                        <input type="password" name="password" id="loginPassword" class="form-control" required>
-
-                    </div>
-
-                    <!-- Remember Me & Forgot Password -->
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="rememberMe">
-                            <label class="form-check-label" for="rememberMe">{% trans 'Remember Me' %}</label>
-                        </div>
-                        <a href="{% url 'account_reset_password' %}">{% trans 'Forgot password?' %}</a>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button type="submit" class="btn btn-primary btn-block">{% trans 'Sign In' %}</button>
-
-                    <!-- Register Link -->
-                    <div class="text-center mt-3">
-                        <p>{% blocktranslate %}Don't have an account? <a href="{{ signup_url }}">Sign Up</a>{% endblocktranslate %}</p>
-                            
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Additional login methods: passkey or code -->
-        {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
-        <div class="row justify-content-center mt-4">
-            <div class="col-lg-6 text-center">
-                <hr>
-                <div class="btn-group-vertical">
-                    {% if PASSKEY_LOGIN_ENABLED %}
-                    <button type="submit" form="mfa_login" id="passkey_login" class="btn btn-outline-primary btn-block">
-                        {% trans "Sign in with a passkey" %}
-                    </button>
-                    {% endif %}
-                    {% if LOGIN_BY_CODE_ENABLED %}
-                    <a href="{{ request_login_code_url }}" class="btn btn-outline-primary btn-block">
-                        {% trans "Send me a sign-in code" %}
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
+      {# Username / Email #}
+      <div class="form-group mb-8">
+        <label for="login" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">
+          {% trans 'Email' %}
+        </label>
+        <input type="text" name="login" id="login"
+               value="{{ form.login.value|default_if_none:'' }}"
+               class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
+        {% if form.login.errors %}
+          <div class="mt-1 space-y-0.5">
+            {% for error in form.login.errors %}
+              <p class="text-xs font-medium text-red-500">{{ error }}</p>
+            {% endfor %}
+          </div>
         {% endif %}
+      </div>
 
-        <!-- Social Login (if enabled) -->
-        {% if SOCIALACCOUNT_ENABLED %}
-        <div class="row justify-content-center mt-4">
-            <div class="col-lg-6 text-center">
-                <p>{% trans 'Or sign in with:' %}</p>
-                <div class="social-links">
-                    {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-                </div>
-            </div>
-        </div>
+      {# Password #}
+      <div class="form-group mb-6">
+        <label for="password" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">
+          {% trans 'Password' %}
+        </label>
+        <input type="password" name="password" id="password" autocomplete="current-password"
+               class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
+        {% if form.password.errors %}
+          <div class="mt-1 space-y-0.5">
+            {% for error in form.password.errors %}
+              <p class="text-xs font-medium text-red-500">{{ error }}</p>
+            {% endfor %}
+          </div>
         {% endif %}
+      </div>
 
-    </div>
-</section><!-- /Login Section -->
-
-{%endblock content %}
-
-{% block extra_body %}
-{{ block.super }}
-{% if PASSKEY_LOGIN_ENABLED %}
-{% include "mfa/webauthn/snippets/login_script.html" with button_id="passkey_login" %}
-{% endif %}
-{% endblock %}
-
-{% comment "" %}<section class="login section">
-
-    <header class="container section-title " data-aos="fade">
-        <div class="row d-flex justify-content-center text-center">
-            <div class="col-lg-8">
-                <h1 class="gold-text" data-text="{% trans 'SignIn' %}">
-                    <span class="gold-text__highlight" data-text="{% trans 'SignIn' %}">{% trans "SignIn" %}</span>
-                </h1>
-            </div>
-        </div>
-    </header><!-- End Page Title -->
-
-    <div class="container">
-
-
-
-        {% if not SOCIALACCOUNT_ONLY %}
-        {% setvar link %}
-        <a href="{{ signup_url }}">
-            {% endsetvar %}
-            {% setvar end_link %}
+      {# Remember me + hidden redirect #}
+      <div class="mb-6 flex items-center justify-between">
+        <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+          <input type="checkbox" name="remember" class="h-4 w-4 rounded border-gray-300">
+          <span>{% trans "Se souvenir de moi" %}</span>
+        </label>
+        <a href="{% url 'account_reset_password' %}" class="text-sm text-brand font-semibold hover:underline">
+          {% trans "Mot de passe oublié ?" %}
         </a>
-        {% endsetvar %}
-        {% element p %}
-        {% blocktranslate %}If you have not created an account yet, then please {{ link }}sign up{{ end_link }} first.{%
-        endblocktranslate %}
-        {% endelement %}
+      </div>
 
-        {% url 'account_login' as login_url %}
-        {% element form form=form method="post" action=login_url tags="entrance,login" %}
-        {% slot body %}
-        {% csrf_token %}
-        {% element fields form=form unlabeled=True %}
-        {% endelement %}
-        {{ redirect_field }}
-        {% endslot %}
-        {% slot actions %}
-        {% element button type="submit" tags="prominent,login" %}
-        {% trans "Sign In" %}
-        {% endelement %}
-        {% endslot %}
-        {% endelement %}
-        {% endif %}
-        {% if LOGIN_BY_CODE_ENABLED or PASSKEY_LOGIN_ENABLED %}
-        {% element hr %}
-        {% endelement %}
-        {% element button_group vertical=True %}
-        {% if PASSKEY_LOGIN_ENABLED %}
-        {% element button type="submit" form="mfa_login" id="passkey_login" tags="prominent,login,outline,primary" %}
-        {% trans "Sign in with a passkey" %}
-        {% endelement %}
-        {% endif %}
-        {% if LOGIN_BY_CODE_ENABLED %}
-        {% element button href=request_login_code_url tags="prominent,login,outline,primary" %}
-        {% trans "Send me a sign-in code" %}
-        {% endelement %}
-        {% endif %}
-        {% endelement %}
-        {% endif %}
-        {% if SOCIALACCOUNT_ENABLED %}
-        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
-        {% endif %}
+      {% if redirect_field_value %}
+        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+      {% endif %}
 
+      {# Non-field errors #}
+      {% if form.non_field_errors %}
+        <div class="mb-6 space-y-0.5">
+          {% for error in form.non_field_errors %}
+            <p class="text-xs font-medium text-red-500">{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {# Submit #}
+      <div class="w-full mt-8 flex justify-center items-center">
+        <button type="submit" class="w-60 px-6 py-3 font-semibold text-white bg-brand rounded-full">
+          {% trans 'Sign In' %}
+        </button>
+      </div>
+    </form>
+
+    <div class="text-center mt-6">
+      {% url 'account_signup' as signup_url %}
+      <p class="text-brand-200 text-1xl mb-4">
+        {% blocktrans %}Pas encore de compte ?
+          <a class="font-bold" href="{{ signup_url }}">S'inscrire</a>
+        {% endblocktrans %}
+      </p>
     </div>
-</section>
 
+      {% comment "" %}
+      {% if SOCIALACCOUNT_ENABLED %}
+      <div class="text-center">
+        <p>{% trans 'Or sign in with:' %}</p>
+        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+      </div>
+    {% endif %}
+      {% endcomment %}
+    {# Optionnel : social login #}
+    
+  </div>
+</div>
 {% endblock content %}
-{% block extra_body %}
-{{ block.super }}
-{% if PASSKEY_LOGIN_ENABLED %}
-{% include "mfa/webauthn/snippets/login_script.html" with button_id="passkey_login" %}
-{% endif %}
-
-{% endblock %}
-{% endcomment %}

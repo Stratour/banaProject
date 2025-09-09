@@ -1,24 +1,29 @@
-
 {% extends "allauth/layouts/base.html" %}
 {% load allauth i18n static %}
-{% block head_title %}
-{% trans "Profile" %}
-{% endblock head_title %}
-{% block content %}
 
-    <section class="section profile">
-       
-<div class="container" data-aos="fade-up" data-aos-delay="100">
-    <div class="max-w-4xl mx-auto px-4 py-6 space-y-10">
-      <!-- ✅ SECTION PUBLIQUE EN HAUT -->
+{% block head_title %}{% trans "Profile" %}{% endblock head_title %}
+
+{% block content %}
+<section class="section profile">
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+      {# ——— Messages ——— #}
+      {% if messages %}
+      <ul class="mb-2 space-y-2">
+        {% for message in messages %}
+        <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+
       <div 
           id="public-profile-section"
           hx-get="{% url 'accounts:profile_public' %}" 
           hx-trigger="load" 
           hx-swap="outerHTML"
-          class="border rounded-lg shadow-md bg-white p-6"
-      >
-          Chargement du profil public...
+          class="border rounded-lg shadow-md bg-white p-6">Chargement du profil public...
+          
       </div>
     
       <!-- ✅ SECTION PRIVÉE EN DESSOUS -->
@@ -34,100 +39,10 @@
     </div>
 
 
-            {% comment "" %}
-            <div id="profile-edit-section">
-                <div hx-get="{% url 'accounts:edit_profile' %}" hx-trigger="load" hx-target="this" hx-swap="innerHTML" class="col-lg-12" >
-                </div>
-            </div>
-            {% endcomment %}
-            
-            
+     
 
-                {% comment "" %}
-                
-                <div class="col-lg-2 profile-img">
-	        {% if profile.profile_picture %}
-	            <img src="{{ profile.profile_picture.url }}" alt="Photo de profil" class="image_profil_xl">
-	        {% else %}
-              <h1 class="no-image">
-              {{ user.first_name.0 }}.{{ user.last_name.0 }}
-              </h1>
-            {% endif %}                    
-            <h2>{{ user.username }}</h2>
-            <a href="{% url 'account_email' %}" class="btn">{% trans 'Configurer email' %}</a>
-                </div>
 
-                <div class="col-lg-6">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <button class="nav-link active" data-bs-toggle="tab"
-                                hx-get="{% url 'accounts:profile_overview' %}" hx-target="#profile-content"
-                                hx-swap="innerHTML">Infos profile</button>
-                        </li>
-
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" hx-get="{% url 'accounts:update_user' %}"
-                                hx-target="#profile-content" hx-swap="innerHTML">{% trans 'Modifier Profile' %}</button>
-                        </li>
-
-                        <li class="nav-item">
-                            <button class="nav-link" data-bs-toggle="tab" hx-get="{% url 'account_change_password' %}"
-                                hx-target="#profile-content" hx-swap="innerHTML">{% trans 'Change Password' %}</button>
-                        </li>
-                    </ul>
-                    <div class="tab-content pt-2" id="profile-content">
-                        <div class="tab-pane fade show active profile-overview" id="profile-overview">
-                        
-
-                            <!-- Contenu de départ -->
-                            <table class="table" id="profile-overview">
-                                <h3 class="text-lg-center">{% trans 'Profile Details' %}</h3>
-                                <tbody>
-                                    <tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Full Name' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ user.get_full_name }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Email' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ user.email }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Phone' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ profile.phone }}</td>
-                                    </tr>
-                                    <tr><tr><tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Address' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ profile.address }}</td>
-                                    </tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Service' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ profile.service|join:", " }}</td>
-                                    </tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Languages' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ profile.languages|join:", " }}</td>
-                                    </tr>
-
-                                    <tr></tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Transport' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ profile.transport_modes|join:", " }}</td>
-                                    </tr>
-                                        <th class="col-lg-4 col-md-4">{% trans 'Bio' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ profile.bio }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="col-lg-3 col-md-4">{% trans 'Inscription' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ user.date_joined|date:"d M Y" }}</td>
-                                    </tr>
-                                    <tr>
-                                        <th class="col-lg-3 col-md-4">{% trans 'Last connection' %}</th>
-                                        <td class="col-lg-9 col-md-8">: {{ user.last_login|date:"d M Y H:i" }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div><!-- End Bordered Tabs -->
-                </div>
-                {% endcomment %}
-        </div>
-    </section>
-
+    </div>
+  </div>
+</section>
 {% endblock content %}

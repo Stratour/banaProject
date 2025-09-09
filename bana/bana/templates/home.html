@@ -10,8 +10,11 @@
 
             <!-- Left Content -->
             <div class="flex flex-col items-center text-center md:text-left px-8 pb-4 md:mb-4 md:w-1/2 md:px-16 xl:px-32">
-                <h1 class="mt-4 text-4xl md:text-5xl font-bold">Are you looking for or are you offering a ride?</h1>
-                <h2 class="mt-2 mb-4 text-lg font-semibold text-brand">Shared mobility platform for children’s rides
+                <h1 class="mt-4 text-4xl md:text-5xl font-bold">
+                    Trouvez de l'aide pour les trajets de votre enfant
+                </h1>
+                <h2 class="mt-2 mb-4 text-lg font-semibold text-brand">Service de mobilité partagée  pour 
+                    les trajets <br>maison-école-activités, via tous les moyens de transport
                 </h2>
                 <!-- Search Bar -->
                 <form id="searchForm" method="GET" action="{% url 'researched_traject' %}"
@@ -63,11 +66,11 @@
                 <div class="mt-6 flex flex-col xl:flex-row gap-4 items-center">
                     <button id="submitButton"
                             class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-brand rounded-full"
-                            aria-label="Find a ride">Find a ride
+                            aria-label="Find a ride">Rechercher
                     </button>
                     <a href="{% url 'proposed_traject' %}"
                        class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-brand-200 rounded-full"
-                       aria-label="Offer a ride">Offer a ride</a> 
+                       aria-label="Offer a ride">Proposer</a> 
                 </div>
             </div>
             <!-- Right Content -->

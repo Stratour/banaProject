@@ -10,7 +10,7 @@
 <div class="bg-gray-100 md:min-h-screen flex items-center justify-center">
     <div class="flex flex-col items-center justify-center bg-white shadow-md rounded-lg p-8 w-full md:mx-12 lg:w-1/2">
         <h1 class="text-brand text-3xl font-bold text-center">{% trans 'Signup' %}</h1>
-        <h2 class="text-brand-200 text-1xl font-bold mb-12 text-center">{% trans "Create an account to get started." %}</h2>
+        <h2 class="text-brand-200 text-1xl font-bold mb-12 text-center">{% trans "Créez un compte pour commencer." %}</h2>
 
         {% if not SOCIALACCOUNT_ONLY %}
         {% url 'account_signup' as action_url %}
@@ -34,12 +34,12 @@
 
                         <!-- Service Input -->
             <div class="form-group mb-8">
-                <label for="service" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">Fonction</label>
+                <label for="service" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">Rôle</label>
                     <select name="service" id="service" required
                             class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">-- Sélectionnez une fonction --</option>
-                        <option value="parent">Parent</option>
-                        <option value="yaya">Yaya</option>
+                        <option value="">-- Sélectionnez un rôle --</option>
+                        <option value="parent">Parent - Rechercher et/ou proposer un trajet</option>
+                        <option value="yaya">Yaya - Proposer un trajet</option>
                     </select>
                 {% if form.service.errors %}
                     <div class="mt-1 space-y-0.5">
@@ -83,7 +83,7 @@
             <!-- Confirm Password Input -->
             <div class="form-group mb-8">
                 <label for="password_confirm"
-                       class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">{% trans 'Confirm Password' %}</label>
+                       class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">{% trans 'Confirmer mot de passe' %}</label>
                 <input type="password" name="password2" id="password_confirm"
                        class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
 
@@ -99,7 +99,7 @@
             <!-- Submit Button -->
             <div class="w-full mt-12 flex justify-center items-center">
                 <button type="submit" class="w-60 px-6 py-3 font-semibold text-white bg-brand rounded-full">
-                    {% trans 'Sign Up' %}
+                    {% trans 'Créer un compte' %}
                 </button>
             </div>
         </form>
@@ -108,8 +108,8 @@
         <!-- Login Link -->
         <div class="text-center mt-3">
             <p class="text-brand-200 text-1xl mb-12">
-                {% blocktrans %}Already have an account?
-                <a class="font-bold" href="{{ login_url }}">Sign In</a>
+                {% blocktrans %}Vous avez déja un compte ?
+                <a class="font-bold" href="{{ login_url }}">Se connecter</a>
                 {% endblocktrans %}
             </p>
         </div>
@@ -125,6 +125,7 @@
         </div>
         {% endif %}
 
+        {% comment "" %}
         <!-- Social sign up options -->
         {% if SOCIALACCOUNT_ENABLED %}
         <div class="text-center">
@@ -132,6 +133,8 @@
             {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
         </div>
         {% endif %}
+        {% endcomment %}
+        
     </div>
 </div>
 {% endblock content %}

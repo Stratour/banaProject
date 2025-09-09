@@ -1,7 +1,122 @@
-<div id="editable-profile-section" class="border p-4 rounded-lg shadow bg-white">
+{% load i18n static %}
+
+     {# ——— INFOS PRIVÉES (restructurée, carte blanche) ——— #}
+      <div id="editable-profile-section" class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-8">
+        <h2 class="text-xl font-semibold text-brand">{% trans "Infos privées" %}</h2>
+
+        <div class="grid gap-6 md:grid-cols-3">
+
+            <section class="rounded-xl border border-gray-200 p-4 space-y-4">
+                <div>
+                  <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Prénom" %}</p>
+                  {% if user.profile.ci_is_verified %}
+                  <p>{{ user.profile.verified_first_name }}</p>
+                  {% else %}
+                  <p>{{ user.first_name|default:"—" }}</p>
+                  {% endif %}
+                </div>
+
+            <div class="border-t border-gray-100"></div>
+
+            <div>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Nom" %}</p>
+              {% if user.profile.ci_is_verified %}
+                  <p>{{ user.profile.verified_last_name }}</p>
+                  {% else %}
+                  <p>{{ user.last_name|default:"—" }}</p>
+                  {% endif %}
+            </div>
+          </section>
+
+          {# —— Coordonnées —— #}
+          <section class="rounded-xl border border-gray-200 p-4 space-y-4">
+            <div>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Email" %}</p>
+              <p>{{ user.email }}</p>
+            </div>
+
+            <div class="border-t border-gray-100"></div>
+
+            <div>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Adresse" %}</p>
+              <p>{{ user.profile.address|default:"—" }}</p>
+            </div>
+          </section>
+
+          {# —— Services & Langues —— #}
+          <section class="rounded-xl border border-gray-200 p-4 space-y-4">
+            <div>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Rôle" %}</p>
+              <p>
+                {% if user.profile.service %}{{ user.profile.service }}
+                {% elif user.profile.services %}{{ user.profile.services }}
+                {% else %}—{% endif %}
+              </p>
+            </div>
+
+            <div class="border-t border-gray-100"></div>
+
+            <div>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Langues" %}</p>
+              <p>
+                {% if user.profile.languages.all %}
+                {% for l in user.profile.languages.all %}
+                {{ l }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+                {% else %}
+                {{ user.profile.languages|join:", " }}
+                {% endif %}
+              </p>
+            </div>
+          </section>
+
+          {# —— Bio (large) —— #}
+          <section class="md:col-span-2 rounded-xl border border-gray-200 p-4">
+            <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Bio" %}</p>
+            <p>{{ user.profile.bio|default:"—" }}</p>
+          </section>
+
+          {# —— Dernière connexion & BVM —— #}
+          <section class="rounded-xl border border-gray-200 p-4 space-y-4">
+            <div>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Carte d'identité" %}</p>
+              {% if user.profile.ci_is_verified %}
+              <p>Identité vérifiée</p>
+              {% else %}
+                <form method="post" action="{% url 'create_verification_session' %}">
+                {% csrf_token %}
+                    <button class="inline-flex items-center px-5 py-2 rounded-full bg-brand text-white hover:bg-brand-dark font-semibold transition" type="submit">Vérifier mon identité</button>
+                </form>
+              {% endif %}
+            </div>
+
+            <div class="border-t border-gray-100"></div>
+
+            <div>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">
+                {% trans "Bonne vie et mœurs (extrait 596.2)" %}
+              </p>
+              {% if user.profile.document_bvm %}
+              <a href="{{ user.profile.document_bvm.url }}" target="_blank" class="hover:underline">
+                {% trans "Voir le document" %}
+              </a>
+              {% else %}
+              <p>—</p>
+              {% endif %}
+            </div>
+          </section>
+        </div>
+        
+        <div class="pt-2">
+          <a href="{% url 'accounts:profile_edit' %}"
+            class="inline-flex items-center px-5 py-2 rounded-full bg-brand text-white hover:bg-brand-dark font-semibold transition">
+            {% trans "Modifier mon profil" %}
+          </a>
+        </div>
+      </div>
+    {% comment "" %}
     <h3 class="text-xl font-semibold mb-3">Mes informations</h3>
-    
-    {% if user.profile.ci_is_verified %}
+     {% if user.profile.ci_is_verified %}
     <p><strong>Prénom :</strong> {{ user.profile.verified_first_name }}</p>
     <p><strong>Nom :</strong> {{ user.profile.verified_last_name }}</p>
     <p><strong>Adresse :</strong> {{ user.profile.verified_address }}</p>
@@ -44,6 +159,8 @@
     {% endif %}
 
 
+    {% endcomment %}
+   
 
 
 

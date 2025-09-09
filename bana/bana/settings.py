@@ -234,7 +234,7 @@ STATICFILES_DIRS = [ BASE_DIR / 'bana/static' ]
 STATIC_ROOT = '/home/bana_community/banaProject/bana/static_collected'
 
 
-MEDIA_URL = "media/"
+MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
@@ -306,22 +306,22 @@ ACCOUNT_INACTIVE_USER_ERROR = "Ce compte est désactivé. Contacte un admin pour
 
 
 # A compléter
-#EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-#EMAIL_HOST = 'smtp.gmail.com'
-#EMAIL_PORT = 587
-#EMAIL_USE_TLS = True
-#EMAIL_HOST_USER = 'hellobanacommunity@gmail.com'  # Votre adresse email
-#EMAIL_HOST_PASSWORD = 'your-email-password'  # Votre mot de passe d'email
-#DEFAULT_FROM_EMAIL = 'your-email@gmail.com'  # Adresse par défaut pour l'expéditeur
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = 'ssl0.ovh.net'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = 'info@bana.mobi'  # Votre adresse email
+EMAIL_HOST_PASSWORD = config("EMAIL_MDP",default="secret")  # Votre mot de passe d'email
+DEFAULT_FROM_EMAIL = 'info@bana.mobi' # Adresse par défaut pour l'expéditeur
 
 # Configurer l'email
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"  # Remplace par ton serveur SMTP
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'Lucacamilleri55@gmail.com'
-EMAIL_HOST_PASSWORD = 'bqyu cpzk looj hydh' 
-DEFAULT_FROM_EMAIL = "Lucacamilleri55@gmail.com"
+#EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+#EMAIL_HOST = "smtp.gmail.com"  # Remplace par ton serveur SMTP
+#EMAIL_PORT = 587
+#EMAIL_USE_TLS = True
+#EMAIL_HOST_USER = 'Lucacamilleri55@gmail.com'
+#EMAIL_HOST_PASSWORD = 'bqyu cpzk looj hydh' 
+#DEFAULT_FROM_EMAIL = "Lucacamilleri55@gmail.com"
 
 ACCOUNT_FORMS = {
     'signup': 'accounts.forms.CustomSignupForm'
