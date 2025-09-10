@@ -10,12 +10,14 @@
 
         <!-- Left Content -->
         <div class="flex flex-col items-center text-center md:text-left px-8 pb-4 md:mb-4 md:w-1/2 md:px-16 xl:px-32">
-            <h1 class="mt-4 text-4xl md:text-5xl font-bold">Let's stay connected</h1>
+            <h1 class="mt-4 text-4xl md:text-5xl font-bold">Restons connectés</h1>
             <div class="mt-6 flex flex-col xl:flex-row gap-4 items-center">
-                <a href="/find-ride" class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-brand rounded-full"
-                    aria-label="Find a ride">Find a ride</a>
-                <a href="/offer-ride" class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-brand-200 rounded-full"
-                    aria-label="Offer a ride">Offer a ride</a>
+                <a href="{% url 'researched_traject' %}"
+                    class="w-60 px-6 py-3 font-semibold text-white bg-brand rounded-full md:w-48"
+                    aria-label="Find a ride">Rechercher</a>
+                <a href="{% url 'proposed_traject' %}"
+                    class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-brand-200 rounded-full"
+                    aria-label="Offer a ride">Proposer</a>
             </div>
         </div>
 
@@ -57,27 +59,30 @@
             <!-- Benefit Items -->
             <div class="flex flex-col items-center mt-12 mb-4 md:!mt-0 md:!mb-0 md:items-start text-left">
                 <h3 class="text-xl text-center md:text-left font-bold text-brand-100 mb-2">
-                    Contact us
+                    Contactez-nous
                 </h3>
                 <div class="flex flex-col p-8 md:!p-0 justify-around text-base text-white text-center md:!text-left">
                     <p>
-                        We can be reached by telephone
-                        <span class="text-brand-100">7 days a week from 8:30 a.m. to 6:30 p.m.</span>
+                        Nous sommes joignables par téléphone
+                        <span class="text-brand-100">7 jours sur 7 de 8h30 à 18h30.</span>
                     </p><br>
                     <p>
-                        And, because we all know this sprint slot between 6 p.m. and 8 p.m., we have set up an
-                        <span class="text-brand-100">additional telephone service from 8 p.m. to 9:30 p.m. Monday to
-                            Friday</span> to answer your questions.
+                        Et, parce que nous connaissons tous ce créneau de sprint entre 18h et 20h, nous avons mis en
+                        place un
+                        <span class="text-brand-100">service téléphonique supplémentaire de 20h à 21h30 du lundi au
+                            vendredi</span>
+                        pour répondre à vos questions.
                     </p>
                 </div>
             </div>
+
         </div>
     </div>
 
     <div class="bg-gray-100 min-h-screen w-full flex items-center justify-center p-6">
         <div class="bg-white shadow-md rounded-lg p-8 max-w-md w-full">
             <div class="text-center mb-6">
-                <h2 class="text-2xl font-semibold text-gray-700">Get in Touch</h2>
+                <h2 class="text-2xl font-semibold text-gray-700">Prenez contact</h2>
             </div>
 
             <div class="flex flex-col md:flex-row items-center gap-2 text-gray-600 mb-6">
@@ -100,14 +105,14 @@
             </div>
 
             <form class="space-y-4">
-                <input type="text" placeholder="First Name + Last Name"
-                    class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-100 focus:outline-none">
+                <input type="text" placeholder="Nom et prénom"
+                    class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-100 focus:outline-none autofocus">
                 <input type="email" placeholder="Email"
                     class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-100 focus:outline-none">
-                <textarea placeholder="Type your message" rows="4"
+                <textarea placeholder="Votre message" rows="4"
                     class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-brand-100 focus:outline-none"></textarea>
                 <button type="submit"
-                    class="w-full bg-brand-200 text-white py-3 rounded-lg font-semibold hover:bg-brand transition">Send</button>
+                    class="w-full bg-brand-200 text-white py-3 rounded-lg font-semibold hover:bg-brand transition">Envoyer</button>
             </form>
         </div>
     </div>
