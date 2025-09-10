@@ -3,10 +3,10 @@ from django.shortcuts import render
 # --- Home page ---------------------------------------------------------------------------
 def home(request):
     home_benefits = [
-        {'img_src': 'bana/img/icon/Icon_clock.svg', 'title': 'Time saving', 'highlight': 'Flexibility', 'description': 'in your calendar'},
-        {'img_src': 'bana/img/icon/Icon_currency.svg', 'title': 'Economic', 'highlight': 'money', 'description': 'Save on gasoline'},
-        {'img_src': 'bana/img/icon/Icon_earth.svg', 'title': 'Ecological', 'highlight': 'alternative', 'description': 'Using alternative transport'},
-        {'img_src': 'bana/img/icon/Icon_hearth.svg', 'title': 'Community', 'highlight': 'Social connection', 'description': 'Sharing moments'}
+        {'img_src': 'bana/img/icon/Icon_clock.svg', 'title': 'Gain de temps', 'highlight': 'Flexibilité', 'description': 'dans votre agenda'},
+        {'img_src': 'bana/img/icon/Icon_currency.svg', 'title': 'Économique', 'highlight': 'Économiser', 'description': 'sur l’essence'},
+        {'img_src': 'bana/img/icon/Icon_earth.svg', 'title': 'Écologique', 'highlight': 'Utiliser', 'description': 'des moyens de transport alternatifs'},
+        {'img_src': 'bana/img/icon/Icon_hearth.svg', 'title': 'Communauté', 'highlight': 'Créer du lien social', 'description': 'en partageant des moments'}
     ]
 
     home_roles = [
@@ -27,9 +27,9 @@ def about(request):
 # --- Work page ---------------------------------------------------------------------------
 def work(request):
     work_steps = [
-        {'img_src': 'bana/img/icon/Icon_profile.svg', 'title': '1. Create your profile', 'highlight': 'community of parents', 'description': 'Join a community of parents from your child’s school or activities.'},
-        {'img_src': 'bana/img/icon/Icon_place.svg', 'title': '2. Indicate your routes', 'highlight': 'Bana connects you', 'description': 'Share trip requests or respond to alerts, and Bana connects you.'},
-        {'img_src': 'bana/img/icon/Icon_message.svg', 'title': '3. Compose your tribe', 'highlight': 'build your trusted tribe', 'description': 'Find parents with similar routes, choose profiles, and build your trusted tribe.'}
+        {'img_src': 'bana/img/icon/Icon_profile.svg', 'title': '1. Créez votre profil', 'highlight': 'Rejoignez une communauté', 'description': 'de parents de l’école ou des activités de votre enfant.'},
+        {'img_src': 'bana/img/icon/Icon_place.svg', 'title': '2. Indiquez vos trajets', 'highlight': 'Partagez vos demandes de trajets', 'description': 'ou répondez aux alertes, et Bana vous met en relation.'},
+        {'img_src': 'bana/img/icon/Icon_message.svg', 'title': '3. Composez votre tribu', 'highlight': 'Trouvez des parents aux trajets similaires,', 'description': 'choisissez leurs profils et construisez votre tribu de confiance.'}
     ]
 
     work_roles = [
@@ -40,16 +40,22 @@ def work(request):
 
     work_profiles = [
         {
-            'img_src': 'bana/img/other/Nyota.png',
-            'name': 'Nyota Delecourt',
-            'short_bio': 'Mother of two (2010, 2023) with a marketing background and experience in HR, purchasing, and project management.',
-            'full_description': 'Passionate about family well-being. I juggle life as a mom to a teenager and a baby, balancing basketball practices, bottles, and meetings. I value sustainable living and dream of a world where parenting is easier and children grow up peacefully.'
+            'img_src': 'bana/img/other/Sandy.png',
+            'name': 'Sandy D.',
+            'short_bio': '38 ans, maman de Justin et Bastien, 5 et 7 ans',
+            'full_description': 'Avant, je choisissais leurs activités en fonction de mes disponibilités. Aujourd’hui, je peux leur ouvrir la porte à un monde de possibilités : il n’y a plus de limites !'
         },
         {
-            'img_src': 'bana/img/other/Bernard.png',
-            'name': 'Bernard Lambeau',
-            'short_bio': 'Father of 3 children, IT profile, experience in platform development for mobility. Committed and sensitive to the environment.',
-            'full_description': 'I aim to know everything about mobility in Belgium, or, perhaps more realistically, to contribute to its improvement. I am particularly interested in mobility in rural areas.'
+            'img_src': 'bana/img/other/Thi.png',
+            'name': 'Thi M.',
+            'short_bio': '38 ans, maman de 2 garçons, 5 et 9 ans',
+            'full_description': 'Bana me permet d’aider et de dépanner d’autres parents. J’apprécie particulièrement le concept collaboratif et communautaire de cette application.'
+        },
+        {
+            'img_src': 'bana/img/other/Andre.png',
+            'name': 'André K.',
+            'short_bio': '41 ans, papa de 3 enfants, 1, 5 et 8 ans',
+            'full_description': 'Comme beaucoup de parents, j’étais assez réticent à confier mes enfants à d’autres. J’ai donc contacté Bana pour discuter de la confiance et de la sécurité : j’ai été très vite rassuré !'
         }
     ]
     return render(request, 'work.html', {"work_steps": work_steps, "work_roles": work_roles, "work_profiles": work_profiles})

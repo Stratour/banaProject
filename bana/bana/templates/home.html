@@ -3,215 +3,197 @@
 {% block title %}Home - BanaCommunity{% endblock %}
 
 {% block content %}
-    {% load static %}
-    <div class="min-h-screen flex flex-col items-center">
-        <div class="flex flex-col-reverse md:flex-row items-center w-full h-[90vh] md:h-screen my-8 md:my-0"
-             style="background-image: url('{% static 'bana/img/background/Background_Bana.jpg' %}'); background-size: cover; background-position: center;">
+{% load static %}
+<div class="min-h-screen flex flex-col items-center">
+    <div class="flex flex-col-reverse md:flex-row items-center w-full h-[90vh] md:h-screen my-8 md:my-0"
+        style="background-image: url('{% static 'bana/img/background/Background_Bana.jpg' %}'); background-size: cover; background-position: center;">
 
-            <!-- Left Content -->
-            <div class="flex flex-col items-center text-center md:text-left px-8 pb-4 md:mb-4 md:w-1/2 md:px-16 xl:px-32">
-                <h1 class="mt-4 text-4xl md:text-5xl font-bold">
-                    Trouvez de l'aide pour les trajets de votre enfant
-                </h1>
-                <h2 class="mt-2 mb-4 text-lg font-semibold text-brand">Service de mobilité partagée  pour 
-                    les trajets <br>maison-école-activités, via tous les moyens de transport
-                </h2>
-                <!-- Search Bar -->
-                <form id="searchForm" method="GET" action="{% url 'researched_traject' %}"
-                      class="bottom-8 left-4 p-4 w-[90%] md:w-auto">
-                    <div class="flex flex-wrap gap-8 items-end">
-                        <!-- Starting Point -->
-                        <div class="flex-1 min-w-[150px]">
-                            <label for="start_adress" class="block text-sm font-medium text-gray-700">
-                            </label>
-                            <input
-                                    type="text"
-                                    name="start_adress"
-                                    id="start_adress"
-                                    value="{{ start_adress|default:'' }}"
-                                    class="form-input mt-1 block w-full rounded-md border-gray-300"
-                                    placeholder="Entrez le point de départ"
-                                    autocomplete="off"
-                            />
-                        </div>
-                        <!-- Ending Point -->
-                        <div class="flex-1 min-w-[150px]">
-                            <label for="end_adress" class="block text-sm font-medium text-gray-700">
-                            </label>
-                            <input
-                                    type="text"
-                                    name="end_adress"
-                                    id="end_adress"
-                                    value="{{ end_adress|default:'' }}"
-                                    class="form-input mt-1 block w-full rounded-md border-gray-300"
-                                    placeholder="Entrez le point d’arrivée"
-                                    autocomplete="off"
-                            />
-                        </div>
-
-                        <!-- Date -->
-                        <div class="flex-1 min-w-[150px]">
-                            <label for="date" class="block text-sm font-medium text-gray-700">
-                            </label>
-                            <input
-                                    type="date"
-                                    name="date"
-                                    id="date"
-                                    value="{{ date|default:'' }}"
-                                    class="form-input mt-1 block w-full rounded-md border-gray-300"
-                            />
-                        </div>
+        <!-- Left Content -->
+        <div class="flex flex-col items-center text-center md:text-left px-8 pb-4 md:mb-4 md:w-1/2 md:px-16 xl:px-32">
+            <h1 class="mt-4 text-4xl md:text-5xl font-bold">
+                Trouvez de l'aide pour les trajets de votre enfant
+            </h1>
+            <h2 class="mt-2 mb-4 text-lg font-semibold text-brand">Service de mobilité partagée pour
+                les trajets <br>maison-école-activités, via tous les moyens de transport
+            </h2>
+            <!-- Search Bar -->
+            <form id="searchForm" method="GET" action="{% url 'researched_traject' %}"
+                class="bottom-8 left-4 p-4 w-[90%] md:w-auto">
+                <div class="flex flex-wrap gap-8 items-end">
+                    <!-- Starting Point -->
+                    <div class="flex-1 min-w-[150px]">
+                        <label for="start_adress" class="block text-sm font-medium text-gray-700">
+                        </label>
+                        <input type="text" name="start_adress" id="start_adress" value="{{ start_adress|default:'' }}"
+                            class="form-input mt-1 block w-full rounded-md border-gray-300"
+                            placeholder="Entrez le point de départ" autocomplete="off" />
                     </div>
-                </form>
-                <div class="mt-6 flex flex-col xl:flex-row gap-4 items-center">
-                    <button id="submitButton"
-                            class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-brand rounded-full"
-                            aria-label="Find a ride">Rechercher
-                    </button>
-                    <a href="{% url 'proposed_traject' %}"
-                       class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-brand-200 rounded-full"
-                       aria-label="Offer a ride">Proposer</a> 
-                </div>
-            </div>
-            <!-- Right Content -->
-            <div class="relative w-full md:w-1/2 h-full overflow-hidden">
-                <!-- Right Side Background (Hidden on small screens) -->
-                <div
-                        class="absolute top-0 right-[-20%] hidden md:flex w-full h-full items-center justify-center bg-lime-400 rounded-l-full overflow-hidden">
-                    <img src="{% static 'bana/img/background/Bana_background_lime.png' %}" alt="Background"
-                         class="absolute w-full h-full object-cover opacity-70">
-                </div>
-
-                <!-- Circular Image Container (Responsive Size) -->
-                <div
-                        class="absolute left-1/2 md:left-0 top-1/2 w-80 h-80 max-w-full max-h-full transform -translate-x-1/2 md:translate-x-0 -translate-y-1/2 rounded-full overflow-hidden">
-                    <img src="{% static 'bana/img/page/home.jpg' %}" alt="Family Cooking"
-                         class="w-full h-full object-cover">
-                </div>
-            </div>
-        </div>
-
-        <!-- Benefits Section -->
-        <div class="bg-brand md:h-[12rem] w-full flex flex-col md:flex-row relative overflow-hidden">
-
-            <div class="hidden xl:block h-full">
-                <img class="h-full w-full object-cover" src="{% static 'bana/img/other/Bana_circle_right.png' %}"
-                     alt="Circle with logo Bana">
-            </div>
-            <div class="h-[1/2] block md:hidden">
-                <img class="object-cover" src="{% static 'bana/img/other/Bana_circle_bottom.png' %}"
-                     alt="Circle with logo Bana">
-            </div>
-            <div class="h-auto w-full flex-1 flex flex-col gap-6 md:flex-row items-center justify-between md:py-6 md:px-20 text-white">
-                <!-- Benefit Items -->
-                {% for benefit in home_benefits %}
-                    <div class="flex flex-col items-center mb-4 md:!mb-0 md:items-start md:w-[15%] text-left">
-                        <img class="w-10 h-10 mb-2" src="{% static benefit.img_src %}"
-                             alt="{{ benefit.title }} feature icon">
-                        <h3 class="text-lg font-bold">{{ benefit.title }}</h3>
-                        <p class="text-sm"><span class="text-brand-50 font-semibold">{{ benefit.highlight }}</span>
-                            {{ benefit.description }}</p>
+                    <!-- Ending Point -->
+                    <div class="flex-1 min-w-[150px]">
+                        <label for="end_adress" class="block text-sm font-medium text-gray-700">
+                        </label>
+                        <input type="text" name="end_adress" id="end_adress" value="{{ end_adress|default:'' }}"
+                            class="form-input mt-1 block w-full rounded-md border-gray-300"
+                            placeholder="Entrez le point d’arrivée" autocomplete="off" />
                     </div>
-                {% endfor %}
+
+                    <!-- Date -->
+                    <div class="flex-1 min-w-[150px]">
+                        <label for="date" class="block text-sm font-medium text-gray-700">
+                        </label>
+                        <input type="date" name="date" id="date" value="{{ date|default:'' }}"
+                            class="form-input mt-1 block w-full rounded-md border-gray-300" />
+                    </div>
+                </div>
+            </form>
+            <div class="mt-6 flex flex-col xl:flex-row gap-4 items-center">
+                <button id="submitButton" class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-brand rounded-full"
+                    aria-label="Find a ride">Rechercher
+                </button>
+                <a href="{% url 'proposed_traject' %}"
+                    class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-brand-200 rounded-full"
+                    aria-label="Offer a ride">Proposer</a>
             </div>
         </div>
-
-        <!-- City and Transport Information -->
-        <div class="flex flex-col items-center gap-6 md:flex-row md:justify-center md:gap-8 md:mt-12">
-            <div class="hidden md:block w-full p-6 md:w-1/2">
-                <img src="{% static 'bana/img/other/map.png' %}" alt="Transport Icons" class="w-full">
-            </div>
-            <div class="w-full p-6 md:w-auto">
-                <div>
-                    <h3 class="text-xl text-center md:text-left font-bold text-brand mb-2">
-                        Already in more than 55 cities in Belgium!
-                    </h3>
-                    <p class="text-brand-200 text-center md:text-left ">
-                        Our support is provided via all means of transport
-                    </p>
-                </div>
-                <div class="w-full flex items-center justify-around mb-8 px-2">
-                    <img class="w-10 h-10" src="{% static 'bana/img/icon/Icon_sustainable.svg' %}"
-                         alt="Transport Icons">
-                    <img class="w-10 h-10" src="{% static 'bana/img/icon/Icon_foot.svg' %}" alt="Transport Icons">
-                    <img class="w-10 h-10" src="{% static 'bana/img/icon/Icon_bicycle.svg' %}" alt="Transport Icons">
-                    <img class="w-10 h-10" src="{% static 'bana/img/icon/Icon_car.svg' %}" alt="Transport Icons">
-                    <img class="w-10 h-10" src="{% static 'bana/img/icon/Icon_bus.svg' %}" alt="Transport Icons">
-                    <img class="w-10 h-10" src="{% static 'bana/img/icon/Icon_tram.svg' %}" alt="Transport Icons">
-                </div>
-                <div class="flex flex-col items-center gap-4 mt-6 text-center md:flex-row">
-                    <a href="/find-ride"
-                       class="w-60 px-6 py-3 font-semibold text-white bg-brand rounded-full md:w-48"
-                       aria-label="Find a ride">Find a ride</a>
-                    <a href="/offer-ride"
-                       class="w-60 px-6 py-3 font-semibold text-white bg-brand-200 rounded-full md:w-48"
-                       aria-label="Offer a ride">Offer a ride</a>
-                </div>
-            </div>
-        </div>
-        <div class="flex flex-col items-center gap-8 pt-8 pb-8 md:flex-row md:justify-around md:my-12">
-
-            {% for role in home_roles %}
-                <div class="flex flex-col items-center">
-                    <img src="{% static role.img_src %}" alt="{{ role.alt_text }}" class="w-50 h-50">
-                    <a href="{{ role.link_url }}" class="mt-2 hover:no-underline drop-shadow-lg">
-                        <p class="font-bold text-brand">{{ role.link_text }}</p>
-                    </a>
-                </div>
-            {% endfor %}
-        </div>
-
-        <div class="w-full flex flex-col items-center p-8 bg-cover bg-center"
-             style="background-image: url('{% static 'bana/img/background/Bana_background_dark_green.png' %}');">
-
-            <div class="text-center">
-                <h3 class="text-xl font-bold text-white md:text-2xl">
-                    According to a study conducted by the Family League,<br>
-                    <span class="text-brand-50">8 out of 10 parents make chain trips every day*</span>
-                </h3>
-                <p class="mt-2 text-sm text-white">*nursery, school, work, children’s activities..</p>
+        <!-- Right Content -->
+        <div class="relative w-full md:w-1/2 h-full overflow-hidden">
+            <!-- Right Side Background (Hidden on small screens) -->
+            <div
+                class="absolute top-0 right-[-20%] hidden md:flex w-full h-full items-center justify-center bg-lime-400 rounded-l-full overflow-hidden">
+                <img src="{% static 'bana/img/background/Bana_background_lime.png' %}" alt="Background"
+                    class="absolute w-full h-full object-cover opacity-70">
             </div>
 
-            <div class="p-4 mt-6 text-center text-white font-medium bg-brand-200 rounded-lg">
-                <h5>
-                    In practice, this sometimes means having to reduce work time or give up activities.<br>
-                    Today, Bana makes life easier for families, without compromising!<br>
-                    We help parents thrive AND children grow.
-                </h5>
-            </div>
-
-            <div class="flex flex-wrap justify-center max-w-3xl mx-auto mt-6 -mx-2">
-                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
-                    “Beyond 1 child, it becomes very challenging logistically.”<br>
-                    <span class="text-white">Céline, 33 years old, mother of 2 children</span>
-                </div>
-                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
-                    “Beyond 1 child, it becomes very challenging logistically.”<br>
-                    <span class="text-white">Céline, 33 years old, mother of 2 children</span>
-                </div>
-                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
-                    “Beyond 1 child, it becomes very challenging logistically.”<br>
-                    <span class="text-white">Céline, 33 years old, mother of 2 children</span>
-                </div>
-                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
-                    “Beyond 1 child, it becomes very challenging logistically.”<br>
-                    <span class="text-white">Céline, 33 years old, mother of 2 children</span>
-                </div>
-                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
-                    “Beyond 1 child, it becomes very challenging logistically.”<br>
-                    <span class="text-white">Céline, 33 years old, mother of 2 children</span>
-                </div>
-                <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
-                    “Beyond 1 child, it becomes very challenging logistically.”<br>
-                    <span class="text-white">Céline, 33 years old, mother of 2 children</span>
-                </div>
+            <!-- Circular Image Container (Responsive Size) -->
+            <div
+                class="absolute left-1/2 md:left-0 top-1/2 w-80 h-80 max-w-full max-h-full transform -translate-x-1/2 md:translate-x-0 -translate-y-1/2 rounded-full overflow-hidden">
+                <img src="{% static 'bana/img/page/home.jpg' %}" alt="Family Cooking"
+                    class="w-full h-full object-cover">
             </div>
         </div>
     </div>
-    <script>
-        document.getElementById("submitButton").addEventListener("click", function () {
-            document.getElementById("searchForm").submit();
-        });
-    </script>
+
+    <!-- Benefits Section -->
+    <div class="bg-brand md:h-[12rem] w-full flex flex-col md:flex-row relative overflow-hidden">
+
+        <div class="hidden xl:block h-full">
+            <img class="h-full w-full object-cover" src="{% static 'bana/img/other/Bana_circle_right.png' %}"
+                alt="Circle with logo Bana">
+        </div>
+        <div class="h-[1/2] block md:hidden">
+            <img class="object-cover" src="{% static 'bana/img/other/Bana_circle_bottom.png' %}"
+                alt="Circle with logo Bana">
+        </div>
+        <div
+            class="h-auto w-full flex-1 flex flex-col gap-6 md:flex-row items-center justify-between md:py-6 md:px-20 text-white">
+            <!-- Benefit Items -->
+            {% for benefit in home_benefits %}
+            <div class="flex flex-col items-center mb-4 md:!mb-0 md:items-start md:w-[15%] text-left">
+                <img class="w-10 h-10 mb-2" src="{% static benefit.img_src %}" alt="{{ benefit.title }} feature icon">
+                <h3 class="text-lg font-bold">{{ benefit.title }}</h3>
+                <p class="text-sm"><span class="text-brand-50 font-semibold">{{ benefit.highlight }}</span>
+                    {{ benefit.description }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- City and Transport Information -->
+    <div class="flex flex-col items-center gap-6 md:flex-row md:justify-center md:gap-8 md:mt-12 mb-12">
+        <div class="hidden md:block w-full p-6 md:w-1/2">
+            <img src="{% static 'bana/img/other/map.png' %}" alt="Transport Icons" class="w-full">
+        </div>
+        <div class="w-full p-6 md:w-auto">
+            <div>
+                <h3 class="text-xl text-center md:text-left font-bold text-brand mb-2">
+                    Déjà présent dans plus de 110 villes en Belgique !
+                </h3>
+                <p class="text-brand-200 text-center md:text-left ">
+                    Notre accompagnement est disponible pour tous les moyens de transport
+                </p>
+            </div>
+            <div class="w-full flex items-center justify-around mb-8 px-2">
+                <img class="w-10 h-10" src="{% static 'bana/img/icon/Icon_sustainable.svg' %}" alt="Transport Icons">
+                <img class="w-10 h-10" src="{% static 'bana/img/icon/Icon_foot.svg' %}" alt="Transport Icons">
+                <img class="w-10 h-10" src="{% static 'bana/img/icon/Icon_bicycle.svg' %}" alt="Transport Icons">
+                <img class="w-10 h-10" src="{% static 'bana/img/icon/Icon_car.svg' %}" alt="Transport Icons">
+                <img class="w-10 h-10" src="{% static 'bana/img/icon/Icon_bus.svg' %}" alt="Transport Icons">
+                <img class="w-10 h-10" src="{% static 'bana/img/icon/Icon_tram.svg' %}" alt="Transport Icons">
+            </div>
+            <div class="flex flex-col items-center gap-4 mt-6 text-center justify-center md:flex-row">
+                <a href="{% url 'researched_traject' %}" class="w-60 px-6 py-3 font-semibold text-white bg-brand rounded-full md:w-48"
+                    aria-label="Find a ride">Rechercher</a>
+                <a href="{% url 'proposed_traject' %}"
+                    class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-brand-200 rounded-full"
+                    aria-label="Offer a ride">Proposer</a>
+            </div>
+        </div>
+    </div>
+    {% comment %}
+    <div class="flex flex-col items-center gap-8 pt-8 pb-8 md:flex-row md:justify-around md:my-12">
+
+        {% for role in home_roles %}
+        <div class="flex flex-col items-center">
+            <img src="{% static role.img_src %}" alt="{{ role.alt_text }}" class="w-50 h-50">
+            <a href="{{ role.link_url }}" class="mt-2 hover:no-underline drop-shadow-lg">
+                <p class="font-bold text-brand">{{ role.link_text }}</p>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+    {% endcomment %}
+
+    <div class="w-full flex flex-col items-center p-8 bg-cover bg-center"
+        style="background-image: url('{% static 'bana/img/background/Bana_background_dark_green.png' %}');">
+
+        <div class="text-center">
+            <h3 class="text-xl font-bold text-white md:text-2xl">
+                Selon une étude menée par la Ligue des Familles,<br>
+                <span class="text-brand-50">8 parents sur 10 effectuent des trajets en chaîne chaque jour*</span>
+            </h3>
+            <p class="mt-2 text-sm text-white">crèche, école, travail, activités des enfants…</p>
+        </div>
+
+        <div class="p-4 mt-6 text-center text-white font-medium bg-brand-200 rounded-lg">
+            <h5>
+                Concrètement, cela signifie parfois devoir réduire son temps de travail ou renoncer à certaines activités.<br>
+                Aujourd’hui, Bana facilite la vie des familles, sans compromis !<br>
+                We help parents thrive AND children grow.
+            </h5>
+        </div>
+
+        <div class="flex flex-wrap justify-center max-w-3xl mx-auto mt-6 -mx-2">
+            <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
+                "Au-delà d’un enfant, cela devient très compliqué logistiquement."<br>
+                <span class="text-white">Céline, 33 ans, maman de 2 enfants</span>
+            </div>
+            <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
+                “Jongler entre le travail, l’école et les activités, c’est un vrai casse-tête au quotidien.”<br>
+                <span class="text-white">Thomas, 40 ans, papa de 3 enfants<</span>
+            </div>
+            <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
+                “J’avais l’impression de passer mes journées en voiture plutôt qu’avec mes enfants.”<br>
+                <span class="text-white">Sophie, 36 ans, maman de 2 enfants</span>
+            </div>
+            <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
+                “Sans un coup de pouce, on finit par devoir renoncer à certaines activités pour les petits.”<br>
+                <span class="text-white">Karim, 38 ans, papa d’un enfant</span>
+            </div>
+            <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
+                “Trouver du temps pour soi est presque impossible quand on enchaîne les trajets.”<br>
+                <span class="text-white">Julie, 29 ans, maman de 2 enfants</span>
+            </div>
+            <div class="w-1/2 max-w-xs px-2 mb-6 text-sm font-bold italic text-brand-50 md:w-1/3">
+                “Dès qu’il y a un imprévu, toute l’organisation familiale s’écroule.”<br>
+                <span class="text-white">Nathalie, 42 ans, maman de 3 enfants</span>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById("submitButton").addEventListener("click", function () {
+        document.getElementById("searchForm").submit();
+    });
+</script>
 
 {% endblock %}
