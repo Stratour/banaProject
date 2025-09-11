@@ -38,7 +38,7 @@
             <div class="border-t border-gray-100"></div>
 
             <div>
-              <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Adresse" %}</p>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Ville" %}</p>
               <p>{{ user.profile.address|default:"—" }}</p>
             </div>
           </section>
@@ -48,8 +48,8 @@
             <div>
               <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Rôle" %}</p>
               <p>
-                {% if user.profile.service %}{{ user.profile.service }}
-                {% elif user.profile.services %}{{ user.profile.services }}
+                {% if user.profile.service %}
+                  {{ user.profile.service }}
                 {% else %}—{% endif %}
               </p>
             </div>
@@ -81,7 +81,7 @@
             <div>
               <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Carte d'identité" %}</p>
               {% if user.profile.ci_is_verified %}
-              <p>Identité vérifiée</p>
+              <p class="flex items-center gap-2 py-2 px-4 rounded-full bg-brand text-brand-50 font-semibold">Identité vérifiée</p>
               {% else %}
                 <form method="post" action="{% url 'create_verification_session' %}">
                 {% csrf_token %}

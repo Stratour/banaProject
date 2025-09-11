@@ -48,20 +48,20 @@
                     <img src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Bana Logo" class="w-14 h-14">
                 </div>
             </div>
-            <h3 class="text-sm font-medium ml-4">
-                Plateforme mobile de baby-sitting pour les
-                <span class="text-brand-50">trajets domicile-école-activités des enfants</span>
-            </h3>
+            <p class="text-sm font-medium ml-4">
+                Plateforme de <span class="text-brand-50 font-bold">mobilité partagée</span>
+                <br>
+                pour les <span class="text-brand-50 font-bold"> trajets des enfants</span>
+            </p>
 
         </div>
 
         <!-- Bana Community Links -->
         <div class="flex-1">
-            <h3 class="text-brand-50 font-bold text-lg mb-1">Bana community</h3>
             <ul class="space-y-1">
-                <li><a href="{% url 'about' %}" class="font-light hover:text-brand-50">Accueil</a></li>
+                <li><a href="{% url 'home' %}" class="font-light hover:text-brand-50">Accueil</a></li>
+                <li><a href="{% url 'work' %}" class="font-light hover:text-brand-50">Comment ça marche ?</a></li>
                 <li><a href="{% url 'about' %}" class="font-light hover:text-brand-50">À propos</a></li>
-                <li><a href="{% url 'work' %}" class="font-light hover:text-brand-50">Comment ça marche</a></li>
                 <li><a href="{% url 'contact' %}" class="font-light hover:text-brand-50">Contact</a></li>
             </ul>
         </div>
@@ -89,8 +89,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                    <span><a href="mailto:hello@bana.community"
-                            class="hover:text-brand-50">hello@bana.community</a></span>
+                    <span><a href="mailto:contact@bana.mobi"
+                            class="hover:text-brand-50">contact@bana.mobi</a></span>
                 </li>
                 <li class="flex items-center space-x-2">
                     <svg class="h-8 w-8 text-brand-50" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -126,6 +126,6 @@
             <a href="#" class="hover:text-brand-50">Cookies</a>
         </div>
         {% endcomment %}
-        <p class="mt-2">&copy; bana.community 2025</p>
+        <p class="mt-2">&copy; bana.mobi 2025</p>
     </div>
 </footer>

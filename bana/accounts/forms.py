@@ -5,8 +5,8 @@ from accounts.models import Profile, Languages, Child, Review
 
 
 SERVICE_CHOICES = [
-    ('parent', 'Parent'),
-    ('yaya', 'Yaya'),
+    ('Parent', 'Parent'),
+    ('Yaya', 'Yaya'),
 ]
 
 TRANSPORT_MODES_CHOICES = [
@@ -83,25 +83,6 @@ class CustomSignupForm(TailwindFormMixin, SignupForm):
         })
     )
 
-    # CustomSignupForm
-    transport_modes = forms.MultipleChoiceField(
-        choices=TRANSPORT_MODES_CHOICES,
-        widget=forms.CheckboxSelectMultiple(attrs={  # pas de classes ici
-            # 'class': 'flex flex-wrap gap-4'  # <- ok si tu veux gérer le layout ici
-        }),
-        required=False,
-        label="Modes de transport"
-    )
-
-    # ProfileUpdateForm
-    transport_modes = forms.MultipleChoiceField(
-        choices=TRANSPORT_MODES_CHOICES,
-        widget=forms.CheckboxSelectMultiple(attrs={}),  # neutre
-        required=False,
-        label="Modes de transport"
-    )
-
-
     def save(self, request):
         user = super().save(request)
         user.first_name = self.cleaned_data['first_name']
@@ -113,7 +94,6 @@ class CustomSignupForm(TailwindFormMixin, SignupForm):
             profile_picture=self.cleaned_data.get('profile_picture'),
             address=self.cleaned_data.get('address'),
             service=self.cleaned_data.get('service', ''),
-            transport_modes=self.cleaned_data.get('transport_modes', []),
         )
         profile.save()
 

@@ -10,7 +10,6 @@ class ProfileAdmin(admin.ModelAdmin):
         'ci_is_verified',
         'bvm_is_verified',
         'prfl_is_verified',
-        'phone',
         'address',
     )
     # Filtres disponibles sur le côté droit
@@ -25,7 +24,6 @@ class ProfileAdmin(admin.ModelAdmin):
         'user__username', # Permet de rechercher par le nom d'utilisateur associé
         'user__first_name',
         'user__last_name',
-        'phone',
         'address',
         'bio',
         'verified_first_name',
@@ -36,7 +34,7 @@ class ProfileAdmin(admin.ModelAdmin):
     # Organisation des champs dans le formulaire d'édition
     fieldsets = (
         (None, {
-            'fields': ('user', 'profile_picture', 'service', 'bio', 'phone', 'address')
+            'fields': ('user', 'profile_picture', 'service', 'bio', 'address')
         }),
         ('Statut de Vérification', {
             'fields': ('ci_is_verified', 'bvm_is_verified', 'prfl_is_verified', 'document_bvm')
