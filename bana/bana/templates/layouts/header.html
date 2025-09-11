@@ -3,14 +3,17 @@
         <!-- Logo and Branding -->
         <div class="flex items-center space-x-3">
             {% load static %}
-            <img class="w-20 h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Logo Bana">
+
+            <a href="{% url 'home' %}">
+                <img class="w-20 h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Logo Bana">
+            </a>
             <p class="hidden xl:block text-sm w-65">
                 Plateforme de <span class="text-brand-50 font-bold">mobilité partagée</span>
-            <br>
-            pour les <span class="text-brand-50 font-bold"> trajets des enfants</span>
+                <br>
+                pour les <span class="text-brand-50 font-bold"> trajets des enfants</span>
             </p>
-                
-            
+
+
         </div>
 
         <!-- Mobile Menu Button -->
@@ -18,8 +21,9 @@
             <div class="relative inline-block text-left">
                 <button class="flex items-center text-white font-bold rounded-md focus:outline-none peer">
                     En
-                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                 </button>
 
@@ -44,54 +48,55 @@
             <a href="{% url 'home' %}">
                 <img class="w-7 h-7" src="{% static 'bana/img/icon/Icon_home.svg' %}" alt="Icon hut">
             </a>
-            
-                <a href="{% url 'work' %}" class="hover:text-white hover:no-underline">Comment ça marche ?</a>
-                {% comment "" %}
-                <a href="{% url 'parent' %}" class="hover:text-white hover:no-underline">Search or share</a>
-                {% endcomment %}
-                <a href="{% url 'about' %}" class="hover:text-white hover:no-underline">À propos</a>
-            
+
+            <a href="{% url 'work' %}" class="hover:text-white hover:no-underline">Comment ça marche ?</a>
+            {% comment "" %}
+            <a href="{% url 'parent' %}" class="hover:text-white hover:no-underline">Search or share</a>
+            {% endcomment %}
+            <a href="{% url 'about' %}" class="hover:text-white hover:no-underline">À propos</a>
+
             <a href="{% url 'contact' %}" class="hover:text-white hover:no-underline">Contact</a>
         </div>
 
         <!-- Authentication Buttons -->
         <div class="hidden md:flex flex-row gap-8 items-center">
             <div id="auth-buttons" class="md:flex items-center space-x-4">
- 
-	        {% if user.is_staff %}
-                  <a href="{% url 'bana_admin:admin_view' %}" class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline"> Admin</a>
-	        {% endif %}               
-                {% if user.is_authenticated %}
-		    <a href="{% url 'accounts:profile' %}"
-                        class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
-                        Profil
-                    </a>
-                                
-                    <a href="{% url 'account_logout' %}"
 
-                        class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
-                        Déconnexion
-                    </a>
-                {% else %}
-                    <a href="{% url 'account_signup' %}"
-                        class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
-                        Inscription
-                    </a>
-            
-                    <a href="{% url 'account_login' %}"
-
-                        class="relative bg-brand text-brand-50 px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-50 hover:no-underline before:absolute before:inset-0 before:rounded-full before:border-2 before:border-brand-50">
-                        Connexion
-                    </a>
+                {% if user.is_staff %}
+                <a href="{% url 'bana_admin:admin_view' %}"
+                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
+                    Admin</a>
                 {% endif %}
-                
+                {% if user.is_authenticated %}
+                <a href="{% url 'accounts:profile' %}"
+                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
+                    Profil
+                </a>
+
+                <a href="{% url 'account_logout' %}"
+                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
+                    Déconnexion
+                </a>
+                {% else %}
+                <a href="{% url 'account_signup' %}"
+                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
+                    Inscription
+                </a>
+
+                <a href="{% url 'account_login' %}"
+                    class="relative bg-brand text-brand-50 px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-50 hover:no-underline before:absolute before:inset-0 before:rounded-full before:border-2 before:border-brand-50">
+                    Connexion
+                </a>
+                {% endif %}
+
                 {% comment "" %}
                 <div class="relative inline-block text-left z-10">
                     <button
                         class="flex items-center pl-4 py-2 font-bold text-white rounded-full focus:outline-none peer">
                         En
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </button>
 
@@ -104,7 +109,7 @@
                     </div>
                 </div>
                 {% endcomment %}
-                
+
             </div>
         </div>
 
@@ -115,10 +120,10 @@
         <div class="flex flex-col space-y-4 font-bold">
             <a href="{% url 'home' %}" class="text-center hover:text-white hover:no-underline">Home</a>
             {% comment %}
-                <a href="{% url 'about' %}" class="text-center hover:text-white hover:no-underline">About</a>
+            <a href="{% url 'about' %}" class="text-center hover:text-white hover:no-underline">About</a>
             {% endcomment %}
             <a href="{% url 'contact' %}" class="text-center hover:text-white hover:no-underline">Contact</a>
-            
+
 
 
 
