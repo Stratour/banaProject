@@ -3,18 +3,25 @@
         {% block page_title %}Tableau de bord{% endblock %}
     </h1>
 
-    <div class="flex items-center gap-4">
-        <div class="flex items-center gap-2">
+<div class="flex items-center gap-4">
+    <div class="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gray-200 ring-4 ring-[#E9F5F1] flex items-center justify-center overflow-hidden">
         {% load static %}
-        {% if user.profile.profile_picture %}
-            <a href="{% url 'accounts:profile' %}"><img src="{{ user.profile.profile_picture.url }}" alt="User" class="w-16 h-16 rounded-full"></a>
-            <span class="text-sm text-gray-700 font-medium">{{ request.user.first_name }}</span>
+        {% if request.user.profile.profile_picture %}
+            <a href="{% url 'accounts:profile' %}">
+                <img src="{{ request.user.profile.profile_picture.url }}" alt="User" class="h-full w-full object-cover">
+            </a>
         {% else %}
-            <a href="{% url 'accounts:profile' %}"><h1 class="no-image">
-              {{ user.profile.verified_first_name.0 }}.{{ user.profile.verified_last_name.0 }}
-            </h1></a>
-            <span class="text-sm text-gray-700 font-medium">{{ request.user.first_name }}</span>
+            <a href="{% url 'accounts:profile' %}" class="flex items-center justify-center w-full h-full">
+                <span class="text-xl sm:text-2xl font-bold text-gray-600">
+                    {{ request.user.profile.verified_first_name.0 }}.{{ request.user.profile.verified_last_name.0 }}
+                </span>
+            </a>
         {% endif %}
-        </div>
     </div>
+
+    <!-- Nom de l'utilisateur à côté du cercle -->
+    <div>
+        <span class="text-sm text-gray-700 font-medium">{{ request.user.first_name }}</span>
+    </div>
+</div>
 </header>

@@ -6,6 +6,10 @@
 {% block content %}
 
 <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+  <!-- max-w-5xl mx-auto px-4 py-10 -->
+  <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
+    Proposer un/des trajet(s)
+  </h1>
   {% if messages %}
   <ul class="mb-4 space-y-2">
     {% for message in messages %}
@@ -86,7 +90,7 @@
           <label class="block text-sm font-medium uppercase text-brand">Date de début</label>
           {{ proposed_form.date_debut }}
         </div>
-        <div class="flex-1">
+        <div class="flex-1" id="date_fin_container">
           <label class="block text-sm font-medium uppercase text-brand">Date de fin</label>
           {{ proposed_form.date_fin }}
         </div>
@@ -162,6 +166,21 @@
         label.classList.toggle('border-gray-300', !input.checked);
       });
     });
+
+  const dateFinContainer = document.getElementById("date_fin_container");
+    const recurrenceRadios = document.querySelectorAll('input[name="recurrence_type"]');
+    function toggleDateFin() {
+      const selected = document.querySelector('input[name="recurrence_type"]:checked');
+      if (!selected) return;
+      const value = selected.value;
+      if (value === "weekly" || value === "biweekly") {
+        dateFinContainer.style.display = "block";
+      } else {
+        dateFinContainer.style.display = "none";
+      }
+    }
+    toggleDateFin();
+    recurrenceRadios.forEach(radio => radio.addEventListener("change", toggleDateFin));
   });
 
   document.querySelectorAll("#start_adress, #end_adress").forEach((inputField) => {

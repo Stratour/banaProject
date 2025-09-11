@@ -5,6 +5,10 @@
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl p-16 space-y-10">
   
+  <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
+    Mes correspondances
+  </h1>
+
   {% if messages %}
   <ul class="mb-6">
     {% for message in messages %}
@@ -28,6 +32,7 @@
       <div class="border-t border-gray-200 pt-4 mt-4 space-y-2">
         <p class="text-sm text-gray-700">
           <strong>Parent :</strong>
+          {% if is_abonned == True %}
           <a href="{% url 'accounts:profile_user' user_id=request.user.id %}" class="text-blue-600 hover:underline">
             {% if request.user.profile.ci_is_verified %}
             {{ request.user.profile.verified_first_name }}
@@ -35,8 +40,11 @@
             {% else %}
             {{ request.user.first_name }} {{ request.user.last_name|slice:"1" }}
             {% endif %}
-
           </a>
+          {% else %}
+          <span class="text-red-700 px-4 py-3 rounded relative">Vous devez vous abonner pour pouvoir entrer en contact avec le corespondant</span>
+          {% endif %}
+          
         </p>
         <p class="text-sm text-gray-700">
           <strong>Départ :</strong> {{ request.traject.start_adress }} à {{ request.departure_time|default:"—" }}
@@ -55,20 +63,31 @@
         <p class="text-sm text-gray-700">
           <strong>Nombre d'enfant(s) :</strong> {{ request.children.count }}
         </p>
-        
+        {% if is_abonned == True %}
         <form method="post" action="{% url 'propose_help' request.id %}">
           {% csrf_token %}
-          <button type="submit" class="mt-3 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
+          <button type="submit" class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white hover:bg-brand-50 hover:text-brand rounded-full">
             Proposer mon aide
           </button>
         </form>
+        {% else %}
+
+        <a href="{% url 'subscription' %}">
+          <button type="button" class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white hover:bg-brand-50 hover:text-brand rounded-full">
+          S'abonner
+          </button>
+        </a>
+
+        {% endif %}
       </div>
       {% endfor %}
     </li>
     {% endfor %}
   </ul>
   {% else %}
-  <p class="text-center text-gray-600">Aucune correspondance trouvée.</p>
+    <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
+      Vous ne recherchez aucun trajet pour l’instant.
+    </div>
   {% endif %}
   
 </div>

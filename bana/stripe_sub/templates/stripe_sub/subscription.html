@@ -1,47 +1,85 @@
 {% extends '/home/bana_community/banaProject/bana/accounts/templates/allauth/layouts/base.html' %}
 
 {% block content %}
-<div class="container py-5">
-    <h2 class="mb-4">Mon abonnement</h2>
+<div class="max-w-2xl mx-auto py-10">
+    <h2 class="text-2xl font-bold text-center text-green-600 mb-6">Mon abonnement</h2>
 
+    {% if request.user.profile.service == "Parent" %}
+
+    <!-- 🔎 Description Parent -->
+    <div class="bg-green-50 border border-green-100 rounded-xl p-5 mb-8">
+        <p class="text-gray-700 leading-relaxed">
+            En tant que <span class="text-green-600 font-semibold">Parent</span>, votre objectif principal est de <strong>rechercher de l’aide pour les trajets de vos enfants</strong>. 
+            Vous pouvez ainsi trouver facilement les trajets proposés par des Yayas ou d’autres parents pour vos besoins quotidiens.
+        </p>
+        <ul class="mt-3 space-y-2 text-gray-700">
+            <li>✅ <span class="font-medium">Rechercher un trajet</span> : trouvez les trajets proposés par des Yayas ou d’autres parents pour vos enfants.</li>
+            <li>✅ <span class="font-medium">Proposer un trajet</span> : si vous effectuez un trajet, vous pouvez également prendre en charge d’autres enfants pour aider la communauté.</li>
+        </ul>
+        <p class="mt-3 text-gray-600 italic">Ainsi, vous bénéficiez à la fois d’un soutien pour vos déplacements et participez à la solidarité entre familles</p>
+    </div>
+    {% else %}
+    
+    <!-- 🔎 Description Yaya -->
+    <div class="bg-green-50 border border-green-100 rounded-xl p-5 mb-8">
+        <p class="text-gray-700 leading-relaxed">
+            Avec <span class="text-green-600 font-semibold">Yaya</span>, vous pouvez proposer différents types de trajets adaptés aux besoins des parents :
+        </p>
+        <ul class="mt-3 space-y-2 text-gray-700">
+            <li>✅ <span class="font-medium">Trajet classique</span> : un trajet d’un point <strong>A</strong> vers un point <strong>B</strong>, que ce soit pour une seule journée ou de manière régulière sur une période définie.</li>
+            <li>✅ <span class="font-medium">Trajet simplifié</span> : vous indiquez uniquement un <strong>lieu de départ</strong>, sans destination précise, pour permettre d’aider n’importe quel parent dans la zone.</li>
+        </ul>
+    </div>
+    {% endif %}
+    
     {% if active_subscription %}
-    <div class="card shadow p-4">
-        <h4>{{ active_subscription.product_name }}</h4>
-        <p><strong>Prix :</strong> {{ active_subscription.price }} € / an</p>
-        <p><strong>Date de début :</strong> 
+    <div class="bg-white shadow-lg rounded-2xl p-6 border border-green-100">
+        <h4 class="text-xl font-semibold text-gray-800">{{ active_subscription.product_name }}</h4>
+        <p class="mt-2 text-gray-600">
+            <strong>Prix :</strong> 
+            <span class="text-green-600 font-bold">{{ active_subscription.price }} € / an</span>
+        </p>
+        <p class="text-gray-600">
+            <strong>Date de début :</strong> 
             {% if active_subscription.current_period_start %}
                 {{ active_subscription.current_period_start|date:"d/m/Y" }}
             {% else %}
                 Non définie
             {% endif %}
         </p>
-        <p><strong>Date de fin :</strong> 
+        {% comment "Récupérer la variable current_period_end" %}
+        <p class="text-gray-600">
+            <strong>Date de fin :</strong> 
             {% if active_subscription.current_period_end %}
                 {{ active_subscription.current_period_end|date:"d/m/Y" }}
             {% else %}
                 Non définie
             {% endif %}
         </p>
-        <p><strong>Statut :</strong> 
+        {% endcomment %}
+        <p class="mt-4">
+            <strong>Statut :</strong> 
             {% if active_subscription.is_active %}
-                <span class="badge bg-success">Actif</span>
+                <span class="px-3 py-1 bg-green-100 text-green-700 text-sm font-medium rounded-full">✅ Actif</span>
             {% else %}
-                <span class="badge bg-danger">Inactif</span>
+                <span class="px-3 py-1 bg-red-100 text-red-700 text-sm font-medium rounded-full">❌ Inactif</span>
             {% endif %}
         </p>
     </div>
-{% else %}
-    <div class="card shadow p-4">
-        <p>Vous n’avez pas encore d’abonnement actif.</p>
+
+    {% else %}
+    <div class="bg-white shadow-lg rounded-2xl p-6 border border-green-100 text-center">
+        <p class="text-gray-600 mb-4">Vous n’avez pas encore d’abonnement actif.</p>
 
         <form method="post" action="{% url 'create_checkout_session' %}">
             {% csrf_token %}
             <input type="hidden" name="price_id" value="{{ price.id }}">
-            <button type="submit" class="btn btn-primary">
-                S’abonner pour {{ product_price|floatformat:0 }} €
+            <button type="submit" 
+                class="inline-flex items-center bg-green-500 gap-2 py-2 px-6 my-4 text-white hover:bg-brand-50 hover:text-brand rounded-full shadow transition">
+                S’abonner pour {{ product_price|floatformat:0 }} €/an
             </button>
         </form>
     </div>
-{% endif %}
+    {% endif %}
 </div>
 {% endblock %}

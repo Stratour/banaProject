@@ -17,3 +17,25 @@ pkill -f gunicorn && cd /home/bana_community/banaProject/bana && source /home/ba
 
 Toute la procédure fournie et détaillé par Claude.ai
 https://claude.ai/share/b4f66ce2-bd48-41a0-9e9d-176e765c935e
+
+#===================================#
+Config NginX (collecte les statics)
+#===================================#
+
+#Fichier de conf
+sudo nano /etc/nginx/sites-available/bana-mobi.conf
+
+#Vérifier les erreurs
+sudo nginx -t 
+
+#Relancer Nginx
+sudo systemctl reload nginx
+
+#Vérifier les modifs
+sudo nano /etc/nginx/sites-enabled/bana-mobi.conf
+
+#stop - collectstatic - start
+./stop_bana.sh 
+./manage.py collectstatic --noinput
+./start_bana.sh
+

@@ -139,8 +139,10 @@ def my_matchings_researched(request):
 @login_required
 def my_matchings_proposed(request):
     '''yaya/parent recherche'''
+    user = request.user
     matches = []
     proposed_matches = ProposedTraject.objects.filter(user=request.user, is_active=True, date__gte=date.today())
+    is_abonned = Subscription.is_user_abonned(user)
     print('============== yaya :: my_matchings_proposed :: proposed_matches', len(proposed_matches))
     for proposed in proposed_matches:
         matched = find_matching_trajects(proposed)
@@ -149,7 +151,7 @@ def my_matchings_proposed(request):
             print('matched yaya ok')
             matches.append({'proposal': proposed, 'requests': matched})
 
-    return render(request, 'trajects/my_matchings_proposed.html', {'matches': matches})
+    return render(request, 'trajects/my_matchings_proposed.html', {'matches': matches, 'is_abonned': is_abonned})
 
 def generate_recurrent_dates(date_debut, date_fin, recurrence_type, recurrence_interval=None, specific_days=None):
     """
@@ -750,17 +752,17 @@ def manage_reservation(request, reservation_id, action):
 
          # ✅ Envoi d'un email de confirmation au parent
         parent_email = reservation.user.email
-        yaya_name = request.user.username
+        yaya_name = request.user.profile.verified_first_name
         trajet_info = f"{reservation.traject.traject.start_adress} → {reservation.traject.traject.end_adress}"
         nb_enfants = reservation.number_of_places
 
         send_mail(
             subject="Votre réservation a été confirmée sur Bana",
             message=(
-                f"Bonjour {reservation.user.first_name},\n\n"
+                f"Bonjour {reservation.user.profile.verified_first_name},\n\n"
                 f"Votre demande de réservation pour le trajet {trajet_info} "
                 f"({nb_enfants} enfant(s)) a été confirmée par {yaya_name}.\n\n"
-                "Connectez-vous à Bana pour plus d'informations. http://37.187.94.53:9758/trajects/my_reserve/"
+                "Connectez-vous à Bana pour plus d'informations. http://www.bana.mobi/trajects/my_reserve/"
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[parent_email],
@@ -781,17 +783,17 @@ def manage_reservation(request, reservation_id, action):
         reservation.save()
 
         parent_email = reservation.user.email
-        yaya_name = request.user.get_full_name() or request.user.username
+        yaya_name = request.user.profile.verified_first_name
         trajet_info = f"{reservation.traject.traject.start_adress} → {reservation.traject.traject.end_adress}"
         nb_enfants = reservation.number_of_places
 
         send_mail(
             subject="Votre réservation a été refusée ou le trajet n'est plus disponible",
             message=(
-                f"Bonjour {reservation.user.first_name},\n\n"
+                f"Bonjour {reservation.user.profile.verified_first_name},\n\n"
                 f"Nous sommes désolés, mais votre demande de réservation pour le trajet {trajet_info} "
                 f"({nb_enfants} enfant(s)) a été déclinée ou le trajet n'est plus disponible.\n\n"
-                "N'hésitez pas à rechercher un autre accompagnateur ou à refaire une demande sur Bana."
+                "N'hésitez pas à rechercher un autre accompagnateur sur Bana."
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[parent_email],
@@ -836,19 +838,19 @@ def auto_reserve(request, proposed_id, researched_id):
 
     # --- Envoi d'un email au yaya ---
     proposer_email = traject.user.email
-    parent_name = request.user.get_full_name() or request.user.username
+    parent_name = request.user.profile.verified_first_name
     trajet_info = f"{traject.traject.start_adress} → {traject.traject.end_adress}"
     nb_enfants = requested_places
 
     send_mail(
         subject="Nouvelle demande de réservation reçue sur Bana",
         message=(
-            f"Bonjour {traject.user.first_name},\n\n"
+            f"Bonjour {traject.user.profile.verified_first_name},\n\n"
             f"Vous avez reçu une nouvelle demande de réservation de la part de {parent_name}.\n\n"
             f"Détails du trajet : {trajet_info}\n"
             f"Nombre d'enfant(s) demandé(s) : {nb_enfants}\n\n"
             "Connectez-vous à Bana pour accepter ou refuser la demande."
-            "http://37.187.94.53:9758/trajects/my_reserve/"
+            "http://www.bana.mobi/trajects/my_reserve/"
         ),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[proposer_email],
@@ -876,7 +878,7 @@ def propose_help(request, researched_id):
 
     # Envoi du mail au parent
     parent_email = research.user.email
-    yaya_name = request.user.get_full_name() or request.user.username
+    yaya_name = request.user.profile.verified_first_name
     trajet_info = f"{research.traject.start_adress} → {research.traject.end_adress}"
     date_str = research.date.strftime("%d/%m/%Y") if research.date else ""
     heure_depart = research.departure_time.strftime("%H:%M") if research.departure_time else "—"
@@ -884,10 +886,11 @@ def propose_help(request, researched_id):
     send_mail(
         subject="Un accompagnateur a répondu à votre recherche de trajet",
         message=(
-            f"Bonjour {research.user.first_name},\n\n"
-            f"Bonne nouvelle ! Un accompagnateur ({yaya_name}) a proposé son aide pour votre trajet "
+            f"Bonjour {research.user.profile.verified_first_name},\n\n"
+            f"Bonne nouvelle ! Un accompagnateur est disponible pour votre recherche de trajet :\n\n"
             f"{trajet_info} le {date_str} (départ à {heure_depart}).\n\n"
             "Connectez-vous à Bana pour consulter cette proposition et valider votre réservation."
+            "https://www.bana.mobi/trajects/matchings/yaya/"
         ),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[parent_email],

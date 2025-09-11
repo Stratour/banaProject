@@ -6,13 +6,19 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <!-- Left: avatar + identity -->
           <div class="flex items-start gap-5">
-            <div class="relative shrink-0">
+            <div class="relative shrink-0 h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-gray-200 ring-4 ring-[#E9F5F1] flex items-center justify-center overflow-hidden">
               {% if user.profile.profile_picture %}
-              <img src="{{ user.profile.profile_picture.url }}" alt="{% trans 'Photo de profil' %}"
-                class="h-24 w-24 sm:h-28 sm:w-28 rounded-full object-cover ring-4 ring-[#E9F5F1]" />
+              <img src="{{ user.profile.profile_picture.url }}" alt="{% trans 'Photo de profil' %}"/>
               {% else %}
-              <img src="{% static 'bana/img/placeholder-avatar.png' %}" alt="{% trans 'Photo de profil' %}"
-                class="h-24 w-24 sm:h-28 sm:w-28 rounded-full object-cover ring-4 ring-[#E9F5F1]" />
+              <!--<img src="{% static 'bana/img/placeholder-avatar.png' %}" alt="{% trans 'Photo de profil' %}"
+                class="h-24 w-24 sm:h-28 sm:w-28 rounded-full object-cover ring-4 ring-[#E9F5F1]" />-->
+                <span class="text-xl sm:text-2xl font-bold text-gray-600">
+                  {% if user.profile.ci_is_verified %}
+                    {{ request.user.profile.verified_first_name.0 }}.{{ request.user.profile.verified_last_name.0 }}
+                  {% else %}
+                   {{ request.user.profile.first_name.0 }}.{{ request.user.profile.last_name.0 }}
+                  {% endif %}
+                </span>
               {% endif %}
 
               {% if profile.is_verified %}
@@ -39,7 +45,8 @@
                   {% endif %}
                     
                 </p>
-
+                
+                {% comment "Etoile ne se met pas en couleur" %}
                 <div class="flex items-center" aria-label="{% trans 'Note utilisateur' %}">
                   {% with r=profile.rating|default:0 %}
                   {% for i in "12345" %}
@@ -58,6 +65,8 @@
                     {% endfor %}
                     {% endwith %}
                 </div>
+                {% endcomment %}
+                
               </div>
 
               <!-- Rôle + localisation -->
@@ -76,10 +85,14 @@
                     </span>
                   {% endfor %}
                 {% endif %}
-                
+              </div>
+              
+              <div class="border-t border-gray-100 my-4"></div>
+
+              <div class="flex items-center gap-3 mt-3 flex-wrap">
                 {% if user.profile.transport_modes %}
                   {% for m in user.profile.transport_modes %}
-                    <span class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1 text-sm text-brand font-semibold">
+                      <span class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1 text-sm text-brand font-semibold">
                       {{ m }}
                     </span>
                   {% endfor %}
@@ -90,9 +103,11 @@
 
           <!-- Right: stats -->
           <div class="min-w-[220px] md:text-right">
+            {% comment "Compteur trajet" %}
             <p class="text-brand font-extrabold text-xl">
               {{ profile.trips_count|default:0 }} {% trans "trajets effectués" %}
             </p>
+            {% endcomment %}
             <p class="text-gray-500">
               {% trans "Membre depuis le" %} {{ user.date_joined|date:"d F Y" }}
             </p>

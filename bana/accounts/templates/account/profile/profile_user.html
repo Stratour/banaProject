@@ -33,13 +33,16 @@
         <div class="mb-6">
             <p class="text-lg"><strong>Email :</strong> {{ user.email }}</p>
             <p class="text-lg"><strong>Rôle :</strong> {{ user.profile.service | title }}</p>
-            <p class="text-lg"><strong>Localisation :</strong> 
+            <p class="text-lg"><strong>Ville :</strong> 
                 {{ user.profile.address }}
             </p>
             <p class="text-lg"><strong>Langues parlées :</strong>
             {% for language in user.profile.languages.all %}
             {{ language.lang_abbr }}{% if not forloop.last %}, {% endif %}
             {% endfor %}
+            </p>
+            <p class="text-lg"><strong>Bio :</strong> 
+                {{ user.profile.bio }}
             </p>
 
             

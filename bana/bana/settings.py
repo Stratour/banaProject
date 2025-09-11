@@ -174,14 +174,6 @@ MAX_ATTACHMENT_SIZE = 5 * 1024 * 1024
 # Configuration de pagination
 BUGS_PER_PAGE = 20
 
-# Configuration des emails (optionnel pour les notifications)
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Pour développement
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'  # Pour production
-#EMAIL_HOST = 'localhost'
-#EMAIL_PORT = 1025
-#EMAIL_USE_TLS = False
-#DEFAULT_FROM_EMAIL = 'bugtracker@example.com'
-
 # Configuration HTMX
 HTMX_REQUIRE_CSRF = True
 
@@ -230,8 +222,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [ BASE_DIR / 'bana/static', BASE_DIR / 'theme/static' ]
-#STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATIC_ROOT = '/home/bana_community/banaProject/bana/static_collected'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
 MEDIA_URL = "/media/"

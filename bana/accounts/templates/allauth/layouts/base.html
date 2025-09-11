@@ -5,15 +5,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="{% static 'bana/img/icon/favicon.ico' %}" rel="icon">
 
     {% tailwind_css %}
-    <link href="{% static 'theme/css/dist/styles.css' %}" rel="stylesheet">
-    <!--<link href="{% static 'bana/css/style.css' %}" rel="stylesheet">-->
+    <!--<link href="{% static 'theme/css/dist/styles.css' %}" rel="stylesheet">
+    <link href="{% static 'bana/css/style.css' %}" rel="stylesheet">-->
 
     <title>{% block title %}Admin - Bana{% endblock %}</title>
 </head>
 <body class="relative min-h-screen md:flex"
-      style="background-image: url('{% static "bana/img/background/Bana_background_lime.png" %}');
+      style="background-image: url('{% static 'bana/img/background/Bana_background_lime.png' %}');
              background-repeat: no-repeat;
              background-size: cover;
              background-position: center;">
