@@ -69,22 +69,12 @@
 
               <!-- Tags: langues & transports -->
               <div class="flex items-center gap-3 mt-3 flex-wrap">
-                {% if user.profile.languages %}
-                {% if user.profile.languages.all %}
-                {% for l in user.profile.languages.all %}
-                <span
-                  class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1 text-sm text-brand font-semibold">
-                  {{ l }}
-                </span>
-                {% endfor %}
-                {% else %}
-                {% for l in user.profile.languages %}
-                <span
-                  class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1 text-sm text-brand font-semibold">
-                  {{ l }}
-                </span>
-                {% endfor %}
-                {% endif %}
+                {% if user.profile.languages.exists %}
+                  {% for l in user.profile.languages.all %}
+                    <span class="inline-flex items-center rounded-full border border-gray-200 px-3 py-1 text-sm text-brand font-semibold">
+                      {{ l.lang_name }}
+                    </span>
+                  {% endfor %}
                 {% endif %}
                 
                 {% if user.profile.transport_modes %}

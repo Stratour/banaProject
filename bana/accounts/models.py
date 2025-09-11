@@ -23,7 +23,7 @@ class Profile(models.Model):
 
     languages = models.ManyToManyField('Languages', blank=True, null=True)
     transport_modes = models.JSONField(default=list, blank=True, null=True)
-    bio = models.TextField(blank=True, null=True)
+    bio = models.TextField(blank=True, null=True, default="")
     #phone = models.CharField(max_length=15, blank=True, null=True)
 
     # ✅ Champs liés à Stripe Identity

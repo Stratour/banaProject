@@ -1,33 +1,47 @@
 {% extends '/home/bana_community/banaProject/bana/accounts/templates/allauth/layouts/base.html' %}
 
 {% block content %}
+<div class="container py-5">
+    <h2 class="mb-4">Mon abonnement</h2>
 
+    {% if active_subscription %}
+    <div class="card shadow p-4">
+        <h4>{{ active_subscription.product_name }}</h4>
+        <p><strong>Prix :</strong> {{ active_subscription.price }} € / an</p>
+        <p><strong>Date de début :</strong> 
+            {% if active_subscription.current_period_start %}
+                {{ active_subscription.current_period_start|date:"d/m/Y" }}
+            {% else %}
+                Non définie
+            {% endif %}
+        </p>
+        <p><strong>Date de fin :</strong> 
+            {% if active_subscription.current_period_end %}
+                {{ active_subscription.current_period_end|date:"d/m/Y" }}
+            {% else %}
+                Non définie
+            {% endif %}
+        </p>
+        <p><strong>Statut :</strong> 
+            {% if active_subscription.is_active %}
+                <span class="badge bg-success">Actif</span>
+            {% else %}
+                <span class="badge bg-danger">Inactif</span>
+            {% endif %}
+        </p>
+    </div>
+{% else %}
+    <div class="card shadow p-4">
+        <p>Vous n’avez pas encore d’abonnement actif.</p>
 
-  <h2>Abonnement</h2>
-
-  {% if user.profile.service == "yaya" %}
-    <h2>{{ product.name }}</h2>
-    <p>En tant que <strong>yaya</strong>, vous pouvez vous abonner pour <strong>{{ product_price|floatformat:0 }}€</strong>.</p>
-    <p>{{ product.description }}</p>
-    <form enctype="multipart/form-data" method="post" action="{% url 'create_checkout_session' %}">
-      {% csrf_token %}
-      <input type="hidden" name="price_id" value="{{ price.id }}">
-      <button type="submit" class="btn btn-primary">S’abonner pour 2€</button>
-    </form>
-
-  {% elif user.profile.service == "parent" %}
-    <h2>{{ product.name }}</h2>
-
-    <p>En tant que <strong>parent</strong>, vous pouvez vous abonner pour <strong>{{ product_price|floatformat:0 }}€</strong>.</p>
-    <p>{{ product.description }}</p>
-
-    <form enctype="multipart/form-data" method="post" action="{% url 'create_checkout_session' %}">
-      {% csrf_token %}
-      <input type="hidden" name="price_id" value="{{ price.id }}">
-      <button type="submit" class="btn btn-primary">S’abonner pour 99€</button>
-    </form>
-
-  {% else %}
-    <p>Votre statut est inconnu. Veuillez mettre à jour votre profil.</p>
-  {% endif %}
+        <form method="post" action="{% url 'create_checkout_session' %}">
+            {% csrf_token %}
+            <input type="hidden" name="price_id" value="{{ price.id }}">
+            <button type="submit" class="btn btn-primary">
+                S’abonner pour {{ product_price|floatformat:0 }} €
+            </button>
+        </form>
+    </div>
+{% endif %}
+</div>
 {% endblock %}

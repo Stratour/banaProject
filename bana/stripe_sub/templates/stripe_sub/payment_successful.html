@@ -1,18 +1,26 @@
 {% extends '/home/bana_community/banaProject/bana/accounts/templates/allauth/layouts/base.html' %}
 
 {% block content %}
+<div class="container py-5 text-center">
+    {% if error %}
+        <div class="alert alert-danger">
+            ❌ Erreur : {{ error }}
+        </div>
+    {% else %}
+        <div class="card shadow p-5">
+            <h2 class="mb-4">✅ Abonnement activé avec succès</h2>
 
+            <p>Votre abonnement <strong>{{ product }}</strong> est maintenant actif.</p>
+            <p>Il restera valide jusqu’au 
+                <strong>{{ end_date|date:"d/m/Y" }}</strong>.
+            </p>
 
-  <h2>Abonnement</h2>
-
-    <p>Payement accepté</p>
-Produit : {{ product }}
-Début : {{ start_date }}
-{% if end_date %}
-Fin : {{ end_date }}
-{% else %}
-Fin : Illimité
-{% endif %}
-    <a class="btn btn-success" href="{% url 'subscription' %}">Retour au menu de payement</a>
-
+            <div class="mt-4">
+                <a href="{% url 'subscription' %}" class="btn btn-primary">
+                    Voir mon abonnement
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

@@ -25,8 +25,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*umwdzm=4)s(*x)hq1_)yd(6mtbrwy5gh8%b^_d(kn8xnspgc('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-#DEBUG = False
+#DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '37.187.94.53', 'bana.mobi', 'www.bana.mobi']
 
@@ -229,7 +229,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [ BASE_DIR / 'bana/static' ]
+STATICFILES_DIRS = [ BASE_DIR / 'bana/static', BASE_DIR / 'theme/static' ]
 #STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_ROOT = '/home/bana_community/banaProject/bana/static_collected'
 
@@ -310,9 +310,9 @@ EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = 'ssl0.ovh.net'
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
-EMAIL_HOST_USER = 'info@bana.mobi'  # Votre adresse email
+EMAIL_HOST_USER = 'contact@bana.mobi'  # Votre adresse email
 EMAIL_HOST_PASSWORD = config("EMAIL_MDP",default="secret")  # Votre mot de passe d'email
-DEFAULT_FROM_EMAIL = 'info@bana.mobi' # Adresse par défaut pour l'expéditeur
+DEFAULT_FROM_EMAIL = 'contact@bana.mobi' # Adresse par défaut pour l'expéditeur
 
 # Configurer l'email
 #EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

@@ -59,12 +59,12 @@
             <div>
               <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Langues" %}</p>
               <p>
-                {% if user.profile.languages.all %}
+                {% if user.profile.languages.exists %}
                 {% for l in user.profile.languages.all %}
-                {{ l }}{% if not forloop.last %}, {% endif %}
+                {{ l}}{% if not forloop.last %}, {% endif %}
                 {% endfor %}
                 {% else %}
-                {{ user.profile.languages|join:", " }}
+                <p>—</p>
                 {% endif %}
               </p>
             </div>
