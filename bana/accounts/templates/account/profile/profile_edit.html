@@ -14,7 +14,7 @@
     </ul>
   {% endif %}
 
-  <article class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+  <article class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10 overflow-hidden">
 
     <header class="flex items-center justify-between gap-4">
       <div>
@@ -25,7 +25,7 @@
           {% trans "Mettez à jour vos informations publiques et vos préférences." %}
         </p>
       </div>
-      {# pas d’aperçu photo ici, comme demandé #}
+      
     </header>
 
     <form method="post" enctype="multipart/form-data" class="mt-10">
@@ -37,7 +37,7 @@
         </div>
       {% endif %}
 
-      {# ========== Section Identité (flex, champs empilés) ========== #}
+      
       <section class="space-y-6">
         <h2 class="text-sm font-bold uppercase text-brand tracking-wider flex items-center gap-2">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -79,9 +79,9 @@
           </div>
       </section>
 
-      <div class="border-t border-gray-100"></div>
+      <div class="border-t border-gray-100 my-16"></div>
 
-      {# ========== Section Localisation (flex, champs empilés) ========== #}
+      
       <section class="space-y-6">
         <h2 class="text-sm font-bold uppercase text-brand tracking-wider flex items-center gap-2">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -101,9 +101,9 @@
         </div>
       </section>
 
-      <div class="border-t border-gray-100"></div>
+      <div class="border-t border-gray-100 my-16"></div>
 
-      {# ========== Section Préférences (flex, champs empilés) ========== #}
+      
       <section class="space-y-6">
         <h2 class="text-sm font-bold uppercase text-brand tracking-wider flex items-center gap-2">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -137,9 +137,9 @@
         </div>
       </section>
 
-      <div class="border-t border-gray-100"></div>
+      <div class="border-t border-gray-100 my-16"></div>
 
-      {# ========== Section Bio ========== #}
+      
       <section class="space-y-3">
         <h2 class="text-sm font-bold uppercase text-brand tracking-wider flex items-center gap-2">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -157,9 +157,9 @@
         </div>
       </section>
 
-      <div class="border-t border-gray-100"></div>
+      <div class="border-t border-gray-100 my-16"></div>
 
-      {# ========== Documents ========== #}
+      
       <section class="space-y-6 max-w-2xl">
         <h2 class="text-sm font-bold uppercase text-brand tracking-wider">
           Bonne vie et mœurs
@@ -188,7 +188,7 @@
         </div>
       </section>
 
-      {# ========== Boutons ========== #}
+      
       <footer class="mt-8">
 
 
