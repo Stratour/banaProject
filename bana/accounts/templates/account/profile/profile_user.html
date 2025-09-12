@@ -34,10 +34,10 @@
           {% endif %}
           
           <!-- Badge CI -->
-          {% if user.profile.ci_is_verified %}
-            <span class="absolute -top-1 -left-1 inline-flex h-8 w-8 rounded-full bg-white ring-4 ring-white shadow">
+          {% if user.profile.prfl_is_verified %}
+            <span class="absolute z-10 -top-1 -left-1 inline-flex h-8 w-8 rounded-full bg-white ring-4 ring-white shadow">
               <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" class="text-green-500" fill="currentColor" />
+                <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
                 <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
             </span>
@@ -45,12 +45,12 @@
         </div>
         <!--  Infos utilisateur -->
         <div class="mb-6">
-            <p class="text-lg"><strong>Email :</strong> {{ user.email }}</p>
+            <p class="text-lg"><strong>Contacter par e-mail :</strong> {{ user.email }}</p>
             <p class="text-lg"><strong>Rôle :</strong> {{ user.profile.service | title }}</p>
             <p class="text-lg"><strong>Ville :</strong> 
                 {{ user.profile.address }}
             </p>
-            <p class="text-lg"><strong>Langues parlées :</strong>
+            <p class="text-lg"><strong>Langue(s) parlée(s) :</strong>
             {% for language in user.profile.languages.all %}
             {{ language.lang_abbr }}{% if not forloop.last %}, {% endif %}
             {% endfor %}

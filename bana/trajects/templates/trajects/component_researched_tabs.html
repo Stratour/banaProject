@@ -1,8 +1,14 @@
+{% comment "Problème d'affichage" %}
 <div class="border-b border-brand-100 dark:border-brand-200 mb-10 overflow-x-auto">
   <ul class="flex flex-col md:flex-wrap gap-1 sm:gap-2 text-sm font-medium text-brand-200 dark:text-brand-200 whitespace-nowrap">
     
+{% endcomment %}
+
+<div class="border-b border-brand-100 dark:border-brand-200 mb-10">
+  <ul class="flex flex-wrap -mb-px text-sm font-medium text-center text-brand-200 dark:text-brand-200">
+    
     <!-- Nouveau trajet -->
-    <li>
+    <li class="me-2">
       <a href="{% url 'researched_traject' %}"
       class="inline-flex items-center px-3 py-2 border-b-2 transition
       {% if request.resolver_match.url_name == 'researched_traject' %}
@@ -19,7 +25,7 @@
   
   {% if request.user.profile.service == "yaya" %}
   <!-- Trajet simple -->
-  <li>
+  <li class="me-2">
     <a href="{% url 'simple_proposed_trajects' %}"
     class="inline-flex items-center px-3 py-2 border-b-2 transition
     {% if request.resolver_match.url_name == 'simple_proposed_trajects' %}

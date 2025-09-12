@@ -904,6 +904,9 @@ def propose_help(request, researched_id):
 def my_reservations(request):
     user = request.user
 
+    # Vérifier si l'utilisateur a un abonnement actif
+    is_abonned = Subscription.is_user_abonned(user)
+
     # En tant que parent (réservations faites)
     made_reservations = Reservation.objects.filter(user=user).select_related('traject', 'traject__traject')
 
@@ -913,4 +916,5 @@ def my_reservations(request):
     return render(request, 'trajects/my_reservations.html', {
         'made_reservations': made_reservations,
         'received_reservations': received_reservations,
+        'is_abonned': is_abonned,
     })

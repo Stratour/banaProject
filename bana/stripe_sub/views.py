@@ -107,7 +107,7 @@ def create_verification_session(request):
     if request.method == "POST":
         try:
             session = stripe.identity.VerificationSession.create(
-                type="document",
+                verification_flow=settings.STRIPE_IDENTITY_FLUX,
                 return_url=request.build_absolute_uri("/identity/complete/"),
                 metadata={"user_id": str(request.user.id)},
             )
@@ -160,6 +160,7 @@ def stripe_webhook(request):
             _handle_identity_failure(session, reason="canceled")
 
         # -------- Abonnements --------
+
         elif event["type"] == "checkout.session.completed":
             session = event["data"]["object"]
             subscription_id = session.get("subscription")
@@ -168,24 +169,21 @@ def stripe_webhook(request):
 
             logger.info(f"checkout.session.completed → subscription_id={subscription_id}, user_id={user_id}")
 
-            if not subscription_id or not user_id:
-                logger.error("❌ subscription_id ou user_id manquant")
-                return HttpResponse("Webhook reçu", status=200)
+            # ⚡ Mettre à jour le profile avec stripe_customer_id
+            if user_id and customer_id:
+                try:
+                    user = get_user_model().objects.get(id=user_id)
+                    profile = Profile.objects.get(user=user)
+                    profile.stripe_customer_id = customer_id
+                    profile.save()
+                    logger.info(f"💾 Profile mis à jour avec stripe_customer_id={customer_id}")
+                except Exception as e:
+                    logger.error(f"❌ Impossible de mettre à jour le profil user_id={user_id} : {e}", exc_info=True)
 
-            # ⚡ Mise à jour du profile
-            try:
-                User = get_user_model()
-                user = User.objects.get(id=user_id)
-                profile = Profile.objects.get(user=user)
-                profile.stripe_customer_id = customer_id
-                profile.save()
-                logger.info(f"💾 Profile mis à jour avec stripe_customer_id={customer_id}")
-            except Exception as e:
-                logger.error(f"❌ Impossible de mettre à jour le profil user_id={user_id} : {e}", exc_info=True)
-
-            # Récupérer les infos complètes de l’abonnement
-            stripe_sub = stripe.Subscription.retrieve(subscription_id)
-            _save_or_update_subscription(stripe_sub, customer_id, user_id)
+            # Si subscription_id présent, enregistrer l'abonnement
+            if subscription_id and user_id:
+                stripe_sub = stripe.Subscription.retrieve(subscription_id)
+                _save_or_update_subscription(stripe_sub, customer_id, user_id)
 
         elif event["type"] in ["customer.subscription.created", "customer.subscription.updated"]:
             sub = event["data"]["object"]
@@ -221,8 +219,7 @@ def stripe_webhook(request):
 # -----------------------------
 def _save_or_update_subscription(sub, customer_id, user_id):
     try:
-        User = get_user_model()
-        user = User.objects.get(id=user_id)
+        user = get_user_model().objects.get(id=user_id)
         profile = Profile.objects.get(user=user)
 
         # ⚡ Produit et prix
@@ -230,12 +227,12 @@ def _save_or_update_subscription(sub, customer_id, user_id):
         price_obj = stripe.Price.retrieve(sub_item["price"]["id"])
         product_obj = stripe.Product.retrieve(price_obj.product)
 
-        # ⚡ Dates
-        start = sub.get("current_period_start")
-        end = sub.get("current_period_end")
+        # Dates
+        start_ts = sub.get("current_period_start")
+        end_ts = sub.get("current_period_end")
 
-        current_period_start = datetime.fromtimestamp(start, tz=pytz.UTC) if start else None
-        current_period_end = datetime.fromtimestamp(end, tz=pytz.UTC) if end else None
+        current_period_start = datetime.fromtimestamp(start_ts, tz=pytz.UTC) if start_ts else None
+        current_period_end = datetime.fromtimestamp(end_ts, tz=pytz.UTC) if end_ts else None
 
         # ⚡ Nom et prénom vérifiés
         first_name = profile.verified_first_name or user.first_name

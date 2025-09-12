@@ -5,32 +5,34 @@
 
   <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
     <!-- Left: avatar + identity -->
-    <div class="flex items-start gap-5">
-      <div
-        class="relative z-0 shrink-0 h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-gray-200 ring-4 ring-[#E9F5F1] flex items-center justify-center">
-        {% if user.profile.profile_picture %}
-        <img src="{{ user.profile.profile_picture.url }}" alt="{% trans 'Photo de profil' %}"
-          class="block h-full w-full object-cover" />
-        {% else %}
-        {# placeholder initiales #}
-        <span class="text-xl sm:text-2xl font-bold text-gray-600 select-none">
-          {% if user.profile.ci_is_verified %}
+<div class="flex items-start gap-5 relative">
+  <!-- Cercle avatar -->
+  <div class="z-0 shrink-0 h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-gray-200 ring-4 ring-[#E9F5F1] flex items-center justify-center overflow-hidden">
+    {% if user.profile.profile_picture %}
+      <img src="{{ user.profile.profile_picture.url }}" alt="{% trans 'Photo de profil' %}"
+           class="block h-full w-full object-cover" />
+    {% else %}
+      <!-- placeholder initiales -->
+      <span class="text-xl sm:text-2xl font-bold text-gray-600 select-none">
+        {% if user.profile.ci_is_verified %}
           {{ request.user.profile.verified_first_name.0 }}.{{ request.user.profile.verified_last_name.0 }}
-          {% else %}
+        {% else %}
           {{ request.user.profile.first_name.0 }}.{{ request.user.profile.last_name.0 }}
-          {% endif %}
-        </span>
         {% endif %}
+      </span>
+    {% endif %}
+  </div>
 
-        {% if user.profile.prfl_is_verified %}
-        <span class="absolute z-10 -top-1 -left-1 inline-flex h-8 w-8 rounded-full bg-white ring-4 ring-white shadow">
-          <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
-            <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
-            <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-        </span>
-        {% endif %}
-      </div>
+  <!-- Badge profil vérifié -->
+  {% if user.profile.prfl_is_verified %}
+    <span class="absolute z-10 -top-1 -left-1 inline-flex h-8 w-8 rounded-full bg-white ring-4 ring-white shadow">
+      <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
+        <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </span>
+  {% endif %}
+
 
 
       <div class="min-w-0">

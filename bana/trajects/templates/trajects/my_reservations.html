@@ -17,6 +17,7 @@
   {% endif %}
 
   <!-- ===================== RÉSERVATIONS EFFECTUÉES ===================== -->
+  {% if request.user.profile.service == "Parent" %}
   <section class="space-y-4">
     <h2 class="text-sm font-bold uppercase text-brand tracking-wider">Réservations effectuées</h2>
 
@@ -203,7 +204,7 @@
   </section>
 
   <hr class="my-10">
-
+  {% endif %}
   <!-- ===================== DEMANDES REÇUES ===================== -->
   <section class="space-y-4">
     <h2 class="text-sm font-bold uppercase text-brand tracking-wider">Demandes reçues</h2>
@@ -232,10 +233,15 @@
                   <p class="text-sm text-gray-600">
                     <span class="font-semibold text-gray-900">{{ r.user.profile.service|title }}</span>
                     ·
+
+                    {% if is_abonned %}
                     <a href="{% url 'accounts:profile_user' user_id=r.user.id %}"
                        class="text-brand hover:underline font-medium">
                       {{ r.user.first_name }} {{ r.user.last_name|slice:":1" }}.
                     </a>
+                    {% else %} 
+                    <span class="text-red-700 px-4 py-3 rounded relative">Vous devez vous abonner pour pouvoir entrer en contact avec le corespondant</span>
+                    {% endif %}
                   </p>
                   <p class="text-xs text-gray-400 truncate">Réservation #{{ r.id }}</p>
                 </div>
@@ -319,6 +325,7 @@
 
             {% if r.status == 'pending' %}
               <footer class="mt-5 flex flex-wrap gap-3">
+                {% if is_abonned %}
                 <a href="{% url 'manage_reservation' r.id 'accept' %}"
                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand transition">
                   <!-- check -->
@@ -337,6 +344,14 @@
                   </svg>
                   Refuser
                 </a>
+                {% else %}
+                  <a href="{% url 'subscription' %}">
+                    <button type="button" class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white hover:bg-brand-50 hover:text-brand rounded-full">
+                    S'abonner
+                    </button>
+                  </a>
+                {% endif %}
+                
               </footer>
             {% endif %}
           </article>

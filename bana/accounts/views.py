@@ -112,8 +112,9 @@ def profile_edit(request):
     if request.method == "POST":
         form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
         user_form = UserUpdateForm(request.POST, instance=user)
-        
-        if form.is_valid():
+        user_form.fields['email'].disabled = True
+
+        if form.is_valid() and user_form.is_valid():
             form.save()
             user_form.save()
             messages.success(request, "Profil mis à jour.")
@@ -121,6 +122,7 @@ def profile_edit(request):
     else:
         form = ProfileUpdateForm(instance=profile)
         user_form = UserUpdateForm(instance=user)
+        user_form.fields['email'].disabled = True
     return render(
         request,
         "account/profile/profile_edit.html",
