@@ -18,6 +18,7 @@
 
         <!-- Mobile Menu Button -->
         <div class="md:hidden flex justify-center items-center gap-4">
+            {% comment %}
             <div class="relative inline-block text-left">
                 <button class="flex items-center text-white font-bold rounded-md focus:outline-none peer">
                     En
@@ -35,6 +36,7 @@
                     </ul>
                 </div>
             </div>
+            {% endcomment %}
             <button id="menu-toggle" class="focus:outline-none">
                 <svg class="w-8 h-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -119,10 +121,9 @@
     <div id="mobile-menu" class="hidden bg-brand border-t border-brand-50 text-white px-6 py-4 md:hidden">
         <div class="flex flex-col space-y-4 font-bold">
             <a href="{% url 'home' %}" class="text-center hover:text-white hover:no-underline">Home</a>
-            {% comment %}
-            <a href="{% url 'about' %}" class="text-center hover:text-white hover:no-underline">About</a>
-            {% endcomment %}
-            <a href="{% url 'contact' %}" class="text-center hover:text-white hover:no-underline">Contact</a>
+            <a href="{% url 'work' %}" class="text-center hover:text-white hover:no-underline">Comment ça marche ?</a>
+            <a href="{% url 'about' %}" class="text-center hover:text-white hover:no-underline">À propos</a>
+            <a href="{% url 'contact' %}" class="text-center text-center hover:text-white hover:no-underline">Contact</a>
 
 
 

@@ -1,27 +1,185 @@
-<header class="bg-white shadow p-4 flex items-center justify-between">
-    <h1 class="text-lg font-bold text-gray-900">
-        {% block page_title %}Tableau de bord{% endblock %}
+{% load static %}
+
+<header class="bg-white shadow p-4">
+  <div class="flex items-center justify-between">
+    {# Titre — desktop uniquement, à gauche #}
+    <h1 class="hidden md:block md:order-1 md:flex-1 min-w-0 text-lg font-bold text-gray-900 leading-none truncate">
+      {% block page_title %}Tableau de bord{% endblock %}
     </h1>
 
-<div class="flex items-center gap-4">
-    <div class="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gray-200 ring-4 ring-[#E9F5F1] flex items-center justify-center overflow-hidden">
-        {% load static %}
+    {# Avatar + prénom — mobile à gauche (parce que le h1 est hidden), desktop à droite #}
+    <div class="order-1 md:order-2 flex items-center gap-3">
+      <div class="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gray-200 ring-4 ring-[#E9F5F1] overflow-hidden">
         {% if request.user.profile.profile_picture %}
-            <a href="{% url 'accounts:profile' %}">
-                <img src="{{ request.user.profile.profile_picture.url }}" alt="User" class="h-full w-full object-cover">
-            </a>
+          <a href="{% url 'accounts:profile' %}">
+            <img src="{{ request.user.profile.profile_picture.url }}" alt="User" class="h-full w-full object-cover">
+          </a>
         {% else %}
-            <a href="{% url 'accounts:profile' %}" class="flex items-center justify-center w-full h-full">
-                <span class="text-xl sm:text-2xl font-bold text-gray-600">
-                    {{ request.user.profile.verified_first_name.0 }}.{{ request.user.profile.verified_last_name.0 }}
-                </span>
-            </a>
+          <a href="{% url 'accounts:profile' %}" class="flex items-center justify-center w-full h-full">
+            <span class="text-xl sm:text-2xl font-bold text-gray-600">
+              {{ request.user.profile.verified_first_name.0 }}.{{ request.user.profile.verified_last_name.0 }}
+            </span>
+          </a>
         {% endif %}
+      </div>
+      <span class="text-sm text-gray-700 font-medium truncate">{{ request.user.first_name }}</span>
     </div>
 
-    <!-- Nom de l'utilisateur à côté du cercle -->
-    <div>
-        <span class="text-sm text-gray-700 font-medium">{{ request.user.first_name }}</span>
-    </div>
-</div>
+    {# Burger — mobile uniquement, à droite #}
+    <button id="admin-menu-btn"
+            class="order-2 md:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-gray-200 text-gray-700 hover:text-brand hover:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+            type="button" aria-controls="admin-drawer" aria-expanded="false" aria-label="Ouvrir le menu">
+      <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+        <path d="M4 7h16M4 12h16M4 17h16" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
 </header>
+
+
+
+<!-- Overlay (au-dessus de tout) -->
+<div id="admin-overlay"
+     class="fixed inset-0 z-[90] bg-black/40 opacity-0 pointer-events-none transition-opacity duration-200 md:hidden"></div>
+
+
+{# ===== Drawer (mobile) — z-index custom retiré ===== #}
+<aside id="admin-drawer"
+       class="fixed inset-y-0 left-0 z-[100] w-72 max-w-[85%] bg-white shadow-2xl transform -translate-x-full transition-transform duration-200 md:hidden">
+  <div class="p-4 flex items-center justify-between border-b">
+    <span class="text-base font-semibold text-gray-900">Menu</span>
+    <button id="admin-menu-close"
+            class="inline-flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 text-gray-700 hover:text-brand hover:border-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+            type="button" aria-label="Fermer le menu">
+      <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M6 6l12 12M18 6L6 18" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <nav class="p-2">
+  {% with current=request.resolver_match.url_name %}
+  <ul class="space-y-1">
+
+    <li>
+      <a href="{% url 'home' %}"
+         class="flex items-center gap-3 px-3 py-2 rounded-lg
+                {% if current == 'home' %}text-brand bg-brand/10{% else %}text-gray-700 hover:text-brand hover:bg-gray-50{% endif %}"
+         {% if current == 'home' %}aria-current="page"{% endif %}>
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M3 10.5l9-7 9 7V20a2 2 0 0 1-2 2h-5v-7H10v7H5a2 2 0 0 1-2-2v-9.5z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Accueil</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'accounts:profile' %}"
+         class="flex items-center gap-3 px-3 py-2 rounded-lg
+                {% if current == 'profile' %}text-brand bg-brand/10{% else %}text-gray-700 hover:text-brand hover:bg-gray-50{% endif %}"
+         {% if current == 'profile' %}aria-current="page"{% endif %}>
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="4" stroke-width="2"/><path d="M6 20a6 6 0 0112 0" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Profil</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'accounts:profile_child' %}"
+         class="flex items-center gap-3 px-3 py-2 rounded-lg
+                {% if current == 'profile_children' %}text-brand bg-brand/10{% else %}text-gray-700 hover:text-brand hover:bg-gray-50{% endif %}">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M16 11a4 4 0 10-8 0" stroke-width="2" stroke-linecap="round"/><path d="M4 20a8 8 0 0116 0" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Mes enfants</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'researched_traject' %}"
+         class="flex items-center gap-3 px-3 py-2 rounded-lg
+                {% if current == 'researched_traject' %}text-brand bg-brand/10{% else %}text-gray-700 hover:text-brand hover:bg-gray-50{% endif %}">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="7" stroke-width="2"/><path d="M20 20l-3.5-3.5" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Rechercher</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'proposed_traject' %}"
+         class="flex items-center gap-3 px-3 py-2 rounded-lg
+                {% if current == 'proposed_traject' %}text-brand bg-brand/10{% else %}text-gray-700 hover:text-brand hover:bg-gray-50{% endif %}">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Proposer</span>
+      </a>
+    </li>
+
+    {% comment %}
+    <li>
+      <a href="{% url 'index' %}"
+         class="flex items-center gap-3 px-3 py-2 rounded-lg
+                {% if current == 'index' %}text-brand bg-brand/10{% else %}text-gray-700 hover:text-brand hover:bg-gray-50{% endif %}">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 12a8 8 0 10-3.3 6.3L21 21l-1.7-3.7A7.96 7.96 0 0021 12z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Messages</span>
+      </a>
+    </li>
+    {% endcomment %}
+
+    <li>
+      <a href="{% url 'my_reservations' %}"
+         class="flex items-center gap-3 px-3 py-2 rounded-lg
+                {% if current == 'my_reservations' %}text-brand bg-brand/10{% else %}text-gray-700 hover:text-brand hover:bg-gray-50{% endif %}">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="5" width="18" height="16" rx="2" stroke-width="2"/><path d="M16 3v4M8 3v4M3 11h18" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Réservations</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'subscription' %}"
+         class="flex items-center gap-3 px-3 py-2 rounded-lg
+                {% if current == 'subscription' %}text-brand bg-brand/10{% else %}text-gray-700 hover:text-brand hover:bg-gray-50{% endif %}">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 8c-3.866 0-7 1.79-7 4s3.134 4 7 4 7-1.79 7-4-3.134-4-7-4z" stroke-width="2"/><path d="M12 14v6" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Abonnement</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="{% url 'accounts:profile_security' %}"
+         class="flex items-center gap-3 px-3 py-2 rounded-lg
+                {% if current == 'profile_security' %}text-brand bg-brand/10{% else %}text-gray-700 hover:text-brand hover:bg-gray-50{% endif %}">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3l8 4v6a8 8 0 11-16 0V7l8-4z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>Sécurité & connexion</span>
+      </a>
+    </li>
+
+  </ul>
+  {% endwith %}
+</nav>
+
+</aside>
+
+{# ===== Script ===== #}
+<script>
+(function () {
+  const btn = document.getElementById('admin-menu-btn');
+  const closeBtn = document.getElementById('admin-menu-close');
+  const drawer = document.getElementById('admin-drawer');
+  const overlay = document.getElementById('admin-overlay');
+
+  function open() {
+    drawer.classList.remove('-translate-x-full');
+    overlay.classList.remove('pointer-events-none');
+    overlay.classList.remove('opacity-0');
+    overlay.classList.add('opacity-100');
+    btn && btn.setAttribute('aria-expanded', 'true');
+    document.body.classList.add('overflow-hidden');
+  }
+  function close() {
+    drawer.classList.add('-translate-x-full');
+    overlay.classList.add('pointer-events-none');
+    overlay.classList.remove('opacity-100');
+    overlay.classList.add('opacity-0');
+    btn && btn.setAttribute('aria-expanded', 'false');
+    document.body.classList.remove('overflow-hidden');
+  }
+
+  btn && btn.addEventListener('click', open);
+  closeBtn && closeBtn.addEventListener('click', close);
+  overlay && overlay.addEventListener('click', close);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+})();
+</script>
