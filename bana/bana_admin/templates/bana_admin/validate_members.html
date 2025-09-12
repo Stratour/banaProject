@@ -57,25 +57,31 @@
                 {% endif %}
             </td>
             <td>
-	      {% if user.document_bvm %}
-                <a href="{{ user.document_bvm.url }}" target="_blank" class="btn btn-info">Afficher</a>
-                <a href="{{ user.document_bvm.url }}" download class="btn btn-success">Télécharger</a>
-              {% else %}
-	        <span class="verified-badge verified-false">Non</span>
-              {% endif %}
+                {% if user.document_bvm %}
+                    <a href="{{ user.document_bvm.url }}" target="_blank" class="btn btn-info">Afficher</a>
+                    <a href="{{ user.document_bvm.url }}" download class="btn btn-success">Télécharger</a>
+            
+                    {% if not user.bvm_is_verified %}
+                        <form method="post" action="{% url 'bana_admin:verify_bvm_prfl' user.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="verify-button">Valider BVM</button>
+                        </form>
+                    {% else %}
+                        <span class="verified-badge verified-true">Déjà validé</span>
+                    {% endif %}
+                {% else %}
+                    <p>Aucun document BVM</p>
+                {% endif %}
             </td>
             <td>
                 {% if user.prfl_is_verified %}
                     <span class="verified-badge verified-true">Oui</span>
                 {% else %}
-                  {% comment %}
-                    <span class="verified-badge verified-false">Non</span>
-                  {% endcomment %}
-		   
+        
 		  <form method="post" action="{% url 'bana_admin:verify_profile_prfl' user.id %}">
 		    {% csrf_token %}
 		    <button type="submit" class="verify-button">Valider Profil</button>
-	          </form>
+	        </form>
                 {% endif %}
 	    </td>
         </tr>

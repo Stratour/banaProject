@@ -50,6 +50,27 @@ def validate_members(request):
     
     return render(request, 'bana_admin/validate_members.html', context)
 
+def verify_bvm_prfl(request, profile_id):
+    """
+    Vue pour modifier le statut 'bvm_is_verified' d'un profil.
+    Accessible via une requête POST.
+    """
+    if request.method == 'POST':
+        profile = get_object_or_404(Profile, id=profile_id)
+
+        if not profile.bvm_is_verified:
+            profile.bvm_is_verified = True
+            profile.save()
+            messages.success(request, f'Le statut BVM pour {profile.user.username} a été validé avec succès.')
+        else:
+            messages.info(request, f'Le profil de {profile.user.username} avait déjà un BVM validé.')
+
+        return redirect('bana_admin:validate_members')
+
+    messages.error(request, 'Méthode de requête non autorisée.')
+    return redirect('admin_panel')
+    
+
 
 def verify_profile_prfl(request, profile_id): #, profile_id
     """
@@ -69,7 +90,7 @@ def verify_profile_prfl(request, profile_id): #, profile_id
 
         # Rediriger l'utilisateur vers la page de liste des profils après la modification
         #return redirect('admin_panel') # Assurez-vous que c'est le nom de votre URL pour admin_views
-        return render(request, 'bana_admin/bana_admin.html')
+        return redirect('bana_admin:validate_members')
 
     # Si la requête n'est pas POST, rediriger ou afficher une erreur
     messages.error(request, 'Méthode de requête non autorisée.')

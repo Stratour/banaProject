@@ -6,7 +6,7 @@
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
           <!-- Left: avatar + identity -->
           <div class="flex items-start gap-5">
-            <div class="relative shrink-0 h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-gray-200 ring-4 ring-[#E9F5F1] flex items-center justify-center overflow-hidden">
+            <div class="relative shrink-0 h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-gray-200 ring-4 ring-[#E9F5F1] flex items-center justify-center">
               {% if user.profile.profile_picture %}
               <img src="{{ user.profile.profile_picture.url }}" alt="{% trans 'Photo de profil' %}"/>
               {% else %}
@@ -21,7 +21,7 @@
                 </span>
               {% endif %}
 
-              {% if profile.is_verified %}
+              {% if user.profile.ci_is_verified %}
               <span class="absolute -top-1 -left-1 inline-flex h-8 w-8 rounded-full bg-white ring-4 ring-white shadow">
                 <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />

@@ -96,13 +96,15 @@
               <p class="block text-sm font-bold text-brand uppercase mb-1">
                 {% trans "Bonne vie et mœurs (extrait 596.2)" %}
               </p>
-              {% if user.profile.document_bvm %}
-              <a href="{{ user.profile.document_bvm.url }}" target="_blank" class="hover:underline">
-                {% trans "Voir le document" %}
-              </a>
-              {% else %}
-              <p>—</p>
-              {% endif %}
+                {% if user.profile.document_bvm %}
+                  {% if user.profile.bvm_is_verified %}
+                      <p class="text-green-600 font-medium">Document validé</p>
+                  {% else %}
+                      <p class="text-yellow-600 font-medium">En attente de vérification</p>
+                  {% endif %}
+                {% else %}
+                  <p class="text-gray-500 italic">Aucun document enregistré</p>
+                {% endif %}
             </div>
           </section>
         </div>

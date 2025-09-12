@@ -18,17 +18,31 @@
             {% endif %}
         </h2>
 
-          <!-- 📸 Photo de profil -->
-        {% if user.profile.profile_picture %}
-          <img src="{{ user.profile.profile_picture.url }}" alt="Photo de profil"
-               class="w-32 h-32 rounded-full object-cover mb-4 border border-gray-300">
-        {% else %}
-          <div class="w-32 h-32 rounded-full bg-gray-200 mb-4 flex items-center justify-center text-gray-500">
-            <h1 class="no-image">
-              {{ user.first_name.0 }}.{{ user.last_name.0 }}
-        </h1>
-          </div>
-        {% endif %}
+        <div class="relative shrink-0 h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-gray-200 ring-4 ring-[#E9F5F1] flex items-center justify-center">
+          <!-- Avatar -->
+          {% if user.profile.profile_picture %}
+            <img src="{{ user.profile.profile_picture.url }}" alt="{% trans 'Photo de profil' %}"
+                 class="h-full w-full rounded-full object-cover"/>
+          {% else %}
+            <span class="text-xl sm:text-2xl font-bold text-gray-600">
+              {% if user.profile.ci_is_verified %}
+                {{ user.profile.verified_first_name.0 }}.{{ user.profile.verified_last_name.0 }}
+              {% else %}
+                {{ user.profile.first_name.0 }}.{{ user.profile.last_name.0 }}
+              {% endif %}
+            </span>
+          {% endif %}
+          
+          <!-- Badge CI -->
+          {% if user.profile.ci_is_verified %}
+            <span class="absolute -top-1 -left-1 inline-flex h-8 w-8 rounded-full bg-white ring-4 ring-white shadow">
+              <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" class="text-green-500" fill="currentColor" />
+                <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          {% endif %}
+        </div>
         <!--  Infos utilisateur -->
         <div class="mb-6">
             <p class="text-lg"><strong>Email :</strong> {{ user.email }}</p>
