@@ -305,15 +305,6 @@ EMAIL_HOST_USER = 'contact@bana.mobi'  # Votre adresse email
 EMAIL_HOST_PASSWORD = config("EMAIL_MDP",default="secret")  # Votre mot de passe d'email
 DEFAULT_FROM_EMAIL = 'contact@bana.mobi' # Adresse par défaut pour l'expéditeur
 
-# Configurer l'email
-#EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-#EMAIL_HOST = "smtp.gmail.com"  # Remplace par ton serveur SMTP
-#EMAIL_PORT = 587
-#EMAIL_USE_TLS = True
-#EMAIL_HOST_USER = 'Lucacamilleri55@gmail.com'
-#EMAIL_HOST_PASSWORD = 'bqyu cpzk looj hydh' 
-#DEFAULT_FROM_EMAIL = "Lucacamilleri55@gmail.com"
-
 ACCOUNT_FORMS = {
     'signup': 'accounts.forms.CustomSignupForm'
 }
