@@ -270,20 +270,20 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 # URL for login redirect 
-LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = '/accounts/login/' 
-
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True  # auto-confirmation au clic
+ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 
 ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ['email*', 'password1*', 'password2*']
 
 # 🧠 Email verification obligatoire
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True  # auto-confirmation au clic
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
-ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = "/accounts/profile/" 
+
+
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3  # (par défaut, 3 jours)
+
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = '/accounts/login/' 
 
 # 🔒 Empêche que des bots puissent détecter les emails existants
 ACCOUNT_PREVENT_ENUMERATION = False  # sécurité activée
@@ -291,10 +291,7 @@ ACCOUNT_PREVENT_ENUMERATION = False  # sécurité activée
 # 🔐 Envoie un vrai lien sécurisé (sans stocker de clé en DB)
 ACCOUNT_EMAIL_CONFIRMATION_HMAC = True
 
-
-
 ACCOUNT_INACTIVE_USER_ERROR = "Ce compte est désactivé. Contacte un admin pour le réactiver."
-
 
 # A compléter
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"

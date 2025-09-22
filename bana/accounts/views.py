@@ -7,18 +7,29 @@ from django.contrib.auth.models import User
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
-
-from allauth.account.forms import AddEmailForm
-from allauth.account.internal import flows
-from allauth.account.models import EmailAddress
-from allauth.account.views import PasswordChangeView
 from allauth.account.adapter import get_adapter
+from allauth.account.models import EmailAddress, EmailConfirmation
+from django.utils.translation import gettext as _
+from .utils import send_change_email_confirmation
+from django.views.decorators.http import require_http_methods
+import logging
+from django.conf import settings
+
+from allauth.account.internal import flows
+from allauth.account.views import PasswordChangeView
 
 from .forms import ProfileUpdateForm, ChildForm, ReviewForm, UserUpdateForm
 from accounts.models import Profile, Child, Review
 
+logger = logging.getLogger(__name__)
 
 # ==================== LOGIN / LOGOUT / PROFILE ==================== #
+
+@login_required
+def welcome(request):
+    user = request.user    
+    return render(request, "account/welcome.html", {"user" : user})
+
 
 @login_required(login_url="/accounts/login/")
 def profile_view(request):
@@ -150,16 +161,14 @@ def deactivate_account(request):
         user.is_active = False
         user.save()
         messages.success(request, "Votre compte a été désactivé avec succès.")
-        return redirect("logout")
+        return redirect("accounts:logout")
     return redirect("accounts:profile_security")
-
 
 @login_required
 def logout_user(request):
-    """Déconnexion."""
     logout(request)
     messages.info(request, "Vous êtes déconnecté !")
-    return redirect("/")
+    return redirect("home")
 
 
 # ==================== PASSWORD CHANGE (Allauth) ==================== #
@@ -186,39 +195,72 @@ def email_display(request):
 
 
 @login_required
+@require_http_methods(["POST"])
 def email_edit(request):
-    """Change l’email (avec contrôle de collision) puis revient sur Sécurité."""
-    if request.method == "POST":
-        form = AddEmailForm(data=request.POST, user=request.user)
-        if form.is_valid():
-            email = form.cleaned_data["email"]
+    """Gère le changement d'adresse email"""
+    new_email = request.POST.get('email')
+    
+    if not new_email:
+        messages.error(request, _("Veuillez saisir une adresse email valide."))
+        return redirect('accounts:profile_security')
+    
+    if new_email == request.user.email:
+        messages.info(request, _("Cette adresse email est déjà votre adresse actuelle."))
+        return redirect('accounts:profile_security')
+    
+    # Vérifier si l'email n'existe pas déjà
+    if EmailAddress.objects.filter(email=new_email).exists():
+        messages.error(request, _("Cette adresse email est déjà utilisée."))
+        return redirect('accounts:profile_security')
+    
+    # Supprimer toute demande de changement précédente non confirmée
+    EmailAddress.objects.filter(
+        user=request.user, 
+        verified=False, 
+        primary=False
+    ).delete()
+    
+    # Créer une nouvelle EmailAddress non vérifiée
+    email_address = EmailAddress.objects.create(
+        user=request.user,
+        email=new_email,
+        verified=False,
+        primary=False
+    )
+    
+    # Envoyer l'email de confirmation personnalisé
+    if send_change_email_confirmation(request, request.user, new_email):
+        messages.success(request, _("Un email de confirmation a été envoyé à votre nouvelle adresse."))
+    else:
+        messages.error(request, _("Erreur lors de l'envoi de l'email de confirmation."))
+    
+    return redirect('accounts:profile_security')
 
-            # Email déjà pris par un autre user ?
-            if EmailAddress.objects.filter(email=email).exclude(user=request.user).exists():
-                form.add_error("email", "Cette adresse e-mail est déjà utilisée.")
-            else:
-                obj, created = EmailAddress.objects.get_or_create(
-                    user=request.user,
-                    email=email,
-                    defaults={"verified": False, "primary": False},
-                )
-                if not obj.verified:
-                    # Envoie email de confirmation
-                    get_adapter(request).send_confirmation_mail(request, request.user, email=email)
+@login_required
+def email_change_confirm(request, key):
+    try:
+        confirmation = EmailConfirmation.objects.get(key=key)
+        email_address = confirmation.email_address
 
-                # Met à jour l’adresse sur l’objet user
-                request.user.email = email
-                request.user.save(update_fields=["email"])
+        if request.user != email_address.user:
+            messages.error(request, _("Ce lien n'est pas valide pour cet utilisateur."))
+            return redirect("accounts:profile_security")
 
-            messages.success(request, "E-mail mis à jour. Vérifie ta boîte.")
+        # Confirme l'email (Allauth fait le reste via signal)
+        confirmation.confirm(request)
+
         return redirect("accounts:profile_security")
 
-    # GET (si tu gardes un formulaire séparé, sinon cette vue ne sera appelée qu’en POST)
-    form = AddEmailForm(user=request.user)
-    return render(request, "account/email_change_form.html", {"form": form})
+    except EmailConfirmation.DoesNotExist:
+        messages.error(request, _("Ce lien de confirmation n'est plus valide."))
+        return redirect("accounts:profile_security")
 
-
-# ==================== ENFANTS ==================== #
+def redirect_after_email_confirmation(request):
+    # Récupère l'URL de redirection stockée dans la session
+    redirect_url = request.session.pop('redirect_after_confirmation', None)
+    if redirect_url:
+        return redirect(redirect_url)
+    return redirect(settings.LOGIN_REDIRECT_URL)
 
 @login_required
 def profile_children_view(request):
@@ -244,8 +286,7 @@ def add_child_view(request):
 
     children = request.user.children.all()
     return render(request, "account/profile/profil_add_child.html", {"form": form, "children": children})
-
-
+    
 # ==================== OUTIL DE POPULATION (DEV) ==================== #
 
 import json

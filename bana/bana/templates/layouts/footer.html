@@ -12,10 +12,12 @@
                 class="bg-brand text-white px-4 py-2 rounded-full font-bold w-40 text-center hover:bg-brand-dark hover:no-underline">
                 Mon profil
             </a>
-            <a href="{% url 'accounts:logout' %}"
-                class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
-                Déconnexion
-            </a>
+            <button type="button"
+                        onclick="document.getElementById('logout-modal').showModal()"
+                        class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
+                    Déconnexion
+                </button>
+
             {% else %}
             <a href="{% url 'account_signup' %}"
                 class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
@@ -129,3 +131,28 @@
         <p class="mt-2">&copy; bana.mobi 2025</p>
     </div>
 </footer>
+
+{# Ajoute cette modal à la fin de ton template #}
+<dialog id="logout-modal" class="rounded-xl p-0 w-full max-w-md">
+  <form method="post" action="{% url 'accounts:logout' %}" class="p-6 space-y-5">
+    {% csrf_token %}
+    <header class="space-y-1">
+      <h3 class="text-lg font-semibold text-gray-900">Déconnexion</h3>
+      <p class="text-sm text-gray-600">
+        Êtes-vous sûr de vouloir vous déconnecter ?
+      </p>
+    </header>
+
+    <div class="flex items-center justify-end gap-3 pt-2">
+      <button type="button"
+              onclick="document.getElementById('logout-modal').close()"
+              class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+        Annuler
+      </button>
+      <button type="submit"
+              class="bg-brand text-white px-4 py-2 rounded-full font-bold hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+        Confirmer
+      </button>
+    </div>
+  </form>
+</dialog>

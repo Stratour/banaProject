@@ -21,7 +21,9 @@ urlpatterns = [
     
     path('email/display/', views.email_display, name='email_display'),
     path('email/edit/', views.email_edit, name='email_edit'), 
-    
+    path('email/change/confirm/<str:key>/', views.email_change_confirm, name='email_change_confirm'),
+    path('email/confirm-redirect/', views.redirect_after_email_confirmation, name='email_confirm_redirect'),
+
     path('profil_child/', views.profile_children_view, name='profile_child'),
     path('add_child/', views.add_child_view, name='add_child'),
 

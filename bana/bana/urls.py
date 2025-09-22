@@ -18,7 +18,9 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
+
 from . import views
+from accounts import views as account_views
 
 urlpatterns = [ 
     path("__reload__/", include("django_browser_reload.urls")), # tailwind related it's the auto reload
@@ -30,8 +32,8 @@ urlpatterns = [
     # Bug Tracker Interfaces
     path('bug_tracker/', include('bug_tracker.urls')),
     # Authentification
-    path('accounts/', include('accounts.urls')),
     path('accounts/', include('allauth.urls')),
+    path('accounts/', include('accounts.urls')),
 
     path('contact/', views.contact, name='contact'),
     path('about/', views.about, name='about'),
@@ -41,6 +43,7 @@ urlpatterns = [
     path('', include('stripe_sub.urls')),
     path('work/', views.work, name='work'),
     path('parent/', views.parent, name='parent'),
+    path('welcome/', account_views.welcome, name="welcome"),
 ] 
 
 # Servir les fichiers médias en développement
