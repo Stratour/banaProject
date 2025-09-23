@@ -1,0 +1,56 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-23 16:22+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: templates/home.html:13
+msgid "Trouvez de l'aide pour les trajets de votre enfant"
+msgstr "Find help with your child's journeys"
+
+#: templates/home.html:16
+msgid ""
+"Service de mobilité partagée pour\n"
+"                les trajets <br>maison-école-activités, via tous les moyens "
+"de transport\n"
+"                "
+msgstr ""
+
+#: templates/home.html:52 templates/home.html:126
+msgid "Rechercher"
+msgstr "Search"
+
+#: templates/home.html:56 templates/home.html:129
+msgid "Proposer"
+msgstr "Propose"
+
+#: templates/home.html:110
+msgid "Déjà présent dans plus de 110 villes en Belgique !"
+msgstr "Already present in over 110 towns in Belgium!"
+
+#: templates/home.html:113
+msgid "Notre accompagnement est disponible pour tous les moyens de transport"
+msgstr "Our support is available for all modes of transport."
+
+#: templates/home.html:153
+msgid ""
+"\n"
+"                Selon une étude menée par la Ligue des Familles,<br>\n"
+"                <span class=\"text-brand-50\">8 parents sur 10 effectuent "
+"des trajets en chaîne chaque jour*</span>\n"
+"                "
+msgstr ""

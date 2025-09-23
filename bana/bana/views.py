@@ -1,4 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.utils import translation
+from bana import settings
 
 # --- Home page ---------------------------------------------------------------------------
 def home(request):
@@ -78,3 +80,7 @@ def parent(request):
     ]
     return render(request, 'parent.html', {"features_search": features_search, "features_share": features_share})
 
+def switch_language(request, lang_code):
+    if lang_code in dict(settings.LANGUAGES).keys():
+        request.session['django_language'] = lang_code
+    return redirect(request.META.get('HTTP_REFERER', '/'))

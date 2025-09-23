@@ -93,8 +93,7 @@
                 </a>
                 {% endif %}
 
-                {% comment "" %}
-                <div class="relative inline-block text-left z-10">
+                {% comment "" %}<div class="relative inline-block text-left z-10">
                     <button
                         class="flex items-center pl-4 py-2 font-bold text-white rounded-full focus:outline-none peer">
                         En
@@ -107,13 +106,15 @@
                     <div
                         class="absolute left-0 mt-2 w-32 bg-white border border-lime-300 rounded-md shadow-lg hidden peer-focus:block">
                         <ul class="py-1">
-                            <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-lime-100">Français</a></li>
-                            <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-lime-100">Nederlands</a></li>
+                            <li><a href="{% url 'switch_language' 'fr' %}" class="block px-4 py-2 text-gray-700 hover:bg-lime-100">🇫🇷 Français</a></li>
+                            <li><a href="{% url 'switch_language' 'en' %}" class="block px-4 py-2 text-gray-700 hover:bg-lime-100">🇬🇧 English</a></li>
                         </ul>
                     </div>
                 </div>
                 {% endcomment %}
 
+                <a href="{% url 'switch_language' 'fr' %}" class="block px-4 py-2 text-gray-700 hover:bg-lime-100">🇫🇷 Français</a>
+                <a href="{% url 'switch_language' 'en' %}" class="block px-4 py-2 text-gray-700 hover:bg-lime-100">🇬🇧 English</a>
             </div>
         </div>
 
