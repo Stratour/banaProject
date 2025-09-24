@@ -296,6 +296,7 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3  # (par défaut, 3 jours)
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login/' 
 
+
 # 🔒 Empêche que des bots puissent détecter les emails existants
 ACCOUNT_PREVENT_ENUMERATION = False  # sécurité activée
 

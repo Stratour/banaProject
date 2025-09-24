@@ -1,16 +1,19 @@
+{% load static i18n%}
+
 <header>
     <nav class="px-6 bg-brand text-white xl:px-24 py-4 flex items-center justify-between">
         <!-- Logo and Branding -->
         <div class="flex items-center space-x-3">
-            {% load static %}
 
             <a href="{% url 'home' %}">
                 <img class="w-20 h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Logo Bana">
             </a>
             <p class="hidden xl:block text-sm w-65">
+                {% blocktrans trimmed %}
                 Plateforme de <span class="text-brand-50 font-bold">mobilité partagée</span>
                 <br>
                 pour les <span class="text-brand-50 font-bold"> trajets des enfants</span>
+                {% endblocktrans %}
             </p>
 
 
@@ -51,13 +54,13 @@
                 <img class="w-7 h-7" src="{% static 'bana/img/icon/Icon_home.svg' %}" alt="Icon hut">
             </a>
 
-            <a href="{% url 'work' %}" class="hover:text-white hover:no-underline">Comment ça marche ?</a>
+            <a href="{% url 'work' %}" class="hover:text-white hover:no-underline">{% trans "Comment ça marche ?" %} </a>
             {% comment "" %}
             <a href="{% url 'parent' %}" class="hover:text-white hover:no-underline">Search or share</a>
             {% endcomment %}
-            <a href="{% url 'about' %}" class="hover:text-white hover:no-underline">À propos</a>
+            <a href="{% url 'about' %}" class="hover:text-white hover:no-underline">{% trans "À propos" %} </a>
 
-            <a href="{% url 'contact' %}" class="hover:text-white hover:no-underline">Contact</a>
+            <a href="{% url 'contact' %}" class="hover:text-white hover:no-underline">{% trans "Contact" %} </a>
         </div>
 
         <!-- Authentication Buttons -->
@@ -72,49 +75,72 @@
                 {% if user.is_authenticated %}
                 <a href="{% url 'accounts:profile' %}"
                     class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
-                    Profil
+                    {% trans "Profil" %} 
                 </a>
 
                 <button type="button"
                         onclick="document.getElementById('logout-modal').showModal()"
                         class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200">
-                    Déconnexion
+                    {% trans "Déconnexion" %} 
                 </button>
 
                 {% else %}
                 <a href="{% url 'account_signup' %}"
                     class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
-                    Inscription
+                    {% trans "Inscription" %} 
                 </a>
 
                 <a href="{% url 'account_login' %}"
                     class="relative bg-brand text-brand-50 px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-50 hover:no-underline before:absolute before:inset-0 before:rounded-full before:border-2 before:border-brand-50">
-                    Connexion
+                    {% trans "Connexion" %} 
                 </a>
                 {% endif %}
 
-                {% comment "" %}<div class="relative inline-block text-left z-10">
+                <div class="relative inline-block text-left z-10">
                     <button
-                        class="flex items-center pl-4 py-2 font-bold text-white rounded-full focus:outline-none peer">
-                        En
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
-                            xmlns="http://www.w3.org/2000/svg">
+                        id="languageButton"
+                        class="flex items-center pl-4 py-2 font-bold text-white rounded-full focus:outline-none"
+                        onclick="toggleLanguageDropdown()">
+
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% if LANGUAGE_CODE == 'fr' %}
+                            🇫🇷 FR
+                        {% elif LANGUAGE_CODE == 'en' %}
+                            🇬🇧 EN
+                        {% elif LANGUAGE_CODE == 'nl' %}
+                            🇳🇱 NL
+                        {% endif %}
+
+                        <svg class="w-4 h-4 ml-1 transition-transform duration-200" id="languageArrow" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
                             <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </button>
-
+                
                     <div
-                        class="absolute left-0 mt-2 w-32 bg-white border border-lime-300 rounded-md shadow-lg hidden peer-focus:block">
+                        id="languageDropdown"
+                        class="absolute left-0 mt-2 w-32 bg-white border border-lime-300 rounded-md shadow-lg hidden">
                         <ul class="py-1">
-                            <li><a href="{% url 'switch_language' 'fr' %}" class="block px-4 py-2 text-gray-700 hover:bg-lime-100">🇫🇷 Français</a></li>
-                            <li><a href="{% url 'switch_language' 'en' %}" class="block px-4 py-2 text-gray-700 hover:bg-lime-100">🇬🇧 English</a></li>
+                            {% get_available_languages as LANGUAGES %}
+                            {% for lang_code, lang_name in LANGUAGES %}
+                                {% if lang_code != LANGUAGE_CODE %}
+                                    <li>
+                                        <a href="#" 
+                                           onclick="switchLanguage('{{ lang_code }}')" 
+                                           class="block px-4 py-2 text-gray-700 hover:bg-lime-100 transition-colors">
+                                            {% if lang_code == 'fr' %}
+                                                🇫🇷 {% trans "Français" %} 
+                                            {% elif lang_code == 'en' %}
+                                                🇬🇧 {% trans "Anglais" %} 
+                                            {% elif lang_code == 'nl' %}
+                                                🇳🇱 {% trans "Néerlandais" %}
+                                            {% endif %}
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
                         </ul>
                     </div>
                 </div>
-                {% endcomment %}
-
-                <a href="{% url 'switch_language' 'fr' %}" class="block px-4 py-2 text-gray-700 hover:bg-lime-100">🇫🇷 Français</a>
-                <a href="{% url 'switch_language' 'en' %}" class="block px-4 py-2 text-gray-700 hover:bg-lime-100">🇬🇧 English</a>
             </div>
         </div>
 
@@ -123,10 +149,10 @@
     <!-- Mobile Dropdown Menu -->
     <div id="mobile-menu" class="hidden bg-brand border-t border-brand-50 text-white px-6 py-4 md:hidden">
         <div class="flex flex-col space-y-4 font-bold">
-            <a href="{% url 'home' %}" class="text-center hover:text-white hover:no-underline">Home</a>
-            <a href="{% url 'work' %}" class="text-center hover:text-white hover:no-underline">Comment ça marche ?</a>
-            <a href="{% url 'about' %}" class="text-center hover:text-white hover:no-underline">À propos</a>
-            <a href="{% url 'contact' %}" class="text-center text-center hover:text-white hover:no-underline">Contact</a>
+            <a href="{% url 'home' %}" class="text-center hover:text-white hover:no-underline">{% trans "Accueil" %} </a>
+            <a href="{% url 'work' %}" class="text-center hover:text-white hover:no-underline">{% trans "Comment ça marche ?" %}</a>
+            <a href="{% url 'about' %}" class="text-center hover:text-white hover:no-underline">{% trans "À propos" %}</a>
+            <a href="{% url 'contact' %}" class="text-center text-center hover:text-white hover:no-underline">{% trans "Contact" %}</a>
 
 
 
@@ -135,23 +161,23 @@
                 {% if user.is_authenticated %}
                 <a href="{% url 'accounts:profile' %}"
                     class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
-                    Profil
+                    {% trans "Profil" %}
                 </a>
                 
                 <button type="button"
                         onclick="document.getElementById('logout-modal').showModal()"
                         class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
-                    Déconnexion
+                    {% trans "Déconnexion" %}
                 </button>
 
                 {% else %}
                 <a href="{% url 'account_signup' %}"
                     class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
-                    S'inscrire
+                    {% trans "Inscription" %}
                 </a>
                 <a href="{% url 'account_login' %}"
                     class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
-                    Connexion
+                    {% trans "Connexion" %}
                 </a>
                 {% endif %}
             </div>
@@ -175,14 +201,14 @@
     {% endif %}
 </header>
 
-{# Ajoute cette modal à la fin de ton template #}
+
 <dialog id="logout-modal" class="rounded-xl p-0 w-full max-w-md">
   <form method="post" action="{% url 'accounts:logout' %}" class="p-6 space-y-5">
     {% csrf_token %}
     <header class="space-y-1">
-      <h3 class="text-lg font-semibold text-gray-900">Déconnexion</h3>
+      <h3 class="text-lg font-semibold text-gray-900">{% trans "Déconnexion" %}</h3>
       <p class="text-sm text-gray-600">
-        Êtes-vous sûr de vouloir vous déconnecter ?
+        {% trans "Êtes-vous sûr de vouloir vous déconnecter ?" %}
       </p>
     </header>
 
@@ -190,12 +216,43 @@
       <button type="button"
               onclick="document.getElementById('logout-modal').close()"
               class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
-        Annuler
+        {% trans "Annuler" %}
       </button>
       <button type="submit"
               class="bg-brand text-white px-4 py-2 rounded-full font-bold hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
-        Confirmer
+        {% trans "Confirmer" %}
       </button>
     </div>
   </form>
 </dialog>
+
+<script>
+function toggleLanguageDropdown() {
+    const dropdown = document.getElementById('languageDropdown');
+    const arrow = document.getElementById('languageArrow');
+    
+    if (dropdown.classList.contains('hidden')) {
+        dropdown.classList.remove('hidden');
+        arrow.style.transform = 'rotate(180deg)';
+    } else {
+        dropdown.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+    }
+}
+
+function switchLanguage(language) {
+    window.location.href = "{% url 'switch_language' 'PLACEHOLDER' %}".replace('PLACEHOLDER', language);
+}
+
+// Fermer le dropdown si on clique ailleurs
+document.addEventListener('click', function(event) {
+    const button = document.getElementById('languageButton');
+    const dropdown = document.getElementById('languageDropdown');
+    const arrow = document.getElementById('languageArrow');
+    
+    if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+        dropdown.classList.add('hidden');
+        arrow.style.transform = 'rotate(0deg)';
+    }
+});
+</script>

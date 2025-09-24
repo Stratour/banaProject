@@ -1,22 +1,64 @@
 from django.shortcuts import render, redirect
 from django.utils import translation
 from bana import settings
+from django.http import HttpResponseRedirect
+from django.utils.translation import gettext_lazy as _
 
 # --- Home page ---------------------------------------------------------------------------
 def home(request):
     home_benefits = [
-        {'img_src': 'bana/img/icon/Icon_clock.svg', 'title': 'Gain de temps', 'highlight': 'Flexibilité', 'description': 'dans votre agenda'},
-        {'img_src': 'bana/img/icon/Icon_currency.svg', 'title': 'Économique', 'highlight': 'Économiser', 'description': 'sur l’essence'},
-        {'img_src': 'bana/img/icon/Icon_earth.svg', 'title': 'Écologique', 'highlight': 'Utiliser', 'description': 'des moyens de transport alternatifs'},
-        {'img_src': 'bana/img/icon/Icon_hearth.svg', 'title': 'Communauté', 'highlight': 'Créer du lien social', 'description': 'en partageant des moments'}
+        {
+            'img_src': 'bana/img/icon/Icon_clock.svg',
+            'title': _('Gain de temps'),
+            'highlight': _('Flexibilité'),
+            'description': _('dans votre agenda')
+        },
+        {
+            'img_src': 'bana/img/icon/Icon_currency.svg',
+            'title': _('Économique'),
+            'highlight': _('Économiser'),
+            'description': _('sur l’essence')
+        },
+        {
+            'img_src': 'bana/img/icon/Icon_earth.svg',
+            'title': _('Écologique'),
+            'highlight': _('Utiliser'),
+            'description': _('des moyens de transport alternatifs')
+        },
+        {
+            'img_src': 'bana/img/icon/Icon_hearth.svg',
+            'title': _('Communauté'),
+            'highlight': _('Créer du lien social'),
+            'description': _('en partageant des moments')
+        }
     ]
 
     home_roles = [
-        {'img_src': 'bana/img/other/Bana_Parent.png', 'alt_text': 'Parent Icon', 'link_text': 'I am a parent', 'link_url': '#'},
-        {'img_src': 'bana/img/other/Bana_Mentor.png', 'alt_text': 'Mentor Icon', 'link_text': 'I am a mentor', 'link_url': '#'},
-        {'img_src': 'bana/img/other/Bana_Community.png', 'alt_text': 'Community Icon', 'link_text': 'I am a community member', 'link_url': '#'}
+        {
+            'img_src': 'bana/img/other/Bana_Parent.png',
+            'alt_text': _('Parent Icon'),
+            'link_text': _('Je suis un parent'),
+            'link_url': '#'
+        },
+        {
+            'img_src': 'bana/img/other/Bana_Mentor.png',
+            'alt_text': _('Mentor Icon'),
+            'link_text': _('Je suis un mentor'),
+            'link_url': '#'
+        },
+        {
+            'img_src': 'bana/img/other/Bana_Community.png',
+            'alt_text': _('Community Icon'),
+            'link_text': _('Je fais partie de la communauté'),
+            'link_url': '#'
+        }
     ]
-    return render(request, 'home.html', {"home_benefits": home_benefits, "home_roles": home_roles})
+
+    return render(
+        request,
+        'home.html',
+        {"home_benefits": home_benefits, "home_roles": home_roles}
+    )
 
 # --- Conact page ---------------------------------------------------------------------------
 def contact(request):
@@ -80,7 +122,50 @@ def parent(request):
     ]
     return render(request, 'parent.html', {"features_search": features_search, "features_share": features_share})
 
-def switch_language(request, lang_code):
-    if lang_code in dict(settings.LANGUAGES).keys():
-        request.session['django_language'] = lang_code
+def switch_language(request, language):
+    """
+    Vue pour changer de langue et rediriger vers la même page
+    dans la nouvelle langue
+    """
+    # Vérifier que la langue est supportée
+    if language in [lang[0] for lang in settings.LANGUAGES]:
+        # Activer la nouvelle langue
+        translation.activate(language)
+        
+        # Sauvegarder dans la session
+        request.session['django_language'] = language
+        
+        # Obtenir l'URL de référence et extraire le chemin
+        referer = request.META.get('HTTP_REFERER', '/')
+        
+        # Extraire le chemin de l'URL complète
+        if 'http' in referer:
+            # Séparer l'URL pour obtenir juste le chemin
+            path_parts = referer.split('/', 3)  # ['http:', '', 'domain:port', 'path']
+            current_path = '/' + (path_parts[3] if len(path_parts) > 3 else '')
+        else:
+            current_path = referer
+        
+        # Enlever le préfixe de langue actuel s'il existe
+        for lang_code, _ in settings.LANGUAGES:
+            if current_path.startswith(f'/{lang_code}/'):
+                current_path = current_path[3:]  # Enlever /xx/
+                break
+            elif current_path == f'/{lang_code}':
+                current_path = '/'  # Si on est juste sur /xx, aller à la racine
+                break
+        
+        # S'assurer que le chemin commence par /
+        if not current_path.startswith('/'):
+            current_path = '/' + current_path
+        
+        # Construire la nouvelle URL avec le préfixe de langue
+        if current_path == '/':
+            new_url = f'/{language}/'
+        else:
+            new_url = f'/{language}{current_path}'
+        
+        return HttpResponseRedirect(new_url)
+    
+    # Si la langue n'est pas supportée, rediriger sans changement
     return redirect(request.META.get('HTTP_REFERER', '/'))
