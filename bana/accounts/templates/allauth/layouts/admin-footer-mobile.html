@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 
 <footer class="fixed inset-x-0 bottom-0 z-50 md:hidden">
   <nav
@@ -20,7 +20,7 @@
               <path d="M20 20l-3.5-3.5" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </span>
-          <span class="sr-only">Rechercher</span>
+          <span class="sr-only">{% trans "Rechercher" %}</span>
         </a>
       </li>
 
@@ -36,7 +36,7 @@
               <path d="M12 5v14M5 12h14" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </span>
-          <span class="sr-only">Proposer</span>
+          <span class="sr-only">{% trans "Proposer" %}</span>
         </a>
       </li>
 
@@ -53,7 +53,7 @@
               <path d="M16 3v4M8 3v4M3 11h18" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </span>
-          <span class="sr-only">Réservations</span>
+          <span class="sr-only">{% trans "Réservations" %}</span>
         </a>
       </li>
 
@@ -70,7 +70,7 @@
               <path d="M6 20a6 6 0 0112 0" stroke-width="2" stroke-linecap="round"/>
             </svg>
           </span>
-          <span class="sr-only">Profil</span>
+          <span class="sr-only">{% trans "Profil" %}</span>
         </a>
       </li>
 

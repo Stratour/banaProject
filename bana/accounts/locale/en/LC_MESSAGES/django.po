@@ -1,0 +1,1527 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#: accounts/templates/account/verified_email_required.html:16
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-25 15:11+0000\n"
+"PO-Revision-Date: 2023-07-24 22:28+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: accounts/models.py:47
+msgid "Garçon"
+msgstr "Boy"
+
+#: accounts/models.py:48
+msgid "Fille"
+msgstr "Girl"
+
+#: accounts/signals.py:48
+msgid "Adresse email changée avec succès."
+msgstr ""
+
+#: accounts/templates/account/account_inactive.html:5
+#: accounts/templates/account/account_inactive.html:9
+msgid "Account Inactive"
+msgstr ""
+
+#: accounts/templates/account/account_inactive.html:12
+msgid "This account is inactive."
+msgstr ""
+
+#: accounts/templates/account/base_confirm_code.html:27
+#, python-format
+msgid ""
+"We've sent a code to %(recipient)s. The code expires shortly, so please "
+"enter it soon."
+msgstr ""
+
+#: accounts/templates/account/base_confirm_code.html:38
+#: accounts/templates/account/email_confirm.html:32
+#: accounts/templates/account/reauthenticate.html:18
+#: accounts/templates/mfa/reauthenticate.html:18
+msgid "Confirm"
+msgstr ""
+
+#: accounts/templates/account/base_confirm_code.html:42
+#: accounts/templates/account/base_confirm_code.html:46
+#: accounts/templates/mfa/authenticate.html:28
+#: accounts/templates/mfa/authenticate.html:44
+#: accounts/templates/mfa/webauthn/signup_form.html:26
+msgid "Cancel"
+msgstr ""
+
+#: accounts/templates/account/base_reauthenticate.html:5
+#: accounts/templates/account/base_reauthenticate.html:9
+msgid "Confirm Access"
+msgstr ""
+
+#: accounts/templates/account/base_reauthenticate.html:12
+msgid "Please reauthenticate to safeguard your account."
+msgstr ""
+
+#: accounts/templates/account/base_reauthenticate.html:19
+#: accounts/templates/mfa/authenticate.html:37
+msgid "Alternative options"
+msgstr ""
+
+#: accounts/templates/account/email.html:4
+#: accounts/templates/account/email.html:16
+msgid "Email Addresses"
+msgstr ""
+
+#: accounts/templates/account/email.html:20
+msgid "The following email addresses are associated with your account:"
+msgstr ""
+
+#: accounts/templates/account/email.html:42
+msgid "Verified"
+msgstr ""
+
+#: accounts/templates/account/email.html:44
+msgid "Unverified"
+msgstr ""
+
+#: accounts/templates/account/email.html:47
+msgid "Primary"
+msgstr ""
+
+#: accounts/templates/account/email.html:55
+msgid "Make Primary"
+msgstr ""
+
+#: accounts/templates/account/email.html:56
+#: accounts/templates/account/email.html:126
+#: accounts/templates/account/email_change.html:37
+msgid "Re-send Verification"
+msgstr ""
+
+#: accounts/templates/account/email.html:57
+#: accounts/templates/mfa/webauthn/authenticator_confirm_delete.html:16
+#: accounts/templates/mfa/webauthn/authenticator_list.html:60
+#: accounts/templates/socialaccount/connections.html:54
+msgid "Remove"
+msgstr ""
+
+#: accounts/templates/account/email.html:65
+msgid "Add Email Address"
+msgstr ""
+
+#: accounts/templates/account/email.html:71
+msgid "Add Email"
+msgstr ""
+
+#: accounts/templates/account/email.html:89
+msgid "Do you really want to remove the selected email address?"
+msgstr ""
+
+#: accounts/templates/account/email.html:98
+#: accounts/templates/account/email_change.html:5
+#: accounts/templates/account/email_change.html:9
+msgid "Email Address"
+msgstr ""
+
+#: accounts/templates/account/email.html:110
+#: accounts/templates/account/email.html:118
+#: accounts/templates/account/email_change.html:21
+#: accounts/templates/account/email_change.html:29
+msgid "Current email"
+msgstr ""
+
+#: accounts/templates/account/email.html:120
+#: accounts/templates/account/email_change.html:31
+msgid "Changing to"
+msgstr ""
+
+#: accounts/templates/account/email.html:124
+#: accounts/templates/account/email_change.html:35
+msgid "Your email address is still pending verification."
+msgstr ""
+
+#: accounts/templates/account/email.html:130
+#: accounts/templates/account/email_change.html:41
+msgid "Cancel Change"
+msgstr ""
+
+#: accounts/templates/account/email.html:138
+#: accounts/templates/account/email_change.html:49
+msgid "Change to"
+msgstr ""
+
+#: accounts/templates/account/email.html:144
+#: accounts/templates/account/email_change.html:55
+msgid "Change Email"
+msgstr ""
+
+#: accounts/templates/account/email/account_already_exists_message.txt:4
+#, python-format
+msgid ""
+"You are receiving this email because you or someone else tried to signup for "
+"an\n"
+"account using email address:\n"
+"\n"
+"%(email)s\n"
+"\n"
+"However, an account using that email address already exists.  In case you "
+"have\n"
+"forgotten about this, please use the password forgotten procedure to "
+"recover\n"
+"your account:\n"
+"\n"
+"%(password_reset_url)s"
+msgstr ""
+
+#: accounts/templates/account/email/account_already_exists_subject.txt:3
+msgid "Account Already Exists"
+msgstr ""
+
+#: accounts/templates/account/email/base_message.txt:2
+msgid ""
+"\n"
+"Bonjour "
+msgstr ""
+
+#: accounts/templates/account/email/base_message.txt:5
+#, python-format
+msgid "L’équipe de %(site_domain)s"
+msgstr ""
+
+#: accounts/templates/account/email/base_notification.txt:5
+msgid ""
+"You are receiving this mail because the following change was made to your "
+"account:"
+msgstr ""
+
+#: accounts/templates/account/email/base_notification.txt:10
+#, python-format
+msgid ""
+"If you do not recognize this change then please take proper security "
+"precautions immediately. The change to your account originates from:\n"
+"\n"
+"- IP address: %(ip)s\n"
+"- Browser: %(user_agent)s\n"
+"- Date: %(timestamp)s"
+msgstr ""
+
+#: accounts/templates/account/email/email_change_confirmation_message.txt:3
+#, python-format
+msgid ""
+"\n"
+"Vous avez demandé à changer votre adresse e-mail pour votre compte sur "
+"%(site_name)s.\n"
+msgstr ""
+
+#: accounts/templates/account/email/email_change_confirmation_message.txt:6
+msgid "Pour confirmer ce changement, cliquez sur le lien ci-dessous :"
+msgstr ""
+
+#: accounts/templates/account/email/email_change_confirmation_subject.txt:1
+msgid "Changement d'adresse Email"
+msgstr ""
+
+#: accounts/templates/account/email/email_changed_message.txt:4
+#, python-format
+msgid "Your email has been changed from %(from_email)s to %(to_email)s."
+msgstr ""
+
+#: accounts/templates/account/email/email_changed_subject.txt:3
+msgid "Email Changed"
+msgstr ""
+
+#: accounts/templates/account/email/email_confirm_message.txt:4
+msgid "Your email has been confirmed."
+msgstr ""
+
+#: accounts/templates/account/email/email_confirm_subject.txt:3
+msgid "Email Confirmation"
+msgstr ""
+
+#: accounts/templates/account/email/email_confirmation_message.txt:6
+#, python-format
+msgid ""
+"Merci de t’être inscrit sur %(site_name)s !\n"
+"Pour finaliser ton inscription et confirmer ton adresse e-mail, clique sur "
+"le lien ci-dessous :\n"
+msgstr ""
+
+#: accounts/templates/account/email/email_confirmation_subject.txt:3
+msgid "Please Confirm Your Email Address"
+msgstr ""
+
+#: accounts/templates/account/email/email_deleted_message.txt:4
+#, python-format
+msgid "Email address %(deleted_email)s has been removed from your account."
+msgstr ""
+
+#: accounts/templates/account/email/email_deleted_subject.txt:3
+msgid "Email Removed"
+msgstr ""
+
+#: accounts/templates/account/email/password_changed_message.txt:4
+msgid "Your password has been changed."
+msgstr ""
+
+#: accounts/templates/account/email/password_changed_subject.txt:3
+msgid "Password Changed"
+msgstr ""
+
+#: accounts/templates/account/email/password_reset_code_message.txt:5
+msgid ""
+"Your password reset code is listed below. Please enter it in your open "
+"browser window."
+msgstr ""
+
+#: accounts/templates/account/email/password_reset_code_message.txt:9
+#: accounts/templates/account/email/unknown_account_message.txt:6
+msgid "This mail can be safely ignored if you did not initiate this action."
+msgstr ""
+
+#: accounts/templates/account/email/password_reset_code_subject.txt:3
+msgid "Password Reset Code"
+msgstr ""
+
+#: accounts/templates/account/email/password_reset_key_message.txt:4
+msgid ""
+"You're receiving this email because you or someone else has requested a "
+"password reset for your user account.\n"
+"It can be safely ignored if you did not request a password reset. Click the "
+"link below to reset your password."
+msgstr ""
+
+#: accounts/templates/account/email/password_reset_key_message.txt:9
+#, python-format
+msgid "In case you forgot, your username is %(username)s."
+msgstr ""
+
+#: accounts/templates/account/email/password_reset_key_subject.txt:3
+msgid "Password Reset Email"
+msgstr ""
+
+#: accounts/templates/account/email/password_reset_message.txt:4
+msgid "Your password has been reset."
+msgstr ""
+
+#: accounts/templates/account/email/password_reset_subject.txt:3
+#: accounts/templates/account/password_reset.html:5
+#: accounts/templates/account/password_reset.html:11
+#: accounts/templates/account/password_reset_done.html:5
+#: accounts/templates/account/password_reset_done.html:13
+msgid "Password Reset"
+msgstr ""
+
+#: accounts/templates/account/email/password_set_message.txt:4
+msgid "Your password has been set."
+msgstr ""
+
+#: accounts/templates/account/email/password_set_subject.txt:3
+msgid "Password Set"
+msgstr ""
+
+#: accounts/templates/account/email/unknown_account_message.txt:4
+#, python-format
+msgid ""
+"You are receiving this email because you, or someone else, tried to access "
+"an account with email %(email)s. However, we do not have any record of such "
+"an account in our database."
+msgstr ""
+
+#: accounts/templates/account/email/unknown_account_message.txt:8
+msgid "If it was you, you can sign up for an account using the link below."
+msgstr ""
+
+#: accounts/templates/account/email/unknown_account_subject.txt:3
+msgid "Unknown Account"
+msgstr ""
+
+#: accounts/templates/account/email_change_form.html:13
+msgid "Nouvelle adresse e-mail"
+msgstr ""
+
+#: accounts/templates/account/email_confirm.html:5
+#: accounts/templates/account/email_confirm.html:13
+msgid "Confirm Email Address"
+msgstr ""
+
+#: accounts/templates/account/email_confirm.html:25
+#, python-format
+msgid ""
+"Please confirm that <a href=\"mailto:%(email)s\">%(email)s</a> is an email "
+"address for user %(user_display)s."
+msgstr ""
+
+#: accounts/templates/account/email_confirm.html:38
+#: accounts/templates/account/messages/email_confirmation_failed.txt:2
+#, python-format
+msgid ""
+"Unable to confirm %(email)s because it is already confirmed by a different "
+"account."
+msgstr ""
+
+#: accounts/templates/account/email_confirm.html:44
+#, python-format
+msgid ""
+"This email confirmation link expired or is invalid. Please <a href="
+"\"%(email_url)s\">issue a new email confirmation request</a>."
+msgstr ""
+
+#: accounts/templates/account/login.html:5
+#: accounts/templates/account/login.html:11
+#: accounts/templates/account/login.html:78
+msgid "Connexion"
+msgstr "Login"
+
+#: accounts/templates/account/login.html:12
+msgid "Bienvenue"
+msgstr "Welcome"
+
+#: accounts/templates/account/login.html:21
+#: accounts/templates/account/signup.html:39
+msgid "E-mail"
+msgstr "E-mail"
+
+#: accounts/templates/account/login.html:38
+#: accounts/templates/account/profile/profile_security.html:87
+#: accounts/templates/account/signup.html:54
+msgid "Mot de passe"
+msgstr "Password"
+
+#: accounts/templates/account/login.html:55
+msgid "Se souvenir de moi"
+msgstr "Remember me"
+
+#: accounts/templates/account/login.html:58
+#: accounts/templates/account/partials/password_settings.html:51
+#: accounts/templates/account/profile/profile_security.html:114
+msgid "Mot de passe oublié ?"
+msgstr "Forgot your password?"
+
+#: accounts/templates/account/login.html:86
+msgid "Pas encore de compte ?"
+msgstr "Don't have an account yet?"
+
+#: accounts/templates/account/login.html:87
+msgid "S'inscrire"
+msgstr "Sign up"
+
+#: accounts/templates/account/login.html:94
+msgid "Or sign in with:"
+msgstr ""
+
+#: accounts/templates/account/messages/cannot_delete_primary_email.txt:2
+#, python-format
+msgid "You cannot remove your primary email address (%(email)s)."
+msgstr ""
+
+#: accounts/templates/account/messages/email_confirmation_sent.txt:2
+#, python-format
+msgid "Confirmation email sent to %(email)s."
+msgstr ""
+
+#: accounts/templates/account/messages/email_confirmed.txt:2
+#, python-format
+msgid "You have confirmed %(email)s."
+msgstr ""
+
+#: accounts/templates/account/messages/email_deleted.txt:2
+#, python-format
+msgid "Removed email address %(email)s."
+msgstr ""
+
+#: accounts/templates/account/messages/logged_in.txt:4
+#, python-format
+msgid "Successfully signed in as %(name)s."
+msgstr ""
+
+#: accounts/templates/account/messages/logged_out.txt:2
+msgid "You have signed out."
+msgstr ""
+
+#: accounts/templates/account/messages/login_code_sent.txt:2
+#, python-format
+msgid "A sign-in code has been sent to %(recipient)s."
+msgstr ""
+
+#: accounts/templates/account/messages/password_changed.txt:2
+msgid "Password successfully changed."
+msgstr ""
+
+#: accounts/templates/account/messages/password_set.txt:2
+msgid "Password successfully set."
+msgstr ""
+
+#: accounts/templates/account/messages/phone_verified.txt:2
+#, python-format
+msgid "You have verified phone number %(phone)s."
+msgstr ""
+
+#: accounts/templates/account/messages/primary_email_set.txt:2
+msgid "Primary email address set."
+msgstr ""
+
+#: accounts/templates/account/messages/unverified_primary_email.txt:2
+msgid "Your primary email address must be verified."
+msgstr ""
+
+#: accounts/templates/account/partials/email_settings.html:7
+#: accounts/templates/account/profile/profile_security.html:31
+msgid "Adresse e-mail actuelle"
+msgstr "Current email address"
+
+#: accounts/templates/account/partials/email_settings.html:15
+#: accounts/templates/account/profile/profile_security.html:39
+msgid "Vérifiée"
+msgstr "Verified"
+
+#: accounts/templates/account/partials/email_settings.html:19
+#: accounts/templates/account/profile/profile_security.html:43
+msgid "Non vérifiée"
+msgstr "Unverified"
+
+#: accounts/templates/account/partials/email_settings.html:26
+#: accounts/templates/account/profile/profile_security.html:77
+msgid "Renvoyer la vérification"
+msgstr "Resend verification"
+
+#: accounts/templates/account/partials/email_settings.html:45
+#: accounts/templates/account/profile/profile_security.html:54
+msgid "Changer d’e-mail"
+msgstr "Change email"
+
+#: accounts/templates/account/partials/email_settings.html:49
+#: accounts/templates/account/profile/profile_security.html:58
+msgid "nouvelle adresse e-mail"
+msgstr "new email address"
+
+#: accounts/templates/account/partials/email_settings.html:55
+#: accounts/templates/account/partials/password_settings.html:55
+#: accounts/templates/account/profile/profile_security.html:65
+#: accounts/templates/account/profile/profile_security.html:118
+msgid "Mettre à jour"
+msgstr "Update"
+
+#: accounts/templates/account/partials/email_settings.html:57
+msgid "Un e-mail de confirmation peut être envoyé."
+msgstr "A confirmation email can be sent."
+
+#: accounts/templates/account/partials/password_settings.html:20
+#: accounts/templates/account/profile/profile_security.html:94
+msgid "Mot de passe actuel"
+msgstr "Current password"
+
+#: accounts/templates/account/partials/password_settings.html:29
+#: accounts/templates/account/profile/profile_security.html:100
+msgid "Nouveau mot de passe"
+msgstr "New password"
+
+#: accounts/templates/account/partials/password_settings.html:36
+#: accounts/templates/account/profile/profile_security.html:103
+msgid "8 caractères minimum, mélangez lettres/chiffres/symboles."
+msgstr "Minimum 8 characters, mix letters/numbers/symbols."
+
+#: accounts/templates/account/partials/password_settings.html:41
+#: accounts/templates/account/profile/profile_security.html:107
+msgid "Confirmer le nouveau mot de passe"
+msgstr "Confirm new password"
+
+#: accounts/templates/account/partials/profile_info.html:5
+msgid "Infos privées"
+msgstr "Private information"
+
+#: accounts/templates/account/partials/profile_info.html:11
+#: accounts/templates/account/profile/profil_add_child.html:21
+#: accounts/templates/account/profile/profile_edit.html:53
+msgid "Prénom"
+msgstr "First name"
+
+#: accounts/templates/account/partials/profile_info.html:22
+#: accounts/templates/account/profile/profil_add_child.html:32
+#: accounts/templates/account/profile/profile_edit.html:64
+msgid "Nom"
+msgstr "Last name"
+
+#: accounts/templates/account/partials/profile_info.html:34
+#: accounts/templates/account/password_reset.html:23
+#, fuzzy
+#| msgid "E-mail"
+msgid "Email"
+msgstr "Email"
+
+#: accounts/templates/account/partials/profile_info.html:41
+msgid "Ville"
+msgstr "City"
+
+#: accounts/templates/account/partials/profile_info.html:49
+#: accounts/templates/account/signup.html:21
+msgid "Rôle"
+msgstr "Role"
+
+#: accounts/templates/account/partials/profile_info.html:60
+#: accounts/templates/account/profile/profile_edit.html:120
+msgid "Langues"
+msgstr "Languages"
+
+#: accounts/templates/account/partials/profile_info.html:75
+#: accounts/templates/account/profile/profile_edit.html:149
+msgid "Bio"
+msgstr "Bio"
+
+#: accounts/templates/account/partials/profile_info.html:82
+msgid "Carte d'identité"
+msgstr "Identity card"
+
+#: accounts/templates/account/partials/profile_info.html:84
+msgid "Identité vérifiée"
+msgstr "Identity verified"
+
+#: accounts/templates/account/partials/profile_info.html:88
+msgid "Vérifier mon identité"
+msgstr "Verify my identity"
+
+#: accounts/templates/account/partials/profile_info.html:97
+msgid "Bonne vie et mœurs (extrait 596.2)"
+msgstr "Good conduct and morals (excerpt 596.2)"
+
+#: accounts/templates/account/partials/profile_info.html:101
+msgid "Document validé"
+msgstr "Document approved"
+
+#: accounts/templates/account/partials/profile_info.html:103
+msgid "En attente de vérification"
+msgstr "Pending verification"
+
+#: accounts/templates/account/partials/profile_info.html:106
+msgid "Aucun document enregistré"
+msgstr "No document uploaded"
+
+#: accounts/templates/account/partials/profile_info.html:115
+#: accounts/templates/account/profile/profile_edit.html:4
+#: accounts/templates/account/profile/profile_edit.html:22
+msgid "Modifier mon profil"
+msgstr "Edit my profile"
+
+#: accounts/templates/account/partials/profile_public.html:4
+#: accounts/templates/account/profile/profile.html:4
+#: accounts/templates/allauth/layouts/admin-side-nav.html:29
+msgid "Mon profil"
+msgstr "My profile"
+
+#: accounts/templates/account/partials/profile_public.html:12
+#: accounts/templates/account/profile/profile_edit.html:75
+#: accounts/templates/account/profile/profile_user.html:24
+msgid "Photo de profil"
+msgstr "Profile picture"
+
+#: accounts/templates/account/partials/profile_public.html:53
+msgid "Note utilisateur"
+msgstr "User rating"
+
+#: accounts/templates/account/partials/profile_public.html:113
+msgid "trajets effectués"
+msgstr "journeys made"
+
+#: accounts/templates/account/partials/profile_public.html:117
+msgid "Membre depuis le"
+msgstr "Member since"
+
+#: accounts/templates/account/partials/profile_public.html:120
+msgid "Dernière connexion"
+msgstr "Last connection"
+
+#: accounts/templates/account/password_change.html:19
+#: accounts/templates/account/password_change.html:57
+#: accounts/templates/account/password_change.html:60
+msgid "Change Password"
+msgstr ""
+
+#: accounts/templates/account/password_change.html:21
+#: accounts/templates/account/password_change.html:63
+msgid "Forgot Password?"
+msgstr ""
+
+#: accounts/templates/account/password_reset.html:13
+msgid ""
+"Veuillez saisir votre adresse e-mail pour recevoir un lien de "
+"réinitialisation."
+msgstr "Enter your email address to receive a reset link."
+
+#: accounts/templates/account/password_reset.html:50
+msgid "Envoyer le lien de réinitialisation"
+msgstr "Send Reset Link"
+
+#: accounts/templates/account/password_reset.html:59
+msgid "Vous vous souvenez de votre mot de passe ?"
+msgstr "Remembered your password?"
+
+#: accounts/templates/account/password_reset.html:60
+#: accounts/templates/mfa/authenticate.html:6
+#: accounts/templates/mfa/authenticate.html:24
+#: accounts/templates/openid/login.html:5
+#: accounts/templates/openid/login.html:9
+#: accounts/templates/openid/login.html:20
+#: accounts/templates/socialaccount/login.html:5
+#: accounts/templates/socialaccount/login_redirect.html:5
+msgid "Sign In"
+msgstr ""
+
+#: accounts/templates/account/password_reset_done.html:19
+msgid ""
+"We have sent you an email. If you have not received it please check your "
+"spam folder. Otherwise contact us if you do not receive it in a few minutes."
+msgstr ""
+
+#: accounts/templates/account/profile/profil_add_child.html:3
+#: accounts/templates/account/profile/profile_children.html:31
+msgid "Ajouter un enfant"
+msgstr "Add a child"
+
+#: accounts/templates/account/profile/profil_add_child.html:43
+msgid "Date de naissance"
+msgstr "Date of birth"
+
+#: accounts/templates/account/profile/profil_add_child.html:54
+msgid "Genre"
+msgstr "Gender"
+
+#: accounts/templates/account/profile/profil_add_child.html:66
+#: accounts/templates/account/profile/profile_children.html:18
+msgid "Siège enfant requis"
+msgstr "Child seat required"
+
+#: accounts/templates/account/profile/profil_add_child.html:78
+msgid "Retour au profil"
+msgstr "Back to profile"
+
+#: accounts/templates/account/profile/profil_add_child.html:81
+msgid "Ajouter l'enfant"
+msgstr "Add child"
+
+#: accounts/templates/account/profile/profil_add_child.html:89
+msgid "Enfants déjà enregistrés"
+msgstr "Children already registered"
+
+#: accounts/templates/account/profile/profile.html:24
+msgid "Chargement du profil public..."
+msgstr "Loading public profile..."
+
+#: accounts/templates/account/profile/profile.html:36
+msgid "Chargement des infos privées..."
+msgstr "Loading private information..."
+
+#: accounts/templates/account/profile/profile_children.html:3
+#: accounts/templates/account/profile/profile_children.html:8
+#: accounts/templates/allauth/layouts/admin-header.html:89
+#: accounts/templates/allauth/layouts/admin-side-nav.html:43
+msgid "Mes enfants"
+msgstr "My children"
+
+#: accounts/templates/account/profile/profile_children.html:16
+msgid "né(e) le"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_children.html:25
+msgid "Vous n'avez pas encore ajouté d'enfant."
+msgstr ""
+
+#: accounts/templates/account/profile/profile_edit.html:25
+msgid "Mettez à jour vos informations publiques et vos préférences."
+msgstr "Update your public information and preferences."
+
+#: accounts/templates/account/profile/profile_edit.html:48
+msgid "Identité"
+msgstr "Identity"
+
+#: accounts/templates/account/profile/profile_edit.html:78
+msgid "PNG, JPG, ou GIF."
+msgstr "PNG, JPG, or GIF."
+
+#: accounts/templates/account/profile/profile_edit.html:91
+msgid "Localisation"
+msgstr "Location"
+
+#: accounts/templates/account/profile/profile_edit.html:96
+msgid "Adresse (Code postal / Ville)"
+msgstr "Address (Postal code / City)"
+
+#: accounts/templates/account/profile/profile_edit.html:115
+msgid "Préférences"
+msgstr "Preferences"
+
+#: accounts/templates/account/profile/profile_edit.html:126
+msgid "Modes de transport"
+msgstr "Transportation methods"
+
+#: accounts/templates/account/profile/profile_edit.html:155
+msgid ""
+"Présentez-vous en quelques lignes (centres d’intérêt, dispo, expérience…)"
+msgstr ""
+"Introduce yourself in a few lines (interests, availability, experience...)"
+
+#: accounts/templates/account/profile/profile_edit.html:165
+msgid "Bonne vie et mœurs"
+msgstr "Good conduct and morals"
+
+#: accounts/templates/account/profile/profile_edit.html:170
+msgid "Extrait 596.2 — encadrement de mineurs"
+msgstr "Excerpt 596.2 — supervision of minors"
+
+#: accounts/templates/account/profile/profile_edit.html:181
+msgid "Voir le document"
+msgstr "View document"
+
+#: accounts/templates/account/profile/profile_edit.html:186
+msgid "Formats acceptés : PDF, JPG, PNG. Ce document reste privé."
+msgstr "Accepted formats: PDF, JPG, PNG. This document remains private."
+
+#: accounts/templates/account/profile/profile_edit.html:198
+#: accounts/templates/account/profile/profile_security.html:153
+msgid "Annuler"
+msgstr "Cancel"
+
+#: accounts/templates/account/profile/profile_edit.html:202
+msgid "Enregistrer"
+msgstr "Save"
+
+#: accounts/templates/account/profile/profile_security.html:4
+#: accounts/templates/account/profile/profile_security.html:11
+#: accounts/templates/allauth/layouts/admin-header.html:146
+msgid "Sécurité & connexion"
+msgstr "Security & login"
+
+#: accounts/templates/account/profile/profile_security.html:27
+msgid "Adresse e-mail"
+msgstr "Email address"
+
+#: accounts/templates/account/profile/profile_security.html:128
+msgid "Zone sensible"
+msgstr "Sensitive area"
+
+#: accounts/templates/account/profile/profile_security.html:129
+msgid ""
+"Désactivez votre compte. Un administrateur devra le réactiver pour reprendre "
+"l'accès."
+msgstr ""
+"Deactivate your account. An administrator will need to reactivate it to "
+"regain access."
+
+#: accounts/templates/account/profile/profile_security.html:134
+msgid "Supprimer mon compte"
+msgstr "Delete my account"
+
+#: accounts/templates/account/profile/profile_security.html:145
+msgid "Désactiver le compte"
+msgstr "Deactivate account"
+
+#: accounts/templates/account/profile/profile_security.html:146
+msgid ""
+"Vous ne pourrez plus vous connecter sans réactivation par un administrateur."
+msgstr ""
+"You will no longer be able to log in without reactivation by an "
+"administrator."
+
+#: accounts/templates/account/profile/profile_security.html:157
+msgid "Confirmer"
+msgstr "Confirm"
+
+#: accounts/templates/account/profile/profile_user.html:5
+msgid "Profile"
+msgstr ""
+
+#: accounts/templates/account/reauthenticate.html:6
+msgid "Enter your password:"
+msgstr ""
+
+#: accounts/templates/account/signup.html:5
+#: accounts/templates/account/signup.html:12
+msgid "Inscription"
+msgstr "Sign up"
+
+#: accounts/templates/account/signup.html:13
+msgid "Créez un compte pour commencer."
+msgstr "Create an account to get started."
+
+#: accounts/templates/account/signup.html:24
+msgid "-- Sélectionnez un rôle --"
+msgstr "-- Select a role --"
+
+#: accounts/templates/account/signup.html:25
+msgid "Parent - Rechercher et/ou proposer un trajet"
+msgstr "Parent - Search and/or propose a journeys"
+
+#: accounts/templates/account/signup.html:26
+msgid "Yaya - Proposer un trajet"
+msgstr "Yaya - Offer a journeys"
+
+#: accounts/templates/account/signup.html:70
+msgid "Confirmer mot de passe"
+msgstr "Confirm password"
+
+#: accounts/templates/account/signup.html:86
+msgid "Créer mon compte"
+msgstr "Create my account"
+
+#: accounts/templates/account/signup.html:95
+msgid "Vous avez déja un compte ?"
+msgstr "Already have an account?"
+
+#: accounts/templates/account/signup.html:96
+msgid "Se connecter"
+msgstr "Log in"
+
+#: accounts/templates/account/signup.html:106
+msgid "Sign up using a passkey"
+msgstr ""
+
+#: accounts/templates/account/signup.html:115
+msgid "Or sign up with:"
+msgstr ""
+
+#: accounts/templates/account/snippets/already_logged_in.html:7
+msgid "Note"
+msgstr ""
+
+#: accounts/templates/account/snippets/already_logged_in.html:7
+#, python-format
+msgid "You are already logged in as %(user_display)s."
+msgstr ""
+
+#: accounts/templates/account/snippets/warn_no_email.html:3
+msgid "Warning:"
+msgstr ""
+
+#: accounts/templates/account/snippets/warn_no_email.html:3
+msgid ""
+"You currently do not have any email address set up. You should really add an "
+"email address so you can receive notifications, reset your password, etc."
+msgstr ""
+
+#: accounts/templates/account/verification_sent.html:5
+#: accounts/templates/account/verification_sent.html:12
+#: accounts/templates/account/verified_email_required.html:5
+#: accounts/templates/account/verified_email_required.html:11
+msgid "Verify Your Email Address"
+msgstr ""
+
+#: accounts/templates/account/verification_sent.html:15
+msgid ""
+"We have sent an email to you for verification. Follow the link provided to "
+"finalize the signup process. If you do not see the verification email in "
+"your main inbox, check your spam folder. Please contact us if you do not "
+"receive the verification email within a few minutes."
+msgstr ""
+
+#: accounts/templates/account/verified_email_required.html:20
+msgid ""
+"This part of the site requires us to verify that\n"
+"you are who you claim to be. For this purpose, we require that you\n"
+"verify ownership of your email address. "
+msgstr ""
+
+#: accounts/templates/account/verified_email_required.html:25
+msgid ""
+"We have sent an email to you for\n"
+"verification. Please click on the link inside that email. If you do not see "
+"the verification email in your main inbox, check your spam folder. "
+"Otherwise\n"
+"contact us if you do not receive it within a few minutes."
+msgstr ""
+
+#: accounts/templates/account/verified_email_required.html:30
+#, python-format
+msgid ""
+"<strong>Note:</strong> you can still <a href=\"%(email_url)s\">change your "
+"email address</a>."
+msgstr ""
+
+#: accounts/templates/account/welcome.html:5
+#: accounts/templates/account/welcome.html:13
+msgid "Bienvenue sur Bana"
+msgstr ""
+
+#: accounts/templates/account/welcome.html:11
+msgid "Email confirmé 🎉"
+msgstr ""
+
+#: accounts/templates/account/welcome.html:17
+msgid ""
+"Merci pour ton inscription. Tu peux maintenant accéder à toutes les "
+"fonctionnalités de Bana."
+msgstr ""
+
+#: accounts/templates/account/welcome.html:22
+#, python-format
+msgid ""
+"\n"
+"        Rends-toi sur <a href=\"%(profile_url)s\" class=\"text-brand font-"
+"semibold underline\">\"mon profil\"</a> afin de finaliser ton profil et "
+"accéder aux fonctionnalités de trajet.\n"
+"      "
+msgstr ""
+
+#: accounts/templates/account/welcome.html:29
+msgid "Aller à l'accueil"
+msgstr ""
+
+#: accounts/templates/allauth/layouts/admin-footer-mobile.html:23
+#: accounts/templates/allauth/layouts/admin-header.html:98
+#: accounts/templates/allauth/layouts/admin-side-nav.html:60
+msgid "Rechercher"
+msgstr "Search"
+
+#: accounts/templates/allauth/layouts/admin-footer-mobile.html:39
+#: accounts/templates/allauth/layouts/admin-header.html:107
+#: accounts/templates/allauth/layouts/admin-side-nav.html:68
+msgid "Proposer"
+msgstr "Propose"
+
+#: accounts/templates/allauth/layouts/admin-footer-mobile.html:56
+#: accounts/templates/allauth/layouts/admin-header.html:128
+msgid "Réservations"
+msgstr "Reservations"
+
+#: accounts/templates/allauth/layouts/admin-footer-mobile.html:73
+#: accounts/templates/allauth/layouts/admin-header.html:80
+#, fuzzy
+msgid "Profil"
+msgstr "Profile"
+
+#: accounts/templates/allauth/layouts/admin-header.html:50
+msgid "Menu"
+msgstr "Menu"
+
+#: accounts/templates/allauth/layouts/admin-header.html:70
+msgid "Accueil"
+msgstr "Home"
+
+#: accounts/templates/allauth/layouts/admin-header.html:137
+#: accounts/templates/allauth/layouts/admin-side-nav.html:99
+msgid "Abonnement"
+msgstr "Subscription"
+
+#: accounts/templates/allauth/layouts/admin-side-nav.html:35
+msgid "Mes informations"
+msgstr "My information"
+
+#: accounts/templates/allauth/layouts/admin-side-nav.html:53
+msgid "Mes trajets"
+msgstr "My journeys"
+
+#: accounts/templates/allauth/layouts/admin-side-nav.html:85
+msgid "Mes réservations"
+msgstr "My reservations"
+
+#: accounts/templates/allauth/layouts/admin-side-nav.html:93
+msgid "Paramètres"
+msgstr "Settings"
+
+#: accounts/templates/allauth/layouts/admin-side-nav.html:106
+msgid "Sécurité et connexion"
+msgstr "Security and login"
+
+#: accounts/templates/mfa/authenticate.html:10
+#: accounts/templates/mfa/index.html:5 accounts/templates/mfa/index.html:9
+msgid "Two-Factor Authentication"
+msgstr ""
+
+#: accounts/templates/mfa/authenticate.html:13
+msgid ""
+"Your account is protected by two-factor authentication. Please enter an "
+"authenticator code:"
+msgstr ""
+
+#: accounts/templates/mfa/authenticate.html:41
+#: accounts/templates/mfa/webauthn/reauthenticate.html:15
+msgid "Use a security key"
+msgstr ""
+
+#: accounts/templates/mfa/email/recovery_codes_generated_message.txt:4
+msgid ""
+"A new set of Two-Factor Authentication recovery codes has been generated."
+msgstr ""
+
+#: accounts/templates/mfa/email/recovery_codes_generated_subject.txt:3
+msgid "New Recovery Codes Generated"
+msgstr ""
+
+#: accounts/templates/mfa/email/totp_activated_message.txt:4
+#: accounts/templates/mfa/messages/totp_activated.txt:2
+msgid "Authenticator app activated."
+msgstr ""
+
+#: accounts/templates/mfa/email/totp_activated_subject.txt:3
+msgid "Authenticator App Activated"
+msgstr ""
+
+#: accounts/templates/mfa/email/totp_deactivated_message.txt:4
+#: accounts/templates/mfa/messages/totp_deactivated.txt:2
+msgid "Authenticator app deactivated."
+msgstr ""
+
+#: accounts/templates/mfa/email/totp_deactivated_subject.txt:3
+msgid "Authenticator App Deactivated"
+msgstr ""
+
+#: accounts/templates/mfa/email/webauthn_added_message.txt:4
+msgid "A new security key has been added."
+msgstr ""
+
+#: accounts/templates/mfa/email/webauthn_added_subject.txt:3
+msgid "Security Key Added"
+msgstr ""
+
+#: accounts/templates/mfa/email/webauthn_removed_message.txt:4
+msgid "A security key has been removed."
+msgstr ""
+
+#: accounts/templates/mfa/email/webauthn_removed_subject.txt:3
+msgid "Security Key Removed"
+msgstr ""
+
+#: accounts/templates/mfa/index.html:14 accounts/templates/mfa/totp/base.html:4
+msgid "Authenticator App"
+msgstr ""
+
+#: accounts/templates/mfa/index.html:19
+msgid "Authentication using an authenticator app is active."
+msgstr ""
+
+#: accounts/templates/mfa/index.html:23
+msgid "An authenticator app is not active."
+msgstr ""
+
+#: accounts/templates/mfa/index.html:32
+#: accounts/templates/mfa/totp/deactivate_form.html:24
+msgid "Deactivate"
+msgstr ""
+
+#: accounts/templates/mfa/index.html:36
+#: accounts/templates/mfa/totp/activate_form.html:32
+msgid "Activate"
+msgstr ""
+
+#: accounts/templates/mfa/index.html:45
+#: accounts/templates/mfa/webauthn/authenticator_list.html:8
+#: accounts/templates/mfa/webauthn/base.html:4
+msgid "Security Keys"
+msgstr ""
+
+#: accounts/templates/mfa/index.html:50
+#, python-format
+msgid "You have added %(count)s security key."
+msgid_plural "You have added %(count)s security keys."
+msgstr[0] ""
+msgstr[1] ""
+
+#: accounts/templates/mfa/index.html:54
+#: accounts/templates/mfa/webauthn/authenticator_list.html:12
+msgid "No security keys have been added."
+msgstr ""
+
+#: accounts/templates/mfa/index.html:62
+msgid "Manage"
+msgstr ""
+
+#: accounts/templates/mfa/index.html:67
+#: accounts/templates/mfa/webauthn/add_form.html:18
+#: accounts/templates/mfa/webauthn/authenticator_list.html:70
+msgid "Add"
+msgstr ""
+
+#: accounts/templates/mfa/index.html:77
+#: accounts/templates/mfa/recovery_codes/base.html:4
+#: accounts/templates/mfa/recovery_codes/generate.html:6
+#: accounts/templates/mfa/recovery_codes/index.html:6
+msgid "Recovery Codes"
+msgstr ""
+
+#: accounts/templates/mfa/index.html:82
+#: accounts/templates/mfa/recovery_codes/index.html:9
+#, python-format
+msgid ""
+"There is %(unused_count)s out of %(total_count)s recovery codes available."
+msgid_plural ""
+"There are %(unused_count)s out of %(total_count)s recovery codes available."
+msgstr[0] ""
+msgstr[1] ""
+
+#: accounts/templates/mfa/index.html:86
+msgid "No recovery codes set up."
+msgstr ""
+
+#: accounts/templates/mfa/index.html:96
+msgid "View"
+msgstr ""
+
+#: accounts/templates/mfa/index.html:102
+msgid "Download"
+msgstr ""
+
+#: accounts/templates/mfa/index.html:110
+#: accounts/templates/mfa/recovery_codes/generate.html:29
+msgid "Generate"
+msgstr ""
+
+#: accounts/templates/mfa/messages/recovery_codes_generated.txt:2
+msgid "A new set of recovery codes has been generated."
+msgstr ""
+
+#: accounts/templates/mfa/messages/webauthn_added.txt:2
+msgid "Security key added."
+msgstr ""
+
+#: accounts/templates/mfa/messages/webauthn_removed.txt:2
+msgid "Security key removed."
+msgstr ""
+
+#: accounts/templates/mfa/reauthenticate.html:6
+msgid "Enter an authenticator code:"
+msgstr ""
+
+#: accounts/templates/mfa/recovery_codes/generate.html:9
+msgid "You are about to generate a new set of recovery codes for your account."
+msgstr ""
+
+#: accounts/templates/mfa/recovery_codes/generate.html:11
+msgid "This action will invalidate your existing codes."
+msgstr ""
+
+#: accounts/templates/mfa/recovery_codes/generate.html:13
+msgid "Are you sure?"
+msgstr ""
+
+#: accounts/templates/mfa/recovery_codes/index.html:13
+msgid "Unused codes"
+msgstr ""
+
+#: accounts/templates/mfa/recovery_codes/index.html:25
+msgid "Download codes"
+msgstr ""
+
+#: accounts/templates/mfa/recovery_codes/index.html:30
+msgid "Generate new codes"
+msgstr ""
+
+#: accounts/templates/mfa/totp/activate_form.html:4
+#: accounts/templates/mfa/totp/activate_form.html:8
+msgid "Activate Authenticator App"
+msgstr ""
+
+#: accounts/templates/mfa/totp/activate_form.html:11
+msgid ""
+"To protect your account with two-factor authentication, scan the QR code "
+"below with your authenticator app. Then, input the verification code "
+"generated by the app below."
+msgstr ""
+
+#: accounts/templates/mfa/totp/activate_form.html:21
+msgid "Authenticator secret"
+msgstr ""
+
+#: accounts/templates/mfa/totp/activate_form.html:24
+msgid ""
+"You can store this secret and use it to reinstall your authenticator app at "
+"a later time."
+msgstr ""
+
+#: accounts/templates/mfa/totp/deactivate_form.html:5
+#: accounts/templates/mfa/totp/deactivate_form.html:9
+msgid "Deactivate Authenticator App"
+msgstr ""
+
+#: accounts/templates/mfa/totp/deactivate_form.html:12
+msgid ""
+"You are about to deactivate authenticator app based authentication. Are you "
+"sure?"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/add_form.html:7
+msgid "Add Security Key"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/authenticator_confirm_delete.html:6
+msgid "Remove Security Key"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/authenticator_confirm_delete.html:9
+msgid "Are you sure you want to remove this security key?"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/authenticator_list.html:18
+msgid "Key"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/authenticator_list.html:21
+msgid "Usage"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/authenticator_list.html:33
+msgid "Passkey"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/authenticator_list.html:37
+msgid "Security key"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/authenticator_list.html:40
+msgid "This key does not indicate whether it is a passkey."
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/authenticator_list.html:41
+msgid "Unspecified"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/authenticator_list.html:46
+#, python-format
+msgid "Added on %(created_at)s"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/authenticator_list.html:48
+#, python-format
+msgid "Last used %(last_used)s"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/authenticator_list.html:56
+msgid "Edit"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/edit_form.html:7
+msgid "Edit Security Key"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/edit_form.html:18
+msgid "Save"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/signup_form.html:7
+msgid "Create Passkey"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/signup_form.html:10
+msgid ""
+"You are about to create a passkey for your account. As you can add "
+"additional keys later on, you can use a descriptive name to tell the keys "
+"apart."
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/signup_form.html:21
+msgid "Create"
+msgstr ""
+
+#: accounts/templates/mfa/webauthn/snippets/scripts.html:2
+msgid "This functionality requires JavaScript."
+msgstr ""
+
+#: accounts/templates/socialaccount/authentication_error.html:5
+#: accounts/templates/socialaccount/authentication_error.html:9
+msgid "Third-Party Login Failure"
+msgstr ""
+
+#: accounts/templates/socialaccount/authentication_error.html:12
+msgid ""
+"An error occurred while attempting to login via your third-party account."
+msgstr ""
+
+#: accounts/templates/socialaccount/connections.html:5
+#: accounts/templates/socialaccount/connections.html:15
+#: accounts/templates/socialaccount/connections.html:16
+msgid "Account Connections"
+msgstr ""
+
+#: accounts/templates/socialaccount/connections.html:18
+msgid "Please enter your credentials to access your account."
+msgstr ""
+
+#: accounts/templates/socialaccount/connections.html:27
+msgid ""
+"You can sign in to your account using any of the following third-party "
+"accounts:"
+msgstr ""
+
+#: accounts/templates/socialaccount/connections.html:60
+msgid "You currently have no third-party accounts connected to this account."
+msgstr ""
+
+#: accounts/templates/socialaccount/connections.html:64
+msgid "Add a Third-Party Account"
+msgstr ""
+
+#: accounts/templates/socialaccount/email/account_connected_message.txt:4
+#, python-format
+msgid ""
+"A third-party account from %(provider)s has been connected to your account."
+msgstr ""
+
+#: accounts/templates/socialaccount/email/account_connected_subject.txt:3
+msgid "Third-Party Account Connected"
+msgstr ""
+
+#: accounts/templates/socialaccount/email/account_disconnected_message.txt:4
+#, python-format
+msgid ""
+"A third-party account from %(provider)s has been disconnected from your "
+"account."
+msgstr ""
+
+#: accounts/templates/socialaccount/email/account_disconnected_subject.txt:3
+msgid "Third-Party Account Disconnected"
+msgstr ""
+
+#: accounts/templates/socialaccount/login.html:12
+msgid "Social Account"
+msgstr ""
+
+#: accounts/templates/socialaccount/login.html:20
+#, python-format
+msgid "Connect %(provider)s"
+msgstr ""
+
+#: accounts/templates/socialaccount/login.html:23
+#, python-format
+msgid "You are about to connect a new third-party account from %(provider)s."
+msgstr ""
+
+#: accounts/templates/socialaccount/login.html:27
+#, python-format
+msgid "Sign In Via %(provider)s"
+msgstr ""
+
+#: accounts/templates/socialaccount/login.html:30
+#, python-format
+msgid "You are about to sign in using a third-party account from %(provider)s."
+msgstr ""
+
+#: accounts/templates/socialaccount/login.html:37
+#: accounts/templates/socialaccount/login_redirect.html:10
+msgid "Continue"
+msgstr ""
+
+#: accounts/templates/socialaccount/login_cancelled.html:5
+#: accounts/templates/socialaccount/login_cancelled.html:9
+msgid "Login Cancelled"
+msgstr ""
+
+#: accounts/templates/socialaccount/login_cancelled.html:13
+#, python-format
+msgid ""
+"You decided to cancel logging in to our site using one of your existing "
+"accounts. If this was a mistake, please proceed to <a href=\"%(login_url)s"
+"\">sign in</a>."
+msgstr ""
+
+#: accounts/templates/socialaccount/messages/account_connected.txt:2
+msgid "The third-party account has been connected."
+msgstr ""
+
+#: accounts/templates/socialaccount/messages/account_connected_other.txt:2
+msgid "The third-party account is already connected to a different account."
+msgstr ""
+
+#: accounts/templates/socialaccount/messages/account_disconnected.txt:2
+msgid "The third-party account has been disconnected."
+msgstr ""
+
+#: accounts/templates/socialaccount/signup.html:5
+#: accounts/templates/socialaccount/signup.html:13
+msgid "Signup"
+msgstr ""
+
+#: accounts/templates/socialaccount/signup.html:16
+#, python-format
+msgid ""
+"You are about to use your %(provider_name)s account to login to\n"
+"%(site_name)s. As a final step, please complete the following form:"
+msgstr ""
+
+#: accounts/templates/socialaccount/signup.html:33
+msgid "Sign Up"
+msgstr ""
+
+#: accounts/templates/socialaccount/snippets/provider_list.html:10
+msgid "Google"
+msgstr ""
+
+#: accounts/templates/socialaccount/snippets/provider_list.html:16
+msgid "Sign in with Facebook"
+msgstr ""
+
+#: accounts/templates/usersessions/messages/sessions_logged_out.txt:2
+msgid "Signed out of all other sessions."
+msgstr ""
+
+#: accounts/templates/usersessions/usersession_list.html:6
+#: accounts/templates/usersessions/usersession_list.html:10
+msgid "Sessions"
+msgstr ""
+
+#: accounts/templates/usersessions/usersession_list.html:23
+msgid "Started At"
+msgstr ""
+
+#: accounts/templates/usersessions/usersession_list.html:24
+msgid "IP Address"
+msgstr ""
+
+#: accounts/templates/usersessions/usersession_list.html:25
+msgid "Browser"
+msgstr ""
+
+#: accounts/templates/usersessions/usersession_list.html:27
+msgid "Last seen at"
+msgstr ""
+
+#: accounts/templates/usersessions/usersession_list.html:47
+msgid "Current"
+msgstr ""
+
+#: accounts/templates/usersessions/usersession_list.html:60
+msgid "Sign Out Other Sessions"
+msgstr ""
+
+#: accounts/templates/usersessions/usersession_list.html:64
+msgid "Sign Out"
+msgstr ""
+
+#: accounts/views.py:204
+msgid "Veuillez saisir une adresse email valide."
+msgstr ""
+
+#: accounts/views.py:208
+msgid "Cette adresse email est déjà votre adresse actuelle."
+msgstr ""
+
+#: accounts/views.py:213
+msgid "Cette adresse email est déjà utilisée."
+msgstr ""
+
+#: accounts/views.py:233
+msgid "Un email de confirmation a été envoyé à votre nouvelle adresse."
+msgstr ""
+
+#: accounts/views.py:235
+msgid "Erreur lors de l'envoi de l'email de confirmation."
+msgstr ""
+
+#: accounts/views.py:246
+msgid "Ce lien n'est pas valide pour cet utilisateur."
+msgstr ""
+
+#: accounts/views.py:255
+msgid "Ce lien de confirmation n'est plus valide."
+msgstr ""
+
+#~ msgid "Nouveau ici ?"
+#~ msgstr "New here?"
+
+#, fuzzy
+#~ msgid "Créer un compte"
+#~ msgstr "Create an account"

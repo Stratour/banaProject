@@ -1,0 +1,143 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-25 16:43+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: trajects/forms.py:15 trajects/forms.py:245
+msgid "Entrez le point de départ (Adresse, ville, code postal)"
+msgstr "Enter the starting point (Address, city, postal code)"
+
+#: trajects/forms.py:21
+msgid "Entrez le point d’arrivée (Adresse, ville, code postal)"
+msgstr "Enter the destination (Address, city, postal code)"
+
+#: trajects/forms.py:53 trajects/forms.py:187 trajects/forms.py:257
+msgid "Veuillez sélectionner au moins un moyen de transport."
+msgstr "Please select at least one mode of transport."
+
+#: trajects/forms.py:113 trajects/forms.py:316
+msgid "Lundi"
+msgstr "Monday"
+
+#: trajects/forms.py:127 trajects/forms.py:229 trajects/forms.py:333
+msgid "La date de début ne peut pas être antérieure à la date d'aujourd'hui."
+msgstr "The start date cannot be earlier than today."
+
+#: trajects/forms.py:162 trajects/forms.py:380
+msgid "Veuillez sélectionner au moins un jour de la semaine."
+msgstr "Please select at least one day of the week."
+
+#: trajects/forms.py:191
+msgid "-- Sélectionnez le nombre de places --"
+msgstr "-- Select the number of seats --"
+
+#: trajects/forms.py:265
+msgid "Vous devez sélectionner au moins un enfant."
+msgstr "You must select at least one child."
+
+#: trajects/forms.py:281
+msgid "Veuillez renseigner l'heure de départ."
+msgstr "Please enter the departure time."
+
+#: trajects/forms.py:289
+msgid "Veuillez renseigner l'heure d’arrivée."
+msgstr "Please enter the arrival time."
+
+#: trajects/forms.py:294
+msgid "Une fois"
+msgstr "Once"
+
+#: trajects/forms.py:295
+msgid "Toutes les semaines"
+msgstr "Every week"
+
+#: trajects/forms.py:296 trajects/models.py:79 trajects/models.py:127
+msgid "Une semaine sur deux"
+msgstr "Every other week"
+
+#: trajects/forms.py:390
+msgid "Veuillez choisir une date de début."
+msgstr "Please choose a start date."
+
+#: trajects/forms.py:393
+msgid "Veuillez choisir une date de fin."
+msgstr "Please choose an end date."
+
+#: trajects/models.py:77 trajects/models.py:125
+msgid "Une semaine seulement"
+msgstr "One week only"
+
+#: trajects/models.py:78 trajects/models.py:126
+msgid "Chaque semaine"
+msgstr "Every week"
+
+#: trajects/models.py:144
+msgid "En attente"
+msgstr "Pending"
+
+#: trajects/models.py:145
+msgid "Confirmée"
+msgstr "Confirmed"
+
+#: trajects/models.py:146
+msgid "Annulée"
+msgstr "Cancelled"
+
+#: trajects/templates/trajects/searched_traject.html:4
+msgid "Créer une demande de trajet"
+msgstr "Create a ride request"
+
+#: trajects/templates/trajects/searched_traject.html:10
+msgid "Rechercher un/des trajet(s)"
+msgstr "Search for ride(s)"
+
+#: trajects/templates/trajects/searched_traject.html:33
+msgid "Départ"
+msgstr "Departure"
+
+#: trajects/templates/trajects/searched_traject.html:47
+msgid "Arrivée"
+msgstr "Arrival"
+
+#: trajects/templates/trajects/searched_traject.html:69
+msgid "Jours de la semaine"
+msgstr "Days of the week"
+
+#: trajects/templates/trajects/searched_traject.html:87
+msgid "Récurrence"
+msgstr "Recurrence"
+
+#: trajects/templates/trajects/searched_traject.html:93
+msgid "Date de début"
+msgstr "Start date"
+
+#: trajects/templates/trajects/searched_traject.html:97
+msgid "Date de fin"
+msgstr "End date"
+
+#: trajects/templates/trajects/searched_traject.html:102
+msgid "Moyen de transport"
+msgstr "Mode of transport"
+
+#: trajects/templates/trajects/searched_traject.html:115
+msgid "Enfants à accompagner"
+msgstr "Children to accompany"
+
+#: trajects/templates/trajects/searched_traject.html:130
+msgid "Enregistrer la demande de trajet"
+msgstr "Save ride request"

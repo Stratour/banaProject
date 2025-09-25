@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from decouple import config
 from pathlib import Path
 import os
+from django.utils.translation import gettext_lazy as _  #Translate
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -75,6 +76,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -216,6 +218,11 @@ USE_I18N = True
 TIME_ZONE = 'UTC'
 USE_TZ = True
 
+LANGUAGES = [
+    ('fr', 'Français'),
+    ('en', 'English'),
+    ('nl', 'Nederlands'),
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
@@ -284,6 +291,7 @@ ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3  # (par défaut, 3 jours)
 
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 LOGIN_URL = '/accounts/login/' 
+
 
 # 🔒 Empêche que des bots puissent détecter les emails existants
 ACCOUNT_PREVENT_ENUMERATION = False  # sécurité activée

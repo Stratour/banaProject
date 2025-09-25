@@ -1,5 +1,6 @@
 {% extends "allauth/layouts/base.html" %}
-{% load static %}
+{% load static i18n %}
+{% block head_title %}{% trans "Ajouter un enfant" %} - Bana{% endblock %}
 
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
@@ -17,7 +18,7 @@
         <!-- Prénom -->
         <div>
           <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_name.id_for_label }}">
-            Prénom
+            {% trans "Prénom" %}
           </label>
           {{ form.chld_name }}
           {% if form.chld_name.errors %}
@@ -28,7 +29,7 @@
         <!-- Nom -->
         <div>
           <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_surname.id_for_label }}">
-            Nom
+            {% trans "Nom" %}
           </label>
           {{ form.chld_surname }}
           {% if form.chld_surname.errors %}
@@ -39,7 +40,7 @@
         <!-- Date de naissance -->
         <div>
           <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_birthdate.id_for_label }}">
-            Date de naissance
+            {% trans "Date de naissance" %}
           </label>
           {{ form.chld_birthdate }}
           {% if form.chld_birthdate.errors %}
@@ -50,7 +51,7 @@
         <!-- Genre (select) -->
         <div>
           <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_gender.id_for_label }}">
-            Genre
+            {% trans "Genre" %}
           </label>
           {{ form.chld_gender }}
           {% if form.chld_gender.errors %}
@@ -62,7 +63,7 @@
         <div>
           <label class="inline-flex items-center space-x-2">
             {{ form.chld_seat }}
-            <span class="text-sm font-medium text-brand uppercase">Siège enfant requis</span>
+            <span class="text-sm font-medium text-brand uppercase">{% trans "Siège enfant requis" %}</span>
           </label>
           {% if form.chld_seat.errors %}
             <p class="text-red-500 text-sm mt-1">{{ form.chld_seat.errors }}</p>
@@ -74,10 +75,10 @@
     <!-- Boutons -->
     <div class="flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
       <a href="{% url 'accounts:profile' %}" class="px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-full hover:bg-gray-300 transition">
-        ← Retour au profil
+        ← {% trans "Retour au profil" %}
       </a>
       <button type="submit" class="px-6 py-3 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition">
-        Ajouter l'enfant
+        {% trans "Ajouter l'enfant" %}
       </button>
     </div>
   </form>
@@ -85,13 +86,13 @@
   <!-- Liste des enfants déjà enregistrés -->
   {% if children %}
   <div class="pt-12 border-t">
-    <h2 class="text-xl font-semibold text-brand mb-6">Enfants déjà enregistrés</h2>
+    <h2 class="text-xl font-semibold text-brand mb-6">{% trans "Enfants déjà enregistrés" %}</h2>
     <ul class="space-y-4">
       {% for child in children %}
         <li class="p-4 border rounded-lg shadow-sm bg-gray-50">
           <p class="text-sm">
             <strong>{{ child.chld_surname }} {{ child.chld_name }}</strong>
-            — {{ child.chld_gender }}
+            — {{ child.get_chld_gender_display }}
           </p>
         </li>
       {% endfor %}

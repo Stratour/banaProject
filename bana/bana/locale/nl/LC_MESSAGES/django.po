@@ -1,0 +1,296 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-09-25 11:08+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+# ===============================#
+#           home.html           #
+# ===============================#
+#: bana/templates/home.html:3
+msgid "Accueil - BanaMobi"
+msgstr "Home - BanaMobi"
+
+#: bana/templates/home.html:14
+msgid "Trouvez de l'aide pour les trajets de votre enfant"
+msgstr "Vind hulp voor de reizen van uw kind"
+
+#: bana/templates/home.html:17
+msgid ""
+"Service de mobilité partagée pour les trajets <br>maison-école-activités, "
+"via tous les moyens de transport"
+msgstr ""
+"Gedeelde mobiliteitsdienst voor <br>huis-school-activiteiten reizen, via "
+"alle vervoersmiddelen"
+
+#: bana/templates/home.html:55 bana/templates/home.html:129
+msgid "Rechercher"
+msgstr "Zoeken"
+
+#: bana/templates/home.html:59 bana/templates/home.html:132
+msgid "Proposer"
+msgstr "Voorstellen"
+
+#: bana/templates/home.html:113
+msgid "Déjà présent dans plus de 110 villes en Belgique !"
+msgstr "Al aanwezig in meer dan 110 steden in België!"
+
+#: bana/templates/home.html:116
+msgid "Notre accompagnement est disponible pour tous les moyens de transport"
+msgstr "Onze begeleiding is beschikbaar voor alle vervoersmiddelen"
+
+#: bana/templates/home.html:156
+msgid ""
+"Selon une étude menée par la Ligue des Familles,<br> <span class=\"text-"
+"brand-50\">8 parents sur 10 effectuent des trajets en chaîne chaque jour*</"
+"span>"
+msgstr ""
+"Volgens een studie van de Ligue des Familles,<br> <span class=\"text-"
+"brand-50\">8 van de 10 ouders maken dagelijks achtereenvolgende reizen*</"
+"span>"
+
+#: bana/templates/home.html:161
+msgid "crèche, école, travail, activités des enfants…"
+msgstr "crèche, school, werk, kinderactiviteiten…"
+
+#: bana/templates/home.html:166
+msgid ""
+"Concrètement, cela signifie parfois devoir réduire son temps de travail ou "
+"renoncer à certaines activités.<br> Aujourd’hui, Bana facilite la vie des "
+"familles, sans compromis !<br> Nous aidons les parents à s'épanouir et les "
+"enfants à grandir."
+msgstr ""
+"In de praktijk betekent dit soms dat men minder moet werken of bepaalde "
+"activiteiten moet opgeven.<br> Vandaag maakt Bana het gezinsleven "
+"makkelijker, zonder compromissen!<br> We helpen ouders te bloeien en "
+"kinderen te groeien."
+
+#: bana/templates/home.html:176
+msgid ""
+"\"Au-delà d’un enfant, cela devient très compliqué logistiquement.\"<br> "
+"<span class=\"text-white\">Céline, 33 ans, maman de 2 enfants</span>"
+msgstr ""
+"\"Met meer dan één kind wordt het logistiek erg ingewikkeld.\"<br> <span "
+"class=\"text-white\">Céline, 33 jaar, moeder van 2 kinderen</span>"
+
+#: bana/templates/home.html:181
+msgid ""
+"“Jongler entre le travail, l’école et les activités, c’est un vrai casse-"
+"tête au quotidien.”<br> <span class=\"text-white\">Thomas, 40 ans, papa de 3 "
+"enfants<</span>"
+msgstr ""
+"“Tussen werk, school en activiteiten jongleren is een dagelijkse "
+"uitdaging.”<br> <span class=\"text-white\">Thomas, 40 jaar, vader van 3 "
+"kinderen</span>"
+
+#: bana/templates/home.html:185
+msgid ""
+"“J’avais l’impression de passer mes journées en voiture plutôt qu’avec mes "
+"enfants.”<br> <span class=\"text-white\">Sophie, 36 ans, maman de 2 enfants</"
+"span>"
+msgstr ""
+"“Ik had het gevoel dat ik mijn dagen in de auto doorbracht in plaats van met "
+"mijn kinderen.”<br> <span class=\"text-white\">Sophie, 36 jaar, moeder van 2 "
+"kinderen</span>"
+
+#: bana/templates/home.html:189
+msgid ""
+"“Sans un coup de pouce, on finit par devoir renoncer à certaines activités "
+"pour les petits.”<br> <span class=\"text-white\">Karim, 38 ans, papa d’un "
+"enfant</span>"
+msgstr ""
+"“Zonder een helpende hand moet je uiteindelijk bepaalde activiteiten voor de "
+"kleintjes opgeven.”<br> <span class=\"text-white\">Karim, 38 jaar, vader van "
+"1 kind</span>"
+
+#: bana/templates/home.html:193
+msgid ""
+"“Trouver du temps pour soi est presque impossible quand on enchaîne les "
+"trajets.”<br> <span class=\"text-white\">Julie, 29 ans, maman de 2 enfants</"
+"span>"
+msgstr ""
+"“Tijd voor jezelf vinden is bijna onmogelijk als je voortdurend onderweg "
+"bent.”<br> <span class=\"text-white\">Julie, 29 jaar, moeder van 2 kinderen</"
+"span>"
+
+#: bana/templates/home.html:197
+msgid ""
+"“Dès qu’il y a un imprévu, toute l’organisation familiale s’écroule.”<br> "
+"<span class=\"text-white\">Nathalie, 42 ans, maman de 3 enfants</span>"
+msgstr ""
+"“Zodra er iets onverwachts gebeurt, stort de hele gezinsorganisatie in.”<br> "
+"<span class=\"text-white\">Nathalie, 42 jaar, moeder van 3 kinderen</span>"
+
+#: bana/templates/layouts/footer.html:13 bana/templates/layouts/header.html:79
+#: bana/templates/layouts/header.html:165
+msgid "Profil"
+msgstr "Profiel"
+
+#: bana/templates/layouts/footer.html:18 bana/templates/layouts/header.html:85
+#: bana/templates/layouts/header.html:171
+#: bana/templates/layouts/header.html:210
+msgid "Déconnexion"
+msgstr "Uitloggen"
+
+#: bana/templates/layouts/footer.html:24 bana/templates/layouts/header.html:91
+#: bana/templates/layouts/header.html:177
+msgid "Inscription"
+msgstr "Registreren"
+
+#: bana/templates/layouts/footer.html:28 bana/templates/layouts/header.html:96
+#: bana/templates/layouts/header.html:181
+msgid "Connexion"
+msgstr "Inloggen"
+
+#: bana/templates/layouts/footer.html:45
+msgid "ACCOMPAGNER • PARTAGER • GRANDIR • "
+msgstr "BEGELEIDEN • DELEN • GROEIEN • "
+
+# ===============================#
+#           header.html         #
+# ===============================#
+#: bana/templates/layouts/footer.html:54 bana/templates/layouts/header.html:12
+msgid ""
+"Plateforme de <span class=\"text-brand-50 font-bold\">mobilité partagée</"
+"span> <br> pour les <span class=\"text-brand-50 font-bold\"> trajets des "
+"enfants</span>"
+msgstr ""
+"Platform voor <span class=\"text-brand-50 font-bold\">gedeelde mobiliteit</"
+"span> <br> voor de <span class=\"text-brand-50 font-bold\">reizen van "
+"kinderen</span>"
+
+#: bana/templates/layouts/footer.html:66 bana/templates/layouts/header.html:153
+msgid "Accueil"
+msgstr "Home"
+
+#: bana/templates/layouts/footer.html:67 bana/templates/layouts/header.html:58
+#: bana/templates/layouts/header.html:154
+msgid "Comment ça marche ?"
+msgstr "Hoe werkt het?"
+
+#: bana/templates/layouts/footer.html:68 bana/templates/layouts/header.html:62
+#: bana/templates/layouts/header.html:155
+msgid "À propos"
+msgstr "Over"
+
+#: bana/templates/layouts/footer.html:69 bana/templates/layouts/footer.html:75
+#: bana/templates/layouts/header.html:64 bana/templates/layouts/header.html:156
+msgid "Contact"
+msgstr "Contact"
+
+#: bana/templates/layouts/footer.html:97
+msgid "Rejoignez-nous sur les réseaux sociaux!"
+msgstr "Volg ons op sociale media!"
+
+#: bana/templates/layouts/header.html:132
+msgid "Français"
+msgstr "Frans"
+
+#: bana/templates/layouts/header.html:134
+msgid "Anglais"
+msgstr "Engels"
+
+#: bana/templates/layouts/header.html:136
+msgid "Néerlandais"
+msgstr "Nederlands"
+
+#: bana/templates/layouts/header.html:212
+msgid "Êtes-vous sûr de vouloir vous déconnecter ?"
+msgstr "Weet u zeker dat u wilt uitloggen?"
+
+#: bana/templates/layouts/header.html:220
+msgid "Annuler"
+msgstr "Annuleren"
+
+#: bana/templates/layouts/header.html:224
+msgid "Confirmer"
+msgstr "Bevestigen"
+
+# ===============================#
+#           views.py            #
+# ===============================#
+#: bana/views.py:12
+msgid "Gain de temps"
+msgstr "Tijd besparen"
+
+#: bana/views.py:13
+msgid "Flexibilité"
+msgstr "Flexibiliteit"
+
+#: bana/views.py:14
+msgid "dans votre agenda"
+msgstr "in uw agenda"
+
+#: bana/views.py:18
+msgid "Économique"
+msgstr "Economisch"
+
+#: bana/views.py:19
+msgid "Économiser"
+msgstr "Besparen"
+
+#: bana/views.py:20
+msgid "sur l’essence"
+msgstr "op benzine"
+
+#: bana/views.py:24
+msgid "Écologique"
+msgstr "Ecologisch"
+
+#: bana/views.py:25
+msgid "Utiliser"
+msgstr "Gebruik"
+
+#: bana/views.py:26
+msgid "des moyens de transport alternatifs"
+msgstr "alternatieve vervoersmiddelen"
+
+#: bana/views.py:30
+msgid "Communauté"
+msgstr "Gemeenschap"
+
+#: bana/views.py:31
+msgid "Créer du lien social"
+msgstr "Creëer sociale verbinding"
+
+#: bana/views.py:32
+msgid "en partageant des moments"
+msgstr "door momenten te delen"
+
+#: bana/views.py:39
+msgid "Parent Icon"
+msgstr "Oudericoon"
+
+#: bana/views.py:40
+msgid "Je suis un parent"
+msgstr "Ik ben een ouder"
+
+#: bana/views.py:45
+msgid "Mentor Icon"
+msgstr "Mentoricoon"
+
+#: bana/views.py:46
+msgid "Je suis un mentor"
+msgstr "Ik ben een mentor"
+
+#: bana/views.py:51
+msgid "Community Icon"
+msgstr "Gemeenschapsicoon"
+
+#: bana/views.py:52
+msgid "Je fais partie de la communauté"
+msgstr "Ik ben een lid van de gemeenschap"
