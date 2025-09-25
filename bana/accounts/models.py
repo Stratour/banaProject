@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 
 
@@ -44,8 +44,8 @@ class Languages(models.Model):
 
 class Child(models.Model):
     class Gender(models.TextChoices):
-        GARCON = 'Garçon', 'Garçon'
-        FILLE = 'Fille', 'Fille'
+        GARCON = 'Garçon', _('Garçon')
+        FILLE = 'Fille', _('Fille')
 
     chld_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='children')
     chld_name = models.CharField("Nom", max_length=100, blank=False, null=True)

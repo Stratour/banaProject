@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-24 19:25+0000\n"
+"POT-Creation-Date: 2025-09-24 20:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -185,12 +185,12 @@ msgstr "How does it work?"
 msgid "À propos"
 msgstr "About"
 
-#: bana/templates/layouts/footer.html:69 bana/templates/layouts/footer.html:90
+#: bana/templates/layouts/footer.html:69 bana/templates/layouts/footer.html:75
 #: bana/templates/layouts/header.html:64 bana/templates/layouts/header.html:156
 msgid "Contact"
 msgstr "Contact"
 
-#: bana/templates/layouts/footer.html:112
+#: bana/templates/layouts/footer.html:97
 msgid "Rejoignez-nous sur les réseaux sociaux!"
 msgstr "Join us on social media!"
 

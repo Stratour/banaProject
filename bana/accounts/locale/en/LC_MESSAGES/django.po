@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-24 15:17+0000\n"
+"POT-Creation-Date: 2025-09-25 15:11+0000\n"
 "PO-Revision-Date: 2023-07-24 22:28+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,6 +18,14 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: accounts/models.py:47
+msgid "Garçon"
+msgstr "Boy"
+
+#: accounts/models.py:48
+msgid "Fille"
+msgstr "Girl"
 
 #: accounts/signals.py:48
 msgid "Adresse email changée avec succès."
@@ -370,52 +378,43 @@ msgstr ""
 #: accounts/templates/account/login.html:5
 #: accounts/templates/account/login.html:11
 #: accounts/templates/account/login.html:78
-#: accounts/templates/account/password_reset_from_key_done.html:16
-#: accounts/templates/mfa/authenticate.html:6
-#: accounts/templates/mfa/authenticate.html:24
-#: accounts/templates/openid/login.html:5
-#: accounts/templates/openid/login.html:9
-#: accounts/templates/openid/login.html:20
-#: accounts/templates/socialaccount/login.html:5
-#: accounts/templates/socialaccount/login_redirect.html:5
-msgid "Sign In"
-msgstr ""
+msgid "Connexion"
+msgstr "Login"
 
 #: accounts/templates/account/login.html:12
 msgid "Bienvenue"
-msgstr ""
+msgstr "Welcome"
 
 #: accounts/templates/account/login.html:21
-#: accounts/templates/account/partials/profile_info.html:34
-#: accounts/templates/account/password_reset.html:23
-#: accounts/templates/account/signup.html:55
-msgid "Email"
-msgstr ""
+#: accounts/templates/account/signup.html:39
+msgid "E-mail"
+msgstr "E-mail"
 
 #: accounts/templates/account/login.html:38
-#: accounts/templates/account/signup.html:70
-msgid "Password"
-msgstr ""
+#: accounts/templates/account/profile/profile_security.html:87
+#: accounts/templates/account/signup.html:54
+msgid "Mot de passe"
+msgstr "Password"
 
 #: accounts/templates/account/login.html:55
 msgid "Se souvenir de moi"
-msgstr ""
+msgstr "Remember me"
 
 #: accounts/templates/account/login.html:58
 #: accounts/templates/account/partials/password_settings.html:51
 #: accounts/templates/account/profile/profile_security.html:114
 msgid "Mot de passe oublié ?"
-msgstr ""
+msgstr "Forgot your password?"
 
 #: accounts/templates/account/login.html:86
-#, python-format
-msgid ""
-"Pas encore de compte ?\n"
-"          <a class=\"font-bold\" href=\"%(signup_url)s\">S'inscrire</a>\n"
-"        "
-msgstr ""
+msgid "Pas encore de compte ?"
+msgstr "Don't have an account yet?"
 
-#: accounts/templates/account/login.html:95
+#: accounts/templates/account/login.html:87
+msgid "S'inscrire"
+msgstr "Sign up"
+
+#: accounts/templates/account/login.html:94
 msgid "Or sign in with:"
 msgstr ""
 
@@ -477,145 +476,171 @@ msgstr ""
 #: accounts/templates/account/partials/email_settings.html:7
 #: accounts/templates/account/profile/profile_security.html:31
 msgid "Adresse e-mail actuelle"
-msgstr ""
+msgstr "Current email address"
 
 #: accounts/templates/account/partials/email_settings.html:15
 #: accounts/templates/account/profile/profile_security.html:39
 msgid "Vérifiée"
-msgstr ""
+msgstr "Verified"
 
 #: accounts/templates/account/partials/email_settings.html:19
 #: accounts/templates/account/profile/profile_security.html:43
 msgid "Non vérifiée"
-msgstr ""
+msgstr "Unverified"
 
 #: accounts/templates/account/partials/email_settings.html:26
 #: accounts/templates/account/profile/profile_security.html:77
 msgid "Renvoyer la vérification"
-msgstr ""
+msgstr "Resend verification"
 
 #: accounts/templates/account/partials/email_settings.html:45
 #: accounts/templates/account/profile/profile_security.html:54
 msgid "Changer d’e-mail"
-msgstr ""
+msgstr "Change email"
 
 #: accounts/templates/account/partials/email_settings.html:49
 #: accounts/templates/account/profile/profile_security.html:58
 msgid "nouvelle adresse e-mail"
-msgstr ""
+msgstr "new email address"
 
 #: accounts/templates/account/partials/email_settings.html:55
 #: accounts/templates/account/partials/password_settings.html:55
 #: accounts/templates/account/profile/profile_security.html:65
 #: accounts/templates/account/profile/profile_security.html:118
 msgid "Mettre à jour"
-msgstr ""
+msgstr "Update"
 
 #: accounts/templates/account/partials/email_settings.html:57
 msgid "Un e-mail de confirmation peut être envoyé."
-msgstr ""
+msgstr "A confirmation email can be sent."
 
 #: accounts/templates/account/partials/password_settings.html:20
 #: accounts/templates/account/profile/profile_security.html:94
 msgid "Mot de passe actuel"
-msgstr ""
+msgstr "Current password"
 
 #: accounts/templates/account/partials/password_settings.html:29
 #: accounts/templates/account/profile/profile_security.html:100
 msgid "Nouveau mot de passe"
-msgstr ""
+msgstr "New password"
 
 #: accounts/templates/account/partials/password_settings.html:36
 #: accounts/templates/account/profile/profile_security.html:103
 msgid "8 caractères minimum, mélangez lettres/chiffres/symboles."
-msgstr ""
+msgstr "Minimum 8 characters, mix letters/numbers/symbols."
 
 #: accounts/templates/account/partials/password_settings.html:41
 #: accounts/templates/account/profile/profile_security.html:107
 msgid "Confirmer le nouveau mot de passe"
-msgstr ""
+msgstr "Confirm new password"
 
 #: accounts/templates/account/partials/profile_info.html:5
 msgid "Infos privées"
-msgstr ""
+msgstr "Private information"
 
 #: accounts/templates/account/partials/profile_info.html:11
+#: accounts/templates/account/profile/profil_add_child.html:21
 #: accounts/templates/account/profile/profile_edit.html:53
 msgid "Prénom"
-msgstr ""
+msgstr "First name"
 
 #: accounts/templates/account/partials/profile_info.html:22
+#: accounts/templates/account/profile/profil_add_child.html:32
 #: accounts/templates/account/profile/profile_edit.html:64
 msgid "Nom"
-msgstr ""
+msgstr "Last name"
+
+#: accounts/templates/account/partials/profile_info.html:34
+#: accounts/templates/account/password_reset.html:23
+#, fuzzy
+#| msgid "E-mail"
+msgid "Email"
+msgstr "Email"
 
 #: accounts/templates/account/partials/profile_info.html:41
 msgid "Ville"
-msgstr ""
+msgstr "City"
 
 #: accounts/templates/account/partials/profile_info.html:49
+#: accounts/templates/account/signup.html:21
 msgid "Rôle"
-msgstr ""
+msgstr "Role"
 
 #: accounts/templates/account/partials/profile_info.html:60
 #: accounts/templates/account/profile/profile_edit.html:120
 msgid "Langues"
-msgstr ""
+msgstr "Languages"
 
 #: accounts/templates/account/partials/profile_info.html:75
 #: accounts/templates/account/profile/profile_edit.html:149
 msgid "Bio"
-msgstr ""
+msgstr "Bio"
 
 #: accounts/templates/account/partials/profile_info.html:82
 msgid "Carte d'identité"
-msgstr ""
+msgstr "Identity card"
+
+#: accounts/templates/account/partials/profile_info.html:84
+msgid "Identité vérifiée"
+msgstr "Identity verified"
+
+#: accounts/templates/account/partials/profile_info.html:88
+msgid "Vérifier mon identité"
+msgstr "Verify my identity"
 
 #: accounts/templates/account/partials/profile_info.html:97
 msgid "Bonne vie et mœurs (extrait 596.2)"
-msgstr ""
+msgstr "Good conduct and morals (excerpt 596.2)"
+
+#: accounts/templates/account/partials/profile_info.html:101
+msgid "Document validé"
+msgstr "Document approved"
+
+#: accounts/templates/account/partials/profile_info.html:103
+msgid "En attente de vérification"
+msgstr "Pending verification"
+
+#: accounts/templates/account/partials/profile_info.html:106
+msgid "Aucun document enregistré"
+msgstr "No document uploaded"
 
 #: accounts/templates/account/partials/profile_info.html:115
 #: accounts/templates/account/profile/profile_edit.html:4
 #: accounts/templates/account/profile/profile_edit.html:22
 msgid "Modifier mon profil"
-msgstr ""
+msgstr "Edit my profile"
 
 #: accounts/templates/account/partials/profile_public.html:4
 #: accounts/templates/account/profile/profile.html:4
+#: accounts/templates/allauth/layouts/admin-side-nav.html:29
 msgid "Mon profil"
-msgstr ""
+msgstr "My profile"
 
 #: accounts/templates/account/partials/profile_public.html:12
 #: accounts/templates/account/profile/profile_edit.html:75
 #: accounts/templates/account/profile/profile_user.html:24
 msgid "Photo de profil"
-msgstr ""
+msgstr "Profile picture"
 
 #: accounts/templates/account/partials/profile_public.html:53
 msgid "Note utilisateur"
-msgstr ""
+msgstr "User rating"
 
 #: accounts/templates/account/partials/profile_public.html:113
 msgid "trajets effectués"
-msgstr ""
+msgstr "journeys made"
 
 #: accounts/templates/account/partials/profile_public.html:117
 msgid "Membre depuis le"
-msgstr ""
+msgstr "Member since"
 
 #: accounts/templates/account/partials/profile_public.html:120
 msgid "Dernière connexion"
-msgstr ""
+msgstr "Last connection"
 
 #: accounts/templates/account/password_change.html:19
 #: accounts/templates/account/password_change.html:57
 #: accounts/templates/account/password_change.html:60
-#: accounts/templates/account/password_reset_from_key.html:5
-#: accounts/templates/account/password_reset_from_key.html:12
-#: accounts/templates/account/password_reset_from_key.html:44
-#: accounts/templates/account/password_reset_from_key_done.html:5
-#: accounts/templates/account/password_reset_from_key_done.html:12
 msgid "Change Password"
 msgstr ""
 
@@ -625,28 +650,28 @@ msgid "Forgot Password?"
 msgstr ""
 
 #: accounts/templates/account/password_reset.html:13
-msgid "Enter your email address to receive a reset link."
-msgstr ""
+msgid ""
+"Veuillez saisir votre adresse e-mail pour recevoir un lien de "
+"réinitialisation."
+msgstr "Enter your email address to receive a reset link."
 
 #: accounts/templates/account/password_reset.html:50
-msgid "Send Reset Link"
-msgstr ""
+msgid "Envoyer le lien de réinitialisation"
+msgstr "Send Reset Link"
 
 #: accounts/templates/account/password_reset.html:59
-#, python-format
-msgid ""
-"Remembered your password?\n"
-"          <a class=\"font-bold\" href=\"%(login_url)s\">Sign In</a>\n"
-"        "
-msgstr ""
+msgid "Vous vous souvenez de votre mot de passe ?"
+msgstr "Remembered your password?"
 
-#: accounts/templates/account/password_reset.html:64
-#, python-format
-msgid ""
-"New here?\n"
-"          <a class=\"font-bold\" href=\"%(signup_url)s\">Create an account</"
-"a>\n"
-"        "
+#: accounts/templates/account/password_reset.html:60
+#: accounts/templates/mfa/authenticate.html:6
+#: accounts/templates/mfa/authenticate.html:24
+#: accounts/templates/openid/login.html:5
+#: accounts/templates/openid/login.html:9
+#: accounts/templates/openid/login.html:20
+#: accounts/templates/socialaccount/login.html:5
+#: accounts/templates/socialaccount/login_redirect.html:5
+msgid "Sign In"
 msgstr ""
 
 #: accounts/templates/account/password_reset_done.html:19
@@ -655,91 +680,158 @@ msgid ""
 "spam folder. Otherwise contact us if you do not receive it in a few minutes."
 msgstr ""
 
-#: accounts/templates/account/password_reset_from_key_done.html:14
-msgid "Your password is now changed."
+#: accounts/templates/account/profile/profil_add_child.html:3
+#: accounts/templates/account/profile/profile_children.html:31
+msgid "Ajouter un enfant"
+msgstr "Add a child"
+
+#: accounts/templates/account/profile/profil_add_child.html:43
+msgid "Date de naissance"
+msgstr "Date of birth"
+
+#: accounts/templates/account/profile/profil_add_child.html:54
+msgid "Genre"
+msgstr "Gender"
+
+#: accounts/templates/account/profile/profil_add_child.html:66
+#: accounts/templates/account/profile/profile_children.html:18
+msgid "Siège enfant requis"
+msgstr "Child seat required"
+
+#: accounts/templates/account/profile/profil_add_child.html:78
+msgid "Retour au profil"
+msgstr "Back to profile"
+
+#: accounts/templates/account/profile/profil_add_child.html:81
+msgid "Ajouter l'enfant"
+msgstr "Add child"
+
+#: accounts/templates/account/profile/profil_add_child.html:89
+msgid "Enfants déjà enregistrés"
+msgstr "Children already registered"
+
+#: accounts/templates/account/profile/profile.html:24
+msgid "Chargement du profil public..."
+msgstr "Loading public profile..."
+
+#: accounts/templates/account/profile/profile.html:36
+msgid "Chargement des infos privées..."
+msgstr "Loading private information..."
+
+#: accounts/templates/account/profile/profile_children.html:3
+#: accounts/templates/account/profile/profile_children.html:8
+#: accounts/templates/allauth/layouts/admin-header.html:89
+#: accounts/templates/allauth/layouts/admin-side-nav.html:43
+msgid "Mes enfants"
+msgstr "My children"
+
+#: accounts/templates/account/profile/profile_children.html:16
+msgid "né(e) le"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_children.html:25
+msgid "Vous n'avez pas encore ajouté d'enfant."
 msgstr ""
 
 #: accounts/templates/account/profile/profile_edit.html:25
 msgid "Mettez à jour vos informations publiques et vos préférences."
-msgstr ""
+msgstr "Update your public information and preferences."
 
 #: accounts/templates/account/profile/profile_edit.html:48
 msgid "Identité"
-msgstr ""
+msgstr "Identity"
 
 #: accounts/templates/account/profile/profile_edit.html:78
 msgid "PNG, JPG, ou GIF."
-msgstr ""
+msgstr "PNG, JPG, or GIF."
 
 #: accounts/templates/account/profile/profile_edit.html:91
 msgid "Localisation"
-msgstr ""
+msgstr "Location"
 
 #: accounts/templates/account/profile/profile_edit.html:96
 msgid "Adresse (Code postal / Ville)"
-msgstr ""
+msgstr "Address (Postal code / City)"
 
 #: accounts/templates/account/profile/profile_edit.html:115
 msgid "Préférences"
-msgstr ""
+msgstr "Preferences"
 
 #: accounts/templates/account/profile/profile_edit.html:126
 msgid "Modes de transport"
-msgstr ""
+msgstr "Transportation methods"
 
 #: accounts/templates/account/profile/profile_edit.html:155
 msgid ""
 "Présentez-vous en quelques lignes (centres d’intérêt, dispo, expérience…)"
 msgstr ""
+"Introduce yourself in a few lines (interests, availability, experience...)"
+
+#: accounts/templates/account/profile/profile_edit.html:165
+msgid "Bonne vie et mœurs"
+msgstr "Good conduct and morals"
+
+#: accounts/templates/account/profile/profile_edit.html:170
+msgid "Extrait 596.2 — encadrement de mineurs"
+msgstr "Excerpt 596.2 — supervision of minors"
+
+#: accounts/templates/account/profile/profile_edit.html:181
+msgid "Voir le document"
+msgstr "View document"
+
+#: accounts/templates/account/profile/profile_edit.html:186
+msgid "Formats acceptés : PDF, JPG, PNG. Ce document reste privé."
+msgstr "Accepted formats: PDF, JPG, PNG. This document remains private."
 
 #: accounts/templates/account/profile/profile_edit.html:198
 #: accounts/templates/account/profile/profile_security.html:153
 msgid "Annuler"
-msgstr ""
+msgstr "Cancel"
 
 #: accounts/templates/account/profile/profile_edit.html:202
 msgid "Enregistrer"
-msgstr ""
+msgstr "Save"
 
 #: accounts/templates/account/profile/profile_security.html:4
 #: accounts/templates/account/profile/profile_security.html:11
+#: accounts/templates/allauth/layouts/admin-header.html:146
 msgid "Sécurité & connexion"
-msgstr ""
+msgstr "Security & login"
 
 #: accounts/templates/account/profile/profile_security.html:27
 msgid "Adresse e-mail"
-msgstr ""
-
-#: accounts/templates/account/profile/profile_security.html:87
-msgid "Mot de passe"
-msgstr ""
+msgstr "Email address"
 
 #: accounts/templates/account/profile/profile_security.html:128
 msgid "Zone sensible"
-msgstr ""
+msgstr "Sensitive area"
 
 #: accounts/templates/account/profile/profile_security.html:129
 msgid ""
 "Désactivez votre compte. Un administrateur devra le réactiver pour reprendre "
 "l'accès."
 msgstr ""
+"Deactivate your account. An administrator will need to reactivate it to "
+"regain access."
 
 #: accounts/templates/account/profile/profile_security.html:134
 msgid "Supprimer mon compte"
-msgstr ""
+msgstr "Delete my account"
 
 #: accounts/templates/account/profile/profile_security.html:145
 msgid "Désactiver le compte"
-msgstr ""
+msgstr "Deactivate account"
 
 #: accounts/templates/account/profile/profile_security.html:146
 msgid ""
 "Vous ne pourrez plus vous connecter sans réactivation par un administrateur."
 msgstr ""
+"You will no longer be able to log in without reactivation by an "
+"administrator."
 
 #: accounts/templates/account/profile/profile_security.html:157
 msgid "Confirmer"
-msgstr ""
+msgstr "Confirm"
 
 #: accounts/templates/account/profile/profile_user.html:5
 msgid "Profile"
@@ -751,41 +843,46 @@ msgstr ""
 
 #: accounts/templates/account/signup.html:5
 #: accounts/templates/account/signup.html:12
-#: accounts/templates/socialaccount/signup.html:5
-#: accounts/templates/socialaccount/signup.html:13
-msgid "Signup"
-msgstr ""
+msgid "Inscription"
+msgstr "Sign up"
 
 #: accounts/templates/account/signup.html:13
 msgid "Créez un compte pour commencer."
-msgstr ""
+msgstr "Create an account to get started."
 
-#: accounts/templates/account/signup.html:22
-msgid "Username"
-msgstr ""
+#: accounts/templates/account/signup.html:24
+msgid "-- Sélectionnez un rôle --"
+msgstr "-- Select a role --"
+
+#: accounts/templates/account/signup.html:25
+msgid "Parent - Rechercher et/ou proposer un trajet"
+msgstr "Parent - Search and/or propose a journeys"
+
+#: accounts/templates/account/signup.html:26
+msgid "Yaya - Proposer un trajet"
+msgstr "Yaya - Offer a journeys"
+
+#: accounts/templates/account/signup.html:70
+msgid "Confirmer mot de passe"
+msgstr "Confirm password"
 
 #: accounts/templates/account/signup.html:86
-msgid "Confirmer mot de passe"
-msgstr ""
+msgid "Créer mon compte"
+msgstr "Create my account"
 
-#: accounts/templates/account/signup.html:102
-msgid "Créer un compte"
-msgstr ""
+#: accounts/templates/account/signup.html:95
+msgid "Vous avez déja un compte ?"
+msgstr "Already have an account?"
 
-#: accounts/templates/account/signup.html:111
-#, python-format
-msgid ""
-"Vous avez déja un compte ?\n"
-"                <a class=\"font-bold\" href=\"%(login_url)s\">Se connecter</"
-"a>\n"
-"                "
-msgstr ""
+#: accounts/templates/account/signup.html:96
+msgid "Se connecter"
+msgstr "Log in"
 
-#: accounts/templates/account/signup.html:123
+#: accounts/templates/account/signup.html:106
 msgid "Sign up using a passkey"
 msgstr ""
 
-#: accounts/templates/account/signup.html:132
+#: accounts/templates/account/signup.html:115
 msgid "Or sign up with:"
 msgstr ""
 
@@ -874,6 +971,62 @@ msgstr ""
 #: accounts/templates/account/welcome.html:29
 msgid "Aller à l'accueil"
 msgstr ""
+
+#: accounts/templates/allauth/layouts/admin-footer-mobile.html:23
+#: accounts/templates/allauth/layouts/admin-header.html:98
+#: accounts/templates/allauth/layouts/admin-side-nav.html:60
+msgid "Rechercher"
+msgstr "Search"
+
+#: accounts/templates/allauth/layouts/admin-footer-mobile.html:39
+#: accounts/templates/allauth/layouts/admin-header.html:107
+#: accounts/templates/allauth/layouts/admin-side-nav.html:68
+msgid "Proposer"
+msgstr "Propose"
+
+#: accounts/templates/allauth/layouts/admin-footer-mobile.html:56
+#: accounts/templates/allauth/layouts/admin-header.html:128
+msgid "Réservations"
+msgstr "Reservations"
+
+#: accounts/templates/allauth/layouts/admin-footer-mobile.html:73
+#: accounts/templates/allauth/layouts/admin-header.html:80
+#, fuzzy
+msgid "Profil"
+msgstr "Profile"
+
+#: accounts/templates/allauth/layouts/admin-header.html:50
+msgid "Menu"
+msgstr "Menu"
+
+#: accounts/templates/allauth/layouts/admin-header.html:70
+msgid "Accueil"
+msgstr "Home"
+
+#: accounts/templates/allauth/layouts/admin-header.html:137
+#: accounts/templates/allauth/layouts/admin-side-nav.html:99
+msgid "Abonnement"
+msgstr "Subscription"
+
+#: accounts/templates/allauth/layouts/admin-side-nav.html:35
+msgid "Mes informations"
+msgstr "My information"
+
+#: accounts/templates/allauth/layouts/admin-side-nav.html:53
+msgid "Mes trajets"
+msgstr "My journeys"
+
+#: accounts/templates/allauth/layouts/admin-side-nav.html:85
+msgid "Mes réservations"
+msgstr "My reservations"
+
+#: accounts/templates/allauth/layouts/admin-side-nav.html:93
+msgid "Paramètres"
+msgstr "Settings"
+
+#: accounts/templates/allauth/layouts/admin-side-nav.html:106
+msgid "Sécurité et connexion"
+msgstr "Security and login"
 
 #: accounts/templates/mfa/authenticate.html:10
 #: accounts/templates/mfa/index.html:5 accounts/templates/mfa/index.html:9
@@ -1277,6 +1430,11 @@ msgstr ""
 msgid "The third-party account has been disconnected."
 msgstr ""
 
+#: accounts/templates/socialaccount/signup.html:5
+#: accounts/templates/socialaccount/signup.html:13
+msgid "Signup"
+msgstr ""
+
 #: accounts/templates/socialaccount/signup.html:16
 #, python-format
 msgid ""
@@ -1360,3 +1518,10 @@ msgstr ""
 #: accounts/views.py:255
 msgid "Ce lien de confirmation n'est plus valide."
 msgstr ""
+
+#~ msgid "Nouveau ici ?"
+#~ msgstr "New here?"
+
+#, fuzzy
+#~ msgid "Créer un compte"
+#~ msgstr "Create an account"

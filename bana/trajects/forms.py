@@ -2,6 +2,7 @@ from django import forms
 from accounts.models import Languages, Child
 from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode, Reservation
 from django.core.exceptions import ValidationError
+from django.utils.translation import gettext_lazy as _
 
 class TrajectForm(forms.ModelForm):
     class Meta:
@@ -11,13 +12,13 @@ class TrajectForm(forms.ModelForm):
             'start_adress': forms.TextInput(attrs={
                 'id': 'start_adress',
                 'class': 'w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand',
-                'placeholder': 'Entrez le point de départ (Adresse, ville, code postal)',
+                'placeholder': _('Entrez le point de départ (Adresse, ville, code postal)'),
                 'autocomplete': 'off'
             }),
             'end_adress': forms.TextInput(attrs={
                 'id': 'end_adress',
                 'class': 'w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand',
-                'placeholder': 'Entrez le point d’arrivée (Adresse, ville, code postal)',
+                'placeholder': _('Entrez le point d’arrivée (Adresse, ville, code postal)'),
                 'autocomplete': 'off'
             }),
             
@@ -49,7 +50,7 @@ class ProposedTrajectForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple(attrs={'class': 'inline-flex items-center space-x-1'}),
         label="Moyens de transport",
         required=True,
-        error_messages={'required': "Veuillez sélectionner au moins un moyen de transport."}
+        error_messages={'required': _("Veuillez sélectionner au moins un moyen de transport.")}
     )
     
     languages = forms.ModelMultipleChoiceField(
@@ -109,7 +110,7 @@ class ProposedTrajectForm(forms.ModelForm):
 
     tr_weekdays = forms.MultipleChoiceField(
         choices=[(str(i), day) for i, day in
-                 enumerate(["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"], 1)],
+                 enumerate([_("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")], 1)],
         required=False,
         label="Jours spécifiques"
     )
@@ -123,7 +124,7 @@ class ProposedTrajectForm(forms.ModelForm):
         date_debut = self.cleaned_data.get('date_debut')
 
         if date_debut and date_debut < date.today():
-            raise ValidationError("La date de début ne peut pas être antérieure à la date d'aujourd'hui.")
+            raise ValidationError(_("La date de début ne peut pas être antérieure à la date d'aujourd'hui."))
 
         return date_debut
 
@@ -158,7 +159,7 @@ class ProposedTrajectForm(forms.ModelForm):
     def clean_tr_weekdays(self):
         days = self.cleaned_data.get('tr_weekdays')
         if not days:
-            raise forms.ValidationError("Veuillez sélectionner au moins un jour de la semaine.")
+            raise forms.ValidationError(_("Veuillez sélectionner au moins un jour de la semaine."))
         return days
     
     def __init__(self, *args, **kwargs):
@@ -183,11 +184,11 @@ class SimpleProposedTrajectForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple(attrs={'class': 'inline-flex items-center space-x-1'}),
         label="Moyens de transport",
         required=True,
-        error_messages={'required': "Veuillez sélectionner au moins un moyen de transport."}
+        error_messages={'required': _("Veuillez sélectionner au moins un moyen de transport.")}
     )
 
     number_of_places = forms.ChoiceField(
-        choices=[('', '-- Sélectionnez le nombre de places --')] + ProposedTraject.NUMBER_PLACE,
+        choices=[('', _('-- Sélectionnez le nombre de places --'))] + ProposedTraject.NUMBER_PLACE,
         widget=forms.Select(attrs={
             'class': 'block w-full mt-1 rounded-full border-brand shadow-sm focus:ring-brand focus:border-brand'
         }),
@@ -197,14 +198,14 @@ class SimpleProposedTrajectForm(forms.ModelForm):
     
     tr_weekdays = forms.ChoiceField(
         choices=[
-            ("", "-- Sélectionnez un jour --"),
+            _(("", "-- Sélectionnez un jour --"),
             ("1", "Lundi"),
             ("2", "Mardi"),
             ("3", "Mercredi"),
             ("4", "Jeudi"),
             ("5", "Vendredi"),
             ("6", "Samedi"),
-            ("7", "Dimanche")
+            ("7", "Dimanche"))
         ],
         widget=forms.Select(attrs={
             'class': 'block w-full mt-1 rounded-full border-brand shadow-sm focus:ring-brand focus:border-brand'
@@ -225,7 +226,7 @@ class SimpleProposedTrajectForm(forms.ModelForm):
         date_debut = self.cleaned_data.get('date_debut')
 
         if date_debut and date_debut < date.today():
-            raise ValidationError("La date de début ne peut pas être antérieure à la date d'aujourd'hui.")
+            raise ValidationError(_("La date de début ne peut pas être antérieure à la date d'aujourd'hui."))
 
         return date_debut
 
@@ -241,7 +242,7 @@ class SimpleProposedTrajectForm(forms.ModelForm):
             'start_adress': forms.TextInput(attrs={
                 'id': 'start_adress',
                 'class': 'w-full p-3 mt-1 border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand',
-                'placeholder': 'Entrez le point de départ (Adresse, ville, code postal)',
+                'placeholder': _('Entrez le point de départ (Adresse, ville, code postal)'),
                 'autocomplete': 'on'
             }),
         }
@@ -253,7 +254,7 @@ class ResearchedTrajectForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple(attrs={'class': 'inline-flex items-center space-x-1'}),
         label="Moyens de transport",
         required=True,
-        error_messages={'required': "Veuillez sélectionner au moins un moyen de transport."}
+        error_messages={'required': _("Veuillez sélectionner au moins un moyen de transport.")}
     )
 
     children = forms.ModelMultipleChoiceField(
@@ -261,7 +262,7 @@ class ResearchedTrajectForm(forms.ModelForm):
         widget=forms.CheckboxSelectMultiple(attrs={'class': 'inline-flex items-center space-x-1'}),
         required=True,
         label="Choix du ou des enfants",
-        error_messages={'required': "Vous devez sélectionner au moins un enfant."}
+        error_messages={'required': _("Vous devez sélectionner au moins un enfant.")}
     )
  
     
@@ -277,7 +278,7 @@ class ResearchedTrajectForm(forms.ModelForm):
             'type': 'time',
             'placeholder': 'hh:mm'
         }),
-        error_messages={'required': "Veuillez renseigner l'heure de départ."}
+        error_messages={'required': _("Veuillez renseigner l'heure de départ.")}
     )
     arrival_time = forms.TimeField(
         widget=forms.TimeInput(attrs={
@@ -285,14 +286,14 @@ class ResearchedTrajectForm(forms.ModelForm):
             'type': 'time',
             'placeholder': 'hh:mm'
         }),
-        error_messages={'required': "Veuillez renseigner l'heure d’arrivée."}
+        error_messages={'required': _("Veuillez renseigner l'heure d’arrivée.")}
     )
 
     recurrence_type = forms.ChoiceField(
         choices=[
-            ('one_week', 'Une fois'),
-            ('weekly', 'Toutes les semaines'),
-            ('biweekly', 'Une semaine sur deux')
+            ('one_week', _('Une fois')),
+            ('weekly', _('Toutes les semaines')),
+            ('biweekly', _('Une semaine sur deux'))
         ],
         widget=forms.RadioSelect(attrs={
             'class': 'mr-2'
@@ -312,7 +313,7 @@ class ResearchedTrajectForm(forms.ModelForm):
     
     tr_weekdays = forms.MultipleChoiceField(
         choices=[(str(i), day) for i, day in
-                 enumerate(["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"], 1)],
+                 enumerate([_("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")], 1)],
         required=False,
         label="Jours spécifiques"
     )
@@ -329,7 +330,7 @@ class ResearchedTrajectForm(forms.ModelForm):
         date_debut = self.cleaned_data.get('date_debut')
 
         if date_debut and date_debut < date.today():
-            raise ValidationError("La date de début ne peut pas être antérieure à la date d'aujourd'hui.")
+            raise ValidationError(_("La date de début ne peut pas être antérieure à la date d'aujourd'hui."))
 
         return date_debut
 
@@ -376,7 +377,7 @@ class ResearchedTrajectForm(forms.ModelForm):
     def clean_tr_weekdays(self):
         data = self.cleaned_data.get('tr_weekdays')
         if not data:
-            raise forms.ValidationError("Veuillez sélectionner au moins un jour de la semaine.")
+            raise forms.ValidationError(_("Veuillez sélectionner au moins un jour de la semaine."))
         return data
     
     def clean(self):
@@ -386,10 +387,10 @@ class ResearchedTrajectForm(forms.ModelForm):
         date_fin = cleaned_data.get("date_fin")
     
         if not date_debut:
-            self.add_error("date_debut", "Veuillez choisir une date de début.")
+            self.add_error("date_debut", _("Veuillez choisir une date de début."))
     
         if recurrence_type in ['weekly', 'biweekly'] and not date_fin:
-            self.add_error("date_fin", "Veuillez choisir une date de fin.")
+            self.add_error("date_fin", _("Veuillez choisir une date de fin."))
     
         return cleaned_data
 

@@ -1,4 +1,4 @@
-{% load static %}
+{% load static i18n %}
 
 {% url 'accounts:profile' as profile_url %}
 {% url 'accounts:profile_child' as profile_child_url %}
@@ -26,13 +26,13 @@
 
   <!-- Mon profil -->
   <div>
-    <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">Mon profil</p>
+    <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">{% trans "Mon profil" %}</p>
     <ul class="space-y-1">
       <li>
         <a href="{{ profile_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == profile_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
           <img src="{% static 'bana/img/icon/Icon_data' %}{% if request.path == profile_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          Mes informations
+          {% trans "Mes informations" %}
         </a>
       </li>
       {% if request.user.profile.service == "Parent" %}
@@ -40,7 +40,7 @@
         <a href="{{ profile_child_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == profile_child_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
           <img src="{% static 'bana/img/icon/Icon_child' %}{% if request.path == profile_child_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          Mes enfants
+          {% trans "Mes enfants" %}
         </a>
       </li>
       {% endif %}
@@ -50,14 +50,14 @@
 
   <!-- Mes trajets -->
   <div>
-    <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">Mes trajets</p>
+    <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">{% trans "Mes trajets" %}</p>
     <ul class="space-y-1">
       {% if request.user.profile.service == "Parent" %}
       <li>
         <a href="{{ researched_traject_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == researched_traject_url or request.path == my_researched_trajects_url or request.path == my_matchings_researched_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
           <img src="{% static 'bana/img/icon/Icon_search' %}{% if request.path == researched_traject_url or request.path == my_researched_trajects_url or request.path == my_matchings_researched_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          Rechercher
+          {% trans "Rechercher" %}
         </a>
       </li>
       {% endif %}
@@ -65,7 +65,7 @@
         <a href="{{ proposed_traject_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == proposed_traject_url or request.path == my_proposed_trajects_url or request.path == my_matchings_proposed_url or request.path == simple_proposed_traject_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
           <img src="{% static 'bana/img/icon/Icon_offer' %}{% if request.path == proposed_traject_url or request.path == my_proposed_trajects_url or request.path == my_matchings_proposed_url or request.path == simple_proposed_traject_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          Proposer
+          {% trans "Proposer" %}
         </a>
       </li>
       {% comment %}
@@ -73,7 +73,7 @@
         <a href="{{ index_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == '/chat/chat/' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
           <img src="{% static 'bana/img/icon/Icon_conversation' %}{% if request.path == '/chat/chat/' %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          Messages
+          {% trans "Messages" %}
         </a>
       </li>
       {% endcomment %}
@@ -81,7 +81,7 @@
         <a href="{{ my_reservations_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == '/trajects/my_reserve/' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
           <img src="{% static 'bana/img/icon/Icon_reservation' %}{% if request.path == '/trajects/my_reserve/' %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          Mes réservations
+          {% trans "Mes réservations" %}
         </a>
       </li>
     </ul>
@@ -89,20 +89,20 @@
 
   <!-- Paramètres -->
   <div>
-    <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">Paramètres</p>
+    <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">{% trans "Paramètres" %}</p>
     <ul class="space-y-1">
       <li>
         <a href="{{ subscription_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == subscription_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
           <img src="{% static 'bana/img/icon/Icon_premium' %}{% if request.path == subscription_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          Abonnement
+          {% trans "Abonnement" %}
         </a>
       </li>
       <li>
         <a href="{{ profile_security_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == profile_security_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
           <img src="{% static 'bana/img/icon/Icon_security' %}{% if request.path == profile_security_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          Sécurité et connexion
+          {% trans "Sécurité et connexion" %}
         </a>
       </li>
     </ul>

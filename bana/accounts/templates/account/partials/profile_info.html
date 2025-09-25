@@ -81,11 +81,11 @@
             <div>
               <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Carte d'identité" %}</p>
               {% if user.profile.ci_is_verified %}
-              <p class="inline-flex flex items-center gap-2 py-2 px-4 rounded-full bg-brand text-brand-50 font-semibold">Identité vérifiée</p>
+              <p class="inline-flex flex items-center gap-2 py-2 px-4 rounded-full bg-brand text-brand-50 font-semibold">{% trans "Identité vérifiée" %}</p>
               {% else %}
                 <form method="post" action="{% url 'create_verification_session' %}">
                 {% csrf_token %}
-                    <button class="inline-flex items-center px-5 py-2 rounded-full bg-brand text-white hover:bg-brand-dark font-semibold transition" type="submit">Vérifier mon identité</button>
+                    <button class="inline-flex items-center px-5 py-2 rounded-full bg-brand text-white hover:bg-brand-dark font-semibold transition" type="submit">{% trans "Vérifier mon identité" %}</button>
                 </form>
               {% endif %}
             </div>
@@ -98,12 +98,12 @@
               </p>
                 {% if user.profile.document_bvm %}
                   {% if user.profile.bvm_is_verified %}
-                      <p class="text-green-600 font-medium">Document validé</p>
+                      <p class="text-green-600 font-medium">{% trans "Document validé" %}</p>
                   {% else %}
-                      <p class="text-yellow-600 font-medium">En attente de vérification</p>
+                      <p class="text-yellow-600 font-medium">{% trans "En attente de vérification" %}</p>
                   {% endif %}
                 {% else %}
-                  <p class="text-gray-500 italic">Aucun document enregistré</p>
+                  <p class="text-gray-500 italic">{% trans "Aucun document enregistré" %}</p>
                 {% endif %}
             </div>
           </section>

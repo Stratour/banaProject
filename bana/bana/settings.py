@@ -224,10 +224,6 @@ LANGUAGES = [
     ('nl', 'Nederlands'),
 ]
 
-LOCALE_PATHS = [
-    BASE_DIR / "locale",   # dossier global de traductions
-]
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 

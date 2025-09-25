@@ -1,13 +1,13 @@
 {% extends "allauth/layouts/base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block head_title %}Créer une demande de trajet | BanaCommunity{% endblock %}
+{% block head_title %}{% trans "Créer une demande de trajet" %} - BanaMobi{% endblock %}
 
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
 
   <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
-    Rechercher un/des trajet(s)
+    {% trans "Rechercher un/des trajet(s)" %}
   </h1>
   
   {% if messages %}
@@ -30,7 +30,7 @@
 
   <div class="flex-1 space-y-6 w-full">
     <div>
-      <label class="block text-sm font-bold text-brand uppercase mb-1">Départ</label>
+      <label class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Départ" %}</label>
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
         <div class="w-full sm:w-2/3">
           {{ traject_form.start_adress }}
@@ -44,7 +44,7 @@
     </div>
 
     <div>
-      <label class="block text-sm font-bold text-brand uppercase mb-1">Arrivée</label>
+      <label class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Arrivée" %}</label>
       <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
         <div class="w-full sm:w-2/3">
           {{ traject_form.end_adress }}
@@ -66,7 +66,7 @@
       <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/icon/Icon_step_calendar.svg' %}" alt="Calendrier">
       <div class="flex-1 space-y-6 w-full">
         <div>
-          <label class="block text-sm font-bold text-brand uppercase mb-1">Jours de la semaine</label>
+          <label class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Jours de la semaine" %}</label>
           <div class="flex flex-wrap gap-2" id="weekday-selector">
             {% for i, day in days_of_week %}
             <label data-index="{{ i }}"
@@ -84,22 +84,22 @@
       </div>
       <div class="flex flex-col md:flex-row gap-6">
         <div class="flex-1">
-          <label class="block text-sm font-medium uppercase text-brand">Récurrence</label>
+          <label class="block text-sm font-medium uppercase text-brand">{% trans "Récurrence" %}</label>
           {% for radio in researched_form.recurrence_type %}
           <label class="block text-sm">{{ radio.tag }} {{ radio.choice_label }}</label>
           {% endfor %}
         </div>
         <div class="flex-1">
-          <label class="block text-sm font-medium uppercase text-brand">Date de début</label>
+          <label class="block text-sm font-medium uppercase text-brand">{% trans "Date de début" %}</label>
           {{ researched_form.date_debut }}
         </div>
         <div class="flex-1" id="date_fin_container">
-          <label class="block text-sm font-medium uppercase text-brand">Date de fin</label>
+          <label class="block text-sm font-medium uppercase text-brand">{% trans "Date de fin" %}</label>
           {{ researched_form.date_fin }}
         </div>
       </div>
       <div>
-        <label class="block text-sm font-medium uppercase text-brand mb-1">Moyen de transport</label>
+        <label class="block text-sm font-medium uppercase text-brand mb-1">{% trans "Moyen de transport" %}</label>
         {{ researched_form.transport_modes }}
       </div>
     </div>
@@ -112,7 +112,7 @@
     <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/icon/Icon_step_child.svg' %}" alt="Enfants">
     <div class="flex-1 space-y-6 w-full">
       <div>
-        <label class="block text-sm font-bold text-brand uppercase mb-1">Enfants à accompagner</label>
+        <label class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Enfants à accompagner" %}</label>
         <div class="space-y-2">
           {% for checkbox in researched_form.children %}
           <label class="inline-flex items-center space-x-2">
@@ -127,7 +127,7 @@
   
   <div class="text-center">
     <button type="submit" class="w-full sm:w-auto px-6 py-3 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition">
-      Enregistrer la demande de trajet
+      {% trans "Enregistrer la demande de trajet" %}
     </button>
   </div>
 </form>

@@ -1,7 +1,7 @@
 {% extends "allauth/layouts/base.html" %}
 {% load allauth i18n %}
 
-{% block head_title %}{% trans "Modifier mon profil" %}{% endblock head_title %}
+{% block head_title %}{% trans "Modifier mon profil" %} - BanaMobi {% endblock head_title %}
 
 {% block content %}
 <div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
@@ -162,12 +162,12 @@
       
       <section class="space-y-6 max-w-2xl">
         <h2 class="text-sm font-bold uppercase text-brand tracking-wider">
-          Bonne vie et mœurs
+          {% trans "Bonne vie et mœurs" %} 
         </h2>
 
         <div class="flex flex-col gap-2">
           <label class="block text-sm font-semibold text-gray-900">
-            Extrait 596.2 — encadrement de mineurs
+            {% trans "Extrait 596.2 — encadrement de mineurs" %} 
           </label>
 
           {{ form.document_bvm }}
@@ -178,12 +178,12 @@
           {% if profile.document_bvm %}
             <a href="{{ profile.document_bvm.url }}" target="_blank"
               class="inline-flex items-center gap-2 text-brand hover:underline">
-              Voir le document
+              {% trans "Voir le document" %}
             </a>
           {% endif %}
 
           <p class="text-xs text-gray-500">
-            Formats acceptés : PDF, JPG, PNG. Ce document reste privé.
+            {% trans "Formats acceptés : PDF, JPG, PNG. Ce document reste privé." %}
           </p>
         </div>
       </section>

@@ -1,45 +1,29 @@
 {% extends 'layouts/base.html' %}
 {% load allauth i18n account static %}
 
-{% block head_title %}
-{% trans "Signup" %}
-{% endblock head_title %}
+{% block title %}
+{% trans "Inscription" %} - BanaMobi
+{% endblock title %}
 
 {% block content %}
 
 <div class="bg-gray-100 md:min-h-screen flex items-center justify-center">
     <div class="flex flex-col items-center justify-center bg-white shadow-md rounded-lg p-8 w-full md:mx-12 lg:w-1/2">
-        <h1 class="text-brand text-3xl font-bold text-center">{% trans 'Signup' %}</h1>
+        <h1 class="text-brand text-3xl font-bold text-center">{% trans 'Inscription' %}</h1>
         <h2 class="text-brand-200 text-1xl font-bold mb-12 text-center">{% trans "Créez un compte pour commencer." %}</h2>
 
         {% if not SOCIALACCOUNT_ONLY %}
         {% url 'account_signup' as action_url %}
         <form method="post" class="lg:w-1/2" action="{{ signup_url }}">
             {% csrf_token %}
-
-            <!-- Username Input 
+            <!-- Service Input -->
             <div class="form-group mb-8">
-                <label for="username" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">{% trans 'Username' %}</label>
-                <input type="text" name="username" id="username"
-                       class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
-
-                {% if form.username.errors %}
-                <div class="mt-1 space-y-0.5">
-                    {% for error in form.username.errors %}
-                    <p class="text-xs font-medium text-red-500">{{ error }}</p>
-                    {% endfor %}
-                </div>
-                {% endif %}
-            </div>-->
-
-                        <!-- Service Input -->
-            <div class="form-group mb-8">
-                <label for="service" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">Rôle</label>
+                <label for="service" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">{% trans "Rôle" %}</label>
                     <select name="service" id="service" required
                             class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">-- Sélectionnez un rôle --</option>
-                        <option value="Parent">Parent - Rechercher et/ou proposer un trajet</option>
-                        <option value="Yaya">Yaya - Proposer un trajet</option>
+                        <option value="">{% trans "-- Sélectionnez un rôle --" %}</option>
+                        <option value="Parent">{% trans "Parent - Rechercher et/ou proposer un trajet" %}</option>
+                        <option value="Yaya">{% trans "Yaya - Proposer un trajet" %}</option>
                     </select>
                 {% if form.service.errors %}
                     <div class="mt-1 space-y-0.5">
@@ -52,7 +36,7 @@
 
             <!-- Email Input -->
             <div class="form-group mb-8">
-                <label for="email" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">{% trans 'Email' %}</label>
+                <label for="email" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">{% trans 'E-mail' %}</label>
                 <input type="text" name="email" id="email"
                        class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
 
@@ -67,7 +51,7 @@
 
             <!-- Password Input -->
             <div class="form-group mb-8">
-                <label for="password" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">{% trans 'Password' %}</label>
+                <label for="password" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">{% trans 'Mot de passe' %}</label>
                 <input type="password" name="password1" id="password"
                        class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
 
@@ -99,7 +83,7 @@
             <!-- Submit Button -->
             <div class="w-full mt-12 flex justify-center items-center">
                 <button type="submit" class="w-60 px-6 py-3 font-semibold text-white bg-brand rounded-full">
-                    {% trans 'Créer un compte' %}
+                    {% trans 'Créer mon compte' %}
                 </button>
             </div>
         </form>
@@ -108,9 +92,8 @@
         <!-- Login Link -->
         <div class="text-center mt-3">
             <p class="text-brand-200 text-1xl mb-12">
-                {% blocktrans %}Vous avez déja un compte ?
-                <a class="font-bold" href="{{ login_url }}">Se connecter</a>
-                {% endblocktrans %}
+                {% trans "Vous avez déja un compte ?" %}
+                <a class="font-bold" href="{{ login_url }}">{% trans "Se connecter" %}</a>
             </p>
         </div>
         {% endif %}

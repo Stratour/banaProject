@@ -21,7 +21,7 @@
           hx-get="{% url 'accounts:profile_public' %}" 
           hx-trigger="load" 
           hx-swap="outerHTML"
-          class="border rounded-lg shadow-md bg-white p-6">Chargement du profil public...
+          class="border rounded-lg shadow-md bg-white p-6">{% trans "Chargement du profil public..." %} 
           
       </div>
     
@@ -33,7 +33,7 @@
           hx-swap="outerHTML"
           class="border rounded-lg shadow-md bg-white p-6"
       >
-          Chargement des infos privées...
+          {% trans "Chargement des infos privées..." %} 
       </div>
     </div>
 

@@ -1,14 +1,14 @@
 {% extends 'layouts/base.html' %}
 {% load allauth i18n account static %}
 
-{% block head_title %}
-{% trans "Sign In" %}
-{% endblock head_title %}
+{% block title %}
+{% trans "Connexion" %} - BanaMobi
+{% endblock title %}
 
 {% block content %}
 <div class="bg-gray-100 md:min-h-screen flex items-center justify-center">
   <div class="flex flex-col items-center justify-center bg-white shadow-md rounded-lg p-8 w-full md:mx-12 lg:w-1/2">
-    <h1 class="text-brand text-3xl font-bold text-center">{% trans 'Sign In' %}</h1>
+    <h1 class="text-brand text-3xl font-bold text-center">{% trans 'Connexion' %}</h1>
     <h2 class="text-brand-200 text-1xl font-bold mb-12 text-center">{% trans "Bienvenue" %}</h2>
 
     {% url 'account_login' as login_url %}
@@ -18,7 +18,7 @@
       {# Username / Email #}
       <div class="form-group mb-8">
         <label for="login" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">
-          {% trans 'Email' %}
+          {% trans 'E-mail' %}
         </label>
         <input type="text" name="login" id="login"
                value="{{ form.login.value|default_if_none:'' }}"
@@ -35,7 +35,7 @@
       {# Password #}
       <div class="form-group mb-6">
         <label for="password" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">
-          {% trans 'Password' %}
+          {% trans 'Mot de passe' %}
         </label>
         <input type="password" name="password" id="password" autocomplete="current-password"
                class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
@@ -75,7 +75,7 @@
       {# Submit #}
       <div class="w-full mt-8 flex justify-center items-center">
         <button type="submit" class="w-60 px-6 py-3 font-semibold text-white bg-brand rounded-full">
-          {% trans 'Sign In' %}
+          {% trans 'Connexion' %}
         </button>
       </div>
     </form>
@@ -83,9 +83,8 @@
     <div class="text-center mt-6">
       {% url 'account_signup' as signup_url %}
       <p class="text-brand-200 text-1xl mb-4">
-        {% blocktrans %}Pas encore de compte ?
-          <a class="font-bold" href="{{ signup_url }}">S'inscrire</a>
-        {% endblocktrans %}
+        {% trans "Pas encore de compte ?" %}
+          <a class="font-bold" href="{{ signup_url }}">{% trans "S'inscrire" %}</a>
       </p>
     </div>
 

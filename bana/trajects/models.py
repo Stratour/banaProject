@@ -4,6 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
 from accounts.models import Languages, Child
+from django.utils.translation import gettext_lazy as _
 
 class TransportMode(models.Model):
     name = models.CharField(max_length=100)
@@ -73,9 +74,9 @@ class ProposedTraject(models.Model):
     recurrence_type = models.CharField(
         max_length=30,
         choices=[
-            ('one_week', 'Une semaine seulement'),
-            ('weekly', 'Chaque semaine'),
-            ('biweekly', 'Une semaine sur deux'),
+            ('one_week', _('Une semaine seulement')),
+            ('weekly', _('Chaque semaine')),
+            ('biweekly', _('Une semaine sur deux')),
         ],
         default='none'
     )
@@ -121,9 +122,9 @@ class ResearchedTraject(models.Model):
     recurrence_type = models.CharField(
         max_length=30,
         choices=[
-            ('one_week', 'Une semaine seulement'),
-            ('weekly', 'Chaque semaine'),
-            ('biweekly', 'Une semaine sur deux'),
+            ('one_week', _('Une semaine seulement')),
+            ('weekly', _('Chaque semaine')),
+            ('biweekly', _('Une semaine sur deux')),
         ],
         default='none'
     )
@@ -140,9 +141,9 @@ class ResearchedTraject(models.Model):
 
 class Reservation(models.Model):
     STATUS_CHOICES = [
-        ('pending', 'En attente'),
-        ('confirmed', 'Confirmée'),
-        ('canceled', 'Annulée'),
+        ('pending', _('En attente')),
+        ('confirmed', _('Confirmée')),
+        ('canceled', _('Annulée')),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name="Utilisateur ayant réservé")

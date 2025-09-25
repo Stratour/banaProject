@@ -104,11 +104,11 @@
 
                         {% get_current_language as LANGUAGE_CODE %}
                         {% if LANGUAGE_CODE == 'fr' %}
-                            🇫🇷 FR
+                            FR
                         {% elif LANGUAGE_CODE == 'en' %}
-                            🇬🇧 EN
+                            EN
                         {% elif LANGUAGE_CODE == 'nl' %}
-                            🇳🇱 NL
+                            NL
                         {% endif %}
 
                         <svg class="w-4 h-4 ml-1 transition-transform duration-200" id="languageArrow" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
@@ -128,11 +128,11 @@
                                            onclick="switchLanguage('{{ lang_code }}')" 
                                            class="block px-4 py-2 text-gray-700 hover:bg-lime-100 transition-colors">
                                             {% if lang_code == 'fr' %}
-                                                🇫🇷 {% trans "Français" %} 
+                                                {% trans "Français" %} 
                                             {% elif lang_code == 'en' %}
-                                                🇬🇧 {% trans "Anglais" %} 
+                                                {% trans "Anglais" %} 
                                             {% elif lang_code == 'nl' %}
-                                                🇳🇱 {% trans "Néerlandais" %}
+                                                {% trans "Néerlandais" %}
                                             {% endif %}
                                         </a>
                                     </li>
