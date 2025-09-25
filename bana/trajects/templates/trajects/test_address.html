@@ -1,0 +1,74 @@
+{% extends "allauth/layouts/base.html" %}
+{% load static %}
+
+{% block title %}Test Adresse avec Autocomplete{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4">Test Adresse Google Places</h1>
+
+<form method="post" class="space-y-4">
+    {% csrf_token %}
+    <input type="text" id="address-input" placeholder="Tapez une adresse"
+           class="border p-2 w-96" autocomplete="off" required>
+    <input type="hidden" name="place_id" id="place-id-input">
+    <ul id="suggestion-list" class="border max-h-48 overflow-auto mt-1 w-96 bg-white"></ul>
+    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">
+        Afficher les infos
+    </button>
+</form>
+
+{% if error %}
+<p class="text-red-500 mt-4">{{ error }}</p>
+{% endif %}
+
+{% if address %}
+<div class="mt-4 p-2 border w-96 bg-gray-50">
+    <p><strong>Adresse :</strong> {{ address }}</p>
+    <p><strong>Nom :</strong> {{ name }}</p>
+    <p><strong>Latitude :</strong> {{ lat }}</p>
+    <p><strong>Longitude :</strong> {{ lng }}</p>
+</div>
+{% endif %}
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const inputField = document.getElementById("address-input");
+    const suggestionList = document.getElementById("suggestion-list");
+    const placeIdInput = document.getElementById("place-id-input");
+
+    inputField.addEventListener("input", async () => {
+        const query = inputField.value;
+        if (query.length < 3) return; // éviter trop de requêtes
+
+        try {
+            const url = `{% url 'autocomplete' %}?query=${encodeURIComponent(query)}`;
+            const response = await fetch(url);
+            if (!response.ok) throw new Error("Erreur fetch autocomplete");
+
+            const data = await response.json();
+            const suggestions = data.suggestions || [];
+
+            // Vider les anciennes suggestions
+            suggestionList.innerHTML = "";
+
+            suggestions.forEach(s => {
+                const li = document.createElement("li");
+                li.textContent = s.description || s;  // description si renvoyé par API
+                li.classList.add("p-2", "cursor-pointer", "hover:bg-gray-100");
+
+                li.addEventListener("click", () => {
+                    inputField.value = s.description || s;
+                    placeIdInput.value = s.place_id;  // stocke le place_id pour la vue Django
+                    suggestionList.innerHTML = "";
+                });
+
+                suggestionList.appendChild(li);
+            });
+
+        } catch (err) {
+            console.error(err);
+        }
+    });
+});
+</script>
+{% endblock %}

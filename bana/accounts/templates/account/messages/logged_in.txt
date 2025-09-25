@@ -1,4 +1,5 @@
 {% load account %}
 {% load i18n %}
-{% user_display user as name %}
-{% blocktrans %}Successfully signed in as {{name}}.{% endblocktrans %}
+{% comment "" %}{% user_display user as name %}
+{% blocktrans %}Successfully signed in as {{name}}.{% endblocktrans %}{% endcomment %}
+{% blocktrans %}Connexion réussie en tant que {% endblocktrans %}{% if user.profile.verified_first_name %}{{ user.profile.verified_first_name }} !{% elif user.first_name %}{{ user.first_name }} !{% else %}{{ user.username }} !{% endif %}

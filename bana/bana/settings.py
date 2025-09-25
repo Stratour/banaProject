@@ -113,15 +113,29 @@ WSGI_APPLICATION = 'bana.wsgi.application'
 ASGI_APPLICATION = 'bana.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-
-DATABASES = {
+'''DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
-}
-"""
+}'''
+
 DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'bana_digit_community',
+        'USER': 'bana_raphael_psql',
+        'PASSWORD': 'R@ph@€|__P$Q|--B@n@C0mmùn1t1',
+        'HOST': '51.210.240.185',
+        'PORT': '5432',
+        'OPTIONS': {
+            'connect_timeout': 60,
+        },
+    }
+}
+
+
+'''DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'bana',
@@ -131,7 +145,8 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-"""
+'''
+
 
 
 

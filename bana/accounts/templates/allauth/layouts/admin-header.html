@@ -9,20 +9,23 @@
 
     {# Avatar + prénom — mobile à gauche (parce que le h1 est hidden), desktop à droite #}
     <div class="order-1 md:order-2 flex items-center gap-3">
-      <div class="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-gray-200 ring-4 ring-[#E9F5F1] overflow-hidden">
+      <div class="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] overflow-hidden">
         {% if request.user.profile.profile_picture %}
           <a href="{% url 'accounts:profile' %}">
             <img src="{{ request.user.profile.profile_picture.url }}" alt="User" class="h-full w-full object-cover">
           </a>
         {% else %}
           <a href="{% url 'accounts:profile' %}" class="flex items-center justify-center w-full h-full">
-            <span class="text-xl sm:text-2xl font-bold text-gray-600">
-              {{ request.user.profile.verified_first_name.0 }}.{{ request.user.profile.verified_last_name.0 }}
+            <span class="text-xl sm:text-2xl font-bold text-brand">
+              {% if user.profile.ci_is_verified %}
+                {{ request.user.profile.verified_first_name.0 }}.{{ request.user.profile.verified_last_name.0 }}
+              {% else %}
+                {{ request.user.first_name.0 }}.{{ request.user.last_name.0 }}
+        {% endif %}
             </span>
           </a>
         {% endif %}
       </div>
-      <span class="text-sm text-gray-700 font-medium truncate">{{ request.user.first_name }}</span>
     </div>
 
     {# Burger — mobile uniquement, à droite #}

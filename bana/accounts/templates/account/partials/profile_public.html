@@ -7,17 +7,17 @@
     <!-- Left: avatar + identity -->
 <div class="flex items-start gap-5 relative">
   <!-- Cercle avatar -->
-  <div class="z-0 shrink-0 h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-gray-200 ring-4 ring-[#E9F5F1] flex items-center justify-center overflow-hidden">
+  <div class="z-0 shrink-0 h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] flex items-center justify-center overflow-hidden">
     {% if user.profile.profile_picture %}
       <img src="{{ user.profile.profile_picture.url }}" alt="{% trans 'Photo de profil' %}"
            class="block h-full w-full object-cover" />
     {% else %}
       <!-- placeholder initiales -->
-      <span class="text-xl sm:text-2xl font-bold text-gray-600 select-none">
+      <span class="text-xl sm:text-2xl text-brand font-bold select-none">
         {% if user.profile.ci_is_verified %}
           {{ request.user.profile.verified_first_name.0 }}.{{ request.user.profile.verified_last_name.0 }}
         {% else %}
-          {{ request.user.profile.first_name.0 }}.{{ request.user.profile.last_name.0 }}
+          {{ request.user.first_name.0 }}.{{ request.user.last_name.0 }}
         {% endif %}
       </span>
     {% endif %}

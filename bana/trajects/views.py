@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
-from .utils.geocoding import get_autocomplete_suggestions
+from .utils.geocoding import get_autocomplete_suggestions, get_place_details
 from django.conf import settings
 from django.contrib import messages
 from accounts.models import Child
@@ -209,28 +209,6 @@ def proposed_traject(request, researchesTraject_id=None):
     Si le formulaire est soumis : enregistre le trajet proposé (1 ou plusieurs selon la récurrence).
     Sinon : affiche le formulaire vide.
     """
-    
-    ## Préremplissage si une demande parent est liée
-    #initial_data = {}
-    #if researchesTraject_id:
-    #   try:
-    #        researched = ResearchedTraject.objects.get(id=researchesTraject_id)
-    #        traject = researched.traject
-    #        initial_data = {
-    #            'start_adress': traject.start_adress,
-    #            'end_adress': traject.end_adress,
-    #            'details': researched.details,
-    #            'number_of_places': researched.number_of_places,
-    #            'departure_time': researched.departure_time,
-    #            'arrival_time': researched.arrival_time,
-    #            'date': researched.date,
-    #            'transport_modes': researched.transport_modes.all(),
-    #        }
-    #    except (ResearchedTraject.DoesNotExist, Traject.DoesNotExist):
-    #        messages.error(request, "Erreur lors de la récupération de la demande.")
-    #        return redirect('accounts:profile')
-    #
-
     # Soumission du formulaire
     if request.method == 'POST':
         traject_form = TrajectForm(request.POST)
@@ -721,6 +699,34 @@ def autocomplete_view(request):
 
     return JsonResponse({"suggestions": suggestions}, status=200)
 
+
+def test_address_view(request):
+    """
+    Page de test : entrée d'adresse avec autocomplete + affichage coords
+    """
+    context = {}
+    # Si la requête POST contient un place_id sélectionné
+    place_id = request.POST.get("place_id")
+    if place_id:
+        details = get_place_details(place_id)
+        if "error" not in details:
+            context.update(details)
+        else:
+            context["error"] = details["error"]
+
+    return render(request, "trajects/test_address.html", context)
+
+def place_details_view(request):
+    place_id = request.GET.get("place_id")
+    if not place_id:
+        return JsonResponse({"error": "Le paramètre 'place_id' est requis."}, status=400)
+
+    details = get_place_details(place_id)
+
+    if "error" in details:
+        return JsonResponse(details, status=500)
+
+    return JsonResponse(details, status=200)
 
 # ====================')= reservation page ====================')==== #
 

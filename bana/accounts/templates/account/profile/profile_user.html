@@ -18,17 +18,17 @@
             {% endif %}
         </h2>
 
-        <div class="relative shrink-0 h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-gray-200 ring-4 ring-[#E9F5F1] flex items-center justify-center">
+        <div class="relative shrink-0 h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] flex items-center justify-center">
           <!-- Avatar -->
           {% if user.profile.profile_picture %}
             <img src="{{ user.profile.profile_picture.url }}" alt="{% trans 'Photo de profil' %}"
                  class="h-full w-full rounded-full object-cover"/>
           {% else %}
-            <span class="text-xl sm:text-2xl font-bold text-gray-600">
+            <span class="text-xl sm:text-2xl font-bold text-brand">
               {% if user.profile.ci_is_verified %}
                 {{ user.profile.verified_first_name.0 }}.{{ user.profile.verified_last_name.0 }}
               {% else %}
-                {{ user.profile.first_name.0 }}.{{ user.profile.last_name.0 }}
+                {{ user.first_name.0 }}.{{ user.last_name.0 }}
               {% endif %}
             </span>
           {% endif %}

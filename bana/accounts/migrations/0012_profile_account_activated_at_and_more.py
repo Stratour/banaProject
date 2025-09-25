@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0011_remove_profile_phone'),
+        ('accounts', '0001_initial'),
     ]
 
     operations = [
