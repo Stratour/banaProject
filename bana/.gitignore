@@ -1,3 +1,5 @@
 bana/backup_sqlite3.json
 ./.env
 /bana/theme/static/css/dist/
+__pycache__/
+*.pyc
