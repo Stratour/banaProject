@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
-from .utils.geocoding import get_autocomplete_suggestions, get_place_details
+from .utils.geocoding import get_autocomplete_suggestions
 from django.conf import settings
 from django.contrib import messages
 from accounts.models import Child
@@ -699,7 +699,7 @@ def autocomplete_view(request):
 
     return JsonResponse({"suggestions": suggestions}, status=200)
 
-
+'''
 def test_address_view(request):
     """
     Page de test : entrée d'adresse avec autocomplete + affichage coords
@@ -727,7 +727,7 @@ def place_details_view(request):
         return JsonResponse(details, status=500)
 
     return JsonResponse(details, status=200)
-
+'''
 # ====================')= reservation page ====================')==== #
 
 @login_required

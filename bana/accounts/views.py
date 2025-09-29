@@ -324,7 +324,6 @@ def pop_profile(request):
             service=random.choice(services),
             transport_modes=random.sample(transports, random.randint(1, 3)),
             bio=f"Bonjour, je suis {user.first_name}. Je recherche des services de garde d'enfants.",
-            phone=f"04{random.randint(70, 79)}{random.randint(100000, 999999)}",
         )
         for user in users
     ]

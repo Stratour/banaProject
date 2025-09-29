@@ -1,8 +1,8 @@
 from django.urls import reverse
 from allauth.account.signals import email_confirmed
 from django.dispatch import receiver
-from django.contrib.auth import get_user_model
 from django.contrib import messages
+from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 
 '''@receiver(email_confirmed)
@@ -21,6 +21,7 @@ def clean_and_promote_email(sender, request, email_address, **kwargs):
     # 🧹 Supprime toutes les autres adresses (même si elles sont non vérifiées)
     EmailAddress.objects.filter(user=user).exclude(email=email_address.email).delete()
 '''
+
 User = get_user_model()
 
 @receiver(email_confirmed)
@@ -47,6 +48,3 @@ def email_confirmed_handler(request, email_address, **kwargs):
         if request:
             messages.success(request, _("Adresse email changée avec succès."))
             
-
-
-        

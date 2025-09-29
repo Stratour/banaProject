@@ -1,6 +1,6 @@
 #!/bin/bash
 
-PIDFILE="/home/bana_community/banaProject/gunicorn.pid"
+PIDFILE="/home/rootkitbana/banaProject/gunicorn.pid"
 
 if [ -f $PIDFILE ]; then
     PID=$(cat $PIDFILE)

@@ -32,10 +32,14 @@ class Profile(models.Model):
     def __str__(self):
         return self.user.username
 
+
 class Languages(models.Model):
     lang_name = models.CharField(max_length=50, unique=True)
-    lang_abbr = models.CharField(max_length=2, unique=True)
+    lang_abbr = models.CharField(max_length=3, unique=True)
     
+    class Meta:
+        ordering = ["lang_name"]  # ✅ tri alphabétique automatique
+        
     def __str__(self):
         return self.lang_name
 

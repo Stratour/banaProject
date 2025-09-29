@@ -1,0 +1,322 @@
+[
+    {
+        "model": "accounts.languages",
+        "pk": 1,
+        "fields": {
+            "lang_name": "Français",
+            "lang_abbr": "fr"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 2,
+        "fields": {
+            "lang_name": "Anglais",
+            "lang_abbr": "en"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 3,
+        "fields": {
+            "lang_name": "Allemand",
+            "lang_abbr": "de"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 4,
+        "fields": {
+            "lang_name": "Italien",
+            "lang_abbr": "it"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 5,
+        "fields": {
+            "lang_name": "Espagnol",
+            "lang_abbr": "es"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 6,
+        "fields": {
+            "lang_name": "Portugais",
+            "lang_abbr": "pt"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 7,
+        "fields": {
+            "lang_name": "Néerlandais",
+            "lang_abbr": "nl"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 8,
+        "fields": {
+            "lang_name": "Polonais",
+            "lang_abbr": "pl"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 9,
+        "fields": {
+            "lang_name": "Roumain",
+            "lang_abbr": "ro"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 10,
+        "fields": {
+            "lang_name": "Albanais",
+            "lang_abbr": "sq"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 11,
+        "fields": {
+            "lang_name": "Turc",
+            "lang_abbr": "tr"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 12,
+        "fields": {
+            "lang_name": "Arabe",
+            "lang_abbr": "ar"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 13,
+        "fields": {
+            "lang_name": "Arabe marocain",
+            "lang_abbr": "ary"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 14,
+        "fields": {
+            "lang_name": "Arabe algérien",
+            "lang_abbr": "arq"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 15,
+        "fields": {
+            "lang_name": "Kabyle",
+            "lang_abbr": "kab"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 16,
+        "fields": {
+            "lang_name": "Tamazight",
+            "lang_abbr": "tzm"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 17,
+        "fields": {
+            "lang_name": "Wolof",
+            "lang_abbr": "wo"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 18,
+        "fields": {
+            "lang_name": "Lingala",
+            "lang_abbr": "ln"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 19,
+        "fields": {
+            "lang_name": "Swahili",
+            "lang_abbr": "sw"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 20,
+        "fields": {
+            "lang_name": "Somali",
+            "lang_abbr": "so"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 21,
+        "fields": {
+            "lang_name": "Haoussa",
+            "lang_abbr": "ha"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 22,
+        "fields": {
+            "lang_name": "Bambara",
+            "lang_abbr": "bm"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 23,
+        "fields": {
+            "lang_name": "Chinois",
+            "lang_abbr": "zh"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 24,
+        "fields": {
+            "lang_name": "Hindi",
+            "lang_abbr": "hi"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 25,
+        "fields": {
+            "lang_name": "Ourdou",
+            "lang_abbr": "ur"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 26,
+        "fields": {
+            "lang_name": "Bengali",
+            "lang_abbr": "bn"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 27,
+        "fields": {
+            "lang_name": "Dari",
+            "lang_abbr": "prs"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 28,
+        "fields": {
+            "lang_name": "Pachto",
+            "lang_abbr": "ps"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 29,
+        "fields": {
+            "lang_name": "Persan",
+            "lang_abbr": "fa"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 30,
+        "fields": {
+            "lang_name": "Tamoul",
+            "lang_abbr": "ta"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 31,
+        "fields": {
+            "lang_name": "Vietnamien",
+            "lang_abbr": "vi"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 32,
+        "fields": {
+            "lang_name": "Coréen",
+            "lang_abbr": "ko"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 33,
+        "fields": {
+            "lang_name": "Japonais",
+            "lang_abbr": "ja"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 34,
+        "fields": {
+            "lang_name": "Finnois",
+            "lang_abbr": "fi"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 35,
+        "fields": {
+            "lang_name": "Suédois",
+            "lang_abbr": "sv"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 36,
+        "fields": {
+            "lang_name": "Norvégien",
+            "lang_abbr": "no"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 37,
+        "fields": {
+            "lang_name": "Hongrois",
+            "lang_abbr": "hu"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 38,
+        "fields": {
+            "lang_name": "Tchèque",
+            "lang_abbr": "cs"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 39,
+        "fields": {
+            "lang_name": "Slovaque",
+            "lang_abbr": "sk"
+        }
+    },
+    {
+        "model": "accounts.languages",
+        "pk": 40,
+        "fields": {
+            "lang_name": "Grec",
+            "lang_abbr": "el"
+        }
+    }
+]

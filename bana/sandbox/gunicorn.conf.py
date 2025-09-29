@@ -17,15 +17,15 @@ max_requests = 1000
 max_requests_jitter = 50
 
 # Logging
-accesslog = "/home/bana_community/banaProject/logs/gunicorn_access.log"
-errorlog = "/home/bana_community/banaProject/logs/gunicorn_error.log"
+accesslog = "/home/rootkitbana/banaProject/logs/gunicorn_access.log"
+errorlog = "/home/rootkitbana/banaProject/logs/gunicorn_error.log"
 loglevel = "info"
 
 # Process naming
 proc_name = "bana_django"
 
 # Working directory
-chdir = "/home/bana_community/banaProject/bana"
+chdir = "/home/rootkitbana/banaProject/bana"
 
 # Pas de daemon mode pour systemd
 daemon = False

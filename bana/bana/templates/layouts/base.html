@@ -23,15 +23,16 @@
   <script src="{% static 'members/js/scripts.js' %}" defer ></script>
   {% endcomment %}
 
-   
-  <!--<link href="{% static 'theme/css/dist/styles.css' %}" rel="stylesheet">-->
-  <!--<link href="{% static 'bana/css/style.css' %}" rel="stylesheet">-->
+     
+    <!--<link href="{% static 'theme/css/dist/styles.css' %}" rel="stylesheet">-->
+    <!--<link href="{% static 'bana/css/style.css' %}" rel="stylesheet">-->
 
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
   <script src="https://js.stripe.com/basil/stripe.js"></script>
 
   <title>{% block title %}{% endblock  %}</title>
 </head>
+
 <body class="min-h-screen flex flex-col">
     {% include 'layouts/header.html' %}
 
@@ -54,4 +55,5 @@
     </script>-->
 
 </body>
+
 </html>

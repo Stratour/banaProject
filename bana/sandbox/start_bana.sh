@@ -1,9 +1,9 @@
 #!/bin/bash
 
-PROJECTDIR="/home/bana_community/banaProject/bana"
-VENVDIR="/home/bana_community/banaProject/env"
-LOGDIR="/home/bana_community/banaProject/logs"
-PIDFILE="/home/bana_community/banaProject/gunicorn.pid"
+PROJECTDIR="/home/rootkitbana/banaProject/bana"
+VENVDIR="/home/rootkitbana/env"
+LOGDIR="/home/rootkitbana/banaProject/logs"
+PIDFILE="/home/rootkitbana/banaProject/gunicorn.pid"
 
 cd $PROJECTDIR
 source $VENVDIR/bin/activate
@@ -36,7 +36,7 @@ sleep 2
 
 if [ -f $PIDFILE ]; then
     echo "✅ Gunicorn démarré avec succès sur le port 9685 (PID: $(cat $PIDFILE))"
-    echo "🌐 Site accessible sur http://37.187.94.53 et http://bana.mobi"
+    echo "🌐 Site accessible sur http://51.210.240.185 et http://bana.mobi"
     echo "🔧 Test direct : curl -I http://127.0.0.1:9685"
 else
     echo "❌ Erreur lors du démarrage de Gunicorn"

@@ -29,9 +29,9 @@ SECRET_KEY = 'django-insecure-*umwdzm=4)s(*x)hq1_)yd(6mtbrwy5gh8%b^_d(kn8xnspgc(
 DEBUG = True
 #DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '37.187.94.53', 'bana.mobi', 'www.bana.mobi']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '51.210.240.185', 'bana.mobi', 'www.bana.mobi']
 
-print("37.187.94.53:8800")
+#print("51.210.240.185:8899")
 
 # Application definition
 
@@ -68,9 +68,6 @@ INSTALLED_APPS = [
     'chat',
     'stripe_sub',
     'trajects.apps.TrajectsConfig',
-
-
-
 ]
 
 MIDDLEWARE = [
@@ -113,13 +110,27 @@ WSGI_APPLICATION = 'bana.wsgi.application'
 ASGI_APPLICATION = 'bana.asgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-'''DATABASES = {
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'bana_digit_community',
+        'USER': 'bana_raphael_psql',
+        'PASSWORD': 'R@ph@€|__P$Q|--B@n@C0mmùn1t1',
+        'HOST': 'localhost',  # ou '127.0.0.1' au lieu de '51.210.240.185'
+        'PORT': '5432',
+        'OPTIONS': {
+            'connect_timeout': 60,
+        },
+    }
+}
+"""
+DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
-}'''
-
+}
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -133,26 +144,11 @@ DATABASES = {
         },
     }
 }
-
-
-'''DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'bana',
-        'USER': 'banacommunity',
-        'PASSWORD': 'Ny0t@S^p€rC00lAdm1n',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
-'''
-
-
+"""
 
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -184,7 +180,6 @@ ALLOWED_ATTACHMENT_TYPES = [
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
 ]
 
-
 # Taille maximale des pièces jointes (5MB)
 MAX_ATTACHMENT_SIZE = 5 * 1024 * 1024
 
@@ -195,6 +190,7 @@ BUGS_PER_PAGE = 20
 HTMX_REQUIRE_CSRF = True
 
 # Configuration des logs
+'''
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -216,19 +212,39 @@ LOGGING = {
             'propagate': True,
         },
     },
-    }
+}
+'''
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
+
 
 """
 ICI TERMINE L'AJOUT DE CODE POUR LE BUG TRACKER
 """
 
-
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
-
 LANGUAGE_CODE = 'fr-fr'
 USE_I18N = True
+
 # Configuration de la timezone
 TIME_ZONE = 'UTC'
 USE_TZ = True
@@ -241,9 +257,9 @@ LANGUAGES = [
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [ BASE_DIR / 'bana/static', BASE_DIR / 'theme/static' ]
+#STATICFILES_DIRS = [ BASE_DIR / 'bana/static', BASE_DIR / 'theme/static_src' ]
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 
@@ -264,15 +280,14 @@ INTERNAL_IPS = [
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
 # API key 
 
-OPEN_STREET_MAP_API_KEY = config("OPEN_STREET_MAP_API", default="default_value")
 
+OPEN_STREET_MAP_API_KEY = config("OPEN_STREET_MAP_API", default="default_value")
 GOOGLE_MAPS_API_KEY = config("GOOGLE_MAPS_API_KEY",default="default_value")
 
-#Authentication backends
 
+#Authentication backends
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',

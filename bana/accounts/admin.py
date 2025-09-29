@@ -58,7 +58,9 @@ class ProfileAdmin(admin.ModelAdmin):
 
 admin.site.register(Languages)  # Enregistrer le modèle dans l'admin
 class LanguagesAdmin(admin.ModelAdmin):
-    list_display = ('name',) # Supposons que 'name' est un champ de votre modèle Languages
+    list_display = ('id', 'name')  # Affiche l'ID et le nom dans la liste
+    ordering = ('name',)  # Définit le tri par défaut par nom alphabétique
+
 
 
 @admin.register(Child)

@@ -42,17 +42,7 @@ module.exports = {
         // '../../**/*.py'
     ],
     theme: {
-        extend: {
-            colors: {
-                brand: {
-                    DEFAULT: "#007F73",
-                    50:  "#D7FC19",
-                    100: "#00FFAB",
-                    200: "#1FAB89",
-                    300: "#007F73",
-                },
-            },
-        },
+        extend: {},
     },
     plugins: [
         /**

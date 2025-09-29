@@ -19,8 +19,11 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('lang_name', models.CharField(max_length=50, unique=True)),
-                ('lang_abbr', models.CharField(max_length=2, unique=True)),
+                ('lang_abbr', models.CharField(max_length=3, unique=True)),
             ],
+            options={
+                'ordering': ['lang_name'],
+            },
         ),
         migrations.CreateModel(
             name='Child',
@@ -50,6 +53,7 @@ class Migration(migrations.Migration):
                 ('bio', models.TextField(blank=True, default='', null=True)),
                 ('verified_first_name', models.CharField(blank=True, max_length=100, null=True)),
                 ('verified_last_name', models.CharField(blank=True, max_length=100, null=True)),
+                ('document_image_url', models.URLField(blank=True, null=True)),
                 ('languages', models.ManyToManyField(blank=True, null=True, to='accounts.languages')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],

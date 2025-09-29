@@ -1,0 +1,3 @@
+host    bana_digit_community    Bana_Raphael_PsQl    37.187.94.53/32    md5
+
+listen_addresses = '*'
