@@ -30,12 +30,12 @@
         Trajet prévu le {{ match.research.date|date:"l d F Y" }}
       </h3>
       {% for proposal in match.proposals %}
-      <div class="border-t border-gray-200 pt-2 mt-2">
+      <div class="border-t border-gray-200 pt-4 mt-4 space-y-2">
         <p class="text-sm text-gray-700">
           <strong>{{ proposal.user.profile.service | title }} :</strong> 
           {% if is_abonned == True %}
           <a href="{% url 'accounts:profile_user' user_id=proposal.user.id%}" class="text-blue-600 hover:underline">
-            {% if proposal.user.profile.ci_verified %}
+            {% if proposal.user.profile.ci_is_verified %}
             {{ proposal.user.profile.verified_first_name }} {{ proposal.user.profile.verified_last_name|slice:":1" }}.
             {% else %}
             {{ proposal.user.first_name }} {{ proposal.user.last_name|slice:":1" }}.

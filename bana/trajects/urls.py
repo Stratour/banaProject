@@ -29,10 +29,6 @@ urlpatterns = [
     path('propose-help/<int:researched_id>/', views.propose_help, name='propose_help'),
     path('reservation/auto/<int:proposed_id>/<int:researched_id>/', views.auto_reserve, name='auto_reserve'),
     
-    #path('test-address/', views.test_address_view, name='test_address'),
-    #path('place-details/', views.place_details_view, name='place_details'),
-
-
-
+    path('place-details/', views.place_details_view, name='place_details'),
 
 ]

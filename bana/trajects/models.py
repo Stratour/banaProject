@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from accounts.models import Languages, Child
 from django.utils.translation import gettext_lazy as _
+from django.contrib.gis.db import models as gis_models
 
 class TransportMode(models.Model):
     name = models.CharField(max_length=100)
@@ -16,32 +17,21 @@ class TransportMode(models.Model):
 
 class Traject(models.Model):
     # Adresse en une ligne
-    start_adress = models.CharField("Adresse de départ (libre)", max_length=255)
-    end_adress = models.CharField("Adresse d’arrivée (libre)",max_length=255)
-
-    # Adresse en différentes parties (facultatif)
-    start_street = models.CharField("Rue de départ",max_length=100, blank=True, null=True)
-    start_cp = models.CharField("Code postal départ",max_length=10, blank=True, null=True)
-    start_locality = models.CharField("Ville de départ", max_length=100, blank=True, null=True)
-
-    # Adresse de destination en différentes parties (facultatif)
-    end_street = models.CharField("Rue d’arrivée", max_length=100, blank=True, null=True)
-    end_cp = models.CharField("Code postal arrivée",max_length=10, blank=True, null=True)
-    end_locality = models.CharField("Ville d'arrivée", max_length=100, blank=True, null=True)
-
-    # Coordonnées géographiques (optionnel pour recherche avancée par rayon)
-    start_coordinate = models.CharField("Coordonnées départ", max_length=50, blank=True, null=True)
-    end_coordinate = models.CharField("Coordonnées arrivée", max_length=50, blank=True, null=True)
-
-    # Pays (valeur par défaut = Belgique)
-    start_country = models.CharField(max_length=100, default='Belgium', blank=True, null=True)
-    end_country = models.CharField(max_length=100, default='Belgium', blank=True)
+    start_adress = models.CharField("Adresse de départ", max_length=255)
+    end_adress = models.CharField("Adresse d’arrivée",max_length=255)
+    start_point = gis_models.PointField("Coordonnée de départ",srid=4326, geography=True, null=True, blank=True)
+    end_point = gis_models.PointField("Coordonnée d'arrivé",srid=4326 ,geography=True, null=True, blank=True)
+    
+    # Point latitude/longitude
+    address = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    is_test = models.BooleanField(default=True, blank=True, null=True)  # pour marquer les trajets test
     
     # Distance entre le point de départ et d'arrivée (facultatif)
     distance = models.FloatField(blank=True, null=True)
 
     def __str__(self):
-        return f"{self.start_adress} to {self.end_adress}"
+        return f"{self.address} ({self.start_point})"
 
     def get_coordinate(self):
         return {
@@ -147,12 +137,23 @@ class Reservation(models.Model):
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name="Utilisateur ayant réservé")
-    traject = models.ForeignKey(ProposedTraject, on_delete=models.CASCADE)
+    proposed_traject = models.ForeignKey(
+        ProposedTraject, 
+        on_delete=models.CASCADE, 
+        related_name="reservations",
+        null=True, blank=True,
+    )  # le trajet du yaya
+    researched_traject = models.ForeignKey(
+        ResearchedTraject, 
+        on_delete=models.CASCADE, 
+        related_name="reservations",
+        null=True, blank=True
+    )  # la recherche du parent
+    
     number_of_places = models.PositiveIntegerField(default=1)
     transport_modes = models.ManyToManyField(TransportMode, blank=True)
     reservation_date = models.DateTimeField(auto_now_add=True)  # Date et heure de la réservation
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')  # Statut de la réservation
-    #total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)  # Prix total (par défaut)
 
     def __str__(self):
         return f"Reservation {self.id} by {self.user.username} for {self.number_of_places} places"

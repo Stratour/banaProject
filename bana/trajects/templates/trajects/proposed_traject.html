@@ -32,6 +32,7 @@
           <label class="block text-sm font-bold text-brand uppercase mb-1">Départ</label>
           <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             <div class="w-full sm:w-2/3">{{ traject_form.start_adress }}
+            <input type="hidden" id="start_place_id" name="start_place_id">
               <ul id="start-suggestion-list"
               class="bg-white shadow-md mt-1 max-h-48 overflow-auto"></ul>
             </div>
@@ -44,6 +45,7 @@
           <label class="block text-sm font-bold text-brand uppercase mb-1">Arrivée</label>
           <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
             <div class="w-full sm:w-2/3">{{ traject_form.end_adress }}
+            <input type="hidden" id="end_place_id" name="end_place_id">
               <ul id="end-suggestion-list"
               class="bg-white shadow-md mt-1 max-h-48 overflow-auto"></ul>
             </div>
@@ -183,43 +185,44 @@
     recurrenceRadios.forEach(radio => radio.addEventListener("change", toggleDateFin));
   });
 
-  document.querySelectorAll("#start_adress, #end_adress").forEach((inputField) => {
-            inputField.addEventListener("input", async (event) => {
-                const query = event.target.value;
+const setupAutocomplete = (inputId, hiddenId, suggestionListId) => {
+    const inputField = document.getElementById(inputId);
+    const hiddenField = document.getElementById(hiddenId);
+    const suggestionList = document.getElementById(suggestionListId);
 
-                if (query.length < 3) return; // Skip queries with fewer than 3 characters
+    inputField.addEventListener("input", async (event) => {
+        const query = inputField.value;
+        if (query.length < 3) return;
 
-                try {
-                    const url = `{% url 'autocomplete' %}?query=${query}`; // Use the correct query value
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error("Error fetching suggestions");
+        try {
+            const url = `{% url 'autocomplete' %}?query=${encodeURIComponent(query)}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            suggestionList.innerHTML = "";
 
-                    const data = await response.json();
-                    const suggestions = data.suggestions || [];
+            (data.suggestions || []).forEach(s => {
+                const li = document.createElement("li");
+                li.textContent = s.description;
+                li.classList.add("cursor-pointer", "p-2", "hover:bg-gray-100");
 
-                    // Determine which suggestion list to populate
-                    const suggestionListId = event.target.id === "start_adress" ? "start-suggestion-list" : "end-suggestion-list";
-                    const suggestionList = document.getElementById(suggestionListId);
-
-                    // Populate suggestions list
-                    suggestionList.innerHTML = ""; // Clear previous suggestions
-                    suggestions.forEach((suggestion) => {
-                        const li = document.createElement("li");
-                        li.textContent = suggestion;
-                        li.classList.add("cursor-pointer", "p-2", "hover:bg-gray-100");
-                        li.addEventListener("click", () => {
-                            inputField.value = suggestion; // Set input value
-                            suggestionList.innerHTML = ""; // Clear suggestions
-                        });
-                        suggestionList.appendChild(li);
-                    });
-                } catch (error) {
-                    console.error("Error fetching suggestions:", error);
-                }
+                li.addEventListener("click", async () => {
+                    inputField.value = s.description;
+                    hiddenField.value = s.place_id;  // stocke le place_id
+                    suggestionList.innerHTML = "";
+                });
+                suggestionList.appendChild(li);
             });
-        });
+        } catch (err) {
+            console.error(err);
+        }
+    });
+};
 
-        document.addEventListener("DOMContentLoaded", function () {
+// Initialisation pour start et end
+setupAutocomplete("start_adress", "start_place_id", "start-suggestion-list");
+setupAutocomplete("end_adress", "end_place_id", "end-suggestion-list");
+
+document.addEventListener("DOMContentLoaded", function () {
     const dateFinContainer = document.getElementById("date_fin_container");
     const recurrenceRadios = document.querySelectorAll('input[name="recurrence_type"]');
     const weekdayCheckboxes = document.querySelectorAll('input[name="tr_weekdays"]');
@@ -265,7 +268,6 @@
         checkbox.addEventListener("change", toggleRecurrenceFields);
     });
 });
-
 
 </script>
 

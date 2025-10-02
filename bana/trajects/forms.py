@@ -4,10 +4,20 @@ from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode, 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+TRANSPORT_MODES_CHOICES = [
+    ('car', 'Voiture'),
+    ('bike', 'Vélo'),
+    ('public_transport', 'Transport en commun'),
+    ('walking', 'À pied'),
+]
+
 class TrajectForm(forms.ModelForm):
+    start_place_id = forms.CharField(widget=forms.HiddenInput(), required=False)
+    end_place_id = forms.CharField(widget=forms.HiddenInput(), required=False)
+    
     class Meta:
         model = Traject
-        fields = ['start_adress', 'end_adress','start_cp','end_cp', 'start_locality', 'end_locality',]
+        fields = ['start_adress', 'end_adress', 'start_place_id', 'end_place_id']
         widgets = {
             'start_adress': forms.TextInput(attrs={
                 'id': 'start_adress',
@@ -22,26 +32,6 @@ class TrajectForm(forms.ModelForm):
                 'autocomplete': 'off'
             }),
             
-            'start_cp': forms.NumberInput(attrs={
-                'id': 'start_cp',
-                'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm',
-                'placeholder': 'Code postal'
-            }),
-            'end_cp': forms.NumberInput(attrs={
-                'id': 'end_cp',
-                'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm',
-                'placeholder': 'Code postal'
-            }),
-            'start_locality': forms.TextInput(attrs={
-                'id': 'start_locality',
-                'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm',
-                'placeholder': 'Ville / Commune'
-            }),
-            'end_locality': forms.TextInput(attrs={
-                'id': 'end_locality',
-                'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm',
-                'placeholder': 'Ville / Commune'
-            }),
         }
 
 class ProposedTrajectForm(forms.ModelForm):
@@ -52,6 +42,7 @@ class ProposedTrajectForm(forms.ModelForm):
         required=True,
         error_messages={'required': _("Veuillez sélectionner au moins un moyen de transport.")}
     )
+    
     
     languages = forms.ModelMultipleChoiceField(
         queryset=Languages.objects.all(),
@@ -110,7 +101,7 @@ class ProposedTrajectForm(forms.ModelForm):
 
     tr_weekdays = forms.MultipleChoiceField(
         choices=[(str(i), day) for i, day in
-                 enumerate([_("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")], 1)],
+                 enumerate(["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"], 1)],
         required=False,
         label="Jours spécifiques"
     )
@@ -176,6 +167,8 @@ class ProposedTrajectForm(forms.ModelForm):
             self.fields['date_debut'].required = True
             self.fields['date_fin'].required = True
             self.fields['recurrence_interval'].initial = 1 if recurrence_type == 'weekly' else 2
+
+
 from datetime import date 
 class SimpleProposedTrajectForm(forms.ModelForm):
     # Champs complémentaires (hors modèle)
@@ -313,7 +306,7 @@ class ResearchedTrajectForm(forms.ModelForm):
     
     tr_weekdays = forms.MultipleChoiceField(
         choices=[(str(i), day) for i, day in
-                 enumerate([_("Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche")], 1)],
+                 enumerate(["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"], 1)],
         required=False,
         label="Jours spécifiques"
     )

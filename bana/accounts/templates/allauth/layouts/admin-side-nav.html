@@ -84,16 +84,6 @@
           {% trans "Mes réservations" %}
         </a>
       </li>
-
-    {% comment "Test adress" %}
-      <li>
-        <a href="{% url 'test_address' %}"
-           class="flex items-center gap-2 py-2 px-4 {% if request.path == '/trajects/test_address/' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          <img src="{% static 'bana/img/icon/Icon_reservation' %}{% if request.path == '/trajects/test_address/' %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          Test address
-        </a>
-      </li>
-    {% endcomment %}
     </ul>
   </div>
 
