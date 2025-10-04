@@ -1,0 +1,24 @@
+/* —— Soft: fade + tiny translate —— */
+:root{
+  --toast-enter-ms: 380ms;
+  --toast-leave-ms: 260ms;
+  --toast-shift: 2px;  /* seulement 2px */
+}
+
+@keyframes toast-soft-in  {
+  from { opacity: 0; transform: translateY(calc(var(--toast-shift) * -1)); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes toast-soft-out {
+  to { opacity: 0; transform: translateY(calc(var(--toast-shift) * -1)); }
+}
+
+.animate-toast-enter { animation: toast-soft-in  var(--toast-enter-ms) cubic-bezier(.2,.7,.2,1) !important; }
+.animate-toast-leave { animation: toast-soft-out var(--toast-leave-ms) ease-in forwards !important; }
+.animate-toast-shake { animation: none !important; }
+
+@media (prefers-reduced-motion: reduce){
+  .animate-toast-enter,
+  .animate-toast-leave,
+  .animate-toast-progress { animation: none !important; }
+}

@@ -1,13 +1,38 @@
-{% extends '/home/bana_community/banaProject/bana/accounts/templates/allauth/layouts/base.html' %}
+{% extends "allauth/layouts/base.html" %}
 
 {% block content %}
+<section class="section profile">
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="max-w-2xl mx-auto">
 
+      <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-8">
 
-  <h2>Abonnement</h2>
+        {# Messages globaux (optionnel) #}
+        {% if messages %}
+        <ul class="mb-2 space-y-2">
+          {% for message in messages %}
+          <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
 
-  <p>Payement annulé</p>
+        <h2 class="text-xl font-semibold text-brand">Abonnement</h2>
 
-    <a class="btn " href="{% url 'subscription' %}">Retour au menu de payement</a>
+        <div class="rounded-xl border border-red-200 bg-red-50 p-4 space-y-1">
+          <p class="text-red-700 font-semibold">Payement annulé</p>
+          <p class="text-red-700/80">Votre transaction a été annulée. Vous pouvez réessayer à tout moment.</p>
+        </div>
 
+        <div class="pt-2">
+          <a class="inline-flex items-center px-5 py-2 rounded-full bg-brand text-white hover:bg-brand-dark font-semibold transition"
+             href="{% url 'subscription' %}">
+            Retour au menu de payement
+          </a>
+        </div>
 
+      </div>
+
+    </div>
+  </div>
+</section>
 {% endblock %}

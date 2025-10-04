@@ -56,6 +56,24 @@ def work(request):
             'name': 'André K.',
             'short_bio': '41 ans, papa de 3 enfants, 1, 5 et 8 ans',
             'full_description': 'Comme beaucoup de parents, j’étais assez réticent à confier mes enfants à d’autres. J’ai donc contacté Bana pour discuter de la confiance et de la sécurité : j’ai été très vite rassuré !'
+        },
+         {
+            'img_src': 'bana/img/other/Alex.png',
+            'name': 'Alex M.',
+            'short_bio': '33 ans, papa de Maé, 6 ans',
+            'full_description': 'En tant qu’éducateur spécialisé, j’ai des horaires coupés qui me laissent peu de flexibilité. Avec cette application, j’ai trouvé une solution pour ma fille à moindre coût. Tout le monde y gagne, moi le premier !'
+        },
+        {
+            'img_src': 'bana/img/other/Shilo.png',
+            'name': 'Shilo B.',
+            'short_bio': '10 ans, élève de 5ᵉ primaire',
+            'full_description': 'Ce que j’adore avec Bana, c’est l’idée que je peux passer plus de temps avec mes amis car on va ensemble aux activités, c’est trop cool !'
+        },
+        {
+            'img_src': 'bana/img/other/Ludo.png',
+            'name': 'Ludo B.',
+            'short_bio': '42 ans, papa de 2 garçons, 18 et 10 ans',
+            'full_description': 'J’y ai rencontré des parents très sérieux et flexibles. Nous partageons beaucoup de choses avec des amis qui vont au-delà des trajets de nos enfants.'
         }
     ]
     return render(request, 'work.html', {"work_steps": work_steps, "work_roles": work_roles, "work_profiles": work_profiles})

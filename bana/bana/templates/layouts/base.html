@@ -6,6 +6,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'bana/css/toast.css' %}">
+
     <link href="{% static 'bana/img/icon/favicon.ico' %}" rel="icon">
     <!-- styling part -->
     {% tailwind_css %}
@@ -32,12 +35,13 @@
         {% endblock %}
     </main>
 
-    {% include 'layouts/nav-mobile.html' %}
+    
     {% include 'layouts/footer.html' %}    
     <script src="https://unpkg.com/htmx.org@2.0.3/dist/htmx.js" integrity="sha384-BBDmZzVt6vjz5YbQqZPtFZW82o8QotoM7RUp5xOxV3nSJ8u2pSdtzFAbGKzTlKtg" crossorigin="anonymous"></script>
     <script src="{% static 'bana/js/carroussel.js' %}"></script>
     <script src="{% static 'bana/js/top-mobile-menu.js' %}"></script>
     <script src="{% static 'bana/js/video.js' %}"></script>
+    <script src="{% static 'bana/js/toast.js' %}"></script>
     
     <!--<script>
         document.addEvenListener('htmx:configRequest', (event) => {

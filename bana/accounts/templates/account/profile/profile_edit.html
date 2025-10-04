@@ -75,7 +75,7 @@
             <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Photo de profil" %}</label>
             {{ form.profile_picture }}
             {% if form.profile_picture.errors %}<p class="mt-1 text-xs text-red-600">{{ form.profile_picture.errors }}</p>{% endif %}
-            <p class="mt-1 text-xs text-gray-500">{% trans "PNG, JPG, ou GIF." %}</p>
+            <p class="mt-1 text-xs text-gray-500">{% trans "JPG ou PNG." %}</p>
           </div>
       </section>
 
@@ -93,7 +93,7 @@
 
         <div class="flex flex-col gap-6">
           <div class="max-w-xl">
-            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Adresse (Code postal / Ville)" %}</label>
+            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Ville" %}</label>
             {{ form.address }}
             {% if form.address.errors %}<p class="mt-1 text-xs text-red-600">{{ form.address.errors }}</p>
             {% endif %}

@@ -2,19 +2,22 @@
 
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="{% static 'bana/img/icon/favicon.ico' %}" rel="icon">
 
     {% tailwind_css %}
-    <!--<link href="{% static 'theme/css/dist/styles.css' %}" rel="stylesheet">
-    <link href="{% static 'bana/css/style.css' %}" rel="stylesheet">-->
+    <!--<link href="{% static 'theme/css/dist/styles.css' %}" rel="stylesheet"> -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'bana/css/toast.css' %}">
+
 
     <title>{% block head_title %}{% endblock %}</title>
 </head>
-<body class="relative min-h-screen md:flex"
-      style="background-image: url('{% static 'bana/img/background/Bana_background_lime.png' %}');
+
+<body class="relative min-h-screen md:flex" style="background-image: url('{% static 'bana/img/background/Bana_background_lime.png' %}');
              background-repeat: no-repeat;
              background-size: cover;
              background-position: center;">
@@ -22,10 +25,10 @@
     <!-- Ajouter la bare de navigation de bana -->
 
 
-    
+
     <!-- overlay appliqué au body -->
     <div class="absolute inset-0 bg-white opacity-90 pointer-events-none z-0"></div>
-    
+
 
     <!-- Side navigation (desktop) -->
     <aside class="hidden md:flex md:flex-col md:w-64 bg-white shadow-lg min-h-screen relative z-10">
@@ -46,5 +49,7 @@
 
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <script src="{% static 'bana/js/top-mobile-menu.js' %}"></script>
+    <script defer src="{% static 'bana/js/toast.js' %}"></script>
 </body>
+
 </html>

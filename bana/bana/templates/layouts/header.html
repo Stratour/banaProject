@@ -75,9 +75,8 @@
                     Profil
                 </a>
 
-                <button type="button"
-                        onclick="document.getElementById('logout-modal').showModal()"
-                        class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200">
+                <button type="button" onclick="document.getElementById('logout-modal').showModal()"
+                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200">
                     Déconnexion
                 </button>
 
@@ -125,7 +124,8 @@
             <a href="{% url 'home' %}" class="text-center hover:text-white hover:no-underline">Home</a>
             <a href="{% url 'work' %}" class="text-center hover:text-white hover:no-underline">Comment ça marche ?</a>
             <a href="{% url 'about' %}" class="text-center hover:text-white hover:no-underline">À propos</a>
-            <a href="{% url 'contact' %}" class="text-center text-center hover:text-white hover:no-underline">Contact</a>
+            <a href="{% url 'contact' %}"
+                class="text-center text-center hover:text-white hover:no-underline">Contact</a>
 
 
 
@@ -136,10 +136,9 @@
                     class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
                     Profil
                 </a>
-                
-                <button type="button"
-                        onclick="document.getElementById('logout-modal').showModal()"
-                        class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
+
+                <button type="button" onclick="document.getElementById('logout-modal').showModal()"
+                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
                     Déconnexion
                 </button>
 
@@ -159,42 +158,104 @@
 
     <!-- Flash Messages -->
     {% if messages %}
-    <div class="messages mt-4 w-full space-y-2">
-        {% for message in messages %}
-        <div class="alert p-2 border-2 rounded
-                    {% if 'success' in message.tags %}
-                        bg-green-100 text-green-700 border-green-400
-                    {% else %}
-                        bg-red-100 text-red-700 border-red-400
-                    {% endif %}">
-            {{ message }}
+    <div class="fixed top-6 right-6 z-[9999] pointer-events-none">
+        <div class="flex flex-col items-end gap-4 w-[92vw] max-w-xl">
+
+            {% for message in messages %}
+            {% with tags=message.tags %}
+            <div class="relative pointer-events-auto w-full rounded-2xl bg-white shadow-2xl ring-1 ring-black/5 p-5 sm:p-6 pr-12 animate-toast-enter"
+                role="{% if 'error' in tags or 'danger' in tags %}alert{% else %}status{% endif %}"
+                aria-live="{% if 'error' in tags or 'danger' in tags %}assertive{% else %}polite{% endif %}" data-toast
+                data-toast-timeout="6000" {# plus longtemps, plus visible #}>
+                {# Barre d’accent à gauche (couleur selon statut) #}
+                <span class="absolute inset-y-0 left-0 w-1.5 rounded-l-2xl
+        {% if 'success' in tags %} bg-green-500
+        {% elif 'error' in tags or 'danger' in tags %} bg-red-500
+        {% elif 'warning' in tags %} bg-yellow-500
+        {% else %} bg-blue-500 {% endif %}" aria-hidden="true"></span>
+
+                <div class="flex items-start gap-4">
+                    {# Pastille icône plus grande #}
+                    <div class="shrink-0 rounded-full p-2
+          {% if 'success' in tags %} bg-green-50 text-green-600
+          {% elif 'error' in tags or 'danger' in tags %} bg-red-50 text-red-600
+          {% elif 'warning' in tags %} bg-yellow-50 text-yellow-700
+          {% else %} bg-blue-50 text-blue-600 {% endif %}">
+                        {% if 'success' in tags %}
+                        <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" fill="currentColor" class="opacity-10" />
+                            <path d="M7 12l3 3 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        {% elif 'error' in tags or 'danger' in tags %}
+                        <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" fill="currentColor" class="opacity-10" />
+                            <path d="M8 8l8 8M16 8l-8 8" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" />
+                        </svg>
+                        {% elif 'warning' in tags %}
+                        <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none">
+                            <path d="M12 3l9 16H3l9-16z" fill="currentColor" class="opacity-10" />
+                            <path d="M12 9v5M12 17h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                        </svg>
+                        {% else %}
+                        <svg class="h-7 w-7" viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" fill="currentColor" class="opacity-10" />
+                            <path d="M12 8h.01M11 11h2v5h-2z" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" />
+                        </svg>
+                        {% endif %}
+                    </div>
+
+                    {# Texte plus grand/gras #}
+                    <div class="text-[15px] md:text-base leading-6 text-gray-900 font-semibold">
+                        {{ message }}
+                    </div>
+                </div>
+
+                {# bouton fermer #}
+                <button type="button"
+                    class="absolute top-3 right-3 text-gray-500 hover:text-gray-900 p-1 rounded focus:outline-none"
+                    data-toast-close aria-label="Fermer la notification">
+                    &times;
+                </button>
+
+                {# barre de progression plus épaisse et visible #}
+                <div class="mt-4 h-1.5 rounded-full overflow-hidden bg-gray-100">
+                    <div class="h-full w-full origin-left animate-toast-progress
+          {% if 'success' in tags %} bg-green-500
+          {% elif 'error' in tags or 'danger' in tags %} bg-red-500
+          {% elif 'warning' in tags %} bg-yellow-500
+          {% else %} bg-blue-500 {% endif %}"></div>
+                </div>
+            </div>
+            {% endwith %}
+            {% endfor %}
+
         </div>
-        {% endfor %}
     </div>
     {% endif %}
+
 </header>
 
-{# Ajoute cette modal à la fin de ton template #}
 <dialog id="logout-modal" class="rounded-xl p-0 w-full max-w-md">
-  <form method="post" action="{% url 'accounts:logout' %}" class="p-6 space-y-5">
-    {% csrf_token %}
-    <header class="space-y-1">
-      <h3 class="text-lg font-semibold text-gray-900">Déconnexion</h3>
-      <p class="text-sm text-gray-600">
-        Êtes-vous sûr de vouloir vous déconnecter ?
-      </p>
-    </header>
+    <form method="post" action="{% url 'accounts:logout' %}" class="p-6 space-y-5">
+        {% csrf_token %}
+        <header class="space-y-1">
+            <h3 class="text-lg font-semibold text-gray-900">Déconnexion</h3>
+            <p class="text-sm text-gray-600">
+                Êtes-vous sûr de vouloir vous déconnecter ?
+            </p>
+        </header>
 
-    <div class="flex items-center justify-end gap-3 pt-2">
-      <button type="button"
-              onclick="document.getElementById('logout-modal').close()"
-              class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
-        Annuler
-      </button>
-      <button type="submit"
-              class="bg-brand text-white px-4 py-2 rounded-full font-bold hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
-        Confirmer
-      </button>
-    </div>
-  </form>
+        <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="button" onclick="document.getElementById('logout-modal').close()"
+                class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+                Annuler
+            </button>
+            <button type="submit"
+                class="bg-brand text-white px-4 py-2 rounded-full font-bold hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+                Confirmer
+            </button>
+        </div>
+    </form>
 </dialog>
