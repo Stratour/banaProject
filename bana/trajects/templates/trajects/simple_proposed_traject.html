@@ -31,6 +31,7 @@
         <div>
           <label class="block text-sm font-bold text-brand uppercase mb-1">Ville de départ</label>
           {{ form.start_adress }}
+          <input type="hidden" id="start_place_id" name="start_place_id">
           <ul id="start-suggestion-list"
           class="bg-white shadow-md mt-1 max-h-48 overflow-auto"></ul>
         </div>
@@ -91,38 +92,41 @@
 </div>
 
 <script>
-  document.querySelectorAll("#start_adress").forEach((inputField) => {
+const setupAutocomplete = (inputId, hiddenId, suggestionListId) => {
+    const inputField = document.getElementById(inputId);
+    const hiddenField = document.getElementById(hiddenId);
+    const suggestionList = document.getElementById(suggestionListId);
+
     inputField.addEventListener("input", async (event) => {
-      const query = event.target.value;
-      if (query.length < 3) return;
-      
-      try {
-        const url = `{% url 'autocomplete' %}?query=${query}`;
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Erreur lors de la récupération");
-        
-        const data = await response.json();
-        const suggestions = data.suggestions || [];
-        
-        const suggestionListId = event.target.id === "start_adress"
-        ? "start-suggestion-list" : "end-suggestion-list";
-        const suggestionList = document.getElementById(suggestionListId);
-        
-        suggestionList.innerHTML = "";
-        suggestions.forEach((suggestion) => {
-          const li = document.createElement("li");
-          li.textContent = suggestion;
-          li.classList.add("cursor-pointer", "p-2", "hover:bg-gray-100");
-          li.addEventListener("click", () => {
-            inputField.value = suggestion;
+        const query = inputField.value;
+        if (query.length < 3) return;
+
+        try {
+            const url = `{% url 'autocomplete' %}?query=${encodeURIComponent(query)}`;
+            const response = await fetch(url);
+            const data = await response.json();
             suggestionList.innerHTML = "";
-          });
-          suggestionList.appendChild(li);
-        });
-      } catch (error) {
-        console.error("Erreur de suggestions :", error);
-      }
+
+            (data.suggestions || []).forEach(s => {
+                const li = document.createElement("li");
+                li.textContent = s.description;
+                li.classList.add("cursor-pointer", "p-2", "hover:bg-gray-100");
+
+                li.addEventListener("click", async () => {
+                    inputField.value = s.description;
+                    hiddenField.value = s.place_id;  // stocke le place_id
+                    suggestionList.innerHTML = "";
+                });
+                suggestionList.appendChild(li);
+            });
+        } catch (err) {
+            console.error(err);
+        }
     });
-  });
+};
+
+// Initialisation pour start et end
+setupAutocomplete("start_adress", "start_place_id", "start-suggestion-list");
+setupAutocomplete("end_adress", "end_place_id", "end-suggestion-list");
 </script>
 {% endblock %}

@@ -51,6 +51,12 @@ class ProposedTraject(models.Model):
     #number_of_places = models.CharField(max_length=1, choices=NUMBER_PLACE, null=True, blank=True)
     number_of_places = models.PositiveSmallIntegerField(default=1, null=False)
 
+    search_radius_km = models.IntegerField(
+        default=5,
+        verbose_name="Rayon de recherche (km)",
+        help_text="Rayon en kilomètres pour les trajets simples (5 km par défaut)"
+    )
+    
     details = models.TextField(max_length=255, null=True, blank=True)
     
     # Modes de transport

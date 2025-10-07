@@ -42,7 +42,7 @@
             {% if user.profile.ci_is_verified %}
             {{ user.profile.verified_first_name }} {{ user.profile.verified_last_name|slice:":1" }}.
             {% elif user.first_name %}
-            {{ user.first_name }} {{ user.last_name }}
+            {{ user.first_name }} {{ user.last_name|slice:":1" }}
             {% else %}
             {{ user.get_full_name|default:user.username }}
             {% endif %}

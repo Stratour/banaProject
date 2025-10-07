@@ -191,14 +191,14 @@ class SimpleProposedTrajectForm(forms.ModelForm):
     
     tr_weekdays = forms.ChoiceField(
         choices=[
-            _(("", "-- Sélectionnez un jour --"),
+            ("", "-- Sélectionnez un jour --"),
             ("1", "Lundi"),
             ("2", "Mardi"),
             ("3", "Mercredi"),
             ("4", "Jeudi"),
             ("5", "Vendredi"),
             ("6", "Samedi"),
-            ("7", "Dimanche"))
+            ("7", "Dimanche")
         ],
         widget=forms.Select(attrs={
             'class': 'block w-full mt-1 rounded-full border-brand shadow-sm focus:ring-brand focus:border-brand'
@@ -236,7 +236,7 @@ class SimpleProposedTrajectForm(forms.ModelForm):
                 'id': 'start_adress',
                 'class': 'w-full p-3 mt-1 border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand',
                 'placeholder': _('Entrez le point de départ (Adresse, ville, code postal)'),
-                'autocomplete': 'on'
+                'autocomplete': 'off'
             }),
         }
 
