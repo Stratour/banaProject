@@ -3,20 +3,12 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-MW75MD39C1"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-  
-    gtag('config', 'G-MW75MD39C1');
-  </script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-  <link href="{% static 'bana/img/icon/favicon.ico' %}" rel="icon">
-  <!-- styling part -->
-  {% tailwind_css %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="{% static 'bana/img/icon/favicon.ico' %}" rel="icon">
+    <!-- styling part -->
+    {% tailwind_css %}
 
   <!-- js -->
   {% comment "" %}
@@ -26,12 +18,14 @@
      
     <!--<link href="{% static 'theme/css/dist/styles.css' %}" rel="stylesheet">-->
     <!--<link href="{% static 'bana/css/style.css' %}" rel="stylesheet">-->
+    <link href="{% static 'src/style.css' %}" rel="stylesheet">
 
   <script src="https://unpkg.com/htmx.org@1.9.10"></script>
   <script src="https://js.stripe.com/basil/stripe.js"></script>
 
   <title>{% block title %}{% endblock  %}</title>
 </head>
+
 
 <body class="min-h-screen flex flex-col">
     {% include 'layouts/header.html' %}
@@ -41,12 +35,13 @@
         {% endblock %}
     </main>
 
-    {% include 'layouts/nav-mobile.html' %}
+    
     {% include 'layouts/footer.html' %}    
     <script src="https://unpkg.com/htmx.org@2.0.3/dist/htmx.js" integrity="sha384-BBDmZzVt6vjz5YbQqZPtFZW82o8QotoM7RUp5xOxV3nSJ8u2pSdtzFAbGKzTlKtg" crossorigin="anonymous"></script>
     <script src="{% static 'bana/js/carroussel.js' %}"></script>
     <script src="{% static 'bana/js/top-mobile-menu.js' %}"></script>
     <script src="{% static 'bana/js/video.js' %}"></script>
+    <script src="{% static 'bana/js/toast.js' %}"></script>
     
     <!--<script>
         document.addEvenListener('htmx:configRequest', (event) => {

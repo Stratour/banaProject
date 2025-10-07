@@ -23,15 +23,15 @@
     {% endif %}
   </div>
 
-  <!-- Badge profil vérifié -->
-  {% if user.profile.prfl_is_verified %}
-    <span class="absolute z-10 -top-1 -left-1 inline-flex h-8 w-8 rounded-full bg-white ring-4 ring-white shadow">
-      <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
-        <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
-    </span>
-  {% endif %}
+      <!-- Badge profil vérifié -->
+      {% if user.profile.prfl_is_verified %}
+      <span class="absolute z-10 -top-1 -left-1 inline-flex h-8 w-8 rounded-full bg-white ring-4 ring-white shadow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
+          <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </span>
+      {% endif %}
 
 
 
@@ -40,13 +40,13 @@
         <div class="flex items-center gap-3 flex-wrap">
           <p class="text-xl sm:text-2xl font-extrabold text-gray-800 leading-tight truncate">
             {% if user.profile.ci_is_verified %}
-            {{ user.profile.verified_first_name }} {{ user.profile.verified_last_name|slice:":1" }}.
+            {{ user.profile.verified_first_name|capfirst }}
+            {% if user.profile.verified_last_name %} {{ user.profile.verified_last_name|slice:":1"|upper }}.{% endif %}
             {% elif user.first_name %}
             {{ user.first_name }} {{ user.last_name|slice:":1" }}
             {% else %}
             {{ user.get_full_name|default:user.username }}
             {% endif %}
-
           </p>
 
           {% comment "Etoile ne se met pas en couleur" %}

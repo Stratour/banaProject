@@ -112,19 +112,7 @@ ASGI_APPLICATION = 'bana.asgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    
-    # === Base de données de test ===
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'bana_digit_test',      # DB test
-        'USER': 'bana_raphael_psql',
-        'PASSWORD': 'R@ph@€|__P$Q|--B@n@C0mmùn1t1',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
-"""
-# === Base de données de prod ===
+    # === Base de données de prod ===
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',  #'django.db.backends.postgresql',
         'NAME': 'bana_digit_community',
@@ -137,8 +125,18 @@ DATABASES = {
         },
     },
 }
+"""    
+    # === Base de données de test ===
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'bana_digit_test',      # DB test
+        'USER': 'bana_raphael_psql',
+        'PASSWORD': 'R@ph@€|__P$Q|--B@n@C0mmùn1t1',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
+}
 """
-
 """
 DATABASES = {
     'default': {

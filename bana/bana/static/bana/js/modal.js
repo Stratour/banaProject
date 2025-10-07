@@ -34,5 +34,3 @@ window.onclick = function(event) {
     registerModal.style.display = 'none';
   }
 }
-
-

@@ -41,7 +41,7 @@
         </div>
 
         <div class="h-[1/2] block md:hidden">
-            <img class="object-cover" src="{% static 'bana/img/other/Bana_circle_bottom.png' %}"
+            <img class="object-cover mb-4 md:mb-0" src="{% static 'bana/img/other/Bana_circle_bottom.png' %}"
                 alt="Circle with logo Bana">
         </div>
 
@@ -66,27 +66,27 @@
     <div class="flex flex-col items-center gap-6 md:flex-row md:justify-center md:gap-8 md:mt-12 mb-12">
         <div class="w-full p-6 md:w-1/2">
             <div class="relative w-full">
-                <!-- Tablet Frame (Ensures it's on top) -->
+                <!-- Cadre tablette au-dessus -->
                 <img src="{% static 'bana/img/other/tablet.png' %}" alt="Tablet Frame"
-                    class="w-full relative z-20 pointer-events-none">
+                    class="w-full relative z-20 pointer-events-none select-none">
 
-                <!-- Video Element (Hidden Initially) -->
-                <video id="video-element" class="absolute top-0 left-0 w-auto h-full hidden z-0 px-2 md:px-8" controls>
-                    <source src="{% static 'bana/video/how_it_works.mp4' %}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
+                <!-- Fenêtre écran à l'intérieur de la tablette -->
+                <div class="absolute z-10
+                top-[5%] left-[5%] right-[5%] bottom-[5%]
+                overflow-hidden">
+                    <!-- Vidéo (remplit la fenêtre) -->
+                    <video id="video-element" class="w-full h-full object-cover hidden" controls>
+                        <source src="{% static 'bana/video/how_it_works.mp4' %}" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
 
-                <!-- Video Thumbnail & Play Button -->
-                <div id="video-container"
-                    class="absolute top-0 left-0 w-full h-full flex items-center justify-center cursor-pointer z-10">
-                    <img src="{% static 'bana/img/other/video-thumbnail.avif' %}" alt="Video Thumbnail"
-                        class="w-full h-full object-cover">
-
-                    <!-- Play Button -->
-                    <div class="absolute">
+                    <!-- Miniature + bouton lecture (dans la même fenêtre) -->
+                    <button id="play-overlay" class="absolute inset-0 flex items-center justify-center cursor-pointer">
+                        <img src="{% static 'bana/img/other/video-thumbnail.avif' %}" alt="Video Thumbnail"
+                            class="absolute inset-0 w-full h-full object-cover">
                         <img src="{% static 'bana/img/icon/Icon_play.svg' %}" alt="Play Button"
-                            class="w-16 h-16 md:w-32 h-32">
-                    </div>
+                            class="relative w-16 h-16 md:w-24 md:h-24">
+                    </button>
                 </div>
             </div>
         </div>
@@ -97,7 +97,7 @@
                     Découvrez comment ça fonctionne en 30 secondes !
                 </h3>
             </div>
-            
+
         </div>
     </div>
 
