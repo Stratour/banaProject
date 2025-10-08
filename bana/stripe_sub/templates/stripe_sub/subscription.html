@@ -20,10 +20,10 @@
 
         <h2 class="text-xl font-semibold text-brand">Mon abonnement</h2>
 
-        <div class="grid gap-6 md:grid-cols-3">
+        <div class="grid gap-6 grid-cols-1">
 
           {# ——— Description (Parent / Yaya) ——— #}
-          <section class="md:col-span-3 rounded-xl border border-gray-200 p-4 space-y-4">
+          <section class="rounded-xl border border-gray-200 p-4 space-y-4">
             {% if request.user.profile.service == "Parent" %}
 
               <!-- 🔎 Description Parent (texte original conservé) -->
@@ -56,7 +56,7 @@
           </section>
 
           {# ——— Bloc abonnement (actif / inactif) ——— #}
-          <section class="md:col-span-3 rounded-xl border border-gray-200 p-4 space-y-4">
+          <section class="rounded-xl border border-gray-200 p-4 space-y-4">
 
             {% if active_subscription %}
               <div class="grid sm:grid-cols-2 gap-6">
