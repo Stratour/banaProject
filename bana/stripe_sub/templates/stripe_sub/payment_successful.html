@@ -1,26 +1,47 @@
 {% extends "allauth/layouts/base.html" %}
 
 {% block content %}
-<div class="container py-5 text-center">
-    {% if error %}
-        <div class="alert alert-danger">
-            ❌ Erreur : {{ error }}
-        </div>
-    {% else %}
-        <div class="card shadow p-5">
-            <h2 class="mb-4">✅ Abonnement activé avec succès</h2>
+<section class="section profile">
+  <div class="container" data-aos="fade-up" data-aos-delay="100">
+    <div class="max-w-3xl mx-auto">
+
+      <!-- Carte abonnement -->
+      <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-8">
+          <div class="rounded-xl border border-green-200 bg-green-50 p-6 space-y-4">
+            <h2 class="text-lg font-semibold text-green-600">✅ Abonnement activé avec succès</h2>
+            
+            <div class="grid sm:grid-cols-2 gap-6">
+              <div>
+                <p class="block text-sm font-bold text-brand uppercase mb-1">Produit</p>
+                <p class="text-gray-800 font-semibold">{{ product }}</p>
+              </div>
+              <div>
+                <p class="block text-sm font-bold text-brand uppercase mb-1">Prix</p>
+                <p class="text-gray-800 font-semibold">{{ price }} € / an</p>
+              </div>
+              <div>
+                <p class="block text-sm font-bold text-brand uppercase mb-1">Début</p>
+                <p class="text-gray-800">{{ start_date|date:"d/m/Y" }}</p>
+              </div>
+              <div>
+                <p class="block text-sm font-bold text-brand uppercase mb-1">Fin</p>
+                <p class="text-gray-800">{{ end_date|date:"d/m/Y" }}</p>
+              </div>
+            </div>
 
             <p>Votre abonnement <strong>{{ product }}</strong> est maintenant actif.</p>
-            <p>Il restera valide jusqu’au 
-                <strong>{{ end_date|date:"d/m/Y" }}</strong>.
-            </p>
+            <p>Il restera valide jusqu’au <strong>{{ end_date|date:"d/m/Y" }}</strong>.</p>
 
             <div class="mt-4">
-                <a href="{% url 'subscription' %}" class="btn btn-primary">
-                    Voir mon abonnement
-                </a>
+              <a href="{% url 'subscription' %}" class="inline-flex items-center px-5 py-2 rounded-full bg-brand text-white hover:bg-brand-dark font-semibold transition">
+                Retour
+              </a>
             </div>
-        </div>
-    {% endif %}
-</div>
+          </div>
+
+      </div>
+
+    </div>
+  </div>
+</section>
 {% endblock %}

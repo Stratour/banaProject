@@ -10,14 +10,6 @@
       <!-- Carte parent conforme au layout commun -->
       <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-8">
 
-        {% if messages %}
-        <ul class="mb-2 space-y-2">
-          {% for message in messages %}
-          <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
-          {% endfor %}
-        </ul>
-        {% endif %}
-
         <h2 class="text-xl font-semibold text-brand">Mon abonnement</h2>
 
         <div class="grid gap-6 grid-cols-1">
@@ -56,7 +48,7 @@
           </section>
 
           {# ——— Bloc abonnement (actif / inactif) ——— #}
-          <section class="rounded-xl border border-gray-200 p-4 space-y-4">
+          <section class="rounded-xl border border-green-200 bg-green-50 p-6 space-y-4">
 
             {% if active_subscription %}
               <div class="grid sm:grid-cols-2 gap-6">
@@ -66,7 +58,9 @@
                   <p class="font-semibold text-gray-800">{{ active_subscription.product_name }}</p>
                 </div>
 
-                <div>
+                {% comment "" %}
+                
+                {% endcomment %}<div>
                   <p class="block text-sm font-bold text-brand uppercase mb-1">Statut</p>
                   {% if active_subscription.is_active %}
                     <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium">✅ Actif</span>
@@ -81,14 +75,8 @@
                 </div>
 
                 <div>
-                  <p class="block text-sm font-bold text-brand uppercase mb-1">Date de début</p>
-                  <p>
-                    {% if active_subscription.current_period_start %}
-                      {{ active_subscription.current_period_start|date:"d/m/Y" }}
-                    {% else %}
-                      Non définie
-                    {% endif %}
-                  </p>
+                  <p class="block text-sm font-bold text-brand uppercase mb-1">Période de l'abonnement</p>
+                  <p>{{ active_subscription.current_period_start|date:"d/m/Y" }} ➔ {{ active_subscription.current_period_end|date:"d/m/Y" }}</p>
                 </div>
 
                 {# ——— Conserve ton commentaire d’origine ——— #}

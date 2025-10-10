@@ -7,6 +7,16 @@
 <section class="section profile">
   <div class="container" data-aos="fade-up" data-aos-delay="100">
     <div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+    {% if messages %}
+    <ul class="mb-6 space-y-2">
+      {% for message in messages %}
+        <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+      {% comment "A revoir plus tard" %}
+
       {# ——— Messages ——— #}
       {% if messages %}
       <div class="fixed top-6 right-6 z-[9999] pointer-events-none">
@@ -84,7 +94,7 @@
         </div>
       </div>
       {% endif %}
-
+{% endcomment %}
       <div 
           id="public-profile-section"
           hx-get="{% url 'accounts:profile_public' %}" 

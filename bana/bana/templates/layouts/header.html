@@ -188,6 +188,16 @@
         </div>
     </div>
 
+  {% if messages %}
+    <ul class="mb-6 space-y-2">
+      {% for message in messages %}
+        <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% comment "Arevoir plus tard" %}
+
+
     <!-- Flash Messages -->
     {% if messages %}
     <div class="fixed top-6 right-6 z-[9999] pointer-events-none">
@@ -266,6 +276,7 @@
         </div>
     </div>
     {% endif %}
+{% endcomment %}
 
 </header>
 

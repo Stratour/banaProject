@@ -37,7 +37,7 @@ Mes réservations
                 
                 {% with u=r.proposed_traject.user %}
                   {% if u.profile.profile_picture %}
-                  <a href="{% url 'accounts:profile_user' user_id=r.proposed_traject.user.id %}">
+                  <a href="{% if is_abonned %}{% url 'accounts:profile_user' user_id=r.proposed_traject.user.id %}{% endif %}">
                     <img src="{{ u.profile.profile_picture.url }}" alt=""
                          class="h-10 w-10 rounded-full object-cover ring-2 ring-white shadow-sm">
                   </a>
@@ -232,12 +232,18 @@ Mes réservations
                 {% endfor %}
             </div>
               </div>
-            </div>
+
+              {% if r.status == 'confirmed' %}
+              {% if is_abonned %}
+                <a href="mailto:{{r.proposed_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand transition">Contacter par email</div></a>
+                {% endif %}
+              {% endif %}
+            
 
             <!-- Footer -->
             {% if is_abonned %}
                         
-            <footer class="mt-5 flex items-center justify-end">
+            <footer class=" flex items-center justify-end">
               <a href="{% url 'accounts:profile_user' user_id=r.proposed_traject.user.id %}"
                  class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
                 Voir le profil
@@ -248,8 +254,11 @@ Mes réservations
               </a>
             </footer>
             {% endif %}
+            </div>
           </article>
         {% endfor %}
+
+        
       </div>
     {% else %}
       <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
@@ -275,13 +284,13 @@ Mes réservations
               <div class="flex items-center gap-3 min-w-0">
                 {% with u=r.researched_traject.user %}
                   {% if u.profile.profile_picture %}
-                  <a href="{% url 'accounts:profile_user' user_id=r.researched_traject.user.id %}">
+                  <a href="{% if is_abonned %}{% url 'accounts:profile_user' user_id=r.researched_traject.user.id %}{% endif %}">
                     <img src="{{ u.profile.profile_picture.url }}" alt=""
                          class="h-10 w-10 rounded-full object-cover ring-2 ring-white shadow-sm">
                   </a>
                   {% else %}
                     <div class="h-10 w-10 rounded-full bg-brand/10 text-brand flex items-center justify-center font-semibold">
-                      <a href="{% url 'accounts:profile_user' user_id=r.researched_traject.user.id %}">
+                      <a href="{% if is_abonned %}{% url 'accounts:profile_user' user_id=r.researched_traject.user.id %}{% endif %}">
                       {{ u.first_name|default:u.username|slice:":1"|upper }}
                       </a>
                     </div>
@@ -427,7 +436,28 @@ Mes réservations
                   <span class="text-gray-400">Non spécifié</span>
                 {% endfor %}
                 </div>
+                
               </div>
+              {% if r.status == 'confirmed' %}
+              {% if is_abonned %}
+                <a href="mailto:{{r.researched_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand transition">Contacter par email</div></a>
+                {% endif %}
+              {% endif %}
+
+              <!-- Footer -->
+            {% if is_abonned %}
+                        
+            <footer class="flex items-center justify-end">
+              <a href="{% url 'accounts:profile_user' user_id=r.researched_traject.user.id %}"
+                 class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+                Voir le profil
+                <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5l7 7-7 7"/>
+                </svg>
+              </a>
+            </footer>
+            {% endif %}
             </div>
 
             {% if r.status == 'pending' %}
@@ -452,9 +482,10 @@ Mes réservations
                   Refuser
                 </a>
 
-                {% comment "" %}
-                <a href="mailto:lucacamilleri55@gmail.com"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand transition">Contacter par email</div></a>
-                {% endcomment %}
+                {% if is_abonned %}
+                <a href="mailto:{{r.researched_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand/30 bg-brand-50 text-brand font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand transition">Contacter par email</div></a>
+                {% endif %}
+                
                 {% else %}
                   <a href="{% url 'subscription' %}">
                     <button type="button" class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white hover:bg-brand-50 hover:text-brand rounded-full">
