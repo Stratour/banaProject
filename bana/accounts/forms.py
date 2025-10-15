@@ -192,17 +192,15 @@ class ReviewForm(TailwindFormMixin, forms.ModelForm):
         model = Review
         fields = ['rating', 'comment']
         widgets = {
-            # Select => no rounded
             'rating': forms.Select(
                 choices=[(i, f"⭐ {i}") for i in range(1, 6)],
                 attrs={
-                    'class': 'mt-1 w-full border border-brand p-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-none'
+                    'class': 'mt-1 w-full border border-gray-300 p-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-md'
                 }
             ),
-            # Textarea => no rounded
             'comment': forms.Textarea(
                 attrs={
-                    'class': 'mt-1 w-full border border-brand p-2 shadow-sm focus:ring-brand focus:border-brand rounded-none',
+                    'class': 'mt-1 w-full border border-gray-300 p-2 shadow-sm focus:ring-brand focus:border-brand rounded-md',
                     'rows': 4,
                     'placeholder': 'Laissez un commentaire constructif...'
                 }

@@ -3,8 +3,8 @@
 {% load i18n %}
 
 {% block content %}
-{% blocktranslate with site_name=current_site.name %}Merci de t’être inscrit sur {{ site_name }} !
-Pour finaliser ton inscription et confirmer ton adresse e-mail, clique sur le lien ci-dessous :
+{% blocktranslate with site_name=current_site.name %}Merci pour votre inscription sur {{ site_name }} !
+Afin de finaliser votre inscription et de confirmer votre adresse e-mail, veuillez cliquer sur le lien ci-dessous :
 {% endblocktranslate %}
 {{ activate_url }}
 {% endblock content %}

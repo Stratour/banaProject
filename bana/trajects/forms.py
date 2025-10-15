@@ -4,12 +4,6 @@ from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode, 
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
-TRANSPORT_MODES_CHOICES = [
-    ('car', 'Voiture'),
-    ('bike', 'Vélo'),
-    ('public_transport', 'Transport en commun'),
-    ('walking', 'À pied'),
-]
 
 class TrajectForm(forms.ModelForm):
     start_place_id = forms.CharField(widget=forms.HiddenInput(), required=False)
@@ -36,13 +30,14 @@ class TrajectForm(forms.ModelForm):
 
 class ProposedTrajectForm(forms.ModelForm):
     transport_modes = forms.ModelMultipleChoiceField(
-        queryset=TransportMode.objects.all(),
-        widget=forms.CheckboxSelectMultiple(attrs={'class': 'inline-flex items-center space-x-1'}),
+        queryset=TransportMode.objects.all(),    
+        widget=forms.CheckboxSelectMultiple(attrs={
+            'class': 'form-checkbox h-5 w-5 text-brand'
+        }),
         label="Moyens de transport",
         required=True,
         error_messages={'required': _("Veuillez sélectionner au moins un moyen de transport.")}
     )
-    
     
     languages = forms.ModelMultipleChoiceField(
         queryset=Languages.objects.all(),
@@ -156,6 +151,14 @@ class ProposedTrajectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # Traduction des labels pour chaque transport_mode
+        self.fields['transport_modes'].label_from_instance = lambda obj: {
+            'car': _('Voiture'),
+            'bike': _('Vélo'),
+            'transport': _('Transport en commun'),
+            'walking': _('À pied'),
+        }.get(obj.name, obj.name)  # obj.name = identifiant stocké en DB
+        
         # Initialiser les champs de récurrence selon le type sélectionné
         recurrence_type = self.initial.get('recurrence_type', '') or self.data.get('recurrence_type')
 
@@ -223,6 +226,17 @@ class SimpleProposedTrajectForm(forms.ModelForm):
 
         return date_debut
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Traduction des labels pour chaque transport_mode
+        self.fields['transport_modes'].label_from_instance = lambda obj: {
+            'car': _('Voiture'),
+            'bike': _('Vélo'),
+            'transport': _('Transport en commun'),
+            'walking': _('À pied'),
+        }.get(obj.name, obj.name)  # obj.name = identifiant stocké en DB
+        
     class Meta:
         model = Traject
         fields = ['start_adress',"number_of_places"]
@@ -243,8 +257,10 @@ class SimpleProposedTrajectForm(forms.ModelForm):
     
 class ResearchedTrajectForm(forms.ModelForm):    
     transport_modes = forms.ModelMultipleChoiceField(
-        queryset=TransportMode.objects.all(),
-        widget=forms.CheckboxSelectMultiple(attrs={'class': 'inline-flex items-center space-x-1'}),
+        queryset=TransportMode.objects.all(),  
+        widget=forms.CheckboxSelectMultiple(attrs={
+            'class': 'form-checkbox h-5 w-5 text-brand'
+        }),
         label="Moyens de transport",
         required=True,
         error_messages={'required': _("Veuillez sélectionner au moins un moyen de transport.")}
@@ -353,6 +369,14 @@ class ResearchedTrajectForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
+        # Traduction des labels pour chaque transport_mode
+        self.fields['transport_modes'].label_from_instance = lambda obj: {
+            'car': _('Voiture'),
+            'bike': _('Vélo'),
+            'transport': _('Transport en commun'),
+            'walking': _('À pied'),
+        }.get(obj.name, obj.name)  # obj.name = identifiant stocké en DB
+        
         recurrence_type = self.initial.get('recurrence_type', '') or self.data.get('recurrence_type')
 
         if recurrence_type == 'none':

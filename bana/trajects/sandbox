@@ -1,2 +1,0 @@
-        nb_child = request.POST.get(''
-

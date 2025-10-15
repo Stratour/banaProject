@@ -183,14 +183,14 @@ Mes réservations
                   {% with label=mode.name|default:mode %}
                     {% with key=label|lower %}
                       <span class="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand-50 text-brand px-2.5 py-1 text-xs font-medium">
-                        {% if "car" in key or "voiture" in key %}
+                        {% if "car"  %}
                           <!-- car -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
                                   <p>Voiture</p>
                           </svg>
-                        {% elif "bike" in key or "vélo" in key or "bicycle" in key %}
+                        {% elif "bike"  %}
                           <!-- bike -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <circle cx="6" cy="17" r="3" stroke-width="2"/>
@@ -199,7 +199,7 @@ Mes réservations
                                   d="M6 17l6-8 2 3h4"/>
                                   <p>Vélo</p>
                           </svg>
-                        {% elif "public" in key or "bus" in key or "tram" in key or "metro" in key or "métro" in key or "train" in key %}
+                        {% elif "transport" in key %}
                           <!-- bus/tram -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <rect x="4" y="4" width="16" height="12" rx="2" stroke-width="2"/>
@@ -208,7 +208,7 @@ Mes réservations
                             <circle cx="8" cy="16" r="1" />
                             <circle cx="16" cy="16" r="1" />
                           </svg>
-                        {% elif "walk" in key or "foot" in key or "marche" in key or "à pied" in key %}
+                        {% elif "walking" in key  %}
                           <!-- walking -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -235,12 +235,10 @@ Mes réservations
 
               {% if r.status == 'confirmed' %}
               {% if is_abonned %}
-                <a href="mailto:{{r.proposed_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand transition">Contacter par email</div></a>
+                <a href="mailto:{{r.proposed_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand/30 text-brand hover:bg-brand-300 hover:text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 transition">Contacter par email</div></a>
                 {% endif %}
               {% endif %}
-            
-
-            <!-- Footer -->
+              <!-- Footer -->
             {% if is_abonned %}
                         
             <footer class=" flex items-center justify-end">
@@ -254,6 +252,10 @@ Mes réservations
               </a>
             </footer>
             {% endif %}
+            
+
+            
+
             </div>
           </article>
         {% endfor %}
@@ -440,24 +442,11 @@ Mes réservations
               </div>
               {% if r.status == 'confirmed' %}
               {% if is_abonned %}
-                <a href="mailto:{{r.researched_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand transition">Contacter par email</div></a>
+                <a href="mailto:{{r.researched_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand/30 text-brand hover:bg-brand-300 hover:text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 transition">Contacter par email</div></a>
                 {% endif %}
               {% endif %}
 
-              <!-- Footer -->
-            {% if is_abonned %}
-                        
-            <footer class="flex items-center justify-end">
-              <a href="{% url 'accounts:profile_user' user_id=r.researched_traject.user.id %}"
-                 class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
-                Voir le profil
-                <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 5l7 7-7 7"/>
-                </svg>
-              </a>
-            </footer>
-            {% endif %}
+            
             </div>
 
             {% if r.status == 'pending' %}
@@ -483,7 +472,7 @@ Mes réservations
                 </a>
 
                 {% if is_abonned %}
-                <a href="mailto:{{r.researched_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand/30 bg-brand-50 text-brand font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand transition">Contacter par email</div></a>
+                <a href="mailto:{{r.researched_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand/30 text-brand hover:bg-brand-300 hover:text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 transition">Contacter par email</div></a>
                 {% endif %}
                 
                 {% else %}
@@ -496,6 +485,23 @@ Mes réservations
                 
               </footer>
             {% endif %}
+
+            <!-- Footer -->
+            {% if is_abonned %}
+                        
+            <div class=" flex items-center justify-end">
+              <a href="{% url 'accounts:profile_user' user_id=r.proposed_traject.user.id %}"
+                 class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+                Voir le profil
+                <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5l7 7-7 7"/>
+                </svg>
+              </a>
+            </div>
+            {% endif %}
+
+            
           </article>
         {% endfor %}
       </div>

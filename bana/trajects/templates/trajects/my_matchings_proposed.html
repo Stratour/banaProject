@@ -1,4 +1,5 @@
 {% extends "allauth/layouts/base.html" %}
+{% load i18n %}
 
 {% block head_title %}Trajet proposé - BanaCommunity{% endblock %}
 
@@ -57,10 +58,12 @@
         <p class="text-sm text-gray-700">
           <strong>Transport :</strong>
           {% for mode in request.transport_modes.all %}
-          {{ mode.name }}{% if not forloop.last %}, {% endif %}
+          {{ mode.display_name }}{% if not forloop.last %}, {% endif %}
           {% empty %}
-          Non spécifié
+              Non spécifié
           {% endfor %}
+
+          
         </p>
         <p class="text-sm text-gray-700">
           <strong>Nombre d'enfant(s) :</strong> {{ request.children.count }}

@@ -26,6 +26,7 @@ urlpatterns = [
 
     path('profil_child/', views.profile_children_view, name='profile_child'),
     path('add_child/', views.add_child_view, name='add_child'),
+    path('delete_child/<int:child_id>/', views.delete_child_view, name='delete_child'),
 
     path('pop_profile/', views.pop_profile, name='pop_profile'),
 ]

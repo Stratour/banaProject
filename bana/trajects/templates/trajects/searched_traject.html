@@ -100,13 +100,29 @@
           {{ researched_form.date_fin }}
         </div>
       </div>
-      <div>
-        <label class="block text-sm font-medium uppercase text-brand mb-1">{% trans "Moyen de transport" %}</label>
-        {{ researched_form.transport_modes }}
+      <div class="max-w-xl">
+        <label class="block text-sm font-medium uppercase text-brand mb-1">
+          {% trans "Moyen de transport" %}
+        </label>
+
+        <div class="flex flex-wrap gap-2">
+          {% for cb in researched_form.transport_modes %}
+            <label class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-md border border-gray-200 hover:bg-gray-50 cursor-pointer transition">
+              {{ cb.tag }}
+              <span class="text-gray-700">{{ cb.choice_label }}</span>
+            </label>
+          {% endfor %}
+        </div>
+
+        {% if researched_form.transport_modes.errors %}
+          <p class="mt-1 text-xs text-red-600">
+            {{ researched_form.transport_modes.errors }}
+          </p>
+        {% endif %}
       </div>
     </div>
-  </div>
-  
+      </div>
+
   <hr class="my-10">
   
   <!-- Étape 3 : enfants -->

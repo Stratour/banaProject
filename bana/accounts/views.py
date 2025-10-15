@@ -104,7 +104,27 @@ def delete_review(request, user_id):
 def profile_public(request):
     """Fragment/section profil public de l’utilisateur connecté."""
     Profile.objects.get_or_create(user=request.user)
-    return render(request, "account/partials/profile_public.html")
+    
+    # Récupération des avis reçus
+    reviews = Review.objects.filter(reviewed_user=request.user)
+    reviews_count = reviews.count()
+    average_rating = reviews.aggregate(Avg("rating"))["rating__avg"] or 0
+
+    # Calcul des étoiles
+    full_stars = int(floor(average_rating))
+    has_half_star = (average_rating - full_stars) >= 0.5
+    empty_stars = 5 - full_stars - (1 if has_half_star else 0)
+
+    context = {
+        "reviews": reviews,
+        "reviews_count": reviews_count,
+        "average_rating": round(average_rating, 1),
+        "full_stars": full_stars,
+        "has_half_star": has_half_star,
+        "empty_stars": empty_stars,
+    }
+        
+    return render(request, "account/partials/profile_public.html", context)
 
 
 @login_required
@@ -280,13 +300,30 @@ def add_child_view(request):
             child = form.save(commit=False)
             child.chld_user = request.user
             child.save()
-            return redirect("accounts:add_child")
+            messages.success(request, "Enfant ajouté avec succès.")
+            return redirect("accounts:profile_child")
     else:
         form = ChildForm()
 
     children = request.user.children.all()
     return render(request, "account/profile/profil_add_child.html", {"form": form, "children": children})
-    
+
+@login_required
+def delete_child_view(request, child_id):
+    """
+    Supprime un enfant de l'utilisateur connecté et redirige vers la page principale avec un message.
+    """
+    child = get_object_or_404(Child, id=child_id, chld_user=request.user)
+    if request.method == "POST":
+        child.delete()
+        messages.success(request, "Enfant supprimé avec succès.")
+        return redirect("accounts:profile_child")
+
+    # En cas d'accès direct GET, rediriger vers la page principale
+    messages.error(request, "Action non autorisée.")
+    return redirect("accounts:profile_child")
+
+
 # ==================== OUTIL DE POPULATION (DEV) ==================== #
 
 import json

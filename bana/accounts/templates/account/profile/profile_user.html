@@ -2,151 +2,253 @@
 {% extends "allauth/layouts/base.html" %}
 {% load allauth i18n static %}
 {% block head_title %}
-{% trans "Profile" %}
+{% trans "Profil de" %}  
+{% if user.profile.ci_is_verified %}
+  {{ user.profile.verified_first_name }}
+  {{ user.profile.verified_last_name|slice:"1" }}.
+{% else %}
+  {{ user.first_name }} {{ user.last_name }}
+{% endif %}
+| Bana
 {% endblock head_title %}
+
 {% block content %}
- 
-        
-<div class="bg-gray-100 min-h-screen p-6">
-    <div class="container mx-auto bg-white shadow-md rounded-lg p-6">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">Profil de 
+
+  <!-- 🔙 Bouton retour -->
+  <a href="javascript:history.back()" 
+     class="inline-flex items-center gap-2 mb-6 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand group transition">
+    <svg class="h-4 w-4 transition-transform group-hover:-translate-x-0.5" 
+         viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15 19l-7-7 7-7" />
+    </svg>
+    <span>Retour</span>
+  </a>
+
+<div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+  {% if messages %}
+    <ul class="mb-6 space-y-2">
+      {% for message in messages %}
+        <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+  <!-- 🧍 Profil utilisateur -->
+  <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+    <h2 class="text-3xl font-bold text-brand mb-6">
+      Profil de 
+      {% if user.profile.ci_is_verified %}
+        {{ user.profile.verified_first_name }} {{ user.profile.verified_last_name|slice:"1" }}.
+      {% else %}
+        {{ user.first_name }} {{ user.last_name }}
+      {% endif %}
+      | {{ user.profile.service|title }}
+    </h2>
+
+    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+      <!-- 🖼️ Avatar -->
+      <div class="relative shrink-0 h-28 w-28 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] flex items-center justify-center">
+        {% if user.profile.profile_picture %}
+          <img src="{{ user.profile.profile_picture.url }}" alt="Photo de profil"
+               class="h-full w-full rounded-full object-cover"/>
+        {% else %}
+          <span class="text-2xl font-bold text-brand">
             {% if user.profile.ci_is_verified %}
-            {{ user.profile.verified_first_name }}
-            {{ user.profile.verified_last_name|slice:"1" }}.
+              {{ user.profile.verified_first_name.0 }}{{ user.profile.verified_last_name.0 }}
             {% else %}
-            {{ user.first_name }} {{ user.last_name }}
+              {{ user.first_name.0 }}{{ user.last_name.0 }}
             {% endif %}
-        </h2>
+          </span>
+        {% endif %}
+        {% if user.profile.prfl_is_verified %}
+          <span class="absolute -top-1 -left-1 inline-flex h-8 w-8 rounded-full bg-white ring-4 ring-white shadow">
+            <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
+              <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </span>
+        {% endif %}
+      </div>
 
-        <div class="relative shrink-0 h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] flex items-center justify-center">
-          <!-- Avatar -->
-          {% if user.profile.profile_picture %}
-            <img src="{{ user.profile.profile_picture.url }}" alt="{% trans 'Photo de profil' %}"
-                 class="h-full w-full rounded-full object-cover"/>
-          {% else %}
-            <span class="text-xl sm:text-2xl font-bold text-brand">
-              {% if user.profile.ci_is_verified %}
-                {{ user.profile.verified_first_name.0 }}.{{ user.profile.verified_last_name.0 }}
-              {% else %}
-                {{ user.first_name.0 }}.{{ user.last_name.0 }}
-              {% endif %}
-            </span>
-          {% endif %}
-          
-          <!-- Badge CI -->
-          {% if user.profile.prfl_is_verified %}
-            <span class="absolute z-10 -top-1 -left-1 inline-flex h-8 w-8 rounded-full bg-white ring-4 ring-white shadow">
-              <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
-                <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-          {% endif %}
-        </div>
-        <!--  Infos utilisateur -->
-        <div class="mb-6">
-            <p class="text-lg"><strong>Contacter par e-mail :</strong> {{ user.email }}</p>
-            <p class="text-lg"><strong>Rôle :</strong> {{ user.profile.service | title }}</p>
-            <p class="text-lg"><strong>Ville :</strong> 
-                {{ user.profile.address }}
-            </p>
-            <p class="text-lg"><strong>Langue(s) parlée(s) :</strong>
-            {% for language in user.profile.languages.all %}
-            {{ language.lang_abbr }}{% if not forloop.last %}, {% endif %}
-            {% endfor %}
-            </p>
-            <p class="text-lg"><strong>Bio :</strong> 
-                {{ user.profile.bio }}
-            </p>
+      <!-- ℹ️ Infos utilisateur principales -->
+  <div class="flex-1 max-w-[500px] sm:ml-6 space-y-2">
+    <p class="text-lg"><strong>Email :</strong> {{ user.email }}</p>
+    <p class="text-lg"><strong>Ville :</strong> {{ user.profile.address }}</p>
+    <p class="text-lg"><strong>Langue(s) :</strong>
+      {% for language in user.profile.languages.all %}
+        {{ language.lang_abbr }}{% if not forloop.last %}, {% endif %}
+      {% endfor %}
+    </p>
+    {% if user.profile.bio %}
+      <p class="text-lg"><strong>Bio :</strong> {{ user.profile.bio }}</p>
+    {% endif %}
+  </div>
 
-            
-            <p class="text-lg"><strong>Date d'inscription :</strong> {{ user.date_joined|date:"d F Y" }}</p>
+  <!-- 📅 Infos de compte -->
+  <div class="min-w-[220px] md:text-right">
+    <p class="text-gray-500"><strong>Membre depuis le </strong><br>{{ user.date_joined|date:"d F Y" }}</p>
+    <p class="text-gray-500"><strong>Dernière connexion :</strong><br>{{ user.last_login|date:"d M Y H:i" }}</p>
+  </div>
+</div>
+  </div>
 
-        </div>
-    </div>
-    <div class="bg-gray-100 min-h-screen p-6">
+  <!-- ⭐ Section Avis -->
+  <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">Avis</h2>
 
-        <div class="container mx-auto bg-white shadow-md rounded-lg p-6">
-        <h2 class="text-3xl font-bold text-gray-800 mb-6">Avis </h2>
-        
-        {% if reviews_count > 0 %}
-          <div class="flex items-center gap-2 my-2">
-            <strong>Note moyenne&nbsp;:</strong>
-            {% for i in "12345" %}
+    {% if reviews_count > 0 %}
+      <div class="flex items-center gap-2 mb-4">
+        <strong>Note moyenne :</strong>
+        {% for i in "12345" %}
               {% if forloop.counter <= full_stars %}
-                <span style="color: #facc15; font-size:1.3em;">★</span>
+                <svg class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" aria-hidden="true">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
               {% elif forloop.counter == full_stars|add:'1' and has_half_star %}
                 <!-- Demi-étoile SVG -->
-                <span style="display:inline-block;vertical-align:middle;">
-                  <svg width="21" height="21" viewBox="0 0 24 24">
-                    <defs>
-                      <linearGradient id="half">
-                        <stop offset="50%" stop-color="#facc15" />
-                        <stop offset="50%" stop-color="#d1d5db" />
-                      </linearGradient>
-                    </defs>
-                    <polygon fill="url(#half)" points="12,2 15,9 22,9.2 17,14.1 18.2,21 12,17.8 5.8,21 7,14.1 2,9.2 9,9"/>
-                  </svg>
-                </span>
+                <svg class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="url(#half)" stroke="url(#half)" aria-hidden="true">
+                <defs>
+                  <linearGradient id="half">
+                    <stop offset="50%" stop-color="#007F73" />
+                    <stop offset="50%" stop-color="#D1D5DB" />
+                  </linearGradient>
+                </defs>
+                <path fill="url(#half)" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+
+              </svg>
               {% else %}
-                <span style="color: #d1d5db; font-size:1.3em;">★</span>
+                <!-- Étoile vide -->
+              <svg class="h-6 w-6 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
               {% endif %}
             {% endfor %}
-            <span class="ml-2 text-gray-600">({{ average_rating|floatformat:"1" }}/5, {{ reviews_count }} avis)</span>
+        <span class="ml-2 text-gray-600">({{ average_rating|floatformat:"1" }}/5, {{ reviews_count }} avis)</span>
+      </div>
+    {% else %}
+      <p class="text-gray-500"><strong>Note moyenne :</strong> Pas encore d’avis</p>
+    {% endif %}
+
+<!-- 📋 Liste des avis -->
+<h3 class="text-2xl font-semibold text-gray-700 mt-6 mb-3">Avis reçus</h3>
+
+<ul class="bg-gray-50 p-4 rounded-md shadow-sm space-y-3">
+  {% for review in reviews %}
+    {% with full_stars=review.rating|floatformat:0 has_half_star=False %}
+      <li class="border-b last:border-none pb-3">
+        <div class="flex items-center justify-between">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:gap-2">
+            <a href="{% url 'accounts:profile_user' user_id=review.reviewer.id %}" class="text-blue-600 hover:underline font-semibold">
+              {% if review.reviewer.profile.ci_is_verified %}
+                {{ review.reviewer.profile.verified_first_name }} {{ review.reviewer.profile.verified_last_name|slice:'1' }}. :
+              {% else %}
+                {{ review.reviewer.first_name }} {{ review.reviewer.last_name|slice:'1' }}. :
+              {% endif %}
+            </a>
+
+            <div class="flex items-center space-x-1">
+              {% for i in "12345" %}
+                {% if forloop.counter <= review.rating %}
+                  <!-- Étoile pleine -->
+                  <svg class="h-5 w-5 text-brand" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" aria-hidden="true">
+                    <path
+                      d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                {% else %}
+                  <!-- Étoile vide -->
+                  <svg class="h-5 w-5 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                    <path
+                      d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                {% endif %}
+              {% endfor %}
+              <span class="ml-2 text-sm text-gray-600">{{ review.rating }}/5</span>
+            </div>
           </div>
-        {% else %}
-          <p class="text-gray-500"><strong>Note moyenne :</strong> Pas encore d'avis</p>
-        {% endif %}
+        </div>
 
+        <p class="italic text-gray-700 mt-1">"{{ review.comment }}"</p>
+      </li>
+    {% endwith %}
+  {% empty %}
+    <p class="text-gray-500">Aucun avis pour le moment.</p>
+  {% endfor %}
+</ul>
 
-        <!-- ⭐ Note moyenne -->
-        <p class="text-lg"><strong>Note Moyenne :</strong> {{ average_rating }}/5</p>
+<!-- 📝 Formulaire d’avis -->
+{% if allow_review %}
+  <h3 class="text-2xl font-semibold text-gray-700 mt-8 mb-3">Laisser un avis</h3>
+  <form method="post" class="bg-gray-50 p-4 rounded-md shadow-sm space-y-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="bg-brand text-white px-4 py-2 rounded-full font-bold hover:bg-brand-600 transition">
+      Laisser un avis
+    </button>
+  </form>
 
-        <!--  Avis reçus -->
-        <h3 class="text-2xl font-semibold text-gray-700 mt-4 mb-2">Avis reçus :</h3>
-        <ul class="bg-gray-50 p-4 rounded-md shadow-md">
-            {% for review in reviews %}
-                <li class="border-b py-2">
-                    <a href="{% url 'accounts:profile_user' user_id=review.reviewer.id%}" class="text-blue-600 hover:underline">
-                        <strong>{{ review.reviewer.first_name }} {{ review.reviewer.last_name|slice:'1' }}.</strong> 
-                    </a>
-                        - ⭐ {{ review.rating }}/5 : "{{ review.comment }}"
-                </li>
-            {% empty %}
-                <p class="text-gray-500">Aucun avis pour le moment.</p>
-            {% endfor %}
-        </ul>
+{% elif existing_review %}
+  <h3 class="text-2xl font-semibold text-gray-700 mt-8 mb-3">Votre avis</h3>
 
-        <!--  Laisser un avis -->
-        {% if allow_review %}
-            <h3 class="text-2xl font-semibold text-gray-700 mt-4">Laisser un avis :</h3>
-            <form method="post" class="mt-4 bg-white p-4 rounded-md shadow">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">⭐ Noter</button>
-            </form>
-
-        {% elif existing_review %}
-            <h3 class="text-2xl font-semibold text-gray-700 mt-4">Votre avis :</h3>
-
-            {% if is_editing %}
-                <!--  Formulaire de modification -->
-                <form method="post" class="mt-4 bg-white p-4 rounded-md shadow">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">✅ Sauvegarder</button>
-                    <a href="{% url 'accounts:profile_user' user.id %}" class="text-gray-500 hover:underline text-lg ml-4">❌ Annuler</a>
-                </form>
-            {% else %}
-                <p class="mt-2">⭐ {{ existing_review.rating }}/5 - "{{ existing_review.comment }}"</p>
-
-                <!-- 🔄 Modifier -->
-                <a href="?edit_review=true" class="text-yellow-500 hover:underline text-lg">✏️ Modifier</a>
-
-                <!-- ❌ Supprimer -->
-                <a href="{% url 'accounts:delete_review' user_id=user.id %}" class="text-red-500 hover:underline text-lg ml-4">❌ Supprimer</a>
-            {% endif %}
-        {% endif %}
+  {% if is_editing %}
+  <form method="post" class="bg-gray-50 p-4 rounded-md shadow-sm space-y-4">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="flex items-center gap-3" id="avis-section">
+      <button type="submit" class="bg-brand text-white px-4 py-2 rounded-full font-bold hover:bg-brand-600 transition">
+        Sauvegarder
+      </button>
+      <a href="{% url 'accounts:profile_user' user.id %}"
+         class="text-red-500 hover:text-red-700 hover:underline">
+         Annuler
+      </a>
     </div>
+  </form>
+  {% else %}
+    <div class="flex items-center mt-2 space-x-2">
+      <!-- Système d’étoiles -->
+      {% for i in "12345" %}
+        {% if forloop.counter <= existing_review.rating %}
+          <!-- Étoile pleine -->
+          <svg class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" aria-hidden="true">
+            <path
+              d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        {% else %}
+          <!-- Étoile vide -->
+          <svg class="h-6 w-6 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <path
+              d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        {% endif %}
+      {% endfor %}
+      <span class="text-gray-700 text-sm ml-2">({{ existing_review.rating }}/5)</span>
+    </div>
+
+    <p class="italic text-gray-700 mt-1">"{{ existing_review.comment }}"</p>
+
+    <div class="mt-3 flex gap-3">
+      <a href="?edit_review=true#avis-section"
+         class="inline-flex items-center px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition">
+        ✏️ Modifier
+      </a>
+      <a href="{% url 'accounts:delete_review' user_id=user.id %}"
+         class="inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-red-700 hover:bg-red-200 transition">
+        ❌ Supprimer
+      </a>
+    </div>
+  {% endif %}
+{% endif %}
+  </div>
+
 </div>
 {% endblock content %}
+

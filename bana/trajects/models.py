@@ -11,6 +11,15 @@ class TransportMode(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
 
+    @property
+    def display_name(self):
+        return {
+            'car': _('Voiture'),
+            'bike': _('Vélo'),
+            'transport': _('Transport en commun'),
+            'walking': _('À pied'),
+        }.get(self.name, self.name)
+        
     def __str__(self):
         return self.name
 

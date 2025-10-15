@@ -123,14 +123,14 @@
                   {% with label=mode.name|default:mode %}
                     {% with key=label|lower %}
                       <span class="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand-50 text-brand px-2.5 py-1 text-xs font-medium">
-                        {% if "car" in key or "voiture" in key %}
+                        {% if "car" in key %}
                           <!-- car -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
                                   <p>Voiture</p>
                           </svg>
-                        {% elif "bike" in key or "vélo" in key or "bicycle" in key %}
+                        {% elif "bike" in key %}
                           <!-- bike -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <circle cx="6" cy="17" r="3" stroke-width="2"/>
@@ -139,7 +139,7 @@
                                   d="M6 17l6-8 2 3h4"/>
                                   <p>Vélo</p>
                           </svg>
-                        {% elif "public" in key or "bus" in key or "tram" in key or "metro" in key or "métro" in key or "train" in key %}
+                        {% elif "transport" in key %}
                           <!-- bus/tram -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <rect x="4" y="4" width="16" height="12" rx="2" stroke-width="2"/>
@@ -148,7 +148,7 @@
                             <circle cx="8" cy="16" r="1" />
                             <circle cx="16" cy="16" r="1" />
                           </svg>
-                        {% elif "walk" in key or "foot" in key or "marche" in key or "à pied" in key %}
+                        {% elif "walking" in key %}
                           <!-- walking -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"

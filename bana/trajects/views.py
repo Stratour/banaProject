@@ -18,6 +18,7 @@ from datetime import datetime, timedelta, date
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 
+
 def find_matching_trajects(obj, rayon_km=5):
     """
     Matching géographique symétrique entre ResearchedTraject et ProposedTraject.
@@ -762,12 +763,12 @@ def manage_reservation(request, reservation_id, action):
         trajet_info = f"{reservation.proposed_traject.traject.start_adress} → {reservation.proposed_traject.traject.end_adress}"
 
         send_mail(
-            subject="Votre réservation a été confirmée sur Bana",
+            subject="Réservation confirmée sur Bana",
             message=(
-                f"Bonjour {reservation.user.profile.verified_first_name},\n\n"
+                f"Bonjour,\n\n"
                 f"Votre demande de réservation pour le trajet {trajet_info} "
-                f"({requested_places} enfant(s)) a été confirmée par {yaya_name}.\n\n"
-                "Connectez-vous à Bana pour plus d'informations. http://www.bana.mobi/trajects/my_reserve/"
+                f"({requested_places} enfant(s)) a été confirmée.\n\n"
+                "Connectez-vous à Bana pour plus d'informations et prendre contact avec le Yaya. http://www.bana.mobi/trajects/my_reserve/"
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[parent_email],
@@ -793,12 +794,12 @@ def manage_reservation(request, reservation_id, action):
         trajet_info = f"{reservation.proposed_traject.traject.start_adress} → {reservation.proposed_traject.traject.end_adress}"
 
         send_mail(
-            subject="Votre réservation a été refusée ou le trajet n'est plus disponible",
+            subject="Réservation refusée ou annulée",
             message=(
-                f"Bonjour {reservation.user.profile.verified_first_name},\n\n"
+                f"Bonjour,\n\n"
                 f"Votre demande de réservation pour le trajet {trajet_info} "
                 f"({requested_places} enfant(s)) a été déclinée ou le trajet n'est plus disponible.\n\n"
-                "N'hésitez pas à rechercher un autre accompagnateur sur Bana."
+                "N'hésitez pas à rechercher un autre accompagnateur. http://www.bana.mobi/trajects/researched_traject/"
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[parent_email],
@@ -848,13 +849,13 @@ def auto_reserve(request, proposed_id, researched_id):
     trajet_info = f"{proposed_traject.traject.start_adress} → {proposed_traject.traject.end_adress}"
 
     send_mail(
-        subject="Nouvelle demande de réservation reçue sur Bana",
+        subject="Nouvelle demande de réservation reçue",
         message=(
-            f"Bonjour {proposer_email},\n\n"
-            f"Vous avez reçu une nouvelle demande de réservation de la part de {parent_name}.\n\n"
+            f"Bonjour,\n\n"
+            f"Vous avez reçu une nouvelle demande de réservation.\n\n"
             f"Détails du trajet : {trajet_info}\n"
             f"Nombre d'enfant(s) demandé(s) : {requested_places}\n\n"
-            "Connectez-vous à Bana pour accepter ou refuser la demande."
+            "Connectez-vous à Bana pour accepter ou refuser la demande. http://www.bana.mobi/trajects/my_reserve/"
         ),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[proposer_email],
@@ -898,18 +899,17 @@ def propose_help(request, researched_id):
     request.session[session_key] = True
 
     parent_email = research.user.email
-    yaya_name = request.user.profile.verified_first_name
     trajet_info = f"{research.traject.start_adress} → {research.traject.end_adress}"
     date_str = research.date.strftime("%d/%m/%Y") if research.date else ""
     heure_depart = research.departure_time.strftime("%H:%M") if research.departure_time else "—"
 
     send_mail(
-        subject="Un accompagnateur a répondu à votre recherche de trajet",
+        subject="Recherche de trajet disponible",
         message=(
-            f"Bonjour {research.user.profile.verified_first_name},\n\n"
+            f"Bonjour,\n\n"
             f"Bonne nouvelle ! Un accompagnateur est disponible pour votre recherche de trajet :\n\n"
             f"{trajet_info} le {date_str} (départ à {heure_depart}).\n\n"
-            "Connectez-vous à Bana pour consulter cette proposition et valider votre réservation."
+            "Connectez-vous à Bana pour consulter les trajets disponible et effectuer une réservation. http://www.bana.mobi/trajects/matchings/parent/"
         ),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[parent_email],

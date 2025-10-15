@@ -48,28 +48,38 @@
             {{ user.get_full_name|default:user.username }}
             {% endif %}
           </p>
-
-          {% comment "Etoile ne se met pas en couleur" %}
-          <div class="flex items-center" aria-label="{% trans 'Note utilisateur' %}">
-            {% with r=profile.rating|default:0 %}
-            {% for i in "12345" %}
-            {% if forloop.counter <= r %} <svg class="h-6 w-6 text-brand" viewBox="0 0 20 20" fill="currentColor"
-              aria-hidden="true">
-              <path
-                d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.802 2.036a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118L10 13.347l-2.985 2.136c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L3.38 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+          
+        <div class="flex items-center gap-1" aria-label="{% trans 'Note utilisateur' %}">
+          {% for i in "12345" %}
+            {% if forloop.counter <= full_stars %}
+              <!-- Étoile pleine -->
+              <svg class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" aria-hidden="true">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
               </svg>
-              {% else %}
-              <svg class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path
-                  d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"
-                  stroke="currentColor" stroke-width="2" fill="none" />
-              </svg>
-              {% endif %}
-              {% endfor %}
-              {% endwith %}
-          </div>
-          {% endcomment %}
+            {% elif forloop.counter == full_stars|add:'1' and has_half_star %}
+              <!-- Demi-étoile -->
+              <svg class="h-6 w-6 text-brand" viewBox="0 0 24 24" fill="url(#half)" stroke="url(#half)" aria-hidden="true">
+                <defs>
+                  <linearGradient id="half">
+                    <stop offset="50%" stop-color="#007F73" />
+                    <stop offset="50%" stop-color="#D1D5DB" />
+                  </linearGradient>
+                </defs>
+                <path fill="url(#half)" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
 
+              </svg>
+            {% else %}
+              <!-- Étoile vide -->
+              <svg class="h-6 w-6 text-gray-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"
+                      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            {% endif %}
+          {% endfor %}
+          <span class="ml-2 text-gray-600 text-sm">({{ average_rating|floatformat:1 }}/5, {{ reviews_count }} avis)</span>
+        </div>
         </div>
 
         <!-- Rôle + localisation -->

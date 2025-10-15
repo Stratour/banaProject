@@ -57,9 +57,9 @@
         <p class="text-sm text-gray-700">
           <strong>Transport :</strong> 
           {% for mode in proposal.transport_modes.all %}
-          {{ mode.name }}{% if not forloop.last %}, {% endif %}
+          {{ mode.display_name }}{% if not forloop.last %}, {% endif %}
           {% empty %}
-          Non spécifié
+              Non spécifié
           {% endfor %}
         </p>
         <p class="text-sm text-gray-700">

@@ -1,6 +1,6 @@
 {% load i18n %}{% autoescape off %}
 {# ---- HEADER ---- #}{% blocktrans with site_name=current_site.name %}
-Bonjour {% endblocktrans %}{% if user.profile.verified_first_name %}{{ user.profile.verified_first_name }},{% elif user.profile.first_name %}{{ user.profile.first_name }},{% else %}{{ user.username }},{% endif %}
+Bonjour {% endblocktrans %}{% if user.profile.verified_first_name %}{{ user.profile.verified_first_name }}{% elif user.profile.first_name %}{{ user.profile.first_name }}{% endif %},
 {% block content %}{% endblock content %}
 {% blocktrans with site_domain=current_site.domain %}L’équipe de {{ site_domain }}{% endblocktrans %}
 {% endautoescape %}
