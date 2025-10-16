@@ -76,9 +76,9 @@ class ProposedTrajectForm(forms.ModelForm):
     
     recurrence_type = forms.ChoiceField(
         choices=[
-            ('one_week', 'Une fois'),
-            ('weekly', 'Toutes les semaines'),
-            ('biweekly', 'Une semaine sur deux')
+            ('one_week', _('Trajets sur une seule semaine')),
+            ('weekly', _('Trajets chaque semaine')),
+            ('biweekly', _('Trajets une semaine sur deux'))
         ],
         widget=forms.RadioSelect(attrs={
             'class': 'mr-2'
@@ -300,9 +300,9 @@ class ResearchedTrajectForm(forms.ModelForm):
 
     recurrence_type = forms.ChoiceField(
         choices=[
-            ('one_week', _('Une fois')),
-            ('weekly', _('Toutes les semaines')),
-            ('biweekly', _('Une semaine sur deux'))
+            ('one_week', _('Trajets sur une seule semaine')),
+            ('weekly', _('Trajets chaque semaine')),
+            ('biweekly', _('Trajets une semaine sur deux'))
         ],
         widget=forms.RadioSelect(attrs={
             'class': 'mr-2'
