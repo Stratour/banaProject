@@ -17,101 +17,153 @@ from django.utils.timezone import now
 from datetime import datetime, timedelta, date
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
+from django.contrib.gis.db.models.functions import Distance
 
 
-def find_matching_trajects(obj, rayon_km=5):
+def find_matching_trajects(obj, default_radius_km=5, time_tolerance_minutes=45):
     """
-    Matching géographique symétrique entre ResearchedTraject et ProposedTraject.
-    - Vérifie coordonnées (distance <= rayon_km), horaires ±30min, date, mode de transport commun.
-    - Prend en charge les trajets simples (is_simple=True) : pas d'heure, pas d'arrivée, pas de récurrence.
+    Matching 100% ORM/SQL (PostGIS). Retourne une liste d'objets (ProposedTraject ou ResearchedTraject).
+    - Symétrique : Parent recherche ↔ Propositions ; Proposition ↔ Recherches
+    - Trajet simple Yaya : rayon = search_radius_km
+    - Trajet normal : rayon = default_radius_km (5)
+    - Vérifie transport, date, horaires (±time_tolerance), places/enfants.
     """
-    time_tolerance = timedelta(minutes=45)
-    results = set()
+    time_tolerance = timedelta(minutes=time_tolerance_minutes)
 
-    def time_in_tolerance(obj_time, other_time):
-        if not obj_time or not other_time:
+    def time_ok(t1, t2):
+        if not t1 or not t2:
             return True
-        dt_obj = datetime.combine(date.today(), obj_time)
-        dt_other = datetime.combine(date.today(), other_time)
-        return (dt_obj - time_tolerance) <= dt_other <= (dt_obj + time_tolerance)
+        dt1 = datetime.combine(date.today(), t1)
+        dt2 = datetime.combine(date.today(), t2)
+        return (dt1 - time_tolerance) <= dt2 <= (dt1 + time_tolerance)
 
-    # ------------------- Researched → Proposed -------------------
+    # ---------------- Parent recherche -> match avec Propositions ----------------
     if isinstance(obj, ResearchedTraject):
-        qs = ProposedTraject.objects.filter(date=obj.date, is_active=True).exclude(user=obj.user)
+        if not obj.traject or not obj.traject.start_point:
+            return []
 
-        if obj.traject.start_point:
-            qs = qs.filter(traject__start_point__distance_lte=(obj.traject.start_point, D(km=rayon_km)))
-        
-        filtered = []
-        for p in qs:
-            transport_match = set(obj.transport_modes.all()).intersection(p.transport_modes.all())
-            if not transport_match:
+        base_qs = ProposedTraject.objects.filter(date=obj.date, is_active=True).exclude(user=obj.user)
+
+        # Large pré-filtre de départ en DB (évite de ramener tout le monde)
+        # Utilise une marge (par ex  max(default*5, 50km)) pour inclure trajets simples larges
+        prefilter_radius = max(default_radius_km * 5, 50)
+        base_qs = base_qs.annotate(
+            distance_start=Distance('traject__start_point', obj.traject.start_point)
+        ).filter(distance_start__lte=D(km=prefilter_radius))
+
+        # On va construire un Q final correspondant aux PKs valides
+        valid_pks = []
+
+        for p in base_qs:
+            # 1) rayon effectif (si simple on respecte le search_radius_km)
+            rayon = (getattr(p, 'search_radius_km', None) or default_radius_km) if getattr(p, 'is_simple', False) else default_radius_km
+
+            # 2) vérifier start_point exists
+            if not p.traject.start_point:
                 continue
 
-            # Si le ProposedTraject est simple, on ignore les contraintes de temps et d'arrivée
-            if p.is_simple:
-                filtered.append(p)
-                continue
-            
-            # Si le ProposedTraject est normal, vérifier l'arrivée et les horaires
-            if obj.traject.end_point and p.traject.end_point:
-                # Vérifier la distance du point d'arrivée
-                distance_end = obj.traject.end_point.distance(p.traject.end_point)
-                if distance_end > D(km=rayon_km).m:
-                    continue
-                
-                # Vérifier les horaires
-                if not (time_in_tolerance(obj.departure_time, p.departure_time)
-                        and time_in_tolerance(obj.arrival_time, p.arrival_time)):
-                    continue
-                
-                filtered.append(p)
+            # 3) distance départ (utilise distance_start annoté pour perf)
+            if p.distance_start is None:
+                # fallback compute
+                dist = p.traject.start_point.distance(obj.traject.start_point)
+            else:
+                dist = p.distance_start.m  # meters
 
-        results.update(filtered)
-        return list(results)
-
-    # ------------------- Proposed → Researched -------------------
-    elif isinstance(obj, ProposedTraject):
-        qs = ResearchedTraject.objects.filter(date=obj.date, is_active=True).exclude(user=obj.user)
-
-        if obj.traject.start_point:
-            qs = qs.filter(traject__start_point__distance_lte=(obj.traject.start_point, D(km=rayon_km)))
-        
-        filtered = []
-        for r in qs:
-            transport_match = set(obj.transport_modes.all()).intersection(r.transport_modes.all())
-            if not transport_match:
+            if dist > D(km=rayon).m:
                 continue
 
-            # Si le ProposedTraject (obj) est simple, on matche avec tous les ResearchedTraject dans le rayon
-            if obj.is_simple:
-                filtered.append(r)
+            # 4) transport
+            if not set(obj.transport_modes.all()).intersection(p.transport_modes.all()):
                 continue
-            
-            # Si le ProposedTraject est normal, vérifier l'arrivée et les horaires
-            if r.traject.end_point and obj.traject.end_point:
-                # Vérifier la distance du point d'arrivée
-                distance_end = r.traject.end_point.distance(obj.traject.end_point)
-                if distance_end > D(km=rayon_km).m:
-                    continue
-                
-                # Vérifier les horaires
-                if not (time_in_tolerance(obj.departure_time, r.departure_time)
-                        and time_in_tolerance(obj.arrival_time, r.arrival_time)):
-                    continue
-                
-                filtered.append(r)
 
-        results.update(filtered)
-        return list(results)
+            # 5) if p normal -> check arrival and times
+            if not getattr(p, 'is_simple', False):
+                if not (obj.traject.end_point and p.traject.end_point):
+                    continue
+                # compute end distance (meters)
+                d_end = p.traject.end_point.distance(obj.traject.end_point)
+                if d_end > D(km=rayon).m:
+                    continue
+                if not (time_ok(obj.departure_time, p.departure_time) and time_ok(obj.arrival_time, p.arrival_time)):
+                    continue
+
+            # 6) places
+            if getattr(p, 'number_of_places', 9999) < getattr(obj, 'number_of_children', 1):
+                continue
+
+            valid_pks.append(p.pk)
+
+        if not valid_pks:
+            return []
+
+        # final queryset ordered by real distance
+        qs = ProposedTraject.objects.filter(pk__in=valid_pks).annotate(
+            distance_start=Distance('traject__start_point', obj.traject.start_point)
+        ).order_by('distance_start')
+
+        return list(qs)
+
+    # ---------------- Proposition (Yaya ou Parent) -> match avec Recherches ----------------
+    if isinstance(obj, ProposedTraject):
+        if not obj.traject or not obj.traject.start_point:
+            return []
+
+        # rayon effectif pour CE proposed
+        rayon = (getattr(obj, 'search_radius_km', None) or default_radius_km) if getattr(obj, 'is_simple', False) else default_radius_km
+
+        base_qs = ResearchedTraject.objects.filter(date=obj.date, is_active=True).exclude(user=obj.user)
+        base_qs = base_qs.annotate(distance_start=Distance('traject__start_point', obj.traject.start_point)).filter(distance_start__lte=D(km=max(rayon, 50)))
+
+        valid_pks = []
+        for r in base_qs:
+            if not r.traject.start_point:
+                continue
+
+            dist = r.distance_start.m if r.distance_start is not None else r.traject.start_point.distance(obj.traject.start_point)
+            if dist > D(km=rayon).m:
+                continue
+
+            # transport
+            if not set(obj.transport_modes.all()).intersection(r.transport_modes.all()):
+                continue
+
+            # if obj simple -> only departure matters (and date/transport)
+            if getattr(obj, 'is_simple', False):
+                valid_pks.append(r.pk)
+                continue
+
+            # else check arrival and times
+            if not (obj.traject.end_point and r.traject.end_point):
+                continue
+            d_end = obj.traject.end_point.distance(r.traject.end_point)
+            if d_end > D(km=rayon).m:
+                continue
+            if not (time_ok(obj.departure_time, r.departure_time) and time_ok(obj.arrival_time, r.arrival_time)):
+                continue
+
+            # places
+            if getattr(obj, 'number_of_places', 0) < getattr(r, 'number_of_children', 1):
+                continue
+
+            valid_pks.append(r.pk)
+
+        if not valid_pks:
+            return []
+
+        qs = ResearchedTraject.objects.filter(pk__in=valid_pks).annotate(
+            distance_start=Distance('traject__start_point', obj.traject.start_point)
+        ).order_by('distance_start')
+
+        return list(qs)
 
     return []
+
 
 @login_required
 def my_matchings_researched(request):
     """
     Parent (user) recherche → affiche les propositions correspondantes
-    avec matching basé sur la géolocalisation.
+    avec matching strict basé sur la géolocalisation.
     """
     user = request.user
     matches = []
@@ -122,21 +174,20 @@ def my_matchings_researched(request):
     is_abonned = Subscription.is_user_abonned(user)
 
     for research in researched_matches:
-        matched = find_matching_trajects(research, rayon_km=5)
-        if matched:
-            matches.append({'research': research, 'proposals': matched})
-    
+        matched_proposals = find_matching_trajects(research,default_radius_km=50)
+        if matched_proposals:
+            matches.append({'research': research, 'proposals': matched_proposals})
+
     return render(request, 'trajects/my_matchings_researched.html', {
         'matches': matches,
         'is_abonned': is_abonned
     })
 
-
 @login_required
 def my_matchings_proposed(request):
     """
-    Yaya/Parent propose un trajet → affiche les recherches correspondantes
-    avec matching basé sur la géolocalisation.
+    Parent/Yaya propose un trajet → affiche les recherches correspondantes
+    avec matching strict basé sur la géolocalisation.
     """
     user = request.user
     matches = []
@@ -144,13 +195,14 @@ def my_matchings_proposed(request):
     proposed_matches = ProposedTraject.objects.filter(
         user=user, is_active=True, date__gte=date.today()
     )
-    
     is_abonned = Subscription.is_user_abonned(user)
 
     for proposed in proposed_matches:
-        matched = find_matching_trajects(proposed, rayon_km=5)
-        if matched:
-            matches.append({'proposal': proposed, 'requests': matched})
+        # Rayon effectif : trajet simplifié Yaya ou normal
+        rayon = proposed.search_radius_km if getattr(proposed, "is_simple", False) else 5
+        matched_requests = find_matching_trajects(proposed, default_radius_km=rayon)
+        if matched_requests:
+            matches.append({'proposal': proposed, 'requests': matched_requests})
 
     return render(request, 'trajects/my_matchings_proposed.html', {
         'matches': matches,
@@ -263,32 +315,29 @@ def proposed_traject(request, researchesTraject_id=None):
 
 def save_proposed_traject(request, traject_form, proposed_form):
     """
-    Enregistre un ou plusieurs ProposedTrajects avec récurrence.
-    - Vérifie la validité des formulaires
-    - Sauvegarde le Traject de base
-    - Génère les dates récurrentes
-    - Crée 1 ou plusieurs ProposedTraject liés à l'utilisateur
+    Save proposed traject(s) robustly: ensure points have SRID, pass down search_radius etc.
     """
     if traject_form.is_valid() and proposed_form.is_valid():
         traject = traject_form.save(commit=False)
-        
-        # --- Récupération des coordonnées via Google ---
+
+        # --- Récupération coordonnées via Google ---
         start_place_id = traject_form.cleaned_data.get('start_place_id')
         end_place_id = traject_form.cleaned_data.get('end_place_id')
 
         if start_place_id:
             start_details = get_place_details(start_place_id)
             if "lat" in start_details and "lng" in start_details:
-                traject.start_point = Point(start_details["lng"], start_details["lat"])
+                traject.start_point = Point(start_details["lng"], start_details["lat"], srid=4326)
 
         if end_place_id:
             end_details = get_place_details(end_place_id)
             if "lat" in end_details and "lng" in end_details:
-                traject.end_point = Point(end_details["lng"], end_details["lat"])
-                
+                traject.end_point = Point(end_details["lng"], end_details["lat"], srid=4326)
+
         traject.save()
 
         cleaned_data = proposed_form.cleaned_data
+        # recurrence...
         recurrence_type = cleaned_data.get('recurrence_type')
         recurrence_interval = cleaned_data.get('recurrence_interval')
         date_debut = cleaned_data.get('date_debut')
@@ -300,8 +349,10 @@ def save_proposed_traject(request, traject_form, proposed_form):
         arrival_time = cleaned_data.get('arrival_time')
         number_of_places = cleaned_data.get('number_of_places') or 1
         details = cleaned_data.get('details')
+        is_simple = cleaned_data.get('is_simple', False)
+        search_radius_km = cleaned_data.get('search_radius_km') if is_simple else None
 
-        # Validation simple
+        # validations
         if not date_debut:
             messages.error(request, "Veuillez choisir une date de début.")
             return None, False
@@ -317,23 +368,33 @@ def save_proposed_traject(request, traject_form, proposed_form):
             specific_days=selected_days
         )
 
-        proposed_trajects = generate_recurrent_proposals(
-            request=request,
-            recurrent_dates=recurrent_dates,
-            traject=traject,
-            departure_time=departure_time,
-            arrival_time=arrival_time,
-            number_of_places=number_of_places,
-            details=details,
-            recurrence_type=recurrence_type,
-            recurrence_interval=recurrence_interval,
-            recurrence_days=recurrence_days,
-            date_debut=date_debut,
-            date_fin=date_fin,
-            cleaned_data=cleaned_data
-        )
+        # create proposals, ensure every ProposedTraject stores search_radius_km if simple
+        proposed_trajects = []
+        for date_obj in recurrent_dates:
+            proposed = ProposedTraject(
+                user=request.user,
+                traject=traject,
+                date=date_obj,
+                departure_time=departure_time,
+                arrival_time=arrival_time,
+                is_simple=is_simple,
+                number_of_places=number_of_places,
+                details=details,
+                recurrence_type=recurrence_type,
+                recurrence_interval=recurrence_interval if recurrence_type != 'none' else None,
+                recurrence_days=recurrence_days,
+                date_debut=date_debut if recurrence_type != 'none' else None,
+                date_fin=date_fin if recurrence_type != 'none' else None,
+                search_radius_km=search_radius_km if is_simple else None,
+            )
+            proposed.save()
+            proposed.transport_modes.set(cleaned_data.get('transport_modes'))
+            if cleaned_data.get('languages'):
+                proposed.languages.set(cleaned_data.get('languages'))
+            proposed_trajects.append(proposed)
 
         return proposed_trajects, True
+
     return None, False
 
 
@@ -389,7 +450,7 @@ def simple_proposed_traject(request):
             transport_modes = form.cleaned_data['transport_modes']
             date_debut = form.cleaned_data['date_debut']
             number_of_places = form.cleaned_data['number_of_places']
-            #search_radius_km = form.cleaned_data['search_radius_km']
+            search_radius_km = form.cleaned_data['search_radius_km']
             
             # Récupérer start_place_id pour la géolocalisation
             start_place_id = request.POST.get('start_place_id')
@@ -399,11 +460,10 @@ def simple_proposed_traject(request):
                 end_adress="",  # Pas d'arrivée définie ici
             )
             
-            # Ajouter les coordonnées GPS si disponibles
             if start_place_id:
                 start_details = get_place_details(start_place_id)
                 if "lat" in start_details and "lng" in start_details:
-                    traject.start_point = Point(start_details["lng"], start_details["lat"])
+                    traject.start_point = Point(start_details["lng"], start_details["lat"], srid=4326)
                     traject.save()
 
             matched_any = False
@@ -415,8 +475,8 @@ def simple_proposed_traject(request):
                 traject=traject,
                 date=date_debut,  # CORRECTION : utiliser date_debut au lieu de date_obj
                 is_simple=True,
-                number_of_places=number_of_places
-                #search_radius_km=search_radius_km
+                number_of_places=number_of_places,
+                search_radius_km=search_radius_km
             )
             proposed.transport_modes.set(transport_modes)
             
@@ -428,11 +488,11 @@ def simple_proposed_traject(request):
 
             if matched_any:
                 messages.success(request,
-                                 f"{created_count} proposition(s) enregistrée(s) avec {total_matches} matching(s) trouvés.")                                
+                                 f"{created_count} proposition(s) enregistrée(s) avec {total_matches} matching(s) trouvés dans un rayon de {search_radius_km} km.")                                              
                 return redirect('my_matchings_proposed')
             else:
                 messages.warning(request,
-                                 f"{created_count} proposition(s) enregistrée(s), mais aucun matching trouvé.")
+                                 f"{created_count} proposition(s) enregistrée(s), mais aucun matching trouvé dans un rayon de {search_radius_km} km.")
                 return redirect('my_proposed_trajects')
         else:
             messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
@@ -529,33 +589,24 @@ def researched_traject(request):
 
 
 def save_researched_traject(request, traject_form, researched_form):
-    """
-    Enregistre un ResearchedTraject (demande parent).
-    Cette fonction :
-    - vérifie la validité des formulaires
-    - récupère les coordonnées via Google
-    - sauvegarde le Traject et le ResearchedTraject
-    """
     if traject_form.is_valid() and researched_form.is_valid():
         traject = traject_form.save(commit=False)
 
-        # --- Récupération des coordonnées via Google ---
         start_place_id = traject_form.cleaned_data.get('start_place_id')
         end_place_id = traject_form.cleaned_data.get('end_place_id')
 
         if start_place_id:
             start_details = get_place_details(start_place_id)
             if "lat" in start_details and "lng" in start_details:
-                traject.start_point = Point(start_details["lng"], start_details["lat"])
+                traject.start_point = Point(start_details["lng"], start_details["lat"], srid=4326)
 
         if end_place_id:
             end_details = get_place_details(end_place_id)
             if "lat" in end_details and "lng" in end_details:
-                traject.end_point = Point(end_details["lng"], end_details["lat"])
+                traject.end_point = Point(end_details["lng"], end_details["lat"], srid=4326)
 
         traject.save()
 
-        # --- Sauvegarde du ResearchedTraject avec récurrence ---
         cleaned_data = researched_form.cleaned_data
         recurrence_type = cleaned_data.get('recurrence_type')
         recurrence_interval = cleaned_data.get('recurrence_interval')
@@ -567,6 +618,13 @@ def save_researched_traject(request, traject_form, researched_form):
         departure_time = cleaned_data.get('departure_time')
         arrival_time = cleaned_data.get('arrival_time')
 
+        if not date_debut:
+            messages.error(request, "Veuillez choisir une date de début.")
+            return None, False
+        if recurrence_type in ['weekly', 'biweekly'] and not date_fin:
+            messages.error(request, "Veuillez choisir une date de fin.")
+            return None, False
+
         recurrent_dates = generate_recurrent_dates(
             date_debut=date_debut,
             date_fin=date_fin,
@@ -575,19 +633,25 @@ def save_researched_traject(request, traject_form, researched_form):
             specific_days=selected_days
         )
 
-        researched_trajects = generate_recurrent_researches(
-            request=request,
-            recurrent_dates=recurrent_dates,
-            traject=traject,
-            departure_time=departure_time,
-            arrival_time=arrival_time,
-            recurrence_type=recurrence_type,
-            recurrence_interval=recurrence_interval,
-            recurrence_days=recurrence_days,
-            date_debut=date_debut,
-            date_fin=date_fin,
-            cleaned_data=cleaned_data
-        )
+        researched_trajects = []
+        for date_instance in recurrent_dates:
+            researched = ResearchedTraject(
+                user=request.user,
+                traject=traject,
+                date=date_instance,
+                departure_time=departure_time,
+                arrival_time=arrival_time,
+                recurrence_type=recurrence_type,
+                recurrence_interval=recurrence_interval if recurrence_type != 'one_week' else None,
+                recurrence_days=recurrence_days,
+                date_debut=date_debut if recurrence_type != 'one_week' else None,
+                date_fin=date_fin if recurrence_type != 'one_week' else None
+            )
+            researched.save()
+            researched.transport_modes.set(cleaned_data.get('transport_modes'))
+            if cleaned_data.get('children'):
+                researched.children.set(cleaned_data.get('children'))
+            researched_trajects.append(researched)
 
         return researched_trajects, True
 

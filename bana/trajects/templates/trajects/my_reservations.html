@@ -68,9 +68,17 @@ Mes réservations
                     
                     {% endif %}
                   </p>
-                  <p class="text-xs text-gray-400 truncate">
-                    Trajet #{{ r.proposed_traject.id }}
-                  </p>
+                  <!-- Badge simplifié -->
+                    {% if r.proposed_traject.is_simple %}
+                      <span class="inline-flex items-center gap-1.5 rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1 text-xs font-semibold">
+                        <!-- bolt -->
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        Trajet simplifié
+                      </span>
+                    {% endif %}
                 </div>
               </div>
 
@@ -122,14 +130,10 @@ Mes réservations
                   </svg>
                   Trajet
                 </p>
-                <p class="text-gray-700">
-                  <span class="font-medium">{{ r.proposed_traject.traject.start_adress }}</span>
-                  <span class="mx-1 text-gray-400">à</span>
-                  <span class="font-medium">{{ r.proposed_traject.departure_time }}</span>
+                <p class="text-gray-700">                  
+                  <span class="font-medium">{{ r.researched_traject.traject.start_adress }}</span>
                   <span class="mx-1 text-gray-400">→</span>
-                  <span class="font-medium">{{ r.proposed_traject.traject.end_adress }}</span>
-                  <span class="mx-1 text-gray-400">à</span>
-                  <span class="font-medium">{{ r.proposed_traject.arrival_time }}</span>
+                  <span class="font-medium">{{ r.researched_traject.traject.end_adress }}</span>
                 </p>
               </div>
 
@@ -140,9 +144,13 @@ Mes réservations
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M8 7V3m8 4V3M3 11h18M5 21h14a2 2 0 002-2V7H3v12a2 2 0 002 2z"/>
                   </svg>
-                  Date
+                  Date & heure
                 </p>
-                <p>{{ r.proposed_traject.date|date:"l d F Y" }}</p>
+                <p>
+                  {{ r.proposed_traject.date|date:"l d F Y" }}
+                  · Départ {{ r.researched_traject.departure_time }}
+                  · Arrivée {{ r.researched_traject.arrival_time }}
+                </p>
               </div>
 
               <div class="space-y-2 text-sm text-gray-700">
@@ -240,7 +248,8 @@ Mes réservations
               {% endif %}
               <!-- Footer -->
             {% if is_abonned %}
-                        
+            
+            <a href="mailto:{{r.researched_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand/30 text-brand hover:bg-brand-300 hover:text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 transition">Contacter par email</div></a>
             <footer class=" flex items-center justify-end">
               <a href="{% url 'accounts:profile_user' user_id=r.proposed_traject.user.id %}"
                  class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
@@ -355,10 +364,10 @@ Mes réservations
                   </svg>
                   Trajet
                 </p>
-                <p>
-                  {{ r.researched_traject.traject.start_adress }}
+                <p class="text-gray-700">                  
+                  <span class="font-medium">{{ r.researched_traject.traject.start_adress }}</span>
                   <span class="mx-1 text-gray-400">→</span>
-                  {{ r.researched_traject.traject.end_adress }}
+                  <span class="font-medium">{{ r.researched_traject.traject.end_adress }}</span>
                 </p>
               </div>
 
@@ -490,7 +499,7 @@ Mes réservations
             {% if is_abonned %}
                         
             <div class=" flex items-center justify-end">
-              <a href="{% url 'accounts:profile_user' user_id=r.proposed_traject.user.id %}"
+              <a href="{% url 'accounts:profile_user' user_id=r.researched_traject.user.id %}"
                  class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
                 Voir le profil
                 <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">

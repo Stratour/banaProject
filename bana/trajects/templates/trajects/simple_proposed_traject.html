@@ -1,7 +1,7 @@
 {% extends "allauth/layouts/base.html" %}
-{% load static %}
+{% load static i18n %}
 
-{% block head_title %}Trajet simple - BanaCommunity{% endblock %}
+{% block head_title %}Trajet simple{% endblock %}
 
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
@@ -36,8 +36,21 @@
           class="bg-white shadow-md mt-1 max-h-48 overflow-auto"></ul>
         </div>
       </div>
-    </div>
-    
+ 
+
+    <!-- Rayon de recherche -->
+      <div>
+        <label class="block text-sm font-bold text-brand uppercase mb-1">Rayon de recherche (km)</label>
+        <div class="flex items-center gap-4">
+          {{ form.search_radius_km }}
+          <div class="flex items-center gap-2 bg-brand bg-opacity-10 px-4 py-2 rounded-lg min-w-fit">
+            <span class=" text-brand-50">km</span>
+          </div>
+        </div>
+        <p class="text-xs text-gray-500 mt-2">Sélectionnez dans quel rayon vous souhaitez aider (1-50 km)</p> 
+      
+      </div>
+       </div>
     <hr class="my-10">
     
     <!-- Étape 2 : informations -->
@@ -46,10 +59,20 @@
       
       <div class="flex-1 space-y-6 w-full">
         
-        <div>
-          <label class="block text-sm font-medium uppercase text-brand">Modes de transport</label>
-          {{ form.transport_modes }}
+        <div class="max-w-xl">
+        <label class="block text-sm font-medium uppercase text-brand mb-1">
+          {% trans "Moyen de transport" %}
+        </label>
+
+        <div class="flex flex-wrap gap-2">
+          {% for cb in form.transport_modes %}
+            <label class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-md border border-gray-200 hover:bg-gray-50 cursor-pointer transition">
+              {{ cb.tag }}
+              <span class="text-gray-700">{{ cb.choice_label }}</span>
+            </label>
+          {% endfor %}
         </div>
+      </div>
         
         <div class="flex flex-col md:flex-row gap-6">
           <div class="flex-1">

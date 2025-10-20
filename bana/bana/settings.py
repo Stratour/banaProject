@@ -124,7 +124,7 @@ DATABASES = {
 }
 
 """
-    # === Base de données de prod ===
+       # === Base de données de prod ===
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',  #'django.db.backends.postgresql',
         'NAME': 'bana_digit_community',
@@ -137,6 +137,7 @@ DATABASES = {
         },
     },
 }
+
 
 DATABASES = {
     'default': {

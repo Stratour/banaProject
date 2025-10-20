@@ -174,10 +174,11 @@ class ProposedTrajectForm(forms.ModelForm):
 
 from datetime import date 
 class SimpleProposedTrajectForm(forms.ModelForm):
-    # Champs complémentaires (hors modèle)
     transport_modes = forms.ModelMultipleChoiceField(
-        queryset=TransportMode.objects.all(),
-        widget=forms.CheckboxSelectMultiple(attrs={'class': 'inline-flex items-center space-x-1'}),
+        queryset=TransportMode.objects.all(),    
+        widget=forms.CheckboxSelectMultiple(attrs={
+            'class': 'form-checkbox h-5 w-5 text-brand'
+        }),
         label="Moyens de transport",
         required=True,
         error_messages={'required': _("Veuillez sélectionner au moins un moyen de transport.")}
@@ -217,6 +218,20 @@ class SimpleProposedTrajectForm(forms.ModelForm):
         }),
         label="Date de début"
     )
+    
+    search_radius_km = forms.IntegerField(
+        label='Rayon de recherche (km)',
+        initial=5,
+        min_value=1,
+        max_value=50,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': '5',
+            'min': '1',
+            'max': '50'
+        }),
+        help_text='Dans quel rayon souhaitez-vous aider ? (1-50 km)'
+    )
 
     def clean_date_debut(self):
         date_debut = self.cleaned_data.get('date_debut')
@@ -239,7 +254,7 @@ class SimpleProposedTrajectForm(forms.ModelForm):
         
     class Meta:
         model = Traject
-        fields = ['start_adress',"number_of_places"]
+        fields = ['start_adress',"number_of_places", 'search_radius_km']
         labels = {
             'start_adress': "Ville de départ",
             'number_of_places': 'Nombre de places',
