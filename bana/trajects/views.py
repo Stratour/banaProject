@@ -88,8 +88,8 @@ def find_matching_trajects(obj, default_radius_km=5, time_tolerance_minutes=45):
                     continue
 
             # 6) places
-            if getattr(p, 'number_of_places', 9999) < getattr(obj, 'number_of_children', 1):
-                continue
+            #if getattr(p, 'number_of_places', 9999) < getattr(obj, 'number_of_children', 1):
+            #    continue
 
             valid_pks.append(p.pk)
 
@@ -142,8 +142,8 @@ def find_matching_trajects(obj, default_radius_km=5, time_tolerance_minutes=45):
                 continue
 
             # places
-            if getattr(obj, 'number_of_places', 0) < getattr(r, 'number_of_children', 1):
-                continue
+            #if getattr(obj, 'number_of_places', 0) < getattr(r, 'number_of_children', 1):
+            #    continue
 
             valid_pks.append(r.pk)
 

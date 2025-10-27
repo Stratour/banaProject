@@ -151,13 +151,8 @@ class ProposedTrajectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Traduction des labels pour chaque transport_mode
-        self.fields['transport_modes'].label_from_instance = lambda obj: {
-            'car': _('Voiture'),
-            'bike': _('Vélo'),
-            'transport': _('Transport en commun'),
-            'walking': _('À pied'),
-        }.get(obj.name, obj.name)  # obj.name = identifiant stocké en DB
+        # 🔤 Traduit les labels selon display_name du modèle
+        self.fields['transport_modes'].label_from_instance = lambda obj: obj.display_name
         
         # Initialiser les champs de récurrence selon le type sélectionné
         recurrence_type = self.initial.get('recurrence_type', '') or self.data.get('recurrence_type')
@@ -244,13 +239,8 @@ class SimpleProposedTrajectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Traduction des labels pour chaque transport_mode
-        self.fields['transport_modes'].label_from_instance = lambda obj: {
-            'car': _('Voiture'),
-            'bike': _('Vélo'),
-            'transport': _('Transport en commun'),
-            'walking': _('À pied'),
-        }.get(obj.name, obj.name)  # obj.name = identifiant stocké en DB
+        # 🔤 Traduit les labels selon display_name du modèle
+        self.fields['transport_modes'].label_from_instance = lambda obj: obj.display_name
         
     class Meta:
         model = Traject
@@ -384,13 +374,8 @@ class ResearchedTrajectForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        # Traduction des labels pour chaque transport_mode
-        self.fields['transport_modes'].label_from_instance = lambda obj: {
-            'car': _('Voiture'),
-            'bike': _('Vélo'),
-            'transport': _('Transport en commun'),
-            'walking': _('À pied'),
-        }.get(obj.name, obj.name)  # obj.name = identifiant stocké en DB
+        # 🔤 Traduit les labels selon display_name du modèle
+        self.fields['transport_modes'].label_from_instance = lambda obj: obj.display_name
         
         recurrence_type = self.initial.get('recurrence_type', '') or self.data.get('recurrence_type')
 

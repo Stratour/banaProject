@@ -13,15 +13,17 @@ class TransportMode(models.Model):
 
     @property
     def display_name(self):
+        """Renvoie la traduction du nom selon sa clé."""
         return {
             'car': _('Voiture'),
             'bike': _('Vélo'),
             'transport': _('Transport en commun'),
             'walking': _('À pied'),
-        }.get(self.name, self.name)
-        
+        }.get(self.name.lower(), self.name)
+
     def __str__(self):
-        return self.name
+        """Permet à Django d'afficher directement la traduction."""
+        return self.display_name
 
 
 class Traject(models.Model):
