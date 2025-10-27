@@ -1,14 +1,14 @@
 {% extends 'layouts/base.html' %}
 
-{% block title %} Administration de Bana Community - BanaCommunity{% endblock %}
+{% block title %}Administration{% endblock %}
 
 {% block content %}
     
 
-<div class="bg-gray-100 min-h-screen p-6">
+<div class="max-w-7xl mx-auto p-8 min-h-screen">
     <div class="container mx-auto">
 
-        <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center"> Administration de Bana Community</h2>
+        <h2 class="text-4xl font-light mb-10 text-gray-800  items-center border-b pb-4 text-center">Administration de Bana Community</h2>
         {% if messages %}
         <ul class="mb-4">
             {% for message in messages %}
@@ -22,5 +22,4 @@
 
       {% include "./layout/nav_admin.html" %}
 
-      <h1> BANA ADMIN </h1>
 {% endblock %}

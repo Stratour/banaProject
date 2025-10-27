@@ -6,23 +6,14 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.utils import timezone
-from .models import InscriptionValidation # Assurez-vous d'importer votre modèle
+from .models import InscriptionValidation, SiteVisit
 from django.contrib.auth.models import User
-from accounts.models import Profile # Importez votre modèle Profile
-
-
-
-def bana_admin(request):
-    print('================ bana_admin_views :: ')
-    context = {}
-    users = User.objects.all()
-    profiles = Profile.objects.all()
-    context.update({'profiles': profiles})
-
-    print('================== Users :: ', users)
-    print('================== Profiles :: ', profiles)
-    
-    return render(request, 'bana_admin/bana_admin.html', context)
+from accounts.models import Profile
+from datetime import timedelta
+from django.db.models import Count
+from django.core.paginator import Paginator
+from .utils import get_site_stats  
+from django.core.cache import cache
 
 
 def admin_view(request):
@@ -36,6 +27,71 @@ def admin_view(request):
     print('================== Profiles :: ', profiles)
     
     return render(request, 'bana_admin/admin_view.html', context)
+
+
+def site_stats_view(request):
+    """
+    Vue admin : affiche
+    - nombre de visiteurs anonymes
+    - nombre de visites utilisateurs (/profile)
+    - derniers utilisateurs actifs
+    - statistiques sur les nouveaux inscrits
+    """
+    now = timezone.now()
+    period = request.GET.get("period", "global")
+
+    # Clés anonymes
+    day_key = f"anonymous_visits:{now.date()}"
+    week_key = f"anonymous_visits_week:{now.isocalendar().week}"
+    month_key = f"anonymous_visits_month:{now.year}-{now.month}"
+
+    # Filtrage période
+    if period == "day":
+        anonymous_visits = cache.get(day_key, 0)
+    elif period == "week":
+        anonymous_visits = cache.get(week_key, 0)
+    elif period == "month":
+        anonymous_visits = cache.get(month_key, 0)
+    else:
+        anonymous_visits = sum(
+            v for k, v in getattr(cache, "_cache", {}).items() if k.startswith("anonymous_visits")
+        )
+
+    # Visites utilisateurs (profile)
+    user_profile_visits = cache.get("user_profile_visits", 0)
+
+    # Nouveaux utilisateurs
+    week_ago = now - timedelta(days=7)
+    month_ago = now - timedelta(days=30)
+    stats = {
+        "new_users_week": User.objects.filter(date_joined__gte=week_ago).count(),
+        "new_users_month": User.objects.filter(date_joined__gte=month_ago).count(),
+        "new_users_total": User.objects.count(),
+    }
+
+    # Liste des utilisateurs actifs (basée sur cache user_last_seen)
+    active_users = []
+    for user in User.objects.all():
+        last_seen = cache.get(f"user_last_seen:{user.id}")
+        if last_seen:
+            active_users.append({
+                "username": user.username,
+                "last_seen": last_seen,
+            })
+
+    # Pagination
+    paginator = Paginator(active_users, 25)
+    page_number = request.GET.get("page")
+    visits = paginator.get_page(page_number)
+
+    context = {
+        "period": period,
+        "anonymous_visits": anonymous_visits,
+        "user_profile_visits": user_profile_visits,
+        "stats": stats,
+        "visits": visits,
+    }
+    return render(request, "bana_admin/site_stats.html", context)
 
 
 def validate_members(request):

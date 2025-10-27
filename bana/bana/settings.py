@@ -82,7 +82,14 @@ MIDDLEWARE = [
     "django_htmx.middleware.HtmxMiddleware",
     "django_browser_reload.middleware.BrowserReloadMiddleware",
     "allauth.account.middleware.AccountMiddleware",
+    'bana_admin.middleware.SiteVisitMiddleware',
+
 ]
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
 
 SITE_ID = 1
 
@@ -214,7 +221,7 @@ LOGGING = {
         },
     },
 }
-'''
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -235,7 +242,34 @@ LOGGING = {
         },
     },
 }
-
+'''
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': 'site_visits.log',
+        },
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'bug_tracker': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+}
 
 """
 ICI TERMINE L'AJOUT DE CODE POUR LE BUG TRACKER
@@ -247,7 +281,7 @@ LANGUAGE_CODE = 'fr-fr'
 USE_I18N = True
 
 # Configuration de la timezone
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Paris'
 USE_TZ = True
 
 LANGUAGES = [

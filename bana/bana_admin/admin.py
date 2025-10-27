@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils import timezone
-from .models import InscriptionValidation
+from .models import InscriptionValidation, SiteVisit
+from .utils import get_site_stats
 
 @admin.register(InscriptionValidation)
 class InscriptionValidationAdmin(admin.ModelAdmin):
@@ -20,3 +21,16 @@ class InscriptionValidationAdmin(admin.ModelAdmin):
     mark_as_pending.short_description = "Marquer comme en attente"
 
 
+@admin.register(SiteVisit)
+class SiteVisitAdmin(admin.ModelAdmin):
+    list_display = ('timestamp', 'ip_address', 'user')
+    list_filter = ('timestamp', 'user')
+    ordering = ('-timestamp',)
+
+    #change_list_template = "admin/site_visit_changelist.html"
+
+    #def changelist_view(self, request, extra_context=None):
+    #    stats = get_site_stats()
+    #    extra_context = extra_context or {}
+    #    extra_context['stats'] = stats
+    #    return super().changelist_view(request, extra_context=extra_context)
