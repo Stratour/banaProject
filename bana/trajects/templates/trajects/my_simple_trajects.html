@@ -19,12 +19,12 @@
   {% endif %}
 
   <!-- Onglets -->
-  {% include "./component_proposed_tabs.html" %}
+  {% include "./component_simple_tabs.html" %}
 
 
-  {% if proposed_trajects %}
+  {% if simple_trajects %}
     <div class="space-y-5">
-      {% for proposed in proposed_trajects %}
+      {% for proposed in simple_trajects %}
         <article
           class="group rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all ring-1 ring-transparent hover:ring-brand/10">
 
@@ -45,7 +45,6 @@
 
             <!-- Badge simplifié -->
             <div>
-              {% if proposed.is_simple %}
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1 text-xs font-semibold">
                   <!-- bolt -->
                   <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -53,8 +52,7 @@
                           d="M13 10V3L4 14h7v7l9-11h-7z"/>
                   </svg>
                   Trajet simplifié
-                </span>
-              {% endif %}
+                </span>              
             </div>
           </header>
 
@@ -231,7 +229,7 @@
 
           <!-- Footer -->
           <footer class="mt-5 flex items-center justify-end">
-            <form method="POST" action="{% url 'delete_proposed_traject' proposed.id %}"
+            <form method="POST" action="{% url 'delete_simple_traject' proposed.id %}"
                   onsubmit="return confirm('Supprimer ce trajet ?');">
               {% csrf_token %}
               <button type="submit"

@@ -21,12 +21,11 @@
   {% endif %}
   
   <!-- Onglets navigation -->
-  {% include "./component_proposed_tabs.html" %}
-
+  {% include "./component_simple_tabs.html" %}
+  
   {% if matches %}
   <ul class="space-y-4">
     {% for match in matches %}
-    
     <li class="bg-white shadow rounded-lg p-6 border border-brand-100">
       <h3 class="text-xl font-semibold text-gray-800 mb-4">
       Trajet prévu le {{ match.proposal.date|date:"l d F Y" }}
@@ -93,7 +92,6 @@
   {% else %}
     <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
       Vous n'avez aucune correspondance de trajet pour l’instant.
-
     </div>
   {% endif %}
   
