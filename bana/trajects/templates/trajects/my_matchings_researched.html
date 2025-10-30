@@ -35,7 +35,7 @@
 
         <!-- 🧍 Profil du Yaya -->
         <p class="text-sm text-gray-700">
-          <strong>{{ proposal.user.profile.service|title }} :</strong> 
+          <strong>{{ proposal.user.profile.service|title }} :</strong> {% if proposal.is_simple %}TRAJET SIMPLE {% endif %}
           {% if is_abonned %}
             <a href="{% url 'accounts:profile_user' user_id=proposal.user.id %}" class="text-blue-600 hover:underline">
               {% if proposal.user.profile.ci_is_verified %}
@@ -107,28 +107,40 @@
 
         <!-- 🧩 Bloc action réservation -->
         {% if match.research and match.research.id %}
-          {% if proposal.number_of_places|add:'0' > 0 %}
-            
+          {% with avail=proposal.number_of_places|default:0 required=match.research.children.count|default:1 %}
+
             {% if is_abonned %}
-              <form method="POST" action="{% url 'auto_reserve' proposal.id match.research.id %}">
-                {% csrf_token %}
-                
-                <!-- ✅ Boutons selon le statut -->
-                {% if proposal.id in my_confirmed_proposal_ids %}
-                  <button class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white rounded-full" disabled>
-                    Trajet confirmé
-                  </button>
-                {% elif proposal.id in my_pending_proposal_ids %}
-                  <button class="inline-flex items-center bg-gray-400 gap-2 py-2 px-4 my-4 text-white rounded-full" disabled>
-                    En attente de confirmation
-                  </button>
+              {# Statuts prioritaires #}
+              {% if proposal.id in my_confirmed_proposal_ids %}
+                <button class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white rounded-full" disabled>
+                  Trajet confirmé
+                </button>
+
+              {% elif proposal.id in my_pending_proposal_ids %}
+                <button class="inline-flex items-center bg-gray-400 gap-2 py-2 px-4 my-4 text-white rounded-full" disabled>
+                  En attente de confirmation
+                </button>
+
+              {% else %}
+                {# Pas de demande existante : on affiche selon la capacité #}
+                {% if avail|add:0 <= 0 %}
+                  <span class="inline-block mt-3 px-4 py-2 bg-red-200 text-red-800 font-semibold rounded">
+                    Complet
+                  </span>
+                {% elif avail < required %}
+                  <span class="inline-block mt-3 px-4 py-2 bg-red-200 text-red-800 font-semibold rounded">
+                    Pas assez de place ({{ avail }}/{{ required }})
+                  </span>
                 {% else %}
-                  <button type="submit" class="inline-flex items-center bg-brand gap-2 py-2 px-4 my-4 text-white hover:bg-brand-dark rounded-full">
-                    Demander une réservation
-                  </button>
+                  <form method="POST" action="{% url 'auto_reserve' proposal.id match.research.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="inline-flex items-center bg-brand gap-2 py-2 px-4 my-4 text-white hover:bg-brand-dark rounded-full">
+                      Demander une réservation
+                    </button>
+                  </form>
                 {% endif %}
-              </form>
-            
+              {% endif %}
+
             {% else %}
               <a href="{% url 'subscription' %}">
                 <button type="button" class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white hover:bg-brand-50 hover:text-brand rounded-full">
@@ -137,11 +149,7 @@
               </a>
             {% endif %}
 
-          {% else %}
-            <p class="mt-3 inline-block px-4 py-2 bg-red-200 text-red-800 font-semibold rounded">
-              Complet
-            </p>
-          {% endif %}
+          {% endwith %}
         {% endif %}
 
       </div>

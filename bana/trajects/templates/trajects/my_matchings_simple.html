@@ -78,30 +78,44 @@
         </p>
 
         <!-- ⚙️ Bouton d’action -->
-        {% if is_abonned %}
-          <form method="post" action="{% url 'propose_help' request.id %}">
-            {% csrf_token %}
+        {% with avail=match.proposal.number_of_places|default:0 required=request.children.count|default:1 %}
+          {% if is_abonned %}
             {% if request.id in parent_confirmed_ids %}
-              <button class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white rounded-full" disabled>
+              <button class="inline-flex items-center bg-green-600 gap-2 py-2 px-4 my-4 text-white rounded-full" disabled>
                 Trajet confirmé
               </button>
+
             {% elif request.id in parent_pending_ids %}
               <button class="inline-flex items-center bg-gray-400 gap-2 py-2 px-4 my-4 text-white rounded-full" disabled>
                 Demande du parent en attente
               </button>
+
             {% else %}
-              <button type="submit" class="inline-flex items-center bg-brand gap-2 py-2 px-4 my-4 text-white hover:bg-brand-dark rounded-full">
-                Proposer mon aide
-              </button>
+              {% if avail|add:0 <= 0 %}
+                <span class="inline-block mt-3 px-4 py-2 bg-red-200 text-red-800 font-semibold rounded">
+                  Complet
+                </span>
+              {% elif avail < required %}
+                <span class="inline-block mt-3 px-4 py-2 bg-red-200 text-red-800 font-semibold rounded">
+                  Pas assez de place ({{ avail }}/{{ required }})
+                </span>
+              {% else %}
+                <form method="post" action="{% url 'propose_help' request.id %}">
+                  {% csrf_token %}
+                  <button type="submit" class="inline-flex items-center bg-brand gap-2 py-2 px-4 my-4 text-white hover:bg-brand-dark rounded-full">
+                    Proposer mon aide
+                  </button>
+                </form>
+              {% endif %}
             {% endif %}
-          </form>
-        {% else %}
-          <a href="{% url 'subscription' %}">
-            <button type="button" class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white hover:bg-brand-50 hover:text-brand rounded-full">
-              S'abonner
-            </button>
-          </a>
-        {% endif %}
+          {% else %}
+            <a href="{% url 'subscription' %}">
+              <button type="button" class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white hover:bg-brand-50 hover:text-brand rounded-full">
+                S'abonner
+              </button>
+            </a>
+          {% endif %}
+        {% endwith %}
       </div>
       {% endfor %}
     </li>
