@@ -21,54 +21,63 @@
   {% endif %}
   
   <!-- Onglets navigation -->
-  {% include "./component_proposed_tabs.html" %}
-
-  {% if matches %}
+  {% include "./component_simple_tabs.html" %}
+  
+ {% if matches %}
   <ul class="space-y-4">
     {% for match in matches %}
-    
     <li class="bg-white shadow rounded-lg p-6 border border-brand-100">
       <h3 class="text-xl font-semibold text-gray-800 mb-4">
-      Trajet prévu le {{ match.proposal.date|date:"l d F Y" }}
+        Trajet prévu le {{ match.proposal.date|date:"l d F Y" }}
       </h3>
-      
+
       {% for request in match.requests %}
       <div class="border-t border-gray-200 pt-4 mt-4 space-y-2">
+        <!-- 👤 Profil du parent -->
         <p class="text-sm text-gray-700">
           <strong>Parent :</strong>
-          {% if is_abonned == True %}
-          <a href="{% url 'accounts:profile_user' user_id=request.user.id %}" class="text-blue-600 hover:underline">
-            {% if request.user.profile.ci_is_verified %}
-            {{ request.user.profile.verified_first_name }}
-            {{ request.user.profile.verified_last_name|slice:"1" }}.
-            {% else %}
-            {{ request.user.first_name }} {{ request.user.last_name|slice:"1" }}
-            {% endif %}
-          </a>
+          {% if is_abonned %}
+            <a href="{% url 'accounts:profile_user' user_id=request.user.id %}" class="text-blue-600 hover:underline">
+              {% if request.user.profile.ci_is_verified %}
+                {{ request.user.profile.verified_first_name }} {{ request.user.profile.verified_last_name|slice:":1" }}.
+              {% else %}
+                {{ request.user.first_name }} {{ request.user.last_name|slice:":1" }}.
+              {% endif %}
+            </a>
           {% else %}
-          <span class="text-red-700 px-4 py-3 rounded relative">Vous devez vous abonner pour pouvoir entrer en contact avec le corespondant</span>
+            <span class="text-red-700 px-4 py-3 rounded relative">
+              Vous devez vous abonner pour pouvoir entrer en contact avec le correspondant
+            </span>
           {% endif %}
-          
         </p>
+
+        <!-- 📍 Informations du trajet -->
         <p class="text-sm text-gray-700">
-          <strong>Départ :</strong> {{ request.traject.start_adress }} à {{ request.departure_time|default:"—" }}
+          <strong>Départ :</strong> {{ request.traject.start_adress }} 
+          {% if request.departure_time %} à {{ request.departure_time|default:"—" }}{% endif %}
         </p>
+        {% if request.traject.end_adress %}
         <p class="text-sm text-gray-700">
           <strong>Arrivée :</strong> {{ request.traject.end_adress }} à {{ request.arrival_time|default:"—" }}
         </p>
+        {% endif %}
+
+        <!-- 🚗 Transport -->
         <p class="text-sm text-gray-700">
           <strong>Transport :</strong>
           {% for mode in request.transport_modes.all %}
-          {{ mode.display_name }}{% if not forloop.last %}, {% endif %}
+            {{ mode.display_name }}{% if not forloop.last %}, {% endif %}
           {% empty %}
-              Non spécifié
+            Non spécifié
           {% endfor %}
-
-          
         </p>
+
+        <!-- 👶 Nombre d’enfants -->
         <p class="text-sm text-gray-700">
           <strong>Nombre d'enfant(s) :</strong> {{ request.children.count }}
         </p>
+
+        <!-- ⚙️ Bouton d’action -->
         {% with avail=match.proposal.number_of_places|default:0 required=request.children.count|default:1 %}
           {% if is_abonned %}
             {% if request.id in parent_confirmed_ids %}
@@ -107,18 +116,17 @@
             </a>
           {% endif %}
         {% endwith %}
-
       </div>
       {% endfor %}
     </li>
     {% endfor %}
   </ul>
-
 {% else %}
   <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
     Vous n'avez aucune correspondance de trajet pour l’instant.
   </div>
 {% endif %}
+
   
 </div>
 {% endblock %}

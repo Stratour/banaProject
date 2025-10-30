@@ -151,13 +151,8 @@ class ProposedTrajectForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Traduction des labels pour chaque transport_mode
-        self.fields['transport_modes'].label_from_instance = lambda obj: {
-            'car': _('Voiture'),
-            'bike': _('Vélo'),
-            'transport': _('Transport en commun'),
-            'walking': _('À pied'),
-        }.get(obj.name, obj.name)  # obj.name = identifiant stocké en DB
+        # 🔤 Traduit les labels selon display_name du modèle
+        self.fields['transport_modes'].label_from_instance = lambda obj: obj.display_name
         
         # Initialiser les champs de récurrence selon le type sélectionné
         recurrence_type = self.initial.get('recurrence_type', '') or self.data.get('recurrence_type')
@@ -193,32 +188,6 @@ class SimpleProposedTrajectForm(forms.ModelForm):
         label="Nombre de places"
     )
     
-    tr_weekdays = forms.ChoiceField(
-        choices=[
-            ("", "-- Sélectionnez un jour --"),
-            ("1", "Lundi"),
-            ("2", "Mardi"),
-            ("3", "Mercredi"),
-            ("4", "Jeudi"),
-            ("5", "Vendredi"),
-            ("6", "Samedi"),
-            ("7", "Dimanche")
-        ],
-        widget=forms.Select(attrs={
-            'class': 'block w-full mt-1 rounded-full border-brand shadow-sm focus:ring-brand focus:border-brand'
-        }),
-        label="Jour de la semaine",
-        required=True
-    )
-    
-    date_debut = forms.DateField(
-        widget=forms.DateInput(attrs={
-            'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm',
-            'type': 'date'
-        }),
-        label="Date de début"
-    )
-    
     search_radius_km = forms.IntegerField(
         label='Rayon de recherche (km)',
         initial=5,
@@ -233,39 +202,95 @@ class SimpleProposedTrajectForm(forms.ModelForm):
         help_text='Dans quel rayon souhaitez-vous aider ? (1-50 km)'
     )
 
+    recurrence_type = forms.ChoiceField(
+        choices=[
+            ('one_week', _('Trajets sur une seule semaine')),
+            ('weekly', _('Trajets chaque semaine')),
+            ('biweekly', _('Trajets une semaine sur deux')),
+        ],
+        widget=forms.RadioSelect(attrs={'class': 'mr-2'}),
+        required=True,
+        initial='one_week',
+        label=_("Type de récurrence")
+    )
+
+    recurrence_interval = forms.IntegerField(
+        widget=forms.NumberInput(attrs={
+            'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm'
+        }),
+        required=False,
+        label=_("Intervalle (semaines)"),
+        min_value=1
+    )
+
+    tr_weekdays = forms.MultipleChoiceField(
+        choices=[(str(i), day) for i, day in enumerate(
+            ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"], 1)],
+        required=False,
+        label=_("Jours spécifiques")
+    )
+
+    date_debut = forms.DateField(
+        widget=forms.DateInput(attrs={
+            'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm',
+            'type': 'date'
+        }),
+        label=_("Date de début")
+    )
+
+    date_fin = forms.DateField(
+        widget=forms.DateInput(attrs={
+            'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm',
+            'type': 'date'
+        }),
+        required=False,
+        label=_("Date de fin")
+    )
+
+    # === Validation ===
     def clean_date_debut(self):
         date_debut = self.cleaned_data.get('date_debut')
-
         if date_debut and date_debut < date.today():
             raise ValidationError(_("La date de début ne peut pas être antérieure à la date d'aujourd'hui."))
-
         return date_debut
+
+    def clean_tr_weekdays(self):
+        days = self.cleaned_data.get('tr_weekdays')
+        if not days:
+            raise ValidationError(_("Veuillez sélectionner au moins un jour de la semaine."))
+        return days
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Traduction des labels pour chaque transport_mode
-        self.fields['transport_modes'].label_from_instance = lambda obj: {
-            'car': _('Voiture'),
-            'bike': _('Vélo'),
-            'transport': _('Transport en commun'),
-            'walking': _('À pied'),
-        }.get(obj.name, obj.name)  # obj.name = identifiant stocké en DB
-        
+        # Traduire les labels selon display_name
+        self.fields['transport_modes'].label_from_instance = lambda obj: obj.display_name
+
+        # Initialiser la logique selon le type de récurrence sélectionné
+        recurrence_type = self.initial.get('recurrence_type', '') or self.data.get('recurrence_type')
+
+        if recurrence_type == 'none':
+            self.fields['date_debut'].required = False
+            self.fields['date_fin'].required = False
+            self.fields['recurrence_interval'].initial = None
+        elif recurrence_type in ['weekly', 'biweekly']:
+            self.fields['date_debut'].required = True
+            self.fields['date_fin'].required = True
+            self.fields['recurrence_interval'].initial = 1 if recurrence_type == 'weekly' else 2
+
     class Meta:
         model = Traject
-        fields = ['start_adress',"number_of_places", 'search_radius_km']
+        fields = ['start_adress', 'number_of_places', 'search_radius_km']
         labels = {
-            'start_adress': "Ville de départ",
-            'number_of_places': 'Nombre de places',
+            'start_adress': _("Ville de départ"),
+            'number_of_places': _("Nombre de places"),
         }
-        
         widgets = {
             'start_adress': forms.TextInput(attrs={
                 'id': 'start_adress',
                 'class': 'w-full p-3 mt-1 border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand',
                 'placeholder': _('Entrez le point de départ (Adresse, ville, code postal)'),
-                'autocomplete': 'off'
+                'autocomplete': 'off',
             }),
         }
 
@@ -384,13 +409,8 @@ class ResearchedTrajectForm(forms.ModelForm):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
 
-        # Traduction des labels pour chaque transport_mode
-        self.fields['transport_modes'].label_from_instance = lambda obj: {
-            'car': _('Voiture'),
-            'bike': _('Vélo'),
-            'transport': _('Transport en commun'),
-            'walking': _('À pied'),
-        }.get(obj.name, obj.name)  # obj.name = identifiant stocké en DB
+        # 🔤 Traduit les labels selon display_name du modèle
+        self.fields['transport_modes'].label_from_instance = lambda obj: obj.display_name
         
         recurrence_type = self.initial.get('recurrence_type', '') or self.data.get('recurrence_type')
 
