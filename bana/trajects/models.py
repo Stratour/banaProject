@@ -7,6 +7,7 @@ from accounts.models import Languages, Child
 from django.utils.translation import gettext_lazy as _
 from django.contrib.gis.db import models as gis_models
 
+
 class TransportMode(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True, null=True)
@@ -22,8 +23,8 @@ class TransportMode(models.Model):
         }.get(self.name.lower(), self.name)
 
     def __str__(self):
-        """Permet à Django d'afficher directement la traduction."""
-        return self.display_name
+        """Affiche la traduction dans l’admin et ailleurs."""
+        return str(self.display_name)
 
 
 class Traject(models.Model):
@@ -96,6 +97,13 @@ class ProposedTraject(models.Model):
     
     is_simple = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    
+    confirmed_users = models.ManyToManyField(
+        User,
+        blank=True,
+        related_name="confirmed_proposed_trajets",
+        help_text="Liste des utilisateurs ayant une réservation confirmée pour ce trajet."
+    )
     
     def __str__(self):
         return f"{self.user.username} - {self.traject.start_adress} → {self.traject.end_adress} ({self.date})"

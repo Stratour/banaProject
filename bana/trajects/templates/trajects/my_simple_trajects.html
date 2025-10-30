@@ -1,13 +1,13 @@
 {% extends "allauth/layouts/base.html" %}
 {% load static %}
 
-{% block head_title %}Mes propositions{% endblock %}
+{% block head_title %}Mes recherches{% endblock %}
 
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
 
   <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
-    Mes propositions
+    Mes recherches
   </h1>
 
   {% if messages %}
@@ -73,14 +73,8 @@
                 Départ
               </p>
               <p>
-                <span class="font-medium">{{ proposed.traject.start_adress }}</span>
-                <span class="mx-1 text-gray-400">·</span>
-                <!-- clock -->
-                <svg class="inline h-4 w-4 -mt-0.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                {{ proposed.departure_time|default:"—" }}
+                <span class="font-medium">{{ proposed.traject.start_adress }}</span> dans un rayon de {{ proposed.search_radius_km }} km
+
               </p>
             </div>
 
@@ -106,6 +100,27 @@
               </p>
             </div>
             {% endif %}
+
+            <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
+              <p class="font-semibold text-gray-900 flex items-center gap-2">
+                <!-- users -->
+                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/>
+                  <circle cx="9" cy="7" r="4" stroke-width="2"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M23 20v-2a4 4 0 00-3-3.87"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M16 3.13a4 4 0 010 7.75"/>
+                </svg>
+                Place(s)
+              </p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
+                    {{ proposed.number_of_places }} place(s) restante(s)
+                  </span>
+              </div>
+            </div>
 
             <!-- Transport -->
             <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">

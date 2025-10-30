@@ -18,125 +18,137 @@ from datetime import datetime, timedelta, date
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
+from django.db.models import Sum
 
 
-# ============================================================
-# 🚗 Fonction de matching symétrique optimisée
-# ============================================================
+def _confirmed_reserved_places_for_proposal(proposal):
+    """Calcule le total des places DÉJÀ confirmées sur un trajet proposé."""
+    return Reservation.objects.filter(
+        proposed_traject=proposal,
+        status='confirmed'
+    ).aggregate(s=Sum('number_of_places'))['s'] or 0
+
+
+def _available_places(proposal):
+    """
+    Nombre de places encore disponibles pour ce trajet proposé.
+    - Gère le cas où number_of_places est vide/str => fallback à 1
+    - Soustrait uniquement les réservations CONFIRMÉES
+    """
+    try:
+        total_places = int(proposal.number_of_places or 1)
+    except (ValueError, TypeError):
+        total_places = 1
+
+    confirmed = _confirmed_reserved_places_for_proposal(proposal)
+    return max(0, total_places - confirmed)
+
 
 def find_matching_trajects(obj, default_radius_km=5, time_tolerance_minutes=45):
     """
-    Matching 100% ORM/SQL (PostGIS). Retourne une liste d'objets (ProposedTraject ou ResearchedTraject).
-    - Symétrique : Parent recherche ↔ Propositions ; Proposition ↔ Recherches
-    - Trajet simple Yaya : rayon = search_radius_km
-    - Trajet normal : rayon = default_radius_km (5)
-    - Vérifie transport, date, horaires (±time_tolerance), places/enfants.
+    Matching géographique et logique entre ResearchedTraject et ProposedTraject.
+    - Ne masque plus les trajets confirmés : tout reste visible.
+    - Vérifie uniquement distance, horaires, transports et places.
     """
     time_tolerance = timedelta(minutes=time_tolerance_minutes)
 
     def time_ok(t1, t2):
+        """Compare deux heures avec une tolérance donnée."""
         if not t1 or not t2:
             return True
         dt1 = datetime.combine(date.today(), t1)
         dt2 = datetime.combine(date.today(), t2)
         return (dt1 - time_tolerance) <= dt2 <= (dt1 + time_tolerance)
 
-    # ---------------- Parent recherche -> match avec Propositions ----------------
+    # ======================================================
+    # 🧭 CAS 1 : Parent → match avec les propositions
+    # ======================================================
     if isinstance(obj, ResearchedTraject):
         if not obj.traject or not obj.traject.start_point:
             return []
 
-        base_qs = ProposedTraject.objects.filter(date=obj.date, is_active=True).exclude(user=obj.user)
-
-        # Large pré-filtre de départ en DB (évite de ramener tout le monde)
-        # Utilise une marge (par ex  max(default*5, 50km)) pour inclure trajets simples larges
-        prefilter_radius = max(default_radius_km * 5, 50)
-        base_qs = base_qs.annotate(
+        base_qs = ProposedTraject.objects.filter(
+            date=obj.date,
+            is_active=True
+        ).exclude(user=obj.user).annotate(
             distance_start=Distance('traject__start_point', obj.traject.start_point)
-        ).filter(distance_start__lte=D(km=prefilter_radius))
+        ).filter(distance_start__lte=D(km=max(default_radius_km * 5, 50)))
 
-        # On va construire un Q final correspondant aux PKs valides
         valid_pks = []
 
         for p in base_qs:
-            # 1) rayon effectif (si simple on respecte le search_radius_km)
-            rayon = (getattr(p, 'search_radius_km', None) or default_radius_km) if getattr(p, 'is_simple', False) else default_radius_km
+            rayon = p.search_radius_km if getattr(p, 'is_simple', False) else default_radius_km
 
-            # 2) vérifier start_point exists
+            # Distance départ
             if not p.traject.start_point:
                 continue
-
-            # 3) distance départ (utilise distance_start annoté pour perf)
-            if p.distance_start is None:
-                # fallback compute
-                dist = p.traject.start_point.distance(obj.traject.start_point)
-            else:
-                dist = p.distance_start.m  # meters
-
+            dist = p.distance_start.m if p.distance_start is not None else p.traject.start_point.distance(obj.traject.start_point)
             if dist > D(km=rayon).m:
                 continue
 
-            # 4) transport
+            # Modes de transport
             if not set(obj.transport_modes.all()).intersection(p.transport_modes.all()):
                 continue
 
-            # 5) if p normal -> check arrival and times
-            if not getattr(p, 'is_simple', False):
-                if not (obj.traject.end_point and p.traject.end_point):
-                    continue
-                # compute end distance (meters)
-                d_end = p.traject.end_point.distance(obj.traject.end_point)
-                if d_end > D(km=rayon).m:
-                    continue
-                if not (time_ok(obj.departure_time, p.departure_time) and time_ok(obj.arrival_time, p.arrival_time)):
-                    continue
+            # Vérif places dispo
+            required_children = obj.children.count() if hasattr(obj, 'children') and obj.children.exists() else 1
+            if _available_places(p) < required_children:
+                continue
 
-            # 6) places
-            #if getattr(p, 'number_of_places', 9999) < getattr(obj, 'number_of_children', 1):
-            #    continue
+            # Trajet simple
+            if getattr(p, 'is_simple', False):
+                valid_pks.append(p.pk)
+                continue
+
+            # Arrivée et horaires
+            if not (obj.traject.end_point and p.traject.end_point):
+                continue
+            d_end = p.traject.end_point.distance(obj.traject.end_point)
+            if d_end > D(km=rayon).m:
+                continue
+            if not (time_ok(obj.departure_time, p.departure_time) and time_ok(obj.arrival_time, p.arrival_time)):
+                continue
 
             valid_pks.append(p.pk)
 
-        if not valid_pks:
-            return []
+        return list(ProposedTraject.objects.filter(pk__in=valid_pks).order_by('date'))
 
-        # final queryset ordered by real distance
-        qs = ProposedTraject.objects.filter(pk__in=valid_pks).annotate(
-            distance_start=Distance('traject__start_point', obj.traject.start_point)
-        ).order_by('distance_start')
-
-        return list(qs)
-
-    # ---------------- Proposition (Yaya ou Parent) -> match avec Recherches ----------------
+    # ======================================================
+    # 🚗 CAS 2 : Yaya → match avec les recherches
+    # ======================================================
     if isinstance(obj, ProposedTraject):
         if not obj.traject or not obj.traject.start_point:
             return []
 
-        # rayon effectif pour CE proposed
-        rayon = (getattr(obj, 'search_radius_km', None) or default_radius_km) if getattr(obj, 'is_simple', False) else default_radius_km
+        rayon = obj.search_radius_km if getattr(obj, 'is_simple', False) else default_radius_km
 
-        base_qs = ResearchedTraject.objects.filter(date=obj.date, is_active=True).exclude(user=obj.user)
-        base_qs = base_qs.annotate(distance_start=Distance('traject__start_point', obj.traject.start_point)).filter(distance_start__lte=D(km=max(rayon, 50)))
+        base_qs = ResearchedTraject.objects.filter(
+            date=obj.date,
+            is_active=True
+        ).exclude(user=obj.user).annotate(
+            distance_start=Distance('traject__start_point', obj.traject.start_point)
+        ).filter(distance_start__lte=D(km=max(rayon, 50)))
 
         valid_pks = []
+
         for r in base_qs:
             if not r.traject.start_point:
                 continue
-
             dist = r.distance_start.m if r.distance_start is not None else r.traject.start_point.distance(obj.traject.start_point)
             if dist > D(km=rayon).m:
                 continue
 
-            # transport
             if not set(obj.transport_modes.all()).intersection(r.transport_modes.all()):
                 continue
 
-            # if obj simple -> only departure matters (and date/transport)
+            required_children = r.children.count() if hasattr(r, 'children') and r.children.exists() else 1
+            if _available_places(obj) < required_children:
+                continue
+
             if getattr(obj, 'is_simple', False):
                 valid_pks.append(r.pk)
                 continue
 
-            # else check arrival and times
             if not (obj.traject.end_point and r.traject.end_point):
                 continue
             d_end = obj.traject.end_point.distance(r.traject.end_point)
@@ -145,22 +157,12 @@ def find_matching_trajects(obj, default_radius_km=5, time_tolerance_minutes=45):
             if not (time_ok(obj.departure_time, r.departure_time) and time_ok(obj.arrival_time, r.arrival_time)):
                 continue
 
-            # places
-            #if getattr(obj, 'number_of_places', 0) < getattr(r, 'number_of_children', 1):
-            #    continue
-
             valid_pks.append(r.pk)
 
-        if not valid_pks:
-            return []
-
-        qs = ResearchedTraject.objects.filter(pk__in=valid_pks).annotate(
-            distance_start=Distance('traject__start_point', obj.traject.start_point)
-        ).order_by('distance_start')
-
-        return list(qs)
+        return list(ResearchedTraject.objects.filter(pk__in=valid_pks).order_by('date'))
 
     return []
+
 
 # ============================================================
 # 💾 Enregistrement des trajets proposés et recherchés
@@ -273,6 +275,62 @@ def save_researched_traject(request, traject_form, researched_form):
 
     return None, False
 
+def save_simple_proposed_traject(request, form):
+    """
+    Sauvegarde d’un ou plusieurs trajets simplifiés.
+    Gère la géolocalisation, la récurrence et la création des ProposedTraject.
+    """
+    if not form.is_valid():
+        return None, False
+
+    user = request.user
+    start_adress = form.cleaned_data['start_adress']
+    transport_modes = form.cleaned_data['transport_modes']
+
+    # ✅ Conversion et valeur par défaut
+    number_of_places = int(form.cleaned_data.get('number_of_places') or 1)
+    search_radius_km = form.cleaned_data['search_radius_km']
+
+    # 🔁 Gestion de la récurrence
+    recurrence_type = form.cleaned_data.get('recurrence_type')
+    recurrence_interval = form.cleaned_data.get('recurrence_interval')
+    date_debut = form.cleaned_data.get('date_debut')
+    date_fin = form.cleaned_data.get('date_fin') or date_debut
+    tr_weekdays = form.cleaned_data.get('tr_weekdays')
+
+    recurrent_dates = generate_recurrent_dates(
+        date_debut=date_debut,
+        date_fin=date_fin,
+        recurrence_type=recurrence_type,
+        recurrence_interval=recurrence_interval,
+        specific_days=tr_weekdays
+    )
+
+    # 🗺️ Création du Traject (point de départ uniquement)
+    traject = Traject.objects.create(start_adress=start_adress, end_adress="")
+
+    start_place_id = request.POST.get('start_place_id')
+    if start_place_id:
+        start_details = get_place_details(start_place_id)
+        if "lat" in start_details and "lng" in start_details:
+            traject.start_point = Point(start_details["lng"], start_details["lat"], srid=4326)
+            traject.save()
+
+    # 🚗 Création des trajets proposés récurrents
+    proposed_trajects = []
+    for date_obj in recurrent_dates:
+        proposed = ProposedTraject.objects.create(
+            user=user,
+            traject=traject,
+            date=date_obj,
+            is_simple=True,
+            number_of_places=number_of_places,  # ✅ Correction ici
+            search_radius_km=search_radius_km
+        )
+        proposed.transport_modes.set(transport_modes)
+        proposed_trajects.append(proposed)
+
+    return proposed_trajects, True
 
 # ============================================================
 # 🧭 VUES UTILISATEURS
@@ -280,33 +338,61 @@ def save_researched_traject(request, traject_form, researched_form):
 
 @login_required
 def my_proposed_trajects(request):
-    """Trajets proposés classiques (non simplifiés)."""
-    user_trajects = ProposedTraject.objects.filter(
-        user=request.user, is_simple=False, is_active=True, date__gte=date.today()
-    )
-    return render(request, 'trajects/my_proposed_trajects.html', {'proposed_trajects': user_trajects})
+    """
+    Liste les trajets proposés (hors trajets simples).
+    → visibles tant que la date n'est pas passée et qu'il reste au moins 1 place.
+    """
+    user = request.user
+    is_abonned = Subscription.is_user_abonned(user)
+
+    proposed_trajects = ProposedTraject.objects.filter(
+        user=user,
+        is_simple=False,
+        date__gte=date.today()
+    ).filter(
+        Q(is_active=True) | Q(number_of_places__gt=0)
+    ).order_by('date')
+
+    return render(request, 'trajects/my_proposed_trajects.html', {
+        'proposed_trajects': proposed_trajects,
+        'is_abonned': is_abonned,
+    })
 
 
 @login_required
 def my_simple_trajects(request):
-    """Trajets simplifiés proposés (Yaya)."""
-    user_trajects = ProposedTraject.objects.filter(
-        user=request.user, is_simple=True, is_active=True, date__gte=date.today()
-    )
-    return render(request, 'trajects/my_simple_trajects.html', {'simple_trajects': user_trajects})
+    """
+    Liste les trajets simplifiés proposés par le Yaya.
+    → visibles tant qu'ils ne sont pas passés et qu'il reste au moins 1 place.
+    """
+    user = request.user
+    is_abonned = Subscription.is_user_abonned(user)
 
-@login_required
+    simple_trajects = ProposedTraject.objects.filter(
+        user=user,
+        is_simple=True,
+        date__gte=date.today()
+    ).filter(
+        Q(is_active=True) | Q(number_of_places__gt=0)
+    ).order_by('date')
+
+    return render(request, 'trajects/my_simple_trajects.html', {
+        'simple_trajects': simple_trajects,
+        'is_abonned': is_abonned,
+    })
+
 def my_researched_trajects(request):
     """
-    Affiche toutes les recherches de trajet actives de l’utilisateur
+    Liste les recherches de trajets actives du parent.
     """
     user_trajects = ResearchedTraject.objects.filter(
         user=request.user,
         is_active=True,
         date__gte=date.today()
     ).order_by('date', 'departure_time')
+
     return render(request, 'trajects/my_researched_trajects.html', {
-        'researched_trajects': user_trajects
+        'researched_trajects': user_trajects,
     })
 
 # ============================================================
@@ -316,33 +402,45 @@ def my_researched_trajects(request):
 @login_required
 def my_matchings_proposed(request):
     """
-    Parent ou Yaya propose un trajet classique → affiche les recherches correspondantes.
-    Ne montre PAS les trajets simplifiés.
+    Yaya ou Parent → affiche les recherches correspondantes à leurs trajets proposés.
+    → Ne masque plus rien, tout est affiché avec statut.
     """
     user = request.user
     matches = []
 
-    # ⚙️ Filtre : uniquement les trajets normaux
-    proposed_trajects = ProposedTraject.objects.filter(
+    proposed_matches = ProposedTraject.objects.filter(
         user=user,
-        is_active=True,
-        is_simple=False,
         date__gte=date.today()
-    )
+    ).filter(
+        Q(is_active=True) | Q(number_of_places__gt=0)
+    ).order_by('date')
 
     is_abonned = Subscription.is_user_abonned(user)
 
-    for proposed in proposed_trajects:
-        matched_requests = find_matching_trajects(proposed, default_radius_km=5)
+    # ✅ Statuts des réservations côté Yaya
+    parent_pending_ids = set(
+        Reservation.objects.filter(
+            proposed_traject__user=user, status='pending'
+        ).values_list('researched_traject_id', flat=True)
+    )
+    parent_confirmed_ids = set(
+        Reservation.objects.filter(
+            proposed_traject__user=user, status='confirmed'
+        ).values_list('researched_traject_id', flat=True)
+    )
+
+    for proposed in proposed_matches:
+        rayon = proposed.search_radius_km if getattr(proposed, "is_simple", False) else 5
+        matched_requests = find_matching_trajects(proposed, default_radius_km=rayon)
+
         if matched_requests:
-            matches.append({
-                'proposal': proposed,
-                'requests': matched_requests
-            })
+            matches.append({'proposal': proposed, 'requests': matched_requests})
 
     return render(request, 'trajects/my_matchings_proposed.html', {
         'matches': matches,
-        'is_abonned': is_abonned
+        'is_abonned': is_abonned,
+        'parent_pending_ids': parent_pending_ids,
+        'parent_confirmed_ids': parent_confirmed_ids,
     })
 
 
@@ -353,34 +451,44 @@ def my_matchings_proposed(request):
 @login_required
 def my_matchings_simple(request):
     """
-    Yaya propose un trajet simplifié → affiche les recherches correspondantes.
-    Ne montre PAS les trajets normaux.
+    Yaya → affiche les correspondances de trajets simplifiés avec les recherches parents.
+    → Aucune exclusion : les statuts sont affichés visuellement.
     """
     user = request.user
     matches = []
 
-    # ⚙️ Filtre : uniquement les trajets simples
     simple_trajects = ProposedTraject.objects.filter(
         user=user,
-        is_active=True,
         is_simple=True,
         date__gte=date.today()
-    )
+    ).filter(
+        Q(is_active=True) | Q(number_of_places__gt=0)
+    ).order_by('date')
 
     is_abonned = Subscription.is_user_abonned(user)
+
+    parent_pending_ids = set(
+        Reservation.objects.filter(
+            proposed_traject__user=user, status='pending'
+        ).values_list('researched_traject_id', flat=True)
+    )
+    parent_confirmed_ids = set(
+        Reservation.objects.filter(
+            proposed_traject__user=user, status='confirmed'
+        ).values_list('researched_traject_id', flat=True)
+    )
 
     for proposed in simple_trajects:
         rayon = proposed.search_radius_km or 5
         matched_requests = find_matching_trajects(proposed, default_radius_km=rayon)
         if matched_requests:
-            matches.append({
-                'proposal': proposed,
-                'requests': matched_requests
-            })
+            matches.append({'proposal': proposed, 'requests': matched_requests})
 
     return render(request, 'trajects/my_matchings_simple.html', {
         'matches': matches,
-        'is_abonned': is_abonned
+        'is_abonned': is_abonned,
+        'parent_pending_ids': parent_pending_ids,
+        'parent_confirmed_ids': parent_confirmed_ids,
     })
 
 
@@ -391,14 +499,13 @@ def my_matchings_simple(request):
 @login_required
 def my_matchings_researched(request):
     """
-    Parent recherche un trajet → affiche les propositions correspondantes.
-    - Ne montre que les trajets normaux si la recherche est classique.
-    - Montre aussi les trajets simplifiés si le Yaya est dans le rayon du parent.
+    Parent → affiche les propositions correspondantes à ses recherches.
+    → Ne masque pas les trajets, mais indique l’état (en attente / confirmé).
     """
     user = request.user
     matches = []
 
-    researched_trajects = ResearchedTraject.objects.filter(
+    researched_matches = ResearchedTraject.objects.filter(
         user=user,
         is_active=True,
         date__gte=date.today()
@@ -406,18 +513,30 @@ def my_matchings_researched(request):
 
     is_abonned = Subscription.is_user_abonned(user)
 
-    for research in researched_trajects:
-        matched_proposals = find_matching_trajects(research, default_radius_km=5)
-        if matched_proposals:
-            matches.append({
-                'research': research,
-                'proposals': matched_proposals
-            })
+    # ✅ Statuts des trajets déjà réservés
+    my_pending_proposal_ids = set(
+        Reservation.objects.filter(
+            user=user, status='pending'
+        ).values_list('proposed_traject_id', flat=True)
+    )
+    my_confirmed_proposal_ids = set(
+        Reservation.objects.filter(
+            user=user, status='confirmed'
+        ).values_list('proposed_traject_id', flat=True)
+    )
+
+    for research in researched_matches:
+        matched = find_matching_trajects(research, default_radius_km=5)
+        if matched:
+            matches.append({'research': research, 'proposals': matched})
 
     return render(request, 'trajects/my_matchings_researched.html', {
         'matches': matches,
-        'is_abonned': is_abonned
+        'is_abonned': is_abonned,
+        'my_pending_proposal_ids': my_pending_proposal_ids,
+        'my_confirmed_proposal_ids': my_confirmed_proposal_ids,
     })
+
 
 
 def generate_recurrent_dates(date_debut, date_fin, recurrence_type, recurrence_interval=None, specific_days=None):
@@ -556,71 +675,58 @@ def generate_recurrent_proposals(request, recurrent_dates, traject,
 
 @login_required
 def simple_proposed_traject(request):
-    """ Proposition rapide d'un trajet (simplifiée pour les yayas). """
+    """Proposition d'un trajet simplifié (Yaya) avec récurrence et matching automatique."""
     if request.method == 'POST':
         form = SimpleProposedTrajectForm(request.POST)
 
         if form.is_valid():
-            user = request.user
-            start_adress = form.cleaned_data['start_adress']
-            transport_modes = form.cleaned_data['transport_modes']
-            date_debut = form.cleaned_data['date_debut']
-            number_of_places = form.cleaned_data['number_of_places']
-            search_radius_km = form.cleaned_data['search_radius_km']
-            
-            # Récupérer start_place_id pour la géolocalisation
-            start_place_id = request.POST.get('start_place_id')
+            proposed_trajects, success = save_simple_proposed_traject(request, form)
 
-            traject = Traject.objects.create(
-                start_adress=start_adress,
-                end_adress="",  # Pas d'arrivée définie ici
-            )
-            
-            if start_place_id:
-                start_details = get_place_details(start_place_id)
-                if "lat" in start_details and "lng" in start_details:
-                    traject.start_point = Point(start_details["lng"], start_details["lat"], srid=4326)
-                    traject.save()
+            if success:
+                matched_any = False
+                created_count = 0
+                total_matches = 0
 
-            matched_any = False
-            created_count = 0
-            total_matches = 0
+                for proposed in proposed_trajects:
+                    matches = find_matching_trajects(proposed)
+                    match_count = len(matches)
+                    if match_count > 0:
+                        matched_any = True
+                        total_matches += match_count
+                    created_count += 1
 
-            proposed = ProposedTraject.objects.create(
-                user=user,
-                traject=traject,
-                date=date_debut,  # CORRECTION : utiliser date_debut au lieu de date_obj
-                is_simple=True,
-                number_of_places=number_of_places,
-                search_radius_km=search_radius_km
-            )
-            proposed.transport_modes.set(transport_modes)
-            
-            matches = find_matching_trajects(proposed)
-            if matches:
-                matched_any = True
-                total_matches += len(matches)
-            created_count += 1
-
-            if matched_any:
-                messages.success(
-                    request,
-                    f"{created_count} trajet(s) simple(s) enregistré(s) avec {total_matches} matching(s) trouvés dans un rayon de {search_radius_km} km."
-                )
-                return redirect('my_matchings_simple')
+                if matched_any:
+                    messages.success(
+                        request,
+                        f"{created_count} trajet(s) simplifié(s) enregistré(s) avec {total_matches} matching(s) trouvés."
+                    )
+                    return redirect('my_matchings_simple')
+                else:
+                    messages.warning(
+                        request,
+                        f"{created_count} trajet(s) simplifié(s) enregistré(s), mais aucun matching trouvé."
+                    )
+                    return redirect('my_simple_trajects')
             else:
-                messages.warning(
-                    request,
-                    f"{created_count} trajet(s) simple(s) enregistré(s), mais aucun matching trouvé dans un rayon de {search_radius_km} km."
-                )
-                return redirect('my_simple_trajects')
+                messages.error(request, "Erreur dans le formulaire. Veuillez corriger les champs.")
         else:
             messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
     else:
         form = SimpleProposedTrajectForm()
 
-    return render(request, 'trajects/simple_proposed_traject.html', {'form': form})
-    
+    # ✅ Ajout des variables nécessaires pour l’affichage des jours
+    days_of_week = [
+        ('1', 'Lundi'), ('2', 'Mardi'), ('3', 'Mercredi'),
+        ('4', 'Jeudi'), ('5', 'Vendredi'), ('6', 'Samedi'), ('7', 'Dimanche'),
+    ]
+    selected_days = request.POST.getlist('tr_weekdays') if request.method == 'POST' else []
+
+    return render(request, 'trajects/simple_proposed_traject.html', {
+        'form': form,
+        'days_of_week': days_of_week,
+        'tr_weekdays': selected_days,
+    })
+
     
 @login_required
 def researched_traject(request):
@@ -852,8 +958,10 @@ def manage_reservation(request, reservation_id, action):
         return redirect('my_reservations')
 
     if action == 'accept':
-        requested_places = reservation.number_of_places
-        available_places = reservation.proposed_traject.number_of_places
+        # Sécuriser les types
+        requested_places = int(reservation.number_of_places or 0)
+        proposed = reservation.proposed_traject
+        available_places = int(proposed.number_of_places or 0)
 
         if requested_places > available_places:
             messages.error(request, "Il n'y a plus assez de places disponibles.")
@@ -862,31 +970,31 @@ def manage_reservation(request, reservation_id, action):
         reservation.status = 'confirmed'
         reservation.save()
 
-        # Envoi d'un email de confirmation au parent
+        # 🔹 Ajouter automatiquement le parent à la liste des utilisateurs confirmés du trajet
+        proposed.confirmed_users.add(reservation.user)
+        
+        # Mettre à jour le solde de places et l'état actif
+        remaining = max(0, available_places - requested_places)
+        proposed.number_of_places = remaining
+        proposed.is_active = (remaining > 0)  # ✅ reste visible tant qu'il reste ≥ 1 place
+        proposed.save()
+        
+        # Email d'info
         parent_email = reservation.user.email
-        yaya_name = request.user.profile.verified_first_name
-        trajet_info = f"{reservation.proposed_traject.traject.start_adress} → {reservation.proposed_traject.traject.end_adress}"
-
+        trajet_info = f"{proposed.traject.start_adress} → {proposed.traject.end_adress or '—'}"
         send_mail(
             subject="Réservation confirmée sur Bana",
             message=(
                 f"Bonjour,\n\n"
                 f"Votre demande de réservation pour le trajet {trajet_info} "
                 f"({requested_places} enfant(s)) a été confirmée.\n\n"
-                "Connectez-vous à Bana pour plus d'informations et prendre contact avec le Yaya. http://www.bana.mobi/trajects/my_reserve/"
+                "Connectez-vous à Bana pour plus d'informations et prendre contact avec le Yaya. "
+                "https://www.bana.mobi/trajects/my_reserve/"
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[parent_email],
             fail_silently=False,
         )
-
-        # Mettre à jour les places
-        reservation.proposed_traject.number_of_places -= requested_places
-        reservation.proposed_traject.save()
-
-        if reservation.proposed_traject.number_of_places <= 0:
-            reservation.proposed_traject.is_active = False
-            reservation.proposed_traject.save()
 
         messages.success(request, "Réservation confirmée.")
 
@@ -894,8 +1002,12 @@ def manage_reservation(request, reservation_id, action):
         reservation.status = 'canceled'
         reservation.save()
 
+        proposed = reservation.proposed_traject
+        
+        proposed.confirmed_users.remove(reservation.user)
+        proposed.save()
+        
         parent_email = reservation.user.email
-        yaya_name = request.user.profile.verified_first_name
         trajet_info = f"{reservation.proposed_traject.traject.start_adress} → {reservation.proposed_traject.traject.end_adress}"
 
         send_mail(
@@ -903,8 +1015,8 @@ def manage_reservation(request, reservation_id, action):
             message=(
                 f"Bonjour,\n\n"
                 f"Votre demande de réservation pour le trajet {trajet_info} "
-                f"({requested_places} enfant(s)) a été déclinée ou le trajet n'est plus disponible.\n\n"
-                "N'hésitez pas à rechercher un autre accompagnateur. http://www.bana.mobi/trajects/researched_traject/"
+                f"a été déclinée ou le trajet n'est plus disponible.\n\n"
+                "N'hésitez pas à rechercher un autre accompagnateur. https://www.bana.mobi/trajects/researched_traject/"
             ),
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[parent_email],
@@ -960,7 +1072,7 @@ def auto_reserve(request, proposed_id, researched_id):
             f"Vous avez reçu une nouvelle demande de réservation.\n\n"
             f"Détails du trajet : {trajet_info}\n"
             f"Nombre d'enfant(s) demandé(s) : {requested_places}\n\n"
-            "Connectez-vous à Bana pour accepter ou refuser la demande. http://www.bana.mobi/trajects/my_reserve/"
+            "Connectez-vous à Bana pour accepter ou refuser la demande. https://www.bana.mobi/trajects/my_reserve/"
         ),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[proposer_email],
@@ -979,11 +1091,17 @@ def my_reservations(request):
     # Réservations faites par le parent
     made_reservations = Reservation.objects.filter(user=user).select_related(
         'proposed_traject', 'researched_traject', 'proposed_traject__traject', 'researched_traject__traject'
+    ).filter(
+        Q(proposed_traject__date__gte=date.today()) |
+        Q(researched_traject__date__gte=date.today())
     )
 
     # Réservations reçues par le yaya
     received_reservations = Reservation.objects.filter(proposed_traject__user=user).select_related(
         'user', 'proposed_traject', 'researched_traject', 'proposed_traject__traject', 'researched_traject__traject'
+    ).filter(
+        Q(proposed_traject__date__gte=date.today()) |
+        Q(researched_traject__date__gte=date.today())
     )
 
     return render(request, 'trajects/my_reservations.html', {
@@ -1000,7 +1118,7 @@ def propose_help(request, researched_id):
     session_key = f"help_notified_{request.user.id}_{researched_id}"
     if request.session.get(session_key, False):
         messages.info(request, "Vous avez déjà signalé votre disponibilité pour ce trajet.")
-        return redirect('my_matchings_proposed')
+        return redirect('my_matchings_simple')
     request.session[session_key] = True
 
     parent_email = research.user.email
@@ -1014,7 +1132,7 @@ def propose_help(request, researched_id):
             f"Bonjour,\n\n"
             f"Bonne nouvelle ! Un accompagnateur est disponible pour votre recherche de trajet :\n\n"
             f"{trajet_info} le {date_str} (départ à {heure_depart}).\n\n"
-            "Connectez-vous à Bana pour consulter les trajets disponible et effectuer une réservation. http://www.bana.mobi/trajects/matchings/parent/"
+            "Connectez-vous à Bana pour consulter les trajets disponible et effectuer une réservation. https://www.bana.mobi/trajects/matchings/parent/"
         ),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[parent_email],
@@ -1022,4 +1140,4 @@ def propose_help(request, researched_id):
     )
 
     messages.success(request, "Votre aide a été proposée et le parent a été informé par email.")
-    return redirect('my_matchings_proposed')
+    return redirect('my_matchings_simple')

@@ -69,33 +69,43 @@
         <p class="text-sm text-gray-700">
           <strong>Nombre d'enfant(s) :</strong> {{ request.children.count }}
         </p>
-        {% if is_abonned == True %}
-        <form method="post" action="{% url 'propose_help' request.id %}">
-          {% csrf_token %}
-          <button type="submit" class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white hover:bg-brand-50 hover:text-brand rounded-full">
-            Proposer mon aide
-          </button>
-        </form>
+        {% if is_abonned %}
+          <form method="post" action="{% url 'propose_help' request.id %}">
+            {% csrf_token %}
+            
+            {% if request.id in parent_confirmed_ids %}
+              <button class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white rounded-full" disabled>
+                Trajet confirmé
+              </button>
+            {% elif request.id in parent_pending_ids %}
+              <button class="inline-flex items-center bg-gray-400 gap-2 py-2 px-4 my-4 text-white rounded-full" disabled>
+                Demande du parent en attente
+              </button>
+            {% else %}
+              <button type="submit" class="inline-flex items-center bg-brand gap-2 py-2 px-4 my-4 text-white hover:bg-brand-dark rounded-full">
+                Proposer mon aide
+              </button>
+            {% endif %}
+          </form>
         {% else %}
-
-        <a href="{% url 'subscription' %}">
-          <button type="button" class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white hover:bg-brand-50 hover:text-brand rounded-full">
-          S'abonner
-          </button>
-        </a>
-
+          <a href="{% url 'subscription' %}">
+            <button type="button" class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white hover:bg-brand-50 hover:text-brand rounded-full">
+              S'abonner
+            </button>
+          </a>
         {% endif %}
+
       </div>
       {% endfor %}
     </li>
     {% endfor %}
   </ul>
-  {% else %}
-    <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
-      Vous n'avez aucune correspondance de trajet pour l’instant.
 
-    </div>
-  {% endif %}
+{% else %}
+  <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
+    Vous n'avez aucune correspondance de trajet pour l’instant.
+  </div>
+{% endif %}
   
 </div>
 {% endblock %}

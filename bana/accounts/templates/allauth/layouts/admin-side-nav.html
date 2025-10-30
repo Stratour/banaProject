@@ -69,7 +69,7 @@
         <a href="{{ simple_proposed_traject_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == simple_proposed_traject_url or request.path == my_simple_trajects_url or request.path == my_matchings_simple_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
           <img src="{% static 'bana/img/icon/Icon_search' %}{% if request.path == simple_proposed_traject_url or request.path == my_simple_trajects_url or request.path == my_matchings_simple_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          {% trans "Proposer Simple" %}
+          {% trans "Rechercher" %}
         </a>
       </li>
       {% endif %}

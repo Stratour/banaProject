@@ -33,8 +33,6 @@ Mes réservations
             <!-- Header -->
             <header class="flex items-start justify-between gap-4">
               <div class="flex items-center gap-3 min-w-0">
-                {# Avatar #}
-                
                 {% with u=r.proposed_traject.user %}
                   {% if u.profile.profile_picture %}
                   <a href="{% if is_abonned %}{% url 'accounts:profile_user' user_id=r.proposed_traject.user.id %}{% endif %}">
@@ -165,15 +163,25 @@ Mes réservations
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M16 3.13a4 4 0 010 7.75"/>
                   </svg>
-                  Places
+                  {% if r.status == 'confirmed' %}Enfants{% else %}Places{% endif %}
                 </p>
                 <p class="flex items-center gap-2">
+                {% if r.status == 'confirmed' %}
+                  {% for child in r.researched_traject.children.all %}
+                    <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
+                      {{ child.chld_surname }} {{ child.chld_name }}
+                    </span>
+                  {% empty %}
+                    <span class="text-gray-400">—</span>
+                  {% endfor %}
+                {% else %}
                   <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
                     {{ r.number_of_places }} place(s) demandée(s)
                   </span>
                   <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
                     {{ r.proposed_traject.number_of_places }} place(s) restante(s)
                   </span>
+                {% endif %}
                 </p>
               </div>
 
@@ -248,16 +256,9 @@ Mes réservations
                 {% endif %}
               </div>
               </div>
-
-              {% if r.status == 'confirmed' %}
-              {% if is_abonned %}
-                <a href="mailto:{{r.proposed_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand/30 text-brand hover:bg-brand-300 hover:text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 transition">Contacter par email</div></a>
-                {% endif %}
-              {% endif %}
               <!-- Footer -->
             {% if is_abonned %}
-            
-            <a href="mailto:{{r.researched_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand/30 text-brand hover:bg-brand-300 hover:text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 transition">Contacter par email</div></a>
+            <a href="mailto:{{r.proposed_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand/30 text-brand hover:bg-brand-300 hover:text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 transition">Contacter par email</div></a>
             <footer class=" flex items-center justify-end">
               <a href="{% url 'accounts:profile_user' user_id=r.proposed_traject.user.id %}"
                  class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
@@ -269,10 +270,6 @@ Mes réservations
               </a>
             </footer>
             {% endif %}
-            
-
-            
-
             </div>
           </article>
         {% endfor %}
@@ -394,6 +391,40 @@ Mes réservations
                 </p>
               </div>
 
+              <div class="space-y-2 text-sm text-gray-700">
+                <p class="font-semibold text-gray-900 flex items-center gap-2">
+                  <!-- users -->
+                  <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/>
+                    <circle cx="9" cy="7" r="4" stroke-width="2"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M23 20v-2a4 4 0 00-3-3.87"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M16 3.13a4 4 0 010 7.75"/>
+                  </svg>
+                  {% if r.status == 'confirmed' %}Enfant(s){% else %}Place(s){% endif %}
+                </p>
+                <p class="flex items-center gap-2">
+                {% if r.status == 'confirmed' %}
+                  {% for child in r.researched_traject.children.all %}
+                    <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
+                      {{ child.chld_surname }} {{ child.chld_name }}
+                    </span>
+                  {% empty %}
+                    <span class="text-gray-400">—</span>
+                  {% endfor %}
+                {% else %}
+                  <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
+                    {{ r.number_of_places }} place(s) demandée(s)
+                  </span>
+                  <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
+                    {{ r.proposed_traject.number_of_places }} place(s) restante(s)
+                  </span>
+                {% endif %}
+                </p>
+              </div>
+
               <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
                 <p class="font-semibold text-gray-900 flex items-center gap-2">
                   <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -463,32 +494,23 @@ Mes réservations
                   <span class="text-gray-400">{% trans "Non spécifié" %}</span>
                 {% endif %}
               </div>
-                
               </div>
-              {% if r.status == 'confirmed' %}
-              {% if is_abonned %}
-                <a href="mailto:{{r.researched_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand/30 text-brand hover:bg-brand-300 hover:text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 transition">Contacter par email</div></a>
-                {% endif %}
-              {% endif %}
 
-            
-            </div>
-
+            {% if is_abonned %}
             {% if r.status == 'pending' %}
-              <footer class="mt-5 flex flex-wrap gap-3">
-                {% if is_abonned %}
+              <!-- Groupe gauche -->
+              <div class="flex flex-wrap items-center gap-3">
                 <a href="{% url 'manage_reservation' r.id 'accept' %}"
                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand transition">
-                  <!-- check -->
                   <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M5 13l4 4L19 7"/>
                   </svg>
                   Confirmer
                 </a>
+
                 <a href="{% url 'manage_reservation' r.id 'reject' %}"
                    class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-red-300 text-red-700 hover:bg-red-50 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 transition">
-                  <!-- x -->
                   <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M6 18L18 6M6 6l12 12"/>
@@ -496,25 +518,25 @@ Mes réservations
                   Refuser
                 </a>
 
-                {% if is_abonned %}
-                <a href="mailto:{{r.researched_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand/30 text-brand hover:bg-brand-300 hover:text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 transition">Contacter par email</div></a>
-                {% endif %}
-                
-                {% else %}
-                  <a href="{% url 'subscription' %}">
-                    <button type="button" class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 my-4 text-white hover:bg-brand-50 hover:text-brand rounded-full">
-                    S'abonner
-                    </button>
-                  </a>
-                {% endif %}
-                
+                <a href="mailto:{{r.researched_traject.user.email}}">
+                  <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand/30 text-brand hover:bg-brand-300 hover:text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-brand transition">
+                    Contacter par email
+                  </div>
+                </a>
+              </div>
+              <footer class=" flex items-center justify-end">
+                <a href="{% url 'accounts:profile_user' user_id=r.researched_traject.user.id %}"
+                   class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+                  Voir le profil
+                  <svg class="h-4 w-4 transition-transform group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
               </footer>
-            {% endif %}
-
-            <!-- Footer -->
-            {% if is_abonned %}
-                        
-            <div class=" flex items-center justify-end">
+            {% else %}
+            <a href="mailto:{{r.researched_traject.user.email}}"><div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand/30 text-brand hover:bg-brand-300 hover:text-white font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300 transition">Contacter par email</div></a>
+            <footer class=" flex items-center justify-end">
               <a href="{% url 'accounts:profile_user' user_id=r.researched_traject.user.id %}"
                  class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
                 Voir le profil
@@ -523,10 +545,9 @@ Mes réservations
                         d="M9 5l7 7-7 7"/>
                 </svg>
               </a>
-            </div>
+            </footer>
             {% endif %}
-
-            
+            {% endif %}
           </article>
         {% endfor %}
       </div>
