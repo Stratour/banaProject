@@ -853,9 +853,15 @@ def delete_proposed_traject(request, pk):
 @login_required
 def delete_simple_traject(request, pk):
     trajet = get_object_or_404(ProposedTraject, pk=pk, user=request.user)
-    trajet.delete()
-    messages.success(request, "Le trajet proposé a été supprimé.")
-    return redirect('my_simple_trajects')
+    if request.method == "POST":
+        trajet.delete()
+        messages.success(request, "Le trajet proposé a été supprimé.")
+        return redirect('my_simple_trajects')
+    
+    messages.error(request, "Action non autorisée.")
+    return redirect("my_simple_trajects")
+    
+    
 @login_required
 def delete_researched_traject(request, pk):
     trajet = get_object_or_404(ResearchedTraject, pk=pk, user=request.user)

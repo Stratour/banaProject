@@ -14,6 +14,7 @@ from decouple import config
 from pathlib import Path
 import os
 from django.utils.translation import gettext_lazy as _  #Translate
+from email.utils import formataddr
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -120,7 +121,7 @@ ASGI_APPLICATION = 'bana.asgi.application'
 
 DATABASES = {
 
-       # === Base de données de prod ===
+    # === Base de données de prod ===
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',  #'django.db.backends.postgresql',
         'NAME': 'bana_digit_community',
@@ -131,15 +132,17 @@ DATABASES = {
         'OPTIONS': {
             'connect_timeout': 60,
         },
-    },
+    },   
+    
 }
 
 
 
 """
 
-    # === Base de données de test ===
-    'default': {
+
+
+ 'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
         'NAME': 'bana_digit_test',      # DB test
         'USER': 'bana_raphael_psql',
@@ -147,7 +150,7 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': '5432',
     }
-
+    
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -376,7 +379,7 @@ EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'contact@bana.mobi'  # Votre adresse email
 EMAIL_HOST_PASSWORD = config("EMAIL_MDP",default="secret")  # Votre mot de passe d'email
-DEFAULT_FROM_EMAIL = 'contact@bana.mobi' # Adresse par défaut pour l'expéditeur
+DEFAULT_FROM_EMAIL = formataddr(("Bana", "contact@bana.mobi"))
 
 ACCOUNT_FORMS = {
     'signup': 'accounts.forms.CustomSignupForm'

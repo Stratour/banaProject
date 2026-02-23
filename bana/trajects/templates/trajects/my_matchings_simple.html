@@ -26,7 +26,7 @@
  {% if matches %}
   <ul class="space-y-4">
     {% for match in matches %}
-    <li class="bg-white shadow rounded-lg p-6 border border-brand-100">
+    <li class="group rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all ring-1 ring-transparent hover:ring-brand/10">
       <h3 class="text-xl font-semibold text-gray-800 mb-4">
         Trajet prévu le {{ match.proposal.date|date:"l d F Y" }}
       </h3>
