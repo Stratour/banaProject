@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 from accounts.models import Languages, Child
 from django.utils.translation import gettext_lazy as _
 from django.contrib.gis.db import models as gis_models
-
+import uuid
+from django.utils import timezone
 
 class TransportMode(models.Model):
     name = models.CharField(max_length=100)
@@ -51,12 +52,16 @@ class Traject(models.Model):
             'ending_coordinate': self.end_coordinate,
         }
 
+
 class ProposedTraject(models.Model):
     NUMBER_PLACE = [(str(i), str(i)) for i in range(1, 8)]
         
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="proposed_trajects", null=True, blank=True)
     traject = models.ForeignKey(Traject, on_delete=models.CASCADE)
 
+    groupe_name = models.CharField(max_length=80, blank=True, null=True)
+    groupe_uid = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
+    
     # Informations de base du trajet
     departure_time = models.TimeField(null=True, blank=True)
     arrival_time = models.TimeField(null=True, blank=True)
@@ -111,6 +116,12 @@ class ProposedTraject(models.Model):
     @classmethod
     def get_proposed_trajects_by_user(cls, user):
         return cls.objects.filter(user=user)
+    
+    @property
+    def is_past(self):
+        if not self.date:
+            return False
+        return self.date < timezone.now().date()
 
 
 class ResearchedTraject(models.Model):
@@ -118,6 +129,8 @@ class ResearchedTraject(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='researched_trajects', null=True, blank=True)
     traject = models.ForeignKey(Traject, on_delete=models.CASCADE)
     
+    groupe_name = models.CharField(max_length=80, blank=True, null=True)
+    groupe_uid = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
     # Informations de base du trajet
     departure_time = models.TimeField()
     arrival_time = models.TimeField()
@@ -153,6 +166,11 @@ class ResearchedTraject(models.Model):
     def get_researched_trajects_by_user(cls, user):
         return cls.objects.filter(user=user)
 
+    @property
+    def is_past(self):
+        if not self.date:
+            return False
+        return self.date < timezone.now().date()
 
 class Reservation(models.Model):
     STATUS_CHOICES = [

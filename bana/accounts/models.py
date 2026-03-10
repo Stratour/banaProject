@@ -1,7 +1,8 @@
 from django.db import models
+from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
-
+import uuid
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -71,3 +72,16 @@ class Review(models.Model):
         return f"{self.reviewer.username} → {self.reviewed_user.username} ({self.rating}/5)"
 
 
+class FavoriteAddress(models.Model):
+    uid = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="favorite_addresse")
+    
+    label = models.CharField(max_length=60, help_text=_("Ex: Maison, École, Sport..."))
+    address = models.CharField(max_length=255)
+
+    class Meta:
+        ordering = ["label"]
+        unique_together = [("user", "label")]
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.label}"

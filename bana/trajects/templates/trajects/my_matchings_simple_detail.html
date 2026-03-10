@@ -1,0 +1,199 @@
+{% extends "allauth/layouts/base.html" %}
+{% load i18n %}
+
+{% block head_title %}Recherches de matchings{% endblock %}
+
+{% block content %}
+<div class="bg-white shadow-lg rounded-xl p-16 space-y-10">
+  
+  <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
+    Recherches de matchings
+  </h1>
+
+  {% if messages %}
+  <ul class="mb-6">
+    {% for message in messages %}
+    <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">
+      {{ message }}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  
+  <!-- Onglets navigation -->
+  {% include "./component_simple_tabs.html" %}
+
+
+  {% if parent_header %}
+    <article class="group rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm mb-6">
+      <header class="flex items-start justify-between gap-4">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] overflow-hidden">
+            {% if parent_header.user.profile.profile_picture %}
+              <a href="{% url 'accounts:profile_user' user_id=parent_header.user.id %}">
+                <img src="{{ parent_header.user.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="User">
+              </a>
+            {% else %}
+              <a href="{% url 'accounts:profile_user' user_id=parent_header.user.id %}" class="flex items-center justify-center w-full h-full">
+                <span class="text-xl sm:text-2xl font-bold text-brand">
+                  {% if parent_header.user.profile.ci_is_verified %}
+                    {{ parent_header.user.profile.verified_first_name|slice:":1" }}.{{ parent_header.user.profile.verified_last_name|slice:":1" }}
+                  {% else %}
+                    {{ parent_header.user.first_name|slice:":1" }}{{ parent_header.user.last_name|slice:":1" }}
+                  {% endif %}
+                </span>
+              </a>
+            {% endif %}
+          </div>
+
+          <div class="min-w-0">
+            <p class="text-xs text-gray-500">Parent</p>
+            <p class="text-lg font-bold text-gray-900">
+              {% if is_abonned %}
+                <a href="{% url 'accounts:profile_user' user_id=parent_header.user.id %}" class="text-blue-600 hover:underline">
+                  {% if parent_header.user.profile.ci_is_verified %}
+                    {{ parent_header.user.profile.verified_first_name }}
+                    {{ parent_header.user.profile.verified_last_name|slice:":1" }}.
+                  {% else %}
+                    {{ parent_header.user.first_name }} {{ parent_header.user.last_name|slice:":1" }}.
+                  {% endif %}
+                </a>
+              {% else %}
+                <span class="text-red-700">Abonnement requis</span>
+              {% endif %}
+            </p>
+            <p class="text-xs text-gray-500">
+              Du {{ parent_stats.first_date|date:"d/m/Y" }} au {{ parent_stats.last_date|date:"d/m/Y" }}
+              • {{ parent_stats.count }} date(s)
+            </p>
+          </div>
+        </div>
+
+        <a href="{% url 'my_matchings_simple' %}"
+         class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+        ← Retour
+      </a>
+      </header>
+
+      <div class="my-4 border-t border-gray-100"></div>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <div class="space-y-2 text-sm text-gray-700">
+          <p class="font-semibold text-gray-900">Départ</p>
+          <p>
+            <span class="font-medium">{{ parent_header.traject.start_adress }}</span>
+            <span class="mx-1 text-gray-400">·</span>
+            {{ parent_header.departure_time|default:"—" }}
+          </p>
+        </div>
+
+        <div class="space-y-2 text-sm text-gray-700">
+          <p class="font-semibold text-gray-900">Arrivée</p>
+          <p>
+            <span class="font-medium">{{ parent_header.traject.end_adress }}</span>
+            <span class="mx-1 text-gray-400">·</span>
+            {{ parent_header.arrival_time|default:"—" }}
+          </p>
+        </div>
+
+        <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
+          <p class="font-semibold text-gray-900">Transport</p>
+          <div class="mt-2 flex flex-wrap gap-2">
+            {% for mode in parent_header.transport_modes.all %}
+              <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
+                {{ mode.display_name }}
+              </span>
+            {% empty %}
+              <span class="text-gray-400">Non spécifié</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
+          <p class="font-semibold text-gray-900">Enfant(s)</p>
+          <div class="mt-2 flex flex-wrap gap-2">
+            {% for child in parent_header.children.all %}
+              <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
+                {{ child.chld_surname }} {{ child.chld_name }}
+              </span>
+            {% empty %}
+              <span class="text-gray-400">—</span>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+
+
+    </article>
+  {% endif %}
+
+  <div class="space-y-4">
+    <h3 class="text-lg font-semibold text-gray-900">Dates disponibles</h3>
+
+    {% if rows %}
+      {% for row in rows %}
+        {% with r=row.research %}
+        <article class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm"
+                 {% if row.is_past %}style="opacity:0.55"{% endif %}>
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-semibold text-gray-900">
+                {{ r.date|date:"l d F Y" }}
+              </p>
+
+              <p class="text-xs text-gray-600 mt-1">
+                <strong>Places restantes :</strong>
+                {% if row.remaining_places is not None %}
+                  {{ row.remaining_places }}
+                {% else %}
+                  —
+                {% endif %}
+              </p>
+            </div>
+
+            <div class="text-right">
+              {% if row.is_past %}
+                <span class="inline-block mt-2 text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-500">
+                  Date passée
+                </span>
+              {% elif is_abonned %}
+                {% if r.id in parent_confirmed_ids %}
+                  <button class="inline-flex items-center bg-green-600 gap-2 py-2 px-4 mt-2 text-white rounded-full" disabled>
+                    Confirmé
+                  </button>
+                {% elif r.id in parent_pending_ids %}
+                  <button class="inline-flex items-center bg-gray-400 gap-2 py-2 px-4 mt-2 text-white rounded-full" disabled>
+                    En attente
+                  </button>
+                {% else %}
+                  <form method="post" action="{% url 'propose_help' r.id %}">
+                    {% csrf_token %}
+                    <button type="submit"
+                            class="inline-flex items-center bg-brand gap-2 py-2 px-4 mt-2 text-white hover:bg-brand-dark rounded-full text-sm font-semibold">
+                      Proposer mon aide
+                    </button>
+                  </form>
+                {% endif %}
+              {% else %}
+                <a href="{% url 'subscription' %}">
+                  <button type="button"
+                          class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 mt-2 text-white rounded-full text-sm font-semibold">
+                    S'abonner
+                  </button>
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+        {% endwith %}
+      {% endfor %}
+    {% else %}
+      <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
+        Aucune date correspondante trouvée.
+      </div>
+    {% endif %}
+  </div>
+  
+</div>
+{% endblock %}

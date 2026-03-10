@@ -1,0 +1,85 @@
+{% extends "allauth/layouts/base.html" %}
+{% load static i18n %}
+
+{% block head_title %}Détail demande{% endblock %}
+
+{% block content %}
+<div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-8">
+
+  <article class="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm">
+    <header class="flex items-start justify-between gap-4">
+      <div>
+        <p class="text-xs text-gray-500">Parent</p>
+        <h2 class="text-xl font-bold text-gray-900">
+          {{ header.user.first_name }} {{ header.user.last_name|slice:":1" }}.
+        </h2>
+        <p class="text-xs text-gray-500">
+          Du {{ stats.first_date|date:"d/m/Y" }} au {{ stats.last_date|date:"d/m/Y" }}
+          • {{ stats.count }} date(s)
+        </p>
+      </div>
+
+      <a href="{% url 'my_reservations' %}"
+         class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+        ← Retour
+      </a>
+    </header>
+  </article>
+
+  <div class="space-y-4">
+    <h3 class="text-lg font-semibold text-gray-900">Demandes reçues</h3>
+
+    {% for row in rows %}
+      {% with r=row.reservation p=row.proposal research=row.research %}
+      <article class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-sm font-semibold text-gray-900">
+              {{ research.date|date:"l d F Y" }}
+            </p>
+            <p class="text-xs text-gray-600 mt-1">
+              {{ research.departure_time|default:"—" }} → {{ research.arrival_time|default:"—" }}
+            </p>
+            <p class="text-xs text-gray-600 mt-1">
+              <strong>Places demandées :</strong> {{ r.number_of_places }}
+            </p>
+            <p class="text-xs text-gray-600 mt-1">
+              <strong>Places restantes :</strong> {{ row.remaining_places }}
+            </p>
+          </div>
+
+          <div class="text-right">
+            {% if r.status == 'pending' %}
+              <div class="flex gap-2">
+                <a href="{% url 'manage_reservation' r.id 'accept' %}"
+                   class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark">
+                  Confirmer
+                </a>
+
+                <a href="{% url 'manage_reservation' r.id 'reject' %}"
+                   class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-red-300 text-red-700 hover:bg-red-50 font-semibold">
+                  Refuser
+                </a>
+              </div>
+            {% elif r.status == 'confirmed' %}
+              <span class="inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-3 py-1 text-xs font-semibold">
+                Confirmée
+              </span>
+            {% else %}
+              <span class="inline-flex items-center rounded-full bg-red-50 text-red-700 border border-red-200 px-3 py-1 text-xs font-semibold">
+                Annulée
+              </span>
+            {% endif %}
+          </div>
+        </div>
+      </article>
+      {% endwith %}
+    {% empty %}
+      <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
+        Aucune demande trouvée.
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

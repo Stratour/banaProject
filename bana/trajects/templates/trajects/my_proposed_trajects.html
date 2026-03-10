@@ -1,13 +1,13 @@
 {% extends "allauth/layouts/base.html" %}
 {% load static i18n %}
 
-{% block head_title %}Mes propositions{% endblock %}
+{% block head_title %}Mes propositions de trajet{% endblock %}
 
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
 
   <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
-    Mes propositions
+    Mes propositions de trajet
   </h1>
 
   {% if messages %}
@@ -21,9 +21,9 @@
   <!-- Onglets -->
   {% include "./component_proposed_tabs.html" %}
 
-
-  {% if proposed_trajects %}
-    <div class="space-y-5">
+  
+    {% if proposed_trajects %}
+    <div class="space-y-5">    
       {% for proposed in proposed_trajects %}
         <article
           class="group rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all ring-1 ring-transparent hover:ring-brand/10">
@@ -31,20 +31,20 @@
           <!-- Header -->
           <header class="flex items-start justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
-              <!-- Avatar-date -->
-              <div class="h-10 w-10 rounded-full bg-brand/10 text-brand flex items-center justify-center font-semibold">
-                {{ proposed.date|date:"d"|default:"?" }}
-              </div>
               <div class="min-w-0">
-                <p class="text-xs text-gray-500">Trajet du</p>
-                <p class="text-sm sm:text-base font-semibold text-gray-900">
-                  {{ proposed.date|date:"l d F Y" }}
+               <p class="text-xs text-gray-500">Groupe de trajets</p>
+                <h2 class="text-xl font-bold text-gray-900">
+                  {{ proposed.groupe_name|default:"Mon trajet" }}
+                </h2>
+                <p class="text-xs text-gray-500">
+                  Du {{ proposed.groupe_first_date|date:"d/m/Y" }}
+                  au {{ proposed.groupe_last_date|date:"d/m/Y" }}
                 </p>
               </div>
             </div>
-
+            
             <button type="button"
-                onclick="document.getElementById('delete-proposed-{{ proposed.id }}').showModal()"
+                onclick="document.getElementById('delete-proposed-{{ proposed.groupe_uid }}').showModal()"
                 class="inline-flex items-center gap-2 rounded-full border border-red-300 text-red-700 px-3 py-1.5 text-sm font-semibold hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300">
                 
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -54,8 +54,8 @@
                 {% trans "Supprimer" %}
             </button>
 
-            <dialog id="delete-proposed-{{ proposed.id }}" class="rounded-xl p-0 w-full max-w-md">
-             <form method="POST" action="{% url 'delete_proposed_traject' proposed.id %}" class="p-6 space-y-5">
+            <dialog id="delete-proposed-{{ proposed.groupe_uid }}" class="rounded-xl p-0 w-full max-w-md">
+             <form method="POST" action="{% url 'delete_proposed_groupe' proposed.groupe_uid %}" class="p-6 space-y-5">
               {% csrf_token %}
               <header class="space-y-1">
               <h3 class="text-lg font-semibold text-gray-900">{% trans "Supprimer le trajet" %}</h3>
@@ -66,7 +66,7 @@
 
             <div class="flex items-center justify-end gap-3 pt-2">
               <button type="button"
-                      onclick="document.getElementById('delete-proposed-{{ proposed.id }}').close()"
+                      onclick="document.getElementById('delete-proposed-{{ proposed.groupe_uid }}').close()"
                       class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
                 {% trans "Annuler" %}
               </button>
@@ -119,8 +119,7 @@
               </p>
             </div>
 
-            <!-- Arrivée (si non simple) -->
-            {% if not proposed.is_simple %}
+            <!-- Arrivée !-->
             <div class="space-y-2 text-sm text-gray-700">
               <p class="font-semibold text-gray-900 flex items-center gap-2">
                 <!-- flag -->
@@ -140,7 +139,6 @@
                 {{ proposed.arrival_time|default:"—" }}
               </p>
             </div>
-            {% endif %}
 
             <!-- Transport -->
             <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
@@ -204,29 +202,10 @@
                 {% empty %}
                   <span class="text-gray-400">Non spécifié</span>
                 {% endfor %}
-            </div>
-            </div>
-
-            <!-- Places (si non simple) -->
-            {% if not proposed.is_simple %}
-            <div class="space-y-2 text-sm text-gray-700">
-              <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <!-- users -->
-                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/>
-                  <circle cx="9" cy="7" r="4" stroke-width="2"/>
-                </svg>
-                Places disponibles
-              </p>
-              <p>
-                <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
-                  {{ proposed.number_of_places|default:"—" }}
-                </span>
-              </p>
+              </div>
             </div>
 
-            <!-- Langues (si non simple) -->
+            <!-- Langues-->
             <div class="space-y-2 text-sm text-gray-700">
               <p class="font-semibold text-gray-900 flex items-center gap-2">
                 <!-- globe -->
@@ -259,15 +238,23 @@
               </p>
               <p class="text-gray-700">{{ proposed.details|default:"—" }}</p>
             </div>
-            {% endif %}
+
+            
           </div>
+          <!-- 👉 Lien détail -->
+            <a href="{% url 'my_proposed_groupe_detail' proposed.groupe_uid %}"
+               class="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">
+              Voir les dates
+            </a>
         </article>
       {% endfor %}
     </div>
+  
   {% else %}
     <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
       Vous n’avez proposé aucun trajet pour l’instant.
     </div>
   {% endif %}
+
 </div>
 {% endblock %}

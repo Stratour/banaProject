@@ -2,15 +2,24 @@
 
 {% url 'accounts:profile' as profile_url %}
 {% url 'accounts:profile_child' as profile_child_url %}
+{% url 'accounts:profile_addresses' as profile_addresses_url %}
+{% url 'accounts:create_address' as create_address_url %}
+
+
 {% url 'researched_traject' as researched_traject_url %}
 {% url 'my_researched_trajects' as my_researched_trajects_url %}
 {% url 'my_matchings_researched' as my_matchings_researched_url %}
+{% url 'my_matchings_researched_detail' as my_matchings_researched_detail_url %}
+
 {% url 'proposed_traject' as proposed_traject_url %}
 {% url 'my_proposed_trajects' as my_proposed_trajects_url %}
 {% url 'my_matchings_proposed' as my_matchings_proposed_url %}
+{% url 'my_matchings_proposed_detail' as my_matchings_proposed_detail_url %}
+
 {% url 'simple_proposed_traject' as simple_proposed_traject_url %}
 {% url 'my_matchings_simple' as my_matchings_simple_url %}
 {% url 'my_simple_trajects' as my_simple_trajects_url %}
+{% url 'my_matchings_simple_detail' as my_matchings_simple_detail_url %}
 
 {% url 'index' as index_url %}
 {% url 'my_reservations' as my_reservations_url %}
@@ -47,6 +56,13 @@
         </a>
       </li>
       {% endif %}
+      <li>
+        <a href="{{ profile_addresses_url }}"
+           class="flex items-center gap-2 py-2 px-4 {% if request.path == profile_addresses_url or request.path == create_address_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
+          <img src="{% static 'bana/img/icon/Icon_child' %}{% if request.path == profile_addresses_url or request.path == create_address_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
+          {% trans "Mes adresses" %}
+        </a>
+      </li>
       
     </ul>
   </div>
@@ -58,8 +74,8 @@
       {% if request.user.profile.service == "Parent" %}
       <li>
         <a href="{{ researched_traject_url }}"
-           class="flex items-center gap-2 py-2 px-4 {% if request.path == researched_traject_url or request.path == my_researched_trajects_url or request.path == my_matchings_researched_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          <img src="{% static 'bana/img/icon/Icon_search' %}{% if request.path == researched_traject_url or request.path == my_researched_trajects_url or request.path == my_matchings_researched_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
+           class="flex items-center gap-2 py-2 px-4 {% if request.path == researched_traject_url or request.path == my_researched_trajects_url or request.path == my_matchings_researched_url or request.path == my_matchings_researched_detail_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
+          <img src="{% static 'bana/img/icon/Icon_search' %}{% if request.path == researched_traject_url or request.path == my_researched_trajects_url or request.path == my_matchings_researched_url or request.path == my_matchings_researched_detail_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           {% trans "Rechercher" %}
         </a>
       </li>
@@ -67,16 +83,16 @@
       {% if request.user.profile.service == "Yaya" %}
       <li>
         <a href="{{ simple_proposed_traject_url }}"
-           class="flex items-center gap-2 py-2 px-4 {% if request.path == simple_proposed_traject_url or request.path == my_simple_trajects_url or request.path == my_matchings_simple_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          <img src="{% static 'bana/img/icon/Icon_search' %}{% if request.path == simple_proposed_traject_url or request.path == my_simple_trajects_url or request.path == my_matchings_simple_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
+           class="flex items-center gap-2 py-2 px-4 {% if request.path == simple_proposed_traject_url or request.path == my_simple_trajects_url or request.path == my_matchings_simple_url or request.path == my_matchings_simple_detail_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
+          <img src="{% static 'bana/img/icon/Icon_search' %}{% if request.path == simple_proposed_traject_url or request.path == my_simple_trajects_url or request.path == my_matchings_simple_url or request.path == my_matchings_simple_detail_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           {% trans "Rechercher" %}
         </a>
       </li>
       {% endif %}
       <li>
         <a href="{{ proposed_traject_url }}"
-           class="flex items-center gap-2 py-2 px-4 {% if request.path == proposed_traject_url or request.path == my_proposed_trajects_url or request.path == my_matchings_proposed_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          <img src="{% static 'bana/img/icon/Icon_offer' %}{% if request.path == proposed_traject_url or request.path == my_proposed_trajects_url or request.path == my_matchings_proposed_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
+           class="flex items-center gap-2 py-2 px-4 {% if request.path == proposed_traject_url or request.path == my_proposed_trajects_url or request.path == my_matchings_proposed_url or request.path == my_matchings_proposed_detail_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
+          <img src="{% static 'bana/img/icon/Icon_offer' %}{% if request.path == proposed_traject_url or request.path == my_proposed_trajects_url or request.path == my_matchings_proposed_url or request.path == my_matchings_proposed_detail_url  %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           {% trans "Proposer" %}
         </a>
       </li>

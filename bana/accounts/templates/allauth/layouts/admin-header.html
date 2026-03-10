@@ -4,7 +4,12 @@
   <div class="flex items-center justify-between">
     {# Titre — desktop uniquement, à gauche #}
     <h1 class="hidden md:block md:order-1 md:flex-1 min-w-0 text-lg font-bold text-gray-900 leading-none truncate">
-      {% block page_title %}Tableau de bord{% endblock %}
+      {% block page_title %}Tableau de bord{% endblock %} | 
+      {% if request.user.profile.service == "Parent" %}
+       Parent
+      {% elif request.user.profile.service == "Yaya" %}
+        Yaya
+      {% endif %}
     </h1>
 
     {# Avatar + prénom — mobile à gauche (parce que le h1 est hidden), desktop à droite #}

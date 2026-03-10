@@ -1,7 +1,7 @@
 from django import forms
 from allauth.account.forms import SignupForm
 from django.contrib.auth.models import User
-from accounts.models import Profile, Languages, Child, Review
+from accounts.models import Profile, Languages, Child, Review, FavoriteAddress
 
 
 SERVICE_CHOICES = [
@@ -184,7 +184,25 @@ class ChildForm(TailwindFormMixin, forms.ModelForm):
                 'class': 'form-checkbox h-5 w-5 text-brand'
             }),
         }
+        
+# ---------- Favorite Adresse ---------#
 
+class FavoriteAddressForm(TailwindFormMixin, forms.ModelForm):
+    class Meta:
+        model = FavoriteAddress
+        fields = ["label", "address"]
+        widgets = {
+            "label": forms.TextInput(attrs={
+                "class": "form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm",
+                "placeholder": "Ex: Maison / École / Travail"
+            }),
+            "address": forms.TextInput(attrs={
+                "id": "id_address",
+                "class": "w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand",
+                "placeholder": "Entrez une adresse",
+                'autocomplete': 'off'
+            }),
+        }
 
 # ---------- Review ----------
 class ReviewForm(TailwindFormMixin, forms.ModelForm):
