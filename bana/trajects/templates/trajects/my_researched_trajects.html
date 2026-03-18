@@ -31,7 +31,7 @@
           <header class="flex items-start justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
               <div class="min-w-0">
-               <p class="text-xs text-gray-500">Groupe de trajets</p>
+               <p class="text-xs text-gray-500">Nom du trajet</p>
                 <h2 class="text-xl font-bold text-gray-900">
                   {{ researched.groupe_name|default:"Mon trajet" }}
                 </h2>
@@ -208,17 +208,20 @@
               <div class="mt-2 flex flex-wrap gap-2">
                 {% for child in researched.children.all %}
                   <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
-                    {{ child.chld_surname }} {{ child.chld_name }}
+                    {{ child.chld_name }} {{ child.chld_surname }}
                   </span>
                 {% empty %}
                   <span class="text-gray-400">—</span>
                 {% endfor %}
               </div>
             </div>
+
+            <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
             <a href="{% url 'my_researched_groupe_detail' researched.groupe_uid %}"
                class="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">
               Voir les dates
             </a>
+          </div>
           </div>
           <!-- 👉 Lien détail -->
             

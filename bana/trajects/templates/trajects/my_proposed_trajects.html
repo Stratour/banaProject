@@ -32,7 +32,7 @@
           <header class="flex items-start justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
               <div class="min-w-0">
-               <p class="text-xs text-gray-500">Groupe de trajets</p>
+               <p class="text-xs text-gray-500">Nom du trajet</p>
                 <h2 class="text-xl font-bold text-gray-900">
                   {{ proposed.groupe_name|default:"Mon trajet" }}
                 </h2>
@@ -205,10 +205,9 @@
               </div>
             </div>
 
-            <!-- Langues-->
+            <!-- Langues
             <div class="space-y-2 text-sm text-gray-700">
               <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <!-- globe -->
                 <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <circle cx="12" cy="12" r="9" stroke-width="2"/>
                   <path stroke-width="2" d="M2 12h20M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/>
@@ -224,7 +223,7 @@
                   <span class="text-gray-400">Aucune spécifiée</span>
                 {% endfor %}
               </div>
-            </div>
+            </div>-->
 
             <!-- Détails (si non simple) -->
             <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
@@ -236,16 +235,16 @@
                 </svg>
                 Détails
               </p>
-              <p class="text-gray-700">{{ proposed.details|default:"—" }}</p>
+              <p class="text-gray-700">{{ proposed.details|default:"Pas de détails" }}</p>
             </div>
 
-            
-          </div>
-          <!-- 👉 Lien détail -->
+            <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
             <a href="{% url 'my_proposed_groupe_detail' proposed.groupe_uid %}"
                class="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">
               Voir les dates
             </a>
+            </div>
+          </div>
         </article>
       {% endfor %}
     </div>

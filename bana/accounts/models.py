@@ -1,8 +1,12 @@
+
+
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
 import uuid
+from django.contrib.gis.db import models as gis_models
+from django.utils import timezone
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -54,12 +58,25 @@ class Child(models.Model):
     chld_name = models.CharField("Nom", max_length=100, blank=False, null=True)
     chld_surname = models.CharField("Prénom", max_length=100, blank=False, null=True)
     chld_birthdate = models.DateField("Date de naissance")
-    chld_gender = models.CharField("Genre", max_length=10, choices=Gender.choices, default=Gender.GARCON) # Nouveau champ
-    chld_spcl_attention = models.TextField("Attention particulière", blank=True, null=True)
+    chld_gender = models.CharField("Genre", max_length=10, choices=Gender.choices, default=Gender.GARCON)
+    
     chld_seat = models.BooleanField("Siège enfant nécessaire", default=False)
+    chld_disability = models.BooleanField("Porteur d'un handicap", default=False)
+    chld_special_needs = models.TextField("Besoins spécifiques", blank=True, null=True)
 
+    chld_languages = models.ManyToManyField(Languages, blank=True, verbose_name="Langue(s) parlée(s)", related_name="children")
+    
     def __str__(self):
-        return f"{self.chld_surname} {self.chld_name} (Enfant de {self.chld_user.username})"
+        return f"{self.chld_name} {self.chld_surname}"
+
+    @property
+    def age(self):
+        today = timezone.localdate()
+        if not self.chld_birthdate:
+            return None
+        return today.year - self.chld_birthdate.year - (
+            (today.month, today.day) < (self.chld_birthdate.month, self.chld_birthdate.day)
+        )
 
 class Review(models.Model):
     reviewer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='given_reviews')
@@ -74,14 +91,29 @@ class Review(models.Model):
 
 class FavoriteAddress(models.Model):
     uid = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="favorite_addresse")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="favorite_addresses")
     
     label = models.CharField(max_length=60, help_text=_("Ex: Maison, École, Sport..."))
     address = models.CharField(max_length=255)
+    
+    place_id = models.CharField(max_length=255, blank=True, null=True)
+    
+    point = gis_models.PointField("Coordonnée",srid=4326 ,geography=True, null=True, blank=True)
+    
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["label"]
         unique_together = [("user", "label")]
     
     def __str__(self):
-        return f"{self.user.username} - {self.label}"
+        return f"{self.label} - {self.address}"
+    
+    @property
+    def latitude(self):
+        return self.point.y if self.point else None
+    
+    @property
+    def longitude(self):
+        return self.point.x if self.point else None
+    

@@ -40,16 +40,23 @@ class Traject(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     is_test = models.BooleanField(default=True, blank=True, null=True)  # pour marquer les trajets test
     
+    start_place_id = models.CharField(max_length=255, blank=True, null=True)
+    end_place_id = models.CharField(max_length=255, blank=True, null=True)
     # Distance entre le point de départ et d'arrivée (facultatif)
     distance = models.FloatField(blank=True, null=True)
 
+    class Meta:
+        ordering = ['-created_at']
+        
     def __str__(self):
-        return f"{self.address} ({self.start_point})"
+        if self.end_adress:
+            return f"{self.start_adress} - ({self.end_adress})"
+        return self.start_adress
 
-    def get_coordinate(self):
+    def get_coordinates(self):
         return {
-            'starting_coordinate': self.start_coordinate,
-            'ending_coordinate': self.end_coordinate,
+            'starting_coordinate': self.start_point,
+            'ending_coordinate': self.end_point,
         }
 
 

@@ -1,13 +1,13 @@
 {% extends "allauth/layouts/base.html" %}
 {% load static i18n %}
 
-{% block head_title %}Mes propositions{% endblock %}
+{% block head_title %}Mes propositions de trajet{% endblock %}
 
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
 
   <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
-    Mes propositions
+    Mes propositions de trajet
   </h1>
 
   {% if messages %}
@@ -31,7 +31,7 @@
       <header class="flex items-start justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
               <div class="min-w-0">
-               <p class="text-xs text-gray-500">Groupe de trajets</p>
+               <p class="text-xs text-gray-500">Nom du trajet</p>
                 <h2 class="text-xl font-bold text-gray-900">
                   {{ header.groupe_name|default:"Mon trajet" }}
                 </h2>
@@ -47,27 +47,58 @@
 
         <!-- Départ -->
         <div>
-          <p class="text-sm font-semibold text-gray-900">Départ</p>
+          <p class="font-semibold text-gray-900 flex items-center gap-2">
+                <!-- map-pin -->
+                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
+                </svg>
+                Départ
+              </p>
           <p class="text-sm text-gray-700">
             {{ header.traject.start_adress }}
-            <span class="text-gray-400">·</span>
+            <svg class="inline h-4 w-4 -mt-0.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
             {{ header.departure_time|default:"—" }}
           </p>
         </div>
 
         <!-- Arrivée -->
         <div>
-          <p class="text-sm font-semibold text-gray-900">Arrivée</p>
+          <p class="font-semibold text-gray-900 flex items-center gap-2">
+                <!-- map-pin -->
+                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
+                </svg>
+                Arrivée
+              </p>
           <p class="text-sm text-gray-700">
             {{ header.traject.end_adress }}
-            <span class="text-gray-400">·</span>
+            <svg class="inline h-4 w-4 -mt-0.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
             {{ header.arrival_time|default:"—" }}
           </p>
         </div>
 
         <!-- Transport -->
         <div>
-          <p class="text-sm font-semibold text-gray-900">Transport</p>
+          <p class="font-semibold text-gray-900 flex items-center gap-2">
+                <!-- car -->
+                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
+                </svg>
+                Transport
+              </p>
           <div class="mt-2 flex flex-wrap gap-2">
                 {% for mode in header.transport_modes.all %}
                   {% with label=mode.name|default:mode %}
@@ -123,7 +154,7 @@
               </div>
         </div>
 
-        <!-- Langues -->
+        <!-- Langues 
         <div>
           <p class="text-sm font-semibold text-gray-900">Langue(s)</p>
           <div class="mt-2 flex flex-wrap gap-2">
@@ -135,13 +166,20 @@
               <span class="text-gray-400 text-sm">Aucune spécifiée</span>
             {% endfor %}
           </div>
-        </div>
+        </div>-->
 
         <!-- Détails -->
         <div class="sm:col-span-2">
-          <p class="text-sm font-semibold text-gray-900">Détails</p>
+          <p class="font-semibold text-gray-900 flex items-center gap-2">
+                <!-- doc -->
+                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M7 7h10M7 11h10M7 15h7"/>
+                </svg>
+                Détails
+              </p>
           <p class="text-sm text-gray-700">
-            {{ header.details|default:"Pas de détails." }}
+            {{ header.details|default:"Pas de détails" }}
           </p>
         </div>
 
@@ -151,7 +189,7 @@
       <div class="mt-6">
         <a href="{% url 'my_proposed_trajects' %}"
            class="text-blue-600 hover:underline text-sm font-medium">
-          ← Retour aux groupes
+          ← Retour
         </a>
       </div>
 

@@ -7,7 +7,7 @@
 <div class="bg-white shadow-lg rounded-xl p-16 space-y-10">
   
   <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
-    Propositions de matchings
+    Mes matchings
   </h1>
 
   {% if messages %}
@@ -35,13 +35,13 @@
           <header class="flex items-start justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
               <div class="min-w-0">
-               <p class="text-xs text-gray-500">Groupe de trajets</p>
+               <p class="text-xs text-gray-500">Nom du trajet</p>
                 <h2 class="text-xl font-bold text-gray-900">
                   {{ proposed.groupe_name|default:"Mon trajet" }}
                 </h2>
                 <p class="text-xs text-gray-500">
-                  Du {{ proposed.groupe_first_date|date:"d/m/Y" }}
-                  au {{ proposed.groupe_last_date|date:"d/m/Y" }}
+                  Du {{ item.stats.first_date|date:"d/m/Y" }}
+                  au {{ item.stats.last_date|date:"d/m/Y" }}
                 </p>
               </div>
             </div>
@@ -160,11 +160,12 @@
                 {% endfor %}
               </div>
 
+              
         <!-- ✅ Matchs trouvés -->
         <div class="mt-6 border-t border-gray-100 pt-4 space-y-3">
-          <p class="text-sm font-semibold text-gray-900">Matchs trouvés :</p>
+          <p class="text-sm font-semibold text-gray-900">Matchings trouvés :</p>
 
-          {% for m in item.matched_users %}
+          {% for m in item.matches %}
             <div class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 p-4 bg-gray-50">
               <div class="flex items-center gap-3 min-w-0">
                 <div class="h-14 w-14 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] overflow-hidden">
@@ -200,13 +201,13 @@
                     {% endif %}
                   </p>
                   <p class="text-xs text-gray-600">
-                    Du {{ m.first_date|date:"d/m/Y" }} au {{ m.last_date|date:"d/m/Y" }} • {{ m.count }} date(s)
+                    Du {{ m.date_debut|date:"d/m/Y" }} au {{ m.date_fin|date:"d/m/Y" }}
                   </p>
                 </div>
               </div>
 
               <!-- bouton detail à brancher plus tard -->
-              <a href="{% url 'my_matchings_proposed_detail' proposed.groupe_uid m.researched_groupe_uid  m.user.id%}"
+              <a href="{% url 'my_matchings_proposed_detail' proposed.groupe_uid m.groupe_uid  m.user.id%}"
                  class="inline-flex items-center bg-brand gap-2 py-2 px-4 text-white hover:bg-brand-dark rounded-full text-sm font-semibold">
                 Voir les dates
               </a>

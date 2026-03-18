@@ -2,27 +2,34 @@
 
 {% url 'accounts:profile' as profile_url %}
 {% url 'accounts:profile_child' as profile_child_url %}
+{% url 'accounts:add_child' as add_child_url %}
 {% url 'accounts:profile_addresses' as profile_addresses_url %}
 {% url 'accounts:create_address' as create_address_url %}
 
-
 {% url 'researched_traject' as researched_traject_url %}
 {% url 'my_researched_trajects' as my_researched_trajects_url %}
+{% url 'my_researched_groupe_detail' as my_researched_groupe_detail_url %}
 {% url 'my_matchings_researched' as my_matchings_researched_url %}
 {% url 'my_matchings_researched_detail' as my_matchings_researched_detail_url %}
 
 {% url 'proposed_traject' as proposed_traject_url %}
 {% url 'my_proposed_trajects' as my_proposed_trajects_url %}
+{% url 'my_proposed_groupe_detail' as my_proposed_groupe_detail_url %}
 {% url 'my_matchings_proposed' as my_matchings_proposed_url %}
 {% url 'my_matchings_proposed_detail' as my_matchings_proposed_detail_url %}
 
 {% url 'simple_proposed_traject' as simple_proposed_traject_url %}
 {% url 'my_matchings_simple' as my_matchings_simple_url %}
 {% url 'my_simple_trajects' as my_simple_trajects_url %}
+{% url 'my_simple_groupe_detail' as my_simple_groupe_detail_url %}
+
 {% url 'my_matchings_simple_detail' as my_matchings_simple_detail_url %}
 
 {% url 'index' as index_url %}
 {% url 'my_reservations' as my_reservations_url %}
+{% url 'my_reservations_made_detail' as my_reservations_made_detail_url %}
+{% url 'my_reservations_received_detail' as my_reservations_received_detail_url %}
+
 {% url 'subscription' as subscription_url %}
 {% url 'accounts:profile_security' as profile_security_url %}
 
@@ -50,8 +57,8 @@
       {% if request.user.profile.service == "Parent" %}
       <li>
         <a href="{{ profile_child_url }}"
-           class="flex items-center gap-2 py-2 px-4 {% if request.path == profile_child_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          <img src="{% static 'bana/img/icon/Icon_child' %}{% if request.path == profile_child_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
+           class="flex items-center gap-2 py-2 px-4 {% if request.path == profile_child_url or request.path == add_child_url%}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
+          <img src="{% static 'bana/img/icon/Icon_child' %}{% if request.path == profile_child_url or request.path == add_child_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           {% trans "Mes enfants" %}
         </a>
       </li>
@@ -59,7 +66,7 @@
       <li>
         <a href="{{ profile_addresses_url }}"
            class="flex items-center gap-2 py-2 px-4 {% if request.path == profile_addresses_url or request.path == create_address_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          <img src="{% static 'bana/img/icon/Icon_child' %}{% if request.path == profile_addresses_url or request.path == create_address_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
+          <!--<img src="{% static 'bana/img/icon/Icon_child' %}{% if request.path == profile_addresses_url or request.path == create_address_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">!-->
           {% trans "Mes adresses" %}
         </a>
       </li>
@@ -71,31 +78,37 @@
   <div>
     <p class="text-xs uppercase tracking-wide text-gray-400 mb-2">{% trans "Mes trajets" %}</p>
     <ul class="space-y-1">
-      {% if request.user.profile.service == "Parent" %}
-      <li>
-        <a href="{{ researched_traject_url }}"
-           class="flex items-center gap-2 py-2 px-4 {% if request.path == researched_traject_url or request.path == my_researched_trajects_url or request.path == my_matchings_researched_url or request.path == my_matchings_researched_detail_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          <img src="{% static 'bana/img/icon/Icon_search' %}{% if request.path == researched_traject_url or request.path == my_researched_trajects_url or request.path == my_matchings_researched_url or request.path == my_matchings_researched_detail_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          {% trans "Rechercher" %}
-        </a>
-      </li>
-      {% endif %}
-      {% if request.user.profile.service == "Yaya" %}
-      <li>
-        <a href="{{ simple_proposed_traject_url }}"
-           class="flex items-center gap-2 py-2 px-4 {% if request.path == simple_proposed_traject_url or request.path == my_simple_trajects_url or request.path == my_matchings_simple_url or request.path == my_matchings_simple_detail_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          <img src="{% static 'bana/img/icon/Icon_search' %}{% if request.path == simple_proposed_traject_url or request.path == my_simple_trajects_url or request.path == my_matchings_simple_url or request.path == my_matchings_simple_detail_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          {% trans "Rechercher" %}
-        </a>
-      </li>
-      {% endif %}
-      <li>
-        <a href="{{ proposed_traject_url }}"
-           class="flex items-center gap-2 py-2 px-4 {% if request.path == proposed_traject_url or request.path == my_proposed_trajects_url or request.path == my_matchings_proposed_url or request.path == my_matchings_proposed_detail_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          <img src="{% static 'bana/img/icon/Icon_offer' %}{% if request.path == proposed_traject_url or request.path == my_proposed_trajects_url or request.path == my_matchings_proposed_url or request.path == my_matchings_proposed_detail_url  %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
-          {% trans "Proposer" %}
-        </a>
-      </li>
+      {% with current_url=request.resolver_match.url_name %}
+          
+        {% if request.user.profile.service == "Parent" %}
+        <li>
+          <a href="{{ researched_traject_url }}"
+             class="flex items-center gap-2 py-2 px-4 {% if current_url == 'researched_traject' or current_url == 'my_researched_trajects' or current_url == 'my_researched_groupe_detail' or current_url == 'my_matchings_researched' or current_url == 'my_matchings_researched_detail' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
+            <img src="{% static 'bana/img/icon/Icon_search' %}{% if current_url == 'researched_traject' or current_url == 'my_researched_trajects' or current_url == 'my_researched_groupe_detail' or current_url == 'my_matchings_researched' or current_url == 'my_matchings_researched_detail' %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
+            {% trans "Rechercher" %}
+          </a>
+        </li>
+        {% endif %}
+      
+        {% if request.user.profile.service == "Yaya" %}
+        <li>
+          <a href="{{ simple_proposed_traject_url }}"
+             class="flex items-center gap-2 py-2 px-4 {% if current_url == 'simple_proposed_traject' or current_url == 'my_simple_trajects' or current_url == 'my_simple_groupe_detail' or current_url == 'my_matchings_simple' or current_url == 'my_matchings_simple_detail' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
+            <img src="{% static 'bana/img/icon/Icon_search' %}{% if current_url == 'simple_proposed_traject' or current_url == 'my_simple_trajects' or current_url == 'my_simple_groupe_detail' or current_url == 'my_matchings_simple' or current_url == 'my_matchings_simple_detail' %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
+            {% trans "Rechercher" %}
+          </a>
+        </li>
+        {% endif %}
+      
+        <li>
+          <a href="{{ proposed_traject_url }}"
+             class="flex items-center gap-2 py-2 px-4 {% if current_url == 'proposed_traject' or current_url == 'my_proposed_trajects' or current_url == 'my_proposed_groupe_detail' or current_url == 'my_matchings_proposed' or current_url == 'my_matchings_proposed_detail' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
+            <img src="{% static 'bana/img/icon/Icon_offer' %}{% if current_url == 'proposed_traject' or current_url == 'my_proposed_trajects' or current_url == 'my_proposed_groupe_detail' or current_url == 'my_matchings_proposed' or current_url == 'my_matchings_proposed_detail' %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
+            {% trans "Proposer" %}
+          </a>
+        </li>
+      
+      {% endwith %}
       {% comment %}
       <li>
         <a href="{{ index_url }}"
@@ -105,13 +118,15 @@
         </a>
       </li>
       {% endcomment %}
+      {% with current_url=request.resolver_match.url_name %}
       <li>
         <a href="{{ my_reservations_url }}"
-           class="flex items-center gap-2 py-2 px-4 {% if request.path == my_reservations_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          <img src="{% static 'bana/img/icon/Icon_reservation' %}{% if request.path == my_reservations_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
+           class="flex items-center gap-2 py-2 px-4 {% if current_url == 'my_reservations' or current_url == 'my_reservations_received_detail' or current_url == 'my_reservations_made_detail' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
+          <img src="{% static 'bana/img/icon/Icon_reservation' %}{% if current_url == 'my_reservations' or current_url == 'my_reservations_received_detail' or current_url == 'my_reservations_made_detail' %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           {% trans "Mes réservations" %}
         </a>
       </li>
+      {% endwith %}
     </ul>
   </div>
 

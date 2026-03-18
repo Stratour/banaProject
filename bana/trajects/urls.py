@@ -13,10 +13,10 @@ urlpatterns = [
     path('recherches/mes-recherches/delete/<uuid:groupe_uid>/', views.delete_researched_groupe, name='delete_researched_groupe'),
     path('recherches/mes-recherches/<uuid:groupe_uid>/delete/<int:pk>', views.delete_researched_traject, name='delete_researched_traject'),
     path('recherches/matchings/', views.my_matchings_researched, name='my_matchings_researched'),
-    path('recherches/matchings/<uuid:researched_groupe_uid>/<uuid:proposed_groupe_uid>/<int:yaya_user_id>/', views.my_matchings_researched_detail, name='my_matchings_researched_detail'),
+    path('recherches/matchings/<uuid:researched_groupe_uid>/<uuid:proposed_groupe_uid>/<int:matched_user_id>/', views.my_matchings_researched_detail, name='my_matchings_researched_detail'),
     
     ##### Parents / Yaya #####
-    path('propositions/nouveaux-trajets', views.proposed_traject, name='proposed_traject'),
+    path('propositions/nouveaux-trajets/', views.proposed_traject, name='proposed_traject'),
     path('propositions/mes-trajets/', views.my_proposed_trajects, name='my_proposed_trajects'),
     path('propositions/mes-trajets/<uuid:groupe_uid>/', views.my_proposed_groupe_detail, name='my_proposed_groupe_detail'),
     path('propositions/delete/<uuid:groupe_uid>/', views.delete_proposed_groupe, name='delete_proposed_groupe'),
@@ -35,7 +35,7 @@ urlpatterns = [
 
 
     path('réservations/', views.my_reservations, name='my_reservations'),
-    path('réservations/made/<uuid:researched_groupe_uid>/<uuid:proposed_groupe_uid>/<int:yaya_user_id>', views.my_reservations_made_detail, name='my_reservations_made_detail'),
+    path('réservations/made/<uuid:researched_groupe_uid>/<uuid:proposed_groupe_uid>/<int:matched_user_id>', views.my_reservations_made_detail, name='my_reservations_made_detail'),
     path('réservations/reçue/<uuid:proposed_groupe_uid>/<uuid:researched_groupe_uid>/<int:parent_user_id>', views.my_reservations_received_detail, name='my_reservations_received_detail'),
 
     #path('modify/<int:id>/<str:type>/', views.modify_traject, name='modify_traject'),

@@ -47,27 +47,60 @@
 
         <!-- Départ -->
         <div>
-          <p class="text-sm font-semibold text-gray-900">Départ</p>
+          <p class="font-semibold text-gray-900 flex items-center gap-2">
+                <!-- map-pin -->
+                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
+                </svg>
+                Départ
+              </p>
           <p class="text-sm text-gray-700">
             {{ header.traject.start_adress }}
-            <span class="text-gray-400">·</span>
+            <!-- clock -->
+                <svg class="inline h-4 w-4 -mt-0.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
             {{ header.departure_time|default:"—" }}
           </p>
         </div>
 
         <!-- Arrivée -->
         <div>
-          <p class="text-sm font-semibold text-gray-900">Arrivée</p>
+          <p class="font-semibold text-gray-900 flex items-center gap-2">
+                <!-- map-pin -->
+                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
+                </svg>
+                Arrivée
+              </p>
           <p class="text-sm text-gray-700">
             {{ header.traject.end_adress }}
-            <span class="text-gray-400">·</span>
+            <!-- clock -->
+                <svg class="inline h-4 w-4 -mt-0.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
             {{ header.arrival_time|default:"—" }}
           </p>
         </div>
 
         <!-- Transport -->
         <div>
-          <p class="text-sm font-semibold text-gray-900">Transport</p>
+          <p class="font-semibold text-gray-900 flex items-center gap-2">
+                <!-- car -->
+                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
+                </svg>
+                Transport
+              </p>
           <div class="mt-2 flex flex-wrap gap-2">
                 {% for mode in header.transport_modes.all %}
                   {% with label=mode.name|default:mode %}
@@ -139,7 +172,7 @@
               <div class="mt-2 flex flex-wrap gap-2">
                 {% for child in header.children.all %}
                   <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
-                    {{ child.chld_surname }} {{ child.chld_name }}
+                    {{ child.chld_name }} {{ child.chld_surname }} 
                   </span>
                 {% empty %}
                   <span class="text-gray-400">—</span>
@@ -154,7 +187,7 @@
       <div class="mt-6">
         <a href="{% url 'my_researched_trajects' %}"
            class="text-blue-600 hover:underline text-sm font-medium">
-          ← Retour aux groupes
+          ← Retour
         </a>
       </div>
 

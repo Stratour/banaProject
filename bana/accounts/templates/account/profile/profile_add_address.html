@@ -29,8 +29,10 @@
         </label>
 
         {{ form.address }}
+        
+        {{ form.place_id }}
         <!-- Suggestions Google -->
-        <ul id="fav-suggestion-list"
+        <ul id="favorite-suggestion-list"
             class="bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-48 overflow-auto">
         </ul>
       </div>
@@ -56,59 +58,68 @@
 </div>
 
 <script>
-const setupAutocomplete = (inputId, suggestionListId) => {
-    const inputField = document.getElementById(inputId);
-    const suggestionList = document.getElementById(suggestionListId);
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("SCRIPT FAVORITE LOADED");
 
-    console.log("inputField =", inputField);
-    console.log("suggestionList =", suggestionList);
+    const addressInput = document.getElementById("favorite_address");
+    const placeIdInput = document.getElementById("id_place_id");
+    const suggestionList = document.getElementById("favorite-suggestion-list");
 
-    if (!inputField || !suggestionList) {
-        console.error("Autocomplete: input ou liste introuvable");
+    console.log("addressInput:", addressInput);
+    console.log("placeIdInput:", placeIdInput);
+    console.log("suggestionList:", suggestionList);
+
+    if (!addressInput || !placeIdInput || !suggestionList) {
+        console.warn("Missing field(s), script stopped.");
         return;
     }
 
-    inputField.addEventListener("input", async () => {
-        const query = inputField.value.trim();
+    addressInput.addEventListener("input", async () => {
+        const query = addressInput.value.trim();
 
-        console.log("Query =", query);
+        console.log("INPUT EVENT TRIGGERED:", query);
+
+        placeIdInput.value = "";
+        suggestionList.innerHTML = "";
 
         if (query.length < 3) {
-            suggestionList.innerHTML = "";
+            console.log("Query too short");
             return;
         }
 
         try {
             const url = `{% url 'autocomplete' %}?query=${encodeURIComponent(query)}`;
-            console.log("Fetch URL =", url);
+            console.log("FETCH URL:", url);
 
             const response = await fetch(url);
             const data = await response.json();
 
-            console.log("Autocomplete data =", data);
+            console.log("AUTOCOMPLETE RESPONSE:", data);
 
-            suggestionList.innerHTML = "";
-
-            (data.suggestions || []).forEach(s => {
+            (data.suggestions || []).forEach((s) => {
                 const li = document.createElement("li");
                 li.textContent = s.description;
-                li.classList.add("cursor-pointer", "p-2", "hover:bg-gray-100", "border-b");
+                li.style.cursor = "pointer";
+                li.style.padding = "8px";
+                li.style.borderBottom = "1px solid #ddd";
+                li.style.background = "white";
 
                 li.addEventListener("click", () => {
-                    inputField.value = s.description;
+                    console.log("CLICK SUGGESTION:", s);
+
+                    addressInput.value = s.description || "";
+                    placeIdInput.value = s.place_id || "";
                     suggestionList.innerHTML = "";
+
+                    console.log("place_id set to:", placeIdInput.value);
                 });
 
                 suggestionList.appendChild(li);
             });
-        } catch (err) {
-            console.error("Erreur autocomplete :", err);
+        } catch (error) {
+            console.error("Autocomplete error:", error);
         }
     });
-};
-
-document.addEventListener("DOMContentLoaded", () => {
-    setupAutocomplete("id_address", "fav-suggestion-list");
 });
 </script>
 

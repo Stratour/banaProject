@@ -300,6 +300,7 @@ def add_child_view(request):
             child = form.save(commit=False)
             child.chld_user = request.user
             child.save()
+            form.save_m2m()
             messages.success(request, "Enfant ajouté avec succès.")
             return redirect("accounts:profile_child")
     else:
@@ -334,17 +335,33 @@ def profile_addresses(request):
 def create_address(request):
     if request.method == "POST":
         form = FavoriteAddressForm(request.POST)
+
         if form.is_valid():
             addr = form.save(commit=False)
             addr.user = request.user
+
+            print("DEBUG create_address")
+            print("label:", addr.label)
+            print("address:", addr.address)
+            print("place_id:", addr.place_id)
+
             addr.save()
 
             messages.success(request, "Adresse favorite enregistrée.")
             return redirect("accounts:profile_addresses")
+
+        messages.error(request, "Veuillez corriger les erreurs du formulaire.")
     else:
         form = FavoriteAddressForm()
 
-    return render(request, "account/profile/profile_add_address.html", {"form": form, "mode": "create"})
+    return render(
+        request,
+        "account/profile/profile_add_address.html",
+        {
+            "form": form,
+            "mode": "create",
+        },
+    )
 
 
 @login_required
