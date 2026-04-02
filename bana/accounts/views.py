@@ -14,12 +14,13 @@ from .utils import send_change_email_confirmation
 from django.views.decorators.http import require_http_methods
 import logging
 from django.conf import settings
+from django.db import transaction
 
 from allauth.account.internal import flows
 from allauth.account.views import PasswordChangeView
 
-from .forms import ProfileUpdateForm, ChildForm, ReviewForm, UserUpdateForm
-from accounts.models import Profile, Child, Review
+from .forms import ProfileUpdateForm, ChildForm, ReviewForm, UserUpdateForm, FavoriteAddressForm
+from accounts.models import Profile, Child, Review, FavoriteAddress
 
 logger = logging.getLogger(__name__)
 
@@ -166,7 +167,6 @@ def profile_children(request):
     """Page enfants (menu profil)."""
     return render(request, "account/profile/profile_children.html")
 
-
 @login_required
 def profile_security(request):
     """Page Sécurité & connexion (sans HTMX)."""
@@ -300,6 +300,7 @@ def add_child_view(request):
             child = form.save(commit=False)
             child.chld_user = request.user
             child.save()
+            form.save_m2m()
             messages.success(request, "Enfant ajouté avec succès.")
             return redirect("accounts:profile_child")
     else:
@@ -324,50 +325,52 @@ def delete_child_view(request, child_id):
     return redirect("accounts:profile_child")
 
 
-# ==================== OUTIL DE POPULATION (DEV) ==================== #
+@login_required
+def profile_addresses(request):
+    addresses = FavoriteAddress.objects.filter(user=request.user)
+    return render(request, "account/profile/profile_addresses.html", {"addresses": addresses})
 
-import json
-import random
 
-def pop_profile(request):
-    """
-    Outil dev : crée des profils de démonstration pour des utilisateurs lambda_*.
-    """
-    adresses_bruxelles = [
-        {"line1": "Place de la Bourse", "city": "Bruxelles", "country": "BE", "postal_code": "1000"},
-        {"line1": "Grand-Place", "city": "Bruxelles", "country": "BE", "postal_code": "1000"},
-        {"line1": "Rue du Marché aux Herbes 61", "city": "Bruxelles", "country": "BE", "postal_code": "1000"},
-        {"line1": "Avenue Louise 23", "city": "Ixelles", "country": "BE", "postal_code": "1050"},
-        {"line1": "Rue de la Loi 1", "city": "Bruxelles", "country": "BE", "postal_code": "1000"},
-        {"line1": "Chaussée de Wavre 25", "city": "Ixelles", "country": "BE", "postal_code": "1050"},
-        {"line1": "Rue Neuve", "city": "Bruxelles", "country": "BE", "postal_code": "1000"},
-        {"line1": "Chaussée de Charleroi 154", "city": "Saint-Gilles", "country": "BE", "postal_code": "1060"},
-        {"line1": "Avenue des Saisons 123", "city": "Ixelles", "country": "BE", "postal_code": "1050"},
-        {"line1": "Place Flagey", "city": "Ixelles", "country": "BE", "postal_code": "1050"},
-        {"line1": "Place Brugmann 18", "city": "Ixelles", "country": "BE", "postal_code": "1050"},
-    ]
+@login_required
+def create_address(request):
+    if request.method == "POST":
+        form = FavoriteAddressForm(request.POST)
 
-    services = ["parent", "yaya"]
-    transports = ["voiture", "transport en commun", "vélo", "à pied"]
+        if form.is_valid():
+            addr = form.save(commit=False)
+            addr.user = request.user
 
-    users = list(User.objects.filter(username__startswith="lambda_"))
-    random.shuffle(adresses_bruxelles)
+            print("DEBUG create_address")
+            print("label:", addr.label)
+            print("address:", addr.address)
+            print("place_id:", addr.place_id)
 
-    profiles_to_create = [
-        Profile(
-            user=user,
-            address=json.dumps(adresses_bruxelles.pop()),
-            ci_is_verified=True,
-            service=random.choice(services),
-            transport_modes=random.sample(transports, random.randint(1, 3)),
-            bio=f"Bonjour, je suis {user.first_name}. Je recherche des services de garde d'enfants.",
-        )
-        for user in users
-    ]
+            addr.save()
 
-    Profile.objects.bulk_create(profiles_to_create)
+            messages.success(request, "Adresse favorite enregistrée.")
+            return redirect("accounts:profile_addresses")
 
-    print(f"Création de {len(profiles_to_create)} profils terminée.")
-    for p in Profile.objects.all():
-        addr = json.loads(p.address)
-        print(f"Profil pour '{p.user.username}' créé. Adresse: {addr['line1']}, {addr['city']}.")
+        messages.error(request, "Veuillez corriger les erreurs du formulaire.")
+    else:
+        form = FavoriteAddressForm()
+
+    return render(
+        request,
+        "account/profile/profile_add_address.html",
+        {
+            "form": form,
+            "mode": "create",
+        },
+    )
+
+
+@login_required
+def delete_address(request, uid):
+    addr = get_object_or_404(FavoriteAddress, user=request.user, uid=uid)
+
+    if request.method == "POST":
+        addr.delete()
+        messages.success(request, "Adresse favorite supprimée.")
+        return redirect("accounts:profile_addresses")
+
+    return redirect("accounts:profile_addresses")

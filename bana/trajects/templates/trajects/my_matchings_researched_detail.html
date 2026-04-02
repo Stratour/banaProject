@@ -1,0 +1,294 @@
+{% extends 'allauth/layouts/base.html' %}
+{% load static i18n %}
+
+{% block head_title %}{% trans "Mes matchings" %}{% endblock %}
+
+{% block content %}
+
+<div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+  
+  <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
+    {% trans "Mes matchings" %}
+  </h1>
+
+  {% if messages %}
+  <ul class="mb-6">
+    {% for message in messages %}
+    <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">
+      {{ message }}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  
+  {% include "./component_researched_tabs.html" %}
+  
+<!-- ✅ Card Yaya -->
+ <article class="group rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm mb-6">
+      <header class="flex items-start justify-between gap-4">
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] overflow-hidden">
+            {% if proposed_header.user.profile.profile_picture %}
+              <a {% if is_abonned %} 
+                  href="{% url 'accounts:profile_user' user_id=proposed_header.user.id %}"
+                  {% endif %}>
+                <img src="{{ proposed_header.user.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="User">
+              </a>
+            {% else %}
+              <a {% if is_abonned %}
+                  href="{% url 'accounts:profile_user' user_id=proposed_header.user.id %}" 
+                  {% endif %}
+                  class="flex items-center justify-center w-full h-full">
+                <span class="text-xl sm:text-2xl font-bold text-brand">
+                  {% if proposed_header.user.profile.ci_is_verified %}
+                    {{ proposed_header.user.profile.verified_first_name|slice:":1" }}.{{ proposed_header.user.profile.verified_last_name|slice:":1" }}
+                  {% else %}
+                    {{ proposed_header.user.first_name|slice:":1" }}.{{ proposed_header.user.last_name|slice:":1" }}
+                  {% endif %}
+                </span>
+              </a>
+            {% endif %}
+          </div>
+
+          <div class="min-w-0">
+            <p class="text-xs text-gray-500">{{ proposed_header.user.profile.service|title }}</p>
+            <p class="text-lg font-bold text-gray-900">
+              {% if is_abonned %}
+                <a href="{% url 'accounts:profile_user' user_id=proposed_header.user.id %}" class="text-blue-600 hover:underline">
+                  {% if proposed_header.user.profile.ci_is_verified %}
+                    {{ proposed_header.user.profile.verified_first_name }} {{ proposed_header.user.profile.verified_last_name|slice:":1" }}.
+                  {% else %}
+                    {{ proposed_header.user.first_name }} {{ proposed_header.user.last_name|slice:":1" }}.
+                  {% endif %}
+                </a>
+              {% else %}
+                <span class="text-red-700">{% trans "Abonnement requis pour voir le profil" %}</span>
+              {% endif %}
+            </p>
+            <p class="text-xs text-gray-500">
+              {% trans "Du" %} {{ proposed_stats.first_date|date:"d/m/Y" }} 
+              {% trans "au" %} {{ proposed_stats.last_date|date:"d/m/Y" }}
+            </p>
+          </div>
+                    {% comment "S'affiche pas au bon endroit" %}
+                    
+                    {% if proposed_header.user.profile.prfl_is_verified %}
+                      <span class="absolute -top-1 -left-1 inline-flex h-8 w-8 rounded-full bg-white ring-4 ring-white shadow">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+                          <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
+                          <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </span>
+                    {% endif %}
+                    {% endcomment %}
+                  </div>
+  
+      <a href="{% url 'my_matchings_researched' %}"
+         class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+        ← {% trans "Retour" %}
+      </a>
+    </header>
+
+    <div class="my-4 border-t border-gray-100"></div>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <!-- Départ -->
+      <div class="space-y-2 text-sm text-gray-700">
+        <p class="font-semibold text-gray-900 flex items-center gap-2">
+          <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
+          </svg>
+          {% trans "Départ" %}
+        </p>
+        <p>
+          <span class="font-medium">{{ proposed_header.traject.start_adress }}</span>
+          <svg class="inline h-4 w-4 -mt-0.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+          {{ proposed_header.departure_time|default:"—" }}
+        </p>
+      </div>
+
+      {% if proposed_header.traject.end_adress %}
+      <!-- Arrivée -->
+      <div class="space-y-2 text-sm text-gray-700">
+        <p class="font-semibold text-gray-900 flex items-center gap-2">
+                <!-- map-pin -->
+                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
+                </svg>
+                {% trans "Arrivée" %}
+              </p>
+        <p>
+          <span class="font-medium">{{ proposed_header.traject.end_adress }}</span>
+          <svg class="inline h-4 w-4 -mt-0.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+          {{ proposed_header.arrival_time|default:"—" }}
+        </p>
+      </div>
+      
+      {% endif %}
+      
+
+            <!-- Transport -->
+            <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
+              <p class="font-semibold text-gray-900 flex items-center gap-2">
+                <!-- car -->
+                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
+                </svg>
+                {% trans "Transport" %}
+              </p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                {% for mode in proposed_header.transport_modes.all %}
+                  {% with label=mode.name|default:mode %}
+                    {% with key=label|lower %}
+                      <span class="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand-50 text-brand px-2.5 py-1 text-xs font-medium">
+                        {% if "car" in key %}
+                          <!-- car -->
+                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/> 
+                          </svg>
+                          <p>{% trans "Voiture" %}</p>
+                        {% elif "bike" in key %}
+                          <!-- bike -->
+                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="6" cy="17" r="3" stroke-width="2"/>
+                            <circle cx="18" cy="17" r="3" stroke-width="2"/>
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                  d="M6 17l6-8 2 3h4"/>                                  
+                          </svg>
+                          <p>{% trans "Vélo" %}</p>
+                        {% elif "transport" in key %}
+                          <!-- bus/tram -->
+                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <rect x="4" y="4" width="16" height="12" rx="2" stroke-width="2"/>
+                            <path stroke-width="2" d="M4 11h16M8 20l2-2m6 2l-2-2"/>
+                            <circle cx="8" cy="16" r="1" />
+                            <circle cx="16" cy="16" r="1" />
+                          </svg>
+                          <p>{% trans "Transport en commun" %}</p>
+                        {% elif "walking" in key %}
+                          <!-- walking -->
+                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                  d="M13 5a2 2 0 11-4 0 2 2 0 014 0zM12 7l-2 4-2 2m4-6l2 3 3 1m-7 1l-2 6m5-5l-1 5"/>
+                          </svg>
+                          <p>{% trans "À pied" %}</p>
+                        {% else %}
+                          <!-- default -->
+                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
+                          </svg>
+                        {% endif %}
+                      </span>
+                    {% endwith %}
+                  {% endwith %}
+                {% empty %}
+                  <span class="text-gray-400">{% trans "Non spécifié" %}</span>
+                {% endfor %}
+              </div>
+            </div>
+
+      <!-- Langues 
+      <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
+        <p class="font-semibold text-gray-900 flex items-center gap-2">Langue(s)</p>
+        <div class="mt-2 flex flex-wrap gap-2">
+          {% for lang in proposed_header.languages.all %}
+            <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
+              {{ lang.lang_name }}
+            </span>
+          {% empty %}
+            <span class="text-gray-400">Aucune spécifiée</span>
+          {% endfor %}
+        </div>
+      </div>-->
+    </div>
+  </article>
+
+<!-- ✅ Liste des dates -->
+  <div class="mt-6 space-y-4">
+    <h3 class="text-lg font-semibold text-gray-900">{% trans "Dates disponibles" %}</h3>
+
+    {% if rows %}
+      {% for row in rows %}
+      
+        {% with p=row.proposal research=row.research %}
+        <article class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm {% if row.is_past %}grayscale{% endif %}"
+                 {% if row.is_past %}style="opacity:0.55"{% endif %}>
+
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="text-sm font-semibold text-gray-900">
+                {{ p.date|date:"l d F Y" }}
+              </p>
+              <!--<p class="text-xs text-gray-600 mt-1">
+                {{ p.departure_time|default:"—" }} → {{ p.arrival_time|default:"—" }}
+              </p>!-->
+
+              <p class="text-xs text-gray-600 mt-1">
+                <strong>{% trans "Places restantes" %} :</strong>
+                {{ row.remaining_places|default:"—" }}
+              </p>
+            </div>
+
+            <div class="text-right">
+
+              {% if row.is_past %}
+                <span class="inline-block mt-2 text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-500">
+                  {% trans "Date passée" %}
+                </span>
+
+              {% elif row.reservation_key in my_confirmed_keys %}
+                <span class="inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-3 py-1 text-xs font-semibold">
+                  {% trans "Confirmé" %}
+                </span>
+
+              {% elif row.reservation_key in my_pending_keys %}
+                <span class="inline-flex items-center rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1 text-xs font-semibold">
+                  {% trans "En attente" %}
+                </span>
+              
+              {% elif row.reservation_key in my_canceled_keys %}
+                <span class="inline-flex items-center rounded-full bg-red-50 text-red-700 border border-red-200 px-3 py-1 text-xs font-semibold">
+                  {% trans "Annulé" %}
+                </span>
+
+              {% else %}
+                <form method="POST" action="{% url 'auto_reserve' p.id research.id %}">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.path }}">
+                  <button type="submit"
+                          class="inline-flex items-center bg-brand gap-2 py-2 px-4 mt-2 text-white hover:bg-brand-dark rounded-full text-sm font-semibold">
+                    {% trans "Réserver" %}
+                  </button>
+                </form>
+              {% endif %}
+            </div>
+          </div>
+
+        </article>
+        {% endwith %}
+      {% endfor %}
+    {% else %}
+      <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
+        {% trans "Aucune date correspondante trouvée." %}
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

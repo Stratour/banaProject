@@ -1,0 +1,126 @@
+{% extends "allauth/layouts/base.html" %}
+{% load static i18n %}
+{% block head_title %}{% trans "Ajouter une adresse" %}{% endblock %}
+
+{% block content %}
+
+<div class="max-w-4xl mx-auto px-4 py-8">
+  <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 space-y-8">
+
+    <h2 class="text-2xl font-bold text-brand">
+      {% trans "Ajouter une adresse favorite" %}
+    </h2>
+
+    <form method="POST" class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Nom de l'adresse -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          {% trans "Nom de l'adresse" %}
+        </label>
+        {{ form.label }}
+      </div>
+
+      <!-- Adresse -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">
+          {% trans "Adresse" %}
+        </label>
+
+        {{ form.address }}
+        
+        {{ form.place_id }}
+        <!-- Suggestions Google -->
+        <ul id="favorite-suggestion-list"
+            class="bg-white border border-gray-300 rounded-md shadow-md mt-1 max-h-48 overflow-auto">
+        </ul>
+      </div>
+
+      <!-- Boutons -->
+      <div class="flex items-center gap-3 pt-4">
+
+        <a href="{% url 'accounts:profile_addresses' %}"
+           class="px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-full hover:bg-gray-300 transition">
+          {% trans "Retour" %}
+        </a>
+
+        <button type="submit"
+                class="px-6 py-3 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition">
+          {% trans "Enregistrer" %}
+        </button>
+
+      </div>
+
+    </form>
+
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("SCRIPT FAVORITE LOADED");
+
+    const addressInput = document.getElementById("favorite_address");
+    const placeIdInput = document.getElementById("id_place_id");
+    const suggestionList = document.getElementById("favorite-suggestion-list");
+
+    console.log("addressInput:", addressInput);
+    console.log("placeIdInput:", placeIdInput);
+    console.log("suggestionList:", suggestionList);
+
+    if (!addressInput || !placeIdInput || !suggestionList) {
+        console.warn("Missing field(s), script stopped.");
+        return;
+    }
+
+    addressInput.addEventListener("input", async () => {
+        const query = addressInput.value.trim();
+
+        console.log("INPUT EVENT TRIGGERED:", query);
+
+        placeIdInput.value = "";
+        suggestionList.innerHTML = "";
+
+        if (query.length < 3) {
+            console.log("Query too short");
+            return;
+        }
+
+        try {
+            const url = `{% url 'autocomplete' %}?query=${encodeURIComponent(query)}`;
+            console.log("FETCH URL:", url);
+
+            const response = await fetch(url);
+            const data = await response.json();
+
+            console.log("AUTOCOMPLETE RESPONSE:", data);
+
+            (data.suggestions || []).forEach((s) => {
+                const li = document.createElement("li");
+                li.textContent = s.description;
+                li.style.cursor = "pointer";
+                li.style.padding = "8px";
+                li.style.borderBottom = "1px solid #ddd";
+                li.style.background = "white";
+
+                li.addEventListener("click", () => {
+                    console.log("CLICK SUGGESTION:", s);
+
+                    addressInput.value = s.description || "";
+                    placeIdInput.value = s.place_id || "";
+                    suggestionList.innerHTML = "";
+
+                    console.log("place_id set to:", placeIdInput.value);
+                });
+
+                suggestionList.appendChild(li);
+            });
+        } catch (error) {
+            console.error("Autocomplete error:", error);
+        }
+    });
+});
+</script>
+
+{% endblock %}

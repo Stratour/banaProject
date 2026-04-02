@@ -1,452 +1,534 @@
+from datetime import date, timedelta
+
 from django import forms
-from accounts.models import Languages, Child
-from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode, Reservation
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+from accounts.models import Languages, Child
+from .models import (
+    Traject,
+    ProposedTraject,
+    ResearchedTraject,
+    TransportMode,
+    Reservation,
+)
 
-class TrajectForm(forms.ModelForm):
-    start_place_id = forms.CharField(widget=forms.HiddenInput(), required=False)
-    end_place_id = forms.CharField(widget=forms.HiddenInput(), required=False)
+
+WEEKDAY_CHOICES = [
+    (str(i), day) for i, day in enumerate(
+        [_("Lundi"), _("Mardi"), _("Mercredi"), _("Jeudi"), _("Vendredi"), _("Samedi"), _("Dimanche")], 1
+    )
+]
+
+RECURRENCE_CHOICES = [
+    ("one_week", _("Trajets occasionnels")),
+    ("weekly", _("Trajets chaque semaine")),
+    ("biweekly", _("Trajets une semaine sur deux")),
+]
+
+
+class RecurrenceValidationMixin:
+    """
+    Mixin commun pour uniformiser la validation de la récurrence.
+    Utilisé sur ProposedTrajectForm, SimpleProposedTrajectForm
+    et ResearchedTrajectForm.
+    """
+
+    one_week_label = _("Trajets occasionnels")
+
+    def clean_date_debut(self):
+        date_debut = self.cleaned_data.get("date_debut")
+        if date_debut and date_debut < date.today():
+            raise ValidationError(
+                _("La date de début ne peut pas être antérieure à la date d'aujourd'hui.")
+            )
+        return date_debut
+
+    def clean_tr_weekdays(self):
+        days = self.cleaned_data.get("tr_weekdays") or []
+        if not days:
+            raise ValidationError(
+                _("Veuillez sélectionner au moins un jour de la semaine.")
+            )
+        return days
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        recurrence_type = cleaned_data.get("recurrence_type")
+        date_debut = cleaned_data.get("date_debut")
+        date_fin = cleaned_data.get("date_fin")
+        tr_weekdays = cleaned_data.get("tr_weekdays") or []
+
+        # Weekly / biweekly => date_fin obligatoire
+        if recurrence_type in ["weekly", "biweekly"] and not date_fin:
+            self.add_error("date_fin", _("Veuillez choisir une date de fin."))
+
+        # Si plusieurs jours sont cochés en "one_week", date_fin obligatoire
+        if recurrence_type == "one_week" and len(tr_weekdays) > 1 and not date_fin:
+            self.add_error(
+                "date_fin",
+                _("Veuillez choisir une date de fin lorsque plusieurs jours sont sélectionnés.")
+            )
+
+        if date_debut and date_fin and date_fin < date_debut:
+            self.add_error(
+                "date_fin",
+                _("La date de fin ne peut pas être antérieure à la date de début.")
+            )
+
+        # Limite max à 7 jours pour "one_week"
+        if recurrence_type == "one_week" and date_debut and date_fin:
+            if (date_fin - date_debut).days > 6:
+                self.add_error(
+                    "date_fin",
+                    _("Pour une récurrence occasionnelle, la période ne peut pas dépasser 7 jours.")
+                )
+
+        return cleaned_data
     
+class TrajectForm(forms.ModelForm):
     class Meta:
         model = Traject
-        fields = ['start_adress', 'end_adress', 'start_place_id', 'end_place_id']
+        fields = [
+            "start_adress",
+            "end_adress",
+            "start_place_id",
+            "end_place_id",
+        ]
         widgets = {
-            'start_adress': forms.TextInput(attrs={
-                'id': 'start_adress',
-                'class': 'w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand',
-                'placeholder': _('Entrez le point de départ (Adresse, ville, code postal)'),
-                'autocomplete': 'off'
+            "start_adress": forms.TextInput(attrs={
+                "id": "start_adress",
+                "class": "w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand",
+                "placeholder": _("Entrez une adresse de départ (Ville, code postal)"),
+                "autocomplete": "off",
             }),
-            'end_adress': forms.TextInput(attrs={
-                'id': 'end_adress',
-                'class': 'w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand',
-                'placeholder': _('Entrez le point d’arrivée (Adresse, ville, code postal)'),
-                'autocomplete': 'off'
+            "end_adress": forms.TextInput(attrs={
+                "id": "end_adress",
+                "class": "w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand",
+                "placeholder": _("Entrez une adresse d’arrivée (Ville, code postal)"),
+                "autocomplete": "off",
             }),
-            
+            "start_place_id": forms.HiddenInput(attrs={
+                "id": "start_place_id",
+            }),
+            "end_place_id": forms.HiddenInput(attrs={
+                "id": "end_place_id",
+            }),
         }
 
-class ProposedTrajectForm(forms.ModelForm):
+    def clean(self):
+        cleaned_data = super().clean()
+
+        start_adress = cleaned_data.get("start_adress")
+        end_adress = cleaned_data.get("end_adress")
+        start_place_id = cleaned_data.get("start_place_id")
+        end_place_id = cleaned_data.get("end_place_id")
+
+        if start_adress and not start_place_id:
+            self.add_error(
+                "start_adress",
+                _("Veuillez sélectionner une adresse de départ valide dans la liste."),
+            )
+
+        if end_adress and not end_place_id:
+            self.add_error(
+                "end_adress",
+                _("Veuillez sélectionner une adresse d’arrivée valide dans la liste."),
+            )
+
+        return cleaned_data
+
+class ProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     transport_modes = forms.ModelMultipleChoiceField(
-        queryset=TransportMode.objects.all(),    
-        widget=forms.CheckboxSelectMultiple(attrs={
-            'class': 'form-checkbox h-5 w-5 text-brand'
-        }),
-        label="Moyens de transport",
+        queryset=TransportMode.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        label=_("Moyens de transport"),
         required=True,
-        error_messages={'required': _("Veuillez sélectionner au moins un moyen de transport.")}
+        error_messages={
+            "required": _("Veuillez sélectionner au moins un moyen de transport.")
+        },
     )
-    
+
     languages = forms.ModelMultipleChoiceField(
         queryset=Languages.objects.all(),
         widget=forms.SelectMultiple(attrs={
-            'class': 'block w-full mt-1 border-brand shadow-sm focus:ring-brand focus:border-brand'
+            "class": "w-full p-3 border border-brand rounded-2xl shadow-sm focus:ring-brand focus:border-brand"
         }),
         required=False,
-        #empty_label="-- Sélectionnez la langue --",
-        label="Langue parlée"
+        label=_("Langue parlée"),
     )
 
     departure_time = forms.TimeField(
         widget=forms.TimeInput(attrs={
-            'type': 'time',
-            'class': 'w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand',
-            'placeholder': 'hh:mm'
-        })
+            "type": "time",
+            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "placeholder": "hh:mm",
+        }),
+        error_messages={
+            "required": _("Veuillez renseigner l'heure de départ.")
+        },
+        label=_("Heure de départ"),
     )
 
     arrival_time = forms.TimeField(
         widget=forms.TimeInput(attrs={
-            'type': 'time',
-            'class': 'w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand',
-            'placeholder': 'hh:mm'
-        })
+            "type": "time",
+            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "placeholder": "hh:mm",
+        }),
+        error_messages={
+            "required": _("Veuillez renseigner l'heure d’arrivée.")
+        },
+        label=_("Heure d’arrivée"),
     )
 
     number_of_places = forms.ChoiceField(
-        choices=[('', '-- Sélectionnez le nombre de places --')] + ProposedTraject.NUMBER_PLACE,
-        widget=forms.Select(attrs={
-            'class': 'block w-full mt-1 rounded-full border-brand shadow-sm focus:ring-brand focus:border-brand'
-        }),
-        required=False,
-        label="Nombre de places"
-    )
-    
-    recurrence_type = forms.ChoiceField(
-        choices=[
-            ('one_week', _('Trajets sur une seule semaine')),
-            ('weekly', _('Trajets chaque semaine')),
-            ('biweekly', _('Trajets une semaine sur deux'))
-        ],
-        widget=forms.RadioSelect(attrs={
-            'class': 'mr-2'
-        }),
-        required=True,
-        initial='one_week'
-    )
+    choices=[("", _("-- Sélectionnez le nombre de places --"))] + ProposedTraject.NUMBER_PLACE,
+    widget=forms.Select(attrs={
+        "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand"
+    }),
+    required=True,
+    label=_("Nombre de places"),
+    error_messages={
+        "required": _("Veuillez sélectionner un nombre de places.")
+    },
+)
 
-    recurrence_interval = forms.IntegerField(
-        widget=forms.NumberInput(attrs={'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm'}),
-        required=False,
-        label="Intervalle (semaines)",
-        min_value=1
+    recurrence_type = forms.ChoiceField(
+        choices=RECURRENCE_CHOICES,
+        widget=forms.RadioSelect,
+        required=True,
+        initial="one_week",
+        label=_("Type de récurrence"),
     )
 
     tr_weekdays = forms.MultipleChoiceField(
-        choices=[(str(i), day) for i, day in
-                 enumerate(["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"], 1)],
-        required=False,
-        label="Jours spécifiques"
+        choices=WEEKDAY_CHOICES,
+        required=True,
+        label=_("Jours spécifiques"),
+        error_messages={
+            "required": _("Veuillez sélectionner au moins un jour de la semaine.")
+        },
     )
+
     date_debut = forms.DateField(
-        widget=forms.DateInput(
-            attrs={'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm', 'type': 'date'}),
-        label="Date de début"
+        widget=forms.DateInput(attrs={
+            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "type": "date",
+        }),
+        required=True,
+        label=_("Date de début"),
     )
-    
-    def clean_date_debut(self):
-        date_debut = self.cleaned_data.get('date_debut')
-
-        if date_debut and date_debut < date.today():
-            raise ValidationError(_("La date de début ne peut pas être antérieure à la date d'aujourd'hui."))
-
-        return date_debut
-
 
     date_fin = forms.DateField(
-        widget=forms.DateInput(
-            attrs={'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm', 'type': 'date'}),
+        widget=forms.DateInput(attrs={
+            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "type": "date",
+        }),
         required=False,
-        label="Date de fin"
+        label=_("Date de fin"),
     )
 
     class Meta:
         model = ProposedTraject
-        fields = ['details', 'departure_time', 'arrival_time', 'transport_modes', 'languages',
-                  'number_of_places', 'date',
-                  'recurrence_type', 'recurrence_interval', 'date_debut', 'date_fin']
+        fields = [
+            "details",
+            "departure_time",
+            "arrival_time",
+            "transport_modes",
+            "languages",
+            "number_of_places",
+            "date",
+            "recurrence_type",
+            "tr_weekdays",
+            "date_debut",
+            "date_fin",
+        ]
         labels = {
-            'details': 'Détails',
-            'departure_time': 'Heure de départ',
-            'arrival_time': 'Heure d’arrivée',
-            'number_of_places': 'Nombre de places',
-            'recurrence_type': 'Type de récurrence',
-            'recurrence_interval': 'Intervalle de récurrence (semaines)',
-            'date_debut': 'Date de début de récurrence',
-            'date_fin': 'Date de fin de récurrence',
+            "details": _("Détails"),
+            "departure_time": _("Heure de départ"),
+            "arrival_time": _("Heure d’arrivée"),
+            "number_of_places": _("Nombre de places"),
+            "recurrence_type": _("Type de récurrence"),
+            "date_debut": _("Date de début de récurrence"),
+            "date_fin": _("Date de fin de récurrence"),
         }
         widgets = {
-            'details': forms.Textarea(
-                attrs={'class': 'form-input mt-1 block w-full border-brand shadow-sm',
-                       'placeholder': 'Ajoutez des détails utiles pour les passagers'}),
+            "details": forms.Textarea(attrs={
+                "class": "w-full p-3 border border-brand rounded-2xl shadow-sm focus:ring-brand focus:border-brand min-h-[120px]",
+                "placeholder": _("Ajoutez des détails utiles pour les passagers"),
+                "rows": 4,
+            }),
         }
-    def clean_tr_weekdays(self):
-        days = self.cleaned_data.get('tr_weekdays')
-        if not days:
-            raise forms.ValidationError(_("Veuillez sélectionner au moins un jour de la semaine."))
-        return days
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["transport_modes"].label_from_instance = lambda obj: obj.display_name
 
-        # 🔤 Traduit les labels selon display_name du modèle
-        self.fields['transport_modes'].label_from_instance = lambda obj: obj.display_name
+    def clean_number_of_places(self):
+        value = self.cleaned_data.get("number_of_places")
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            raise ValidationError(_("Veuillez sélectionner un nombre de places valide."))
         
-        # Initialiser les champs de récurrence selon le type sélectionné
-        recurrence_type = self.initial.get('recurrence_type', '') or self.data.get('recurrence_type')
-
-        if recurrence_type == 'none':
-            self.fields['date_debut'].required = False
-            self.fields['date_fin'].required = False
-            self.fields['recurrence_interval'].initial = None
-        elif recurrence_type in ['weekly', 'biweekly']:
-            self.fields['date_debut'].required = True
-            self.fields['date_fin'].required = True
-            self.fields['recurrence_interval'].initial = 1 if recurrence_type == 'weekly' else 2
-
-
-from datetime import date 
-class SimpleProposedTrajectForm(forms.ModelForm):
-    transport_modes = forms.ModelMultipleChoiceField(
-        queryset=TransportMode.objects.all(),    
-        widget=forms.CheckboxSelectMultiple(attrs={
-            'class': 'form-checkbox h-5 w-5 text-brand'
+class SimpleProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
+    start_adress = forms.CharField(
+        widget=forms.TextInput(attrs={
+            "id": "start_adress",
+            "class": "w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand",
+            "placeholder": _("Entrez le point de départ (Adresse, ville, code postal)"),
+            "autocomplete": "off",
         }),
-        label="Moyens de transport",
+        label=_("Ville de départ"),
         required=True,
-        error_messages={'required': _("Veuillez sélectionner au moins un moyen de transport.")}
+    )
+
+    start_place_id = forms.CharField(
+        widget=forms.HiddenInput(attrs={
+            "id": "start_place_id",
+        }),
+        required=False,
+    )
+
+    transport_modes = forms.ModelMultipleChoiceField(
+        queryset=TransportMode.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        label=_("Moyens de transport"),
+        required=True,
+        error_messages={
+            "required": _("Veuillez sélectionner au moins un moyen de transport.")
+        },
     )
 
     number_of_places = forms.ChoiceField(
-        choices=[('', _('-- Sélectionnez le nombre de places --'))] + ProposedTraject.NUMBER_PLACE,
+        choices=[("", _("-- Sélectionnez le nombre de places --"))] + ProposedTraject.NUMBER_PLACE,
         widget=forms.Select(attrs={
-            'class': 'block w-full mt-1 rounded-full border-brand shadow-sm focus:ring-brand focus:border-brand'
+            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand"
         }),
-        required=False,
-        label="Nombre de places"
+        required=True,
+        label=_("Nombre de places"),
+        error_messages={
+            "required": _("Veuillez sélectionner un nombre de places.")
+        },
     )
-    
+
     search_radius_km = forms.IntegerField(
-        label='Rayon de recherche (km)',
+        label=_("Rayon de recherche (km)"),
         initial=5,
         min_value=1,
         max_value=50,
         widget=forms.NumberInput(attrs={
-            'class': 'form-control',
-            'placeholder': '5',
-            'min': '1',
-            'max': '50'
+            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "placeholder": "5",
+            "min": "1",
+            "max": "50",
         }),
-        help_text='Dans quel rayon souhaitez-vous aider ? (1-50 km)'
+        help_text=_("Dans quel rayon souhaitez-vous aider ? (1-50 km)"),
+        error_messages={
+            "required": _("Veuillez renseigner un rayon de recherche."),
+            "min_value": _("Le rayon doit être d’au moins 1 km."),
+            "max_value": _("Le rayon ne peut pas dépasser 50 km."),
+        },
     )
 
     recurrence_type = forms.ChoiceField(
-        choices=[
-            ('one_week', _('Trajets sur une seule semaine')),
-            ('weekly', _('Trajets chaque semaine')),
-            ('biweekly', _('Trajets une semaine sur deux')),
-        ],
-        widget=forms.RadioSelect(attrs={'class': 'mr-2'}),
+        choices=RECURRENCE_CHOICES,
+        widget=forms.RadioSelect,
         required=True,
-        initial='one_week',
-        label=_("Type de récurrence")
-    )
-
-    recurrence_interval = forms.IntegerField(
-        widget=forms.NumberInput(attrs={
-            'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm'
-        }),
-        required=False,
-        label=_("Intervalle (semaines)"),
-        min_value=1
+        initial="one_week",
+        label=_("Type de récurrence"),
     )
 
     tr_weekdays = forms.MultipleChoiceField(
-        choices=[(str(i), day) for i, day in enumerate(
-            ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"], 1)],
-        required=False,
-        label=_("Jours spécifiques")
+        choices=WEEKDAY_CHOICES,
+        required=True,
+        label=_("Jours spécifiques"),
+        error_messages={
+            "required": _("Veuillez sélectionner au moins un jour de la semaine.")
+        },
     )
 
     date_debut = forms.DateField(
         widget=forms.DateInput(attrs={
-            'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm',
-            'type': 'date'
+            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "type": "date",
         }),
-        label=_("Date de début")
+        required=True,
+        label=_("Date de début"),
     )
 
     date_fin = forms.DateField(
         widget=forms.DateInput(attrs={
-            'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm',
-            'type': 'date'
+            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "type": "date",
         }),
         required=False,
-        label=_("Date de fin")
+        label=_("Date de fin"),
     )
 
-    # === Validation ===
-    def clean_date_debut(self):
-        date_debut = self.cleaned_data.get('date_debut')
-        if date_debut and date_debut < date.today():
-            raise ValidationError(_("La date de début ne peut pas être antérieure à la date d'aujourd'hui."))
-        return date_debut
-
-    def clean_tr_weekdays(self):
-        days = self.cleaned_data.get('tr_weekdays')
-        if not days:
-            raise ValidationError(_("Veuillez sélectionner au moins un jour de la semaine."))
-        return days
+    class Meta:
+        model = ProposedTraject
+        fields = [
+            "number_of_places",
+            "search_radius_km",
+            "transport_modes",
+            "recurrence_type",
+            "tr_weekdays",
+            "date_debut",
+            "date_fin",
+        ]
+        labels = {
+            "number_of_places": _("Nombre de places"),
+            "search_radius_km": _("Rayon de recherche (km)"),
+            "recurrence_type": _("Type de récurrence"),
+            "date_debut": _("Date de début de récurrence"),
+            "date_fin": _("Date de fin de récurrence"),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields["transport_modes"].label_from_instance = lambda obj: obj.display_name
 
-        # Traduire les labels selon display_name
-        self.fields['transport_modes'].label_from_instance = lambda obj: obj.display_name
+    def clean_start_adress(self):
+        value = self.cleaned_data.get("start_adress")
+        if not value:
+            raise ValidationError(_("Veuillez renseigner une ville de départ."))
+        return value
 
-        # Initialiser la logique selon le type de récurrence sélectionné
-        recurrence_type = self.initial.get('recurrence_type', '') or self.data.get('recurrence_type')
+    def clean_number_of_places(self):
+        value = self.cleaned_data.get("number_of_places")
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            raise ValidationError(_("Veuillez sélectionner un nombre de places valide."))
 
-        if recurrence_type == 'none':
-            self.fields['date_debut'].required = False
-            self.fields['date_fin'].required = False
-            self.fields['recurrence_interval'].initial = None
-        elif recurrence_type in ['weekly', 'biweekly']:
-            self.fields['date_debut'].required = True
-            self.fields['date_fin'].required = True
-            self.fields['recurrence_interval'].initial = 1 if recurrence_type == 'weekly' else 2
+    def clean(self):
+        cleaned_data = super().clean()
 
-    class Meta:
-        model = Traject
-        fields = ['start_adress', 'number_of_places', 'search_radius_km']
-        labels = {
-            'start_adress': _("Ville de départ"),
-            'number_of_places': _("Nombre de places"),
-        }
-        widgets = {
-            'start_adress': forms.TextInput(attrs={
-                'id': 'start_adress',
-                'class': 'w-full p-3 mt-1 border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand',
-                'placeholder': _('Entrez le point de départ (Adresse, ville, code postal)'),
-                'autocomplete': 'off',
-            }),
-        }
+        start_adress = cleaned_data.get("start_adress")
+        start_place_id = cleaned_data.get("start_place_id")
 
-    
-class ResearchedTrajectForm(forms.ModelForm):    
+        if start_adress and not start_place_id:
+            self.add_error(
+                "start_adress",
+                _("Veuillez sélectionner une adresse de départ valide dans la liste."),
+            )
+
+        return cleaned_data
+
+class ResearchedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     transport_modes = forms.ModelMultipleChoiceField(
-        queryset=TransportMode.objects.all(),  
-        widget=forms.CheckboxSelectMultiple(attrs={
-            'class': 'form-checkbox h-5 w-5 text-brand'
-        }),
-        label="Moyens de transport",
+        queryset=TransportMode.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        label=_("Moyens de transport"),
         required=True,
-        error_messages={'required': _("Veuillez sélectionner au moins un moyen de transport.")}
+        error_messages={
+            "required": _("Veuillez sélectionner au moins un moyen de transport.")
+        },
     )
 
     children = forms.ModelMultipleChoiceField(
         queryset=Child.objects.none(),
-        widget=forms.CheckboxSelectMultiple(attrs={'class': 'inline-flex items-center space-x-1'}),
+        widget=forms.CheckboxSelectMultiple,
         required=True,
-        label="Choix du ou des enfants",
-        error_messages={'required': _("Vous devez sélectionner au moins un enfant.")}
+        label=_("Choix du ou des enfants"),
+        error_messages={
+            "required": _("Vous devez sélectionner au moins un enfant.")
+        },
     )
- 
-    
-    #detour_distance = forms.FloatField(
-    #    widget=forms.NumberInput(attrs={'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm'}),
-    #    label="Détour maximum (km)",
-    #    required=False
-    #)
 
     departure_time = forms.TimeField(
         widget=forms.TimeInput(attrs={
-            'class': 'w-full p-3 mt-1 border-brand rounded-full shadow-sm rounded-full focus:ring-brand focus:border-brand',
-            'type': 'time',
-            'placeholder': 'hh:mm'
+            "type": "time",
+            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "placeholder": "hh:mm",
         }),
-        error_messages={'required': _("Veuillez renseigner l'heure de départ.")}
+        error_messages={
+            "required": _("Veuillez renseigner l'heure de départ.")
+        },
+        label=_("Heure de départ"),
     )
+
     arrival_time = forms.TimeField(
         widget=forms.TimeInput(attrs={
-            'class': 'w-full p-3 mt-1 border-brand rounded-full shadow-sm rounded-full focus:ring-brand focus:border-brand',
-            'type': 'time',
-            'placeholder': 'hh:mm'
+            "type": "time",
+            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "placeholder": "hh:mm",
         }),
-        error_messages={'required': _("Veuillez renseigner l'heure d’arrivée.")}
+        error_messages={
+            "required": _("Veuillez renseigner l'heure d’arrivée.")
+        },
+        label=_("Heure d’arrivée"),
     )
 
     recurrence_type = forms.ChoiceField(
-        choices=[
-            ('one_week', _('Trajets sur une seule semaine')),
-            ('weekly', _('Trajets chaque semaine')),
-            ('biweekly', _('Trajets une semaine sur deux'))
-        ],
-        widget=forms.RadioSelect(attrs={
-            'class': 'mr-2'
-        }),
+        choices=RECURRENCE_CHOICES,
+        widget=forms.RadioSelect,
         required=True,
-        initial='one_week'
+        initial="one_week",
+        label=_("Type de récurrence"),
     )
 
-    recurrence_interval = forms.IntegerField(
-        widget=forms.NumberInput(attrs={
-            'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm'
-        }),
-        required=False,
-        label="Intervalle (semaines)",
-        min_value=1
-    )
-    
     tr_weekdays = forms.MultipleChoiceField(
-        choices=[(str(i), day) for i, day in
-                 enumerate(["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"], 1)],
-        required=False,
-        label="Jours spécifiques"
+        choices=WEEKDAY_CHOICES,
+        required=True,
+        label=_("Jours spécifiques"),
+        error_messages={
+            "required": _("Veuillez sélectionner au moins un jour de la semaine.")
+        },
     )
 
     date_debut = forms.DateField(
         widget=forms.DateInput(attrs={
-            'type': 'date',
-            'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm'
+            "type": "date",
+            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
         }),
-        required=False
+        required=True,
+        label=_("Date de début"),
     )
-    
-    def clean_date_debut(self):
-        date_debut = self.cleaned_data.get('date_debut')
-
-        if date_debut and date_debut < date.today():
-            raise ValidationError(_("La date de début ne peut pas être antérieure à la date d'aujourd'hui."))
-
-        return date_debut
-
 
     date_fin = forms.DateField(
         widget=forms.DateInput(attrs={
-            'type': 'date',
-            'class': 'form-input mt-1 block w-full rounded-full border-brand shadow-sm'
+            "type": "date",
+            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
         }),
-        required=False
+        required=False,
+        label=_("Date de fin"),
     )
 
     class Meta:
         model = ResearchedTraject
-        fields = ['departure_time', 'arrival_time', 'transport_modes',
-                  'recurrence_type', 'tr_weekdays', 'date_debut', 'date_fin', 'children']
+        fields = [
+            "departure_time",
+            "arrival_time",
+            "transport_modes",
+            "recurrence_type",
+            "tr_weekdays",
+            "date_debut",
+            "date_fin",
+            "children",
+        ]
         labels = {
-            'departure_time': 'Heure de départ',
-            'arrival_time': 'Heure d’arrivée',
-            'date': 'Date du trajet',
-            'recurrence_type': 'Type de récurrence',
-            'date_debut': 'Date de début de récurrence',
-            'date_fin': 'Date de fin de récurrence',
+            "departure_time": _("Heure de départ"),
+            "arrival_time": _("Heure d’arrivée"),
+            "date": _("Date du trajet"),
+            "recurrence_type": _("Type de récurrence"),
+            "date_debut": _("Date de début de récurrence"),
+            "date_fin": _("Date de fin de récurrence"),
         }
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
+        user = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
 
-        # 🔤 Traduit les labels selon display_name du modèle
-        self.fields['transport_modes'].label_from_instance = lambda obj: obj.display_name
-        
-        recurrence_type = self.initial.get('recurrence_type', '') or self.data.get('recurrence_type')
-
-        if recurrence_type == 'none':
-            self.fields['date_debut'].required = False
-            self.fields['date_fin'].required = False
-            self.fields['recurrence_interval'].initial = None
-        elif recurrence_type in ['weekly', 'biweekly']:
-            self.fields['date_debut'].required = True
-            self.fields['date_fin'].required = True
-            self.fields['recurrence_interval'].initial = 1 if recurrence_type == 'weekly' else 2
+        self.fields["transport_modes"].label_from_instance = lambda obj: obj.display_name
 
         if user:
-            self.fields['children'].queryset = Child.objects.filter(chld_user=user)
-
-    def clean_tr_weekdays(self):
-        data = self.cleaned_data.get('tr_weekdays')
-        if not data:
-            raise forms.ValidationError(_("Veuillez sélectionner au moins un jour de la semaine."))
-        return data
-    
-    def clean(self):
-        cleaned_data = super().clean()
-        recurrence_type = cleaned_data.get("recurrence_type")
-        date_debut = cleaned_data.get("date_debut")
-        date_fin = cleaned_data.get("date_fin")
-    
-        if not date_debut:
-            self.add_error("date_debut", _("Veuillez choisir une date de début."))
-    
-        if recurrence_type in ['weekly', 'biweekly'] and not date_fin:
-            self.add_error("date_fin", _("Veuillez choisir une date de fin."))
-    
-        return cleaned_data
+            self.fields["children"].queryset = Child.objects.filter(chld_user=user)
 
 class ReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation
-        fields = ['number_of_places']  # On suppose que l'utilisateur n'a besoin que de spécifier le nombre de places
+        fields = ["number_of_places"]

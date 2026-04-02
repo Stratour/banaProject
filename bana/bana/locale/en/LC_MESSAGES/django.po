@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-24 20:23+0000\n"
+"POT-Creation-Date: 2026-03-31 17:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,133 +25,40 @@ msgstr ""
 msgid "Accueil - BanaMobi"
 msgstr "Home - BanaMobi"
 
-#: bana/templates/home.html:14
-msgid "Trouvez de l'aide pour les trajets de votre enfant"
-msgstr "Find help with your child's journeys"
-
-#: bana/templates/home.html:17
-msgid ""
-"Service de mobilité partagée pour les trajets <br>maison-école-activités, "
-"via tous les moyens de transport"
-msgstr ""
-"Shared mobility service for <br>home-school-activities trips, using all "
-"means of transport"
-
-#: bana/templates/home.html:55 bana/templates/home.html:129
-msgid "Rechercher"
-msgstr "Search"
-
-#: bana/templates/home.html:59 bana/templates/home.html:132
-msgid "Proposer"
-msgstr "Offer"
-
-#: bana/templates/home.html:113
+#: bana/templates/home.html:180
 msgid "Déjà présent dans plus de 110 villes en Belgique !"
 msgstr "Already present in over 110 cities in Belgium!"
 
-#: bana/templates/home.html:116
+#: bana/templates/home.html:183
 msgid "Notre accompagnement est disponible pour tous les moyens de transport"
 msgstr "Our support is available for all modes of transport"
 
-#: bana/templates/home.html:156
-msgid ""
-"Selon une étude menée par la Ligue des Familles,<br> <span class=\"text-"
-"brand-50\">8 parents sur 10 effectuent des trajets en chaîne chaque jour*</"
-"span>"
-msgstr ""
-"According to a study conducted by the Ligue des Familles,<br> <span class="
-"\"text-brand-50\">8 out of 10 parents make back-to-back trips every day*</"
-"span>"
+#: bana/templates/home.html:196
+msgid "Rechercher"
+msgstr "Search"
 
-#: bana/templates/home.html:161
-msgid "crèche, école, travail, activités des enfants…"
-msgstr "daycare, school, work, children’s activities…"
-
-#: bana/templates/home.html:166
-msgid ""
-"Concrètement, cela signifie parfois devoir réduire son temps de travail ou "
-"renoncer à certaines activités.<br> Aujourd’hui, Bana facilite la vie des "
-"familles, sans compromis !<br> Nous aidons les parents à s'épanouir et les "
-"enfants à grandir."
-msgstr ""
-"In practice, this sometimes means reducing working hours or giving up "
-"certain activities.<br> Today, Bana makes family life easier, without "
-"compromise!<br> We help parents thrive and children grow."
-
-#: bana/templates/home.html:176
-msgid ""
-"\"Au-delà d’un enfant, cela devient très compliqué logistiquement.\"<br> "
-"<span class=\"text-white\">Céline, 33 ans, maman de 2 enfants</span>"
-msgstr ""
-"\"With more than one child, logistics become very complicated.\"<br> <span "
-"class=\"text-white\">Céline, 33, mother of 2 children</span>"
-
-#: bana/templates/home.html:181
-msgid ""
-"“Jongler entre le travail, l’école et les activités, c’est un vrai casse-"
-"tête au quotidien.”<br> <span class=\"text-white\">Thomas, 40 ans, papa de 3 "
-"enfants<</span>"
-msgstr ""
-"“Juggling between work, school and activities is a real headache every "
-"day.”<br> <span class=\"text-white\">Thomas, 40, father of 3 children</span>"
-
-#: bana/templates/home.html:185
-msgid ""
-"“J’avais l’impression de passer mes journées en voiture plutôt qu’avec mes "
-"enfants.”<br> <span class=\"text-white\">Sophie, 36 ans, maman de 2 enfants</"
-"span>"
-msgstr ""
-"“I felt like I was spending my days in the car rather than with my "
-"children.”<br> <span class=\"text-white\">Sophie, 36, mother of 2 children</"
-"span>"
-
-#: bana/templates/home.html:189
-msgid ""
-"“Sans un coup de pouce, on finit par devoir renoncer à certaines activités "
-"pour les petits.”<br> <span class=\"text-white\">Karim, 38 ans, papa d’un "
-"enfant</span>"
-msgstr ""
-"“Without a helping hand, you end up having to give up some activities for "
-"the little ones.”<br> <span class=\"text-white\">Karim, 38, father of 1 "
-"child</span>"
-
-#: bana/templates/home.html:193
-msgid ""
-"“Trouver du temps pour soi est presque impossible quand on enchaîne les "
-"trajets.”<br> <span class=\"text-white\">Julie, 29 ans, maman de 2 enfants</"
-"span>"
-msgstr ""
-"“Finding time for yourself is almost impossible when you’re constantly "
-"running around.”<br> <span class=\"text-white\">Julie, 29, mother of 2 "
-"children</span>"
-
-#: bana/templates/home.html:197
-msgid ""
-"“Dès qu’il y a un imprévu, toute l’organisation familiale s’écroule.”<br> "
-"<span class=\"text-white\">Nathalie, 42 ans, maman de 3 enfants</span>"
-msgstr ""
-"“As soon as something unexpected happens, the whole family organization "
-"collapses.”<br> <span class=\"text-white\">Nathalie, 42, mother of 3 "
-"children</span>"
+#: bana/templates/home.html:199
+msgid "Proposer"
+msgstr "Offer"
 
 #: bana/templates/layouts/footer.html:13 bana/templates/layouts/header.html:79
-#: bana/templates/layouts/header.html:165
+#: bana/templates/layouts/header.html:169
 msgid "Profil"
 msgstr "Profile"
 
 #: bana/templates/layouts/footer.html:18 bana/templates/layouts/header.html:85
-#: bana/templates/layouts/header.html:171
-#: bana/templates/layouts/header.html:210
+#: bana/templates/layouts/header.html:175
+#: bana/templates/layouts/header.html:289
 msgid "Déconnexion"
 msgstr "Logout"
 
 #: bana/templates/layouts/footer.html:24 bana/templates/layouts/header.html:91
-#: bana/templates/layouts/header.html:177
+#: bana/templates/layouts/header.html:181
 msgid "Inscription"
 msgstr "Sign up"
 
 #: bana/templates/layouts/footer.html:28 bana/templates/layouts/header.html:96
-#: bana/templates/layouts/header.html:181
+#: bana/templates/layouts/header.html:185
 msgid "Connexion"
 msgstr "Login"
 
@@ -171,22 +78,22 @@ msgstr ""
 "<span class=\"text-brand-50 font-bold\">Shared mobility</span> platform <br> "
 "for <span class=\"text-brand-50 font-bold\">children's trips</span>"
 
-#: bana/templates/layouts/footer.html:66 bana/templates/layouts/header.html:153
+#: bana/templates/layouts/footer.html:66 bana/templates/layouts/header.html:157
 msgid "Accueil"
 msgstr "Home"
 
 #: bana/templates/layouts/footer.html:67 bana/templates/layouts/header.html:58
-#: bana/templates/layouts/header.html:154
+#: bana/templates/layouts/header.html:158
 msgid "Comment ça marche ?"
 msgstr "How does it work?"
 
 #: bana/templates/layouts/footer.html:68 bana/templates/layouts/header.html:62
-#: bana/templates/layouts/header.html:155
+#: bana/templates/layouts/header.html:159
 msgid "À propos"
 msgstr "About"
 
 #: bana/templates/layouts/footer.html:69 bana/templates/layouts/footer.html:75
-#: bana/templates/layouts/header.html:64 bana/templates/layouts/header.html:156
+#: bana/templates/layouts/header.html:64 bana/templates/layouts/header.html:160
 msgid "Contact"
 msgstr "Contact"
 
@@ -194,27 +101,27 @@ msgstr "Contact"
 msgid "Rejoignez-nous sur les réseaux sociaux!"
 msgstr "Join us on social media!"
 
-#: bana/templates/layouts/header.html:132
+#: bana/templates/layouts/header.html:135
 msgid "Français"
 msgstr "French"
 
-#: bana/templates/layouts/header.html:134
+#: bana/templates/layouts/header.html:137
 msgid "Anglais"
 msgstr "English"
 
-#: bana/templates/layouts/header.html:136
+#: bana/templates/layouts/header.html:139
 msgid "Néerlandais"
 msgstr "Nederlands"
 
-#: bana/templates/layouts/header.html:212
+#: bana/templates/layouts/header.html:291
 msgid "Êtes-vous sûr de vouloir vous déconnecter ?"
 msgstr "Are you sure you want to log out?"
 
-#: bana/templates/layouts/header.html:220
+#: bana/templates/layouts/header.html:299
 msgid "Annuler"
 msgstr "Cancel"
 
-#: bana/templates/layouts/header.html:224
+#: bana/templates/layouts/header.html:303
 msgid "Confirmer"
 msgstr "Confirm"
 
@@ -292,3 +199,86 @@ msgstr "Community Icon"
 #: bana/views.py:52
 msgid "Je fais partie de la communauté"
 msgstr "I am a community member"
+
+#~ msgid "Trouvez de l'aide pour les trajets de votre enfant"
+#~ msgstr "Find help with your child's journeys"
+
+#~ msgid ""
+#~ "Service de mobilité partagée pour les trajets <br>maison-école-activités, "
+#~ "via tous les moyens de transport"
+#~ msgstr ""
+#~ "Shared mobility service for <br>home-school-activities trips, using all "
+#~ "means of transport"
+
+#~ msgid ""
+#~ "Selon une étude menée par la Ligue des Familles,<br> <span class=\"text-"
+#~ "brand-50\">8 parents sur 10 effectuent des trajets en chaîne chaque "
+#~ "jour*</span>"
+#~ msgstr ""
+#~ "According to a study conducted by the Ligue des Familles,<br> <span "
+#~ "class=\"text-brand-50\">8 out of 10 parents make back-to-back trips every "
+#~ "day*</span>"
+
+#~ msgid "crèche, école, travail, activités des enfants…"
+#~ msgstr "daycare, school, work, children’s activities…"
+
+#~ msgid ""
+#~ "Concrètement, cela signifie parfois devoir réduire son temps de travail "
+#~ "ou renoncer à certaines activités.<br> Aujourd’hui, Bana facilite la vie "
+#~ "des familles, sans compromis !<br> Nous aidons les parents à s'épanouir "
+#~ "et les enfants à grandir."
+#~ msgstr ""
+#~ "In practice, this sometimes means reducing working hours or giving up "
+#~ "certain activities.<br> Today, Bana makes family life easier, without "
+#~ "compromise!<br> We help parents thrive and children grow."
+
+#~ msgid ""
+#~ "\"Au-delà d’un enfant, cela devient très compliqué logistiquement.\"<br> "
+#~ "<span class=\"text-white\">Céline, 33 ans, maman de 2 enfants</span>"
+#~ msgstr ""
+#~ "\"With more than one child, logistics become very complicated.\"<br> "
+#~ "<span class=\"text-white\">Céline, 33, mother of 2 children</span>"
+
+#~ msgid ""
+#~ "“Jongler entre le travail, l’école et les activités, c’est un vrai casse-"
+#~ "tête au quotidien.”<br> <span class=\"text-white\">Thomas, 40 ans, papa "
+#~ "de 3 enfants<</span>"
+#~ msgstr ""
+#~ "“Juggling between work, school and activities is a real headache every "
+#~ "day.”<br> <span class=\"text-white\">Thomas, 40, father of 3 children</"
+#~ "span>"
+
+#~ msgid ""
+#~ "“J’avais l’impression de passer mes journées en voiture plutôt qu’avec "
+#~ "mes enfants.”<br> <span class=\"text-white\">Sophie, 36 ans, maman de 2 "
+#~ "enfants</span>"
+#~ msgstr ""
+#~ "“I felt like I was spending my days in the car rather than with my "
+#~ "children.”<br> <span class=\"text-white\">Sophie, 36, mother of 2 "
+#~ "children</span>"
+
+#~ msgid ""
+#~ "“Sans un coup de pouce, on finit par devoir renoncer à certaines "
+#~ "activités pour les petits.”<br> <span class=\"text-white\">Karim, 38 ans, "
+#~ "papa d’un enfant</span>"
+#~ msgstr ""
+#~ "“Without a helping hand, you end up having to give up some activities for "
+#~ "the little ones.”<br> <span class=\"text-white\">Karim, 38, father of 1 "
+#~ "child</span>"
+
+#~ msgid ""
+#~ "“Trouver du temps pour soi est presque impossible quand on enchaîne les "
+#~ "trajets.”<br> <span class=\"text-white\">Julie, 29 ans, maman de 2 "
+#~ "enfants</span>"
+#~ msgstr ""
+#~ "“Finding time for yourself is almost impossible when you’re constantly "
+#~ "running around.”<br> <span class=\"text-white\">Julie, 29, mother of 2 "
+#~ "children</span>"
+
+#~ msgid ""
+#~ "“Dès qu’il y a un imprévu, toute l’organisation familiale s’écroule.”<br> "
+#~ "<span class=\"text-white\">Nathalie, 42 ans, maman de 3 enfants</span>"
+#~ msgstr ""
+#~ "“As soon as something unexpected happens, the whole family organization "
+#~ "collapses.”<br> <span class=\"text-white\">Nathalie, 42, mother of 3 "
+#~ "children</span>"
