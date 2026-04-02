@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 from accounts.models import Languages, Child
 from django.utils.translation import gettext_lazy as _
 from django.contrib.gis.db import models as gis_models
-
+import uuid
+from django.utils import timezone
 
 class TransportMode(models.Model):
     name = models.CharField(max_length=100)
@@ -39,17 +40,25 @@ class Traject(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     is_test = models.BooleanField(default=True, blank=True, null=True)  # pour marquer les trajets test
     
+    start_place_id = models.CharField(max_length=255, blank=True, null=True)
+    end_place_id = models.CharField(max_length=255, blank=True, null=True)
     # Distance entre le point de départ et d'arrivée (facultatif)
     distance = models.FloatField(blank=True, null=True)
 
+    class Meta:
+        ordering = ['-created_at']
+        
     def __str__(self):
-        return f"{self.address} ({self.start_point})"
+        if self.end_adress:
+            return f"{self.start_adress} - ({self.end_adress})"
+        return self.start_adress
 
-    def get_coordinate(self):
+    def get_coordinates(self):
         return {
-            'starting_coordinate': self.start_coordinate,
-            'ending_coordinate': self.end_coordinate,
+            'starting_coordinate': self.start_point,
+            'ending_coordinate': self.end_point,
         }
+
 
 class ProposedTraject(models.Model):
     NUMBER_PLACE = [(str(i), str(i)) for i in range(1, 8)]
@@ -57,6 +66,9 @@ class ProposedTraject(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="proposed_trajects", null=True, blank=True)
     traject = models.ForeignKey(Traject, on_delete=models.CASCADE)
 
+    groupe_name = models.CharField(max_length=80, blank=True, null=True)
+    groupe_uid = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
+    
     # Informations de base du trajet
     departure_time = models.TimeField(null=True, blank=True)
     arrival_time = models.TimeField(null=True, blank=True)
@@ -111,6 +123,12 @@ class ProposedTraject(models.Model):
     @classmethod
     def get_proposed_trajects_by_user(cls, user):
         return cls.objects.filter(user=user)
+    
+    @property
+    def is_past(self):
+        if not self.date:
+            return False
+        return self.date < timezone.now().date()
 
 
 class ResearchedTraject(models.Model):
@@ -118,6 +136,8 @@ class ResearchedTraject(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='researched_trajects', null=True, blank=True)
     traject = models.ForeignKey(Traject, on_delete=models.CASCADE)
     
+    groupe_name = models.CharField(max_length=80, blank=True, null=True)
+    groupe_uid = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
     # Informations de base du trajet
     departure_time = models.TimeField()
     arrival_time = models.TimeField()
@@ -153,6 +173,11 @@ class ResearchedTraject(models.Model):
     def get_researched_trajects_by_user(cls, user):
         return cls.objects.filter(user=user)
 
+    @property
+    def is_past(self):
+        if not self.date:
+            return False
+        return self.date < timezone.now().date()
 
 class Reservation(models.Model):
     STATUS_CHOICES = [

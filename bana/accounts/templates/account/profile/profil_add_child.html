@@ -59,9 +59,19 @@
             <p class="text-red-500 text-sm mt-1">{{ form.chld_gender.errors }}</p>
           {% endif %}
         </div>
+        
+        <div>
+          <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_languages.id_for_label }}">
+            {% trans "Langue(s) parlée(s)" %}
+          </label>
+          {{ form.chld_languages }}
+          {% if form.chld_languages.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ form.chld_languages.errors }}</p>
+          {% endif %}
+        </div>
 
         <!-- Siège enfant (checkbox) -->
-        <div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <label class="inline-flex items-center space-x-2">
             {{ form.chld_seat }}
             <span class="text-sm font-medium text-brand uppercase">{% trans "Siège enfant requis" %}</span>
@@ -69,7 +79,28 @@
           {% if form.chld_seat.errors %}
             <p class="text-red-500 text-sm mt-1">{{ form.chld_seat.errors }}</p>
           {% endif %}
+        
+          <!-- Handicap (checkbox) -->
+          <label class="inline-flex items-center space-x-2">
+            {{ form.chld_disability }}
+            <span class="text-sm font-medium text-brand uppercase">{% trans "Porteur d’un handicap" %}</span>
+          </label>
+          {% if form.chld_disability.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ form.chld_disability.errors }}</p>
+          {% endif %}
         </div>
+        
+        <!-- Besoins spécifiques -->
+        <div>
+          <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_special_needs.id_for_label }}">
+            {% trans "Besoins spécifiques" %}
+          </label>
+          {{ form.chld_special_needs }}
+          {% if form.chld_special_needs.errors %}
+            <p class="text-red-500 text-sm mt-1">{{ form.chld_special_needs.errors }}</p>
+          {% endif %}
+        </div>
+
       </div>
     </div>
 

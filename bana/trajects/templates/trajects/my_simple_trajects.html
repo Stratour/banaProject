@@ -1,13 +1,13 @@
 {% extends "allauth/layouts/base.html" %}
 {% load static i18n %}
 
-{% block head_title %}Mes recherches{% endblock %}
+{% block head_title %}Mes recherches de trajet{% endblock %}
 
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
 
   <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
-    Mes recherches
+    Mes recherches de trajet
   </h1>
 
   {% if messages %}
@@ -21,7 +21,6 @@
   <!-- Onglets -->
   {% include "./component_simple_tabs.html" %}
 
-
   {% if simple_trajects %}
     <div class="space-y-5">
       {% for proposed in simple_trajects %}
@@ -31,32 +30,31 @@
           <!-- Header -->
           <header class="flex items-start justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
-              <!-- Avatar-date -->
-              <div class="h-10 w-10 rounded-full bg-brand/10 text-brand flex items-center justify-center font-semibold">
-                {{ proposed.date|date:"d"|default:"?" }}
-              </div>
               <div class="min-w-0">
-                <p class="text-xs text-gray-500">Trajet du</p>
-                <p class="text-sm sm:text-base font-semibold text-gray-900">
-                  {{ proposed.date|date:"l d F Y" }}
+               <p class="text-xs text-gray-500">Groupe de trajets</p>
+                <h2 class="text-xl font-bold text-gray-900">
+                  {{ proposed.groupe_name|default:"Mon trajet" }}
+                </h2>
+                <p class="text-xs text-gray-500">
+                  Du {{ proposed.groupe_first_date|date:"d/m/Y" }}
+                  au {{ proposed.groupe_last_date|date:"d/m/Y" }}
                 </p>
               </div>
             </div>
 
-            <!-- Badge simplifié -->
+            <!-- Badge simplifié 
             <div>
                 <span class="inline-flex items-center gap-1.5 rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1 text-xs font-semibold">
-                  <!-- bolt -->
                   <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M13 10V3L4 14h7v7l9-11h-7z"/>
                   </svg>
                   Trajet simplifié
                 </span>              
-            </div>
+            </div>-->
 
             <button type="button"
-                onclick="document.getElementById('delete-proposed-{{ proposed.id }}').showModal()"
+                onclick="document.getElementById('delete-proposed-{{ proposed.groupe_uid }}').showModal()"
                 class="inline-flex items-center gap-2 rounded-full border border-red-300 text-red-700 px-3 py-1.5 text-sm font-semibold hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300">
                 
                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -66,8 +64,8 @@
                 {% trans "Supprimer" %}
             </button>
 
-            <dialog id="delete-proposed-{{ proposed.id }}" class="rounded-xl p-0 w-full max-w-md">
-             <form method="POST" action="{% url 'delete_simple_traject' proposed.id %}" class="p-6 space-y-5">
+            <dialog id="delete-proposed-{{ proposed.groupe_uid }}" class="rounded-xl p-0 w-full max-w-md">
+             <form method="POST" action="{% url 'delete_simple_groupe' proposed.groupe_uid %}" class="p-6 space-y-5">
               {% csrf_token %}
               <header class="space-y-1">
               <h3 class="text-lg font-semibold text-gray-900">{% trans "Supprimer le trajet" %}</h3>
@@ -78,7 +76,7 @@
 
             <div class="flex items-center justify-end gap-3 pt-2">
               <button type="button"
-                      onclick="document.getElementById('delete-proposed-{{ proposed.id }}').close()"
+                      onclick="document.getElementById('delete-proposed-{{ proposed.groupe_uid }}').close()"
                       class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
                 {% trans "Annuler" %}
               </button>
@@ -112,29 +110,6 @@
 
               </p>
             </div>
-
-            <!-- Arrivée (si non simple) -->
-            {% if not proposed.is_simple %}
-            <div class="space-y-2 text-sm text-gray-700">
-              <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <!-- flag -->
-                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M5 5v14M5 5h10l-2 4 2 4H5"/>
-                </svg>
-                Arrivée
-              </p>
-              <p>
-                <span class="font-medium">{{ proposed.traject.end_adress }}</span>
-                <span class="mx-1 text-gray-400">·</span>
-                <svg class="inline h-4 w-4 -mt-0.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                {{ proposed.arrival_time|default:"—" }}
-              </p>
-            </div>
-            {% endif %}
 
             <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
               <p class="font-semibold text-gray-900 flex items-center gap-2">
@@ -223,7 +198,6 @@
             </div>
 
             <!-- Places (si non simple) -->
-            {% if not proposed.is_simple %}
             <div class="space-y-2 text-sm text-gray-700">
               <p class="font-semibold text-gray-900 flex items-center gap-2">
                 <!-- users -->
@@ -240,41 +214,15 @@
                 </span>
               </p>
             </div>
+            
 
-            <!-- Langues (si non simple) -->
-            <div class="space-y-2 text-sm text-gray-700">
-              <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <!-- globe -->
-                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <circle cx="12" cy="12" r="9" stroke-width="2"/>
-                  <path stroke-width="2" d="M2 12h20M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/>
-                </svg>
-                Langue(s) parlée(s)
-              </p>
-              <div class="mt-2 flex flex-wrap gap-2">
-                {% for language in proposed.languages.all %}
-                  <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
-                    {{ language.lang_name }}
-                  </span>
-                {% empty %}
-                  <span class="text-gray-400">Aucune spécifiée</span>
-                {% endfor %}
-              </div>
-            </div>
-
-            <!-- Détails (si non simple) -->
+            <!-- 👉 Lien détail -->
             <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
-              <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <!-- doc -->
-                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M7 7h10M7 11h10M7 15h7"/>
-                </svg>
-                Détails
-              </p>
-              <p class="text-gray-700">{{ proposed.details|default:"—" }}</p>
+            <a href="{% url 'my_simple_groupe_detail' proposed.groupe_uid %}"
+               class="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">
+              Voir les dates
+            </a>
             </div>
-            {% endif %}
           </div>
         </article>
       {% endfor %}
@@ -284,5 +232,45 @@
       Vous n’avez proposé aucun trajet pour l’instant.
     </div>
   {% endif %}
-</div>
+
+
+{% comment "" %}
+
+{% if groupes %}
+  <ul class="space-y-5">
+    {% for g in groupes %}
+      <li class="bg-white shadow-md rounded-lg p-5 flex items-center justify-between">
+        <div>
+          <!-- 🏷️ Nom du groupe -->
+          <h3 class="text-lg font-bold text-indigo-600">
+            {{ g.groupe_name|default:"Mon trajet" }}
+          </h3>
+
+          <!-- 📍 Départ / Arrivée -->
+          <p class="text-sm text-gray-700 mt-1">
+            <strong>Trajet :</strong>
+            {{ g.traject__start_adress }} → {{ g.traject__end_adress }}
+          </p>
+
+          <!-- 📅 Dernière date du groupe -->
+          <p class="text-xs text-gray-500 mt-1">
+            Dernière date : {{ g.last_date|date:"d/m/Y" }}
+          </p>
+        </div>
+
+        <!-- 👉 Lien détail -->
+        <a href="{% url 'my_simple_groupe_detail' g.groupe_uid %}"
+           class="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">
+          Voir les dates
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+    <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
+      Vous ne recherchez aucun trajet pour l’instant.
+    </div>
+  {% endif %}
+  {% endcomment %}
+ </div>
 {% endblock %}

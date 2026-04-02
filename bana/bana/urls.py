@@ -40,12 +40,12 @@ urlpatterns += i18n_patterns(
     
     # Authentification
     path('accounts/', include('allauth.urls')),
-    path('accounts/', include('accounts.urls')),
+    path('', include('accounts.urls')),
 
     # Applications
-    path('trajects/', include('trajects.urls')),
+    path('trajets/', include('trajects.urls')),
     path('chat/', include('chat.urls')),
-    path('', include('stripe_sub.urls')),
+    path('profil/', include('stripe_sub.urls')),
     
     # Définir si on veut le préfixe pour la langue par défaut
     prefix_default_language=True  # True = /fr/, False = pas de préfixe pour la langue par défaut

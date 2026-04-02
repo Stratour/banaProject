@@ -1,7 +1,7 @@
 from django import forms
 from allauth.account.forms import SignupForm
 from django.contrib.auth.models import User
-from accounts.models import Profile, Languages, Child, Review
+from accounts.models import Profile, Languages, Child, Review, FavoriteAddress
 
 
 SERVICE_CHOICES = [
@@ -147,6 +147,17 @@ class ProfileUpdateForm(TailwindFormMixin, forms.ModelForm):
 
 # ---------- Child ----------
 class ChildForm(TailwindFormMixin, forms.ModelForm):
+    
+    chld_languages = forms.ModelMultipleChoiceField(
+        queryset=Languages.objects.all(),
+        widget=forms.SelectMultiple(attrs={
+            'size': 5,
+            'class': 'mt-1 w-full border border-brand px-4 py-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-none'
+        }),
+        required=False,
+        label="Langues parlées"
+    )
+            
     class Meta:
         model = Child
         fields = [
@@ -154,11 +165,12 @@ class ChildForm(TailwindFormMixin, forms.ModelForm):
             'chld_surname',
             'chld_birthdate',
             'chld_gender',
-            'chld_spcl_attention',
-            'chld_seat'
+            'chld_languages',
+            'chld_seat',
+            'chld_disability',
+            'chld_special_needs',
         ]
         widgets = {
-            # Inputs => rounded-full (mixin aussi, mais on laisse explicite ici)
             'chld_name': forms.TextInput(attrs={
                 'class': 'mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-full'
             }),
@@ -169,22 +181,42 @@ class ChildForm(TailwindFormMixin, forms.ModelForm):
                 'type': 'date',
                 'class': 'mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-full'
             }),
-            # Select => no rounded
             'chld_gender': forms.Select(attrs={
                 'class': 'mt-1 w-full border border-brand px-4 py-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-none'
             }),
-            # Textarea => no rounded
-            'chld_spcl_attention': forms.Textarea(attrs={
+            'chld_special_needs': forms.Textarea(attrs={
                 'class': 'mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-none',
                 'rows': 3,
-                'placeholder': 'Indiquez les besoins particuliers éventuels...'
+                'placeholder': 'Ex : allergies, accompagnement particulier, informations utiles...'
             }),
-            # Checkbox => pas de w-full
             'chld_seat': forms.CheckboxInput(attrs={
                 'class': 'form-checkbox h-5 w-5 text-brand'
             }),
+            'chld_disability': forms.CheckboxInput(attrs={
+                'class': 'form-checkbox h-5 w-5 text-brand'
+            }),
         }
+        
+# ---------- Favorite Adresse ---------#
 
+class FavoriteAddressForm(TailwindFormMixin, forms.ModelForm):
+    class Meta:
+        model = FavoriteAddress
+        fields = ["label", "address", 'place_id']
+        widgets = {
+            "label": forms.TextInput(attrs={
+                "class": "form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm",
+                "placeholder": "Ex: Maison / École / Travail",
+                'autocomplete': 'off'
+            }),
+            "address": forms.TextInput(attrs={
+                "id": "favorite_address",
+                "class": "w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand",
+                "placeholder": "Entrez une adresse",
+                'autocomplete': 'off'
+            }),
+            "place_id": forms.HiddenInput(),
+        }
 
 # ---------- Review ----------
 class ReviewForm(TailwindFormMixin, forms.ModelForm):
