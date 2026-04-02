@@ -1,6 +1,7 @@
 {% load static i18n %}
 
 {% url 'accounts:profile' as profile_url %}
+{% url 'accounts:profile_edit' as profile_edit_url %}
 {% url 'accounts:profile_child' as profile_child_url %}
 {% url 'accounts:add_child' as add_child_url %}
 {% url 'accounts:profile_addresses' as profile_addresses_url %}
@@ -49,8 +50,8 @@
     <ul class="space-y-1">
       <li>
         <a href="{{ profile_url }}"
-           class="flex items-center gap-2 py-2 px-4 {% if request.path == profile_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          <img src="{% static 'bana/img/icon/Icon_data' %}{% if request.path == profile_url %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
+           class="flex items-center gap-2 py-2 px-4 {% if request.path == profile_url or request.path == profile_edit_url %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
+          <img src="{% static 'bana/img/icon/Icon_data' %}{% if request.path == profile_url or request.path == profile_edit_url%}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           {% trans "Mes informations" %}
         </a>
       </li>

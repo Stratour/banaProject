@@ -1,7 +1,7 @@
 {% extends "allauth/layouts/base.html" %}
 {% load i18n static %}
 
-{% block head_title %}Mon abonnement{% endblock head_title %}
+{% block head_title %}{% trans "Mon abonnement" %}{% endblock head_title %}
 {% block content %}
 <section class="section profile">
   <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -10,7 +10,7 @@
       <!-- Carte parent conforme au layout commun -->
       <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-8">
 
-        <h2 class="text-xl font-semibold text-brand">Mon abonnement</h2>
+        <h2 class="text-xl font-semibold text-brand">{% trans "Mon abonnement" %}</h2>
 
         <div class="grid gap-6 grid-cols-1">
 
@@ -21,14 +21,18 @@
               <!-- 🔎 Description Parent (texte original conservé) -->
               <div>
                 <p class="text-gray-700 leading-relaxed">
-                  En tant que <span class="font-semibold">Parent</span>, votre objectif principal est de <strong>rechercher de l’aide pour les trajets de vos enfants</strong>. 
+                 {% blocktrans %} En tant que <span class="font-semibold">Parent</span>, votre objectif principal est de <strong>rechercher de l’aide pour les trajets de vos enfants</strong>. 
                   Vous pouvez ainsi trouver facilement les trajets proposés par des Yayas ou d’autres parents pour vos besoins quotidiens.
+                {% endblocktrans %}
                 </p>
                 <ul class="my-4 space-y-2 text-gray-700">
+                  {% blocktrans %} 
                   <li><span class="font-medium text-brand-200">Rechercher un trajet</span><br>trouvez les trajets proposés par des Yayas ou d’autres parents pour vos enfants.</li>
                   <li><span class="font-medium text-brand-200">Proposer un trajet</span><br>si vous effectuez un trajet, vous pouvez également prendre en charge d’autres enfants pour aider la communauté.</li>
+                  {% endblocktrans %}
                 </ul>
-                <p class="mt-3 text-gray-600 italic">Ainsi, vous bénéficiez à la fois d’un soutien pour vos déplacements et participez à la solidarité entre familles</p>
+                <p class="mt-3 text-gray-600 italic">{% trans "Ainsi, vous bénéficiez à la fois d’un soutien pour vos déplacements et participez à la solidarité entre familles" %}</p>
+                
               </div>
 
             {% else %}
@@ -36,11 +40,13 @@
               <!-- 🔎 Description Yaya (texte original conservé) -->
               <div>
                 <p class="text-gray-700 leading-relaxed">
-                  Avec <span class="font-semibold">Yaya</span>, vous pouvez proposer différents types de trajets adaptés aux besoins des parents :
+                 {% blocktrans %} Avec <span class="font-semibold">Yaya</span>, vous pouvez proposer différents types de trajets adaptés aux besoins des parents :{% endblocktrans %}
                 </p>
                 <ul class="mt-3 space-y-2 text-gray-700">
+                 {% blocktrans %}
                   <li>✅ <span class="font-medium">Trajet classique</span> : un trajet d’un point <strong>A</strong> vers un point <strong>B</strong>, que ce soit pour une seule journée ou de manière régulière sur une période définie.</li>
-                  <li>✅ <span class="font-medium">Trajet simplifié</span> : vous indiquez uniquement un <strong>lieu de départ</strong>, sans destination précise, pour permettre d’aider n’importe quel parent dans la zone.</li>
+                  <li>✅ <span class="font-medium">Trajet simplifié</span> : vous indiquez uniquement un <strong>lieu de départ</strong>, sans destination précise, pour permettre d’aider n’importe quel parent dans un rayon kilométrique choisi.</li>
+                {% endblocktrans %} 
                 </ul>
               </div>
 
@@ -54,28 +60,28 @@
               <div class="grid sm:grid-cols-2 gap-6">
 
                 <div>
-                  <p class="block text-sm font-bold text-brand uppercase mb-1">Produit</p>
+                  <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Produit" %}</p>
                   <p class="font-semibold text-gray-800">{{ active_subscription.product_name }}</p>
                 </div>
 
                 {% comment "" %}
                 
                 {% endcomment %}<div>
-                  <p class="block text-sm font-bold text-brand uppercase mb-1">Statut</p>
+                  <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Statut" %}</p>
                   {% if active_subscription.is_active %}
-                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium">✅ Actif</span>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-sm font-medium">✅ {% trans "Actif" %}</span>
                   {% else %}
-                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-red-800 text-sm font-medium">❌ Inactif</span>
+                    <span class="inline-flex items-center px-3 py-1 rounded-full bg-red-100 text-red-800 text-sm font-medium">❌ {% trans "Inactif" %}</span>
                   {% endif %}
                 </div>
 
                 <div>
-                  <p class="block text-sm font-bold text-brand uppercase mb-1">Prix</p>
-                  <p class="font-medium"><span class="font-bold">{{ active_subscription.price }} €</span> / an</p>
+                  <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Prix" %}</p>
+                  <p class="font-medium"><span class="font-bold">{{ active_subscription.price }} €</span> / {% trans "an" %}</p>
                 </div>
 
                 <div>
-                  <p class="block text-sm font-bold text-brand uppercase mb-1">Période de l'abonnement</p>
+                  <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Période de l'abonnement" %}</p>
                   <p>{{ active_subscription.current_period_start|date:"d/m/Y" }} ➔ {{ active_subscription.current_period_end|date:"d/m/Y" }}</p>
                 </div>
 
@@ -98,7 +104,7 @@
             {% else %}
 
               <div>
-                <p class="text-gray-600">Vous n’avez pas encore d’abonnement actif.</p>
+                <p class="text-gray-600">{% trans "Vous n’avez pas encore d’abonnement actif." %}</p>
               </div>
 
               <div class="pt-2">
@@ -107,7 +113,7 @@
                   <input type="hidden" name="price_id" value="{{ price.id }}">
                   <button type="submit" 
                           class="inline-flex items-center px-5 py-2 rounded-full bg-brand text-white hover:bg-brand-dark font-semibold transition">
-                    S’abonner pour {{ product_price|floatformat:0 }} €/an
+                    {% trans "S’abonner pour" %} {{ product_price|floatformat:0 }} €/{% trans "ans" %}
                   </button>
                 </form>
               </div>

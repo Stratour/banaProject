@@ -1,4 +1,7 @@
 {% extends "allauth/layouts/base.html" %}
+{% load i18n %}
+
+{% block head_title %}{% trans "Abonnement activé" %}{% endblock head_title %}
 
 {% block content %}
 <section class="section profile">
@@ -8,33 +11,33 @@
       <!-- Carte abonnement -->
       <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-8">
           <div class="rounded-xl border border-green-200 bg-green-50 p-6 space-y-4">
-            <h2 class="text-lg font-semibold text-green-600">✅ Abonnement activé avec succès</h2>
+            <h2 class="text-lg font-semibold text-green-600">✅ {% trans "Abonnement activé avec succès" %}</h2>
             
             <div class="grid sm:grid-cols-2 gap-6">
               <div>
-                <p class="block text-sm font-bold text-brand uppercase mb-1">Produit</p>
+                <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Produit" %}</p>
                 <p class="text-gray-800 font-semibold">{{ product }}</p>
               </div>
               <div>
-                <p class="block text-sm font-bold text-brand uppercase mb-1">Prix</p>
-                <p class="text-gray-800 font-semibold">{{ price }} € / an</p>
+                <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Prix" %}</p>
+                <p class="text-gray-800 font-semibold">{{ price }} € / {% trans "an" %}</p>
               </div>
               <div>
-                <p class="block text-sm font-bold text-brand uppercase mb-1">Début</p>
+                <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Début" %}</p>
                 <p class="text-gray-800">{{ start_date|date:"d/m/Y" }}</p>
               </div>
               <div>
-                <p class="block text-sm font-bold text-brand uppercase mb-1">Fin</p>
+                <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Fin" %}</p>
                 <p class="text-gray-800">{{ end_date|date:"d/m/Y" }}</p>
               </div>
             </div>
 
-            <p>Votre abonnement <strong>{{ product }}</strong> est maintenant actif.</p>
-            <p>Il restera valide jusqu’au <strong>{{ end_date|date:"d/m/Y" }}</strong>.</p>
+            <p>{% blocktrans %} Votre abonnement <strong>{{ product }}</strong> est maintenant actif.{% endblocktrans %}</p>
+            <p>{% trans "Il restera valide jusqu’au" %} <strong>{{ end_date|date:"d/m/Y" }}</strong>.</p>
 
             <div class="mt-4">
               <a href="{% url 'subscription' %}" class="inline-flex items-center px-5 py-2 rounded-full bg-brand text-white hover:bg-brand-dark font-semibold transition">
-                Retour
+                {% trans "Retour" %}
               </a>
             </div>
           </div>

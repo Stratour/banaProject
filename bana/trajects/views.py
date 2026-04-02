@@ -22,6 +22,7 @@ from django.db.models import Sum, Max
 import uuid
 from django.utils import timezone
 from django.db import transaction
+from django.utils.translation import gettext_lazy as _
 
 from django.contrib.auth import get_user_model
 
@@ -465,6 +466,27 @@ def proposed_traject(request, researchesTraject_id=None):
     Création d'un trajet proposé précis A -> B
     pour parent ou yaya.
     """
+    fav_addresses = list(
+        FavoriteAddress.objects
+        .filter(user=request.user)
+        .order_by("label", "address")
+        .values("label", "address", "place_id")
+    )
+
+    context_base = {
+        "researched_traject": researchesTraject_id,
+        "fav_addresses": fav_addresses,
+        "days_of_week": [
+            ("1", _("Lundi")),
+            ("2", _("Mardi")),
+            ("3", _("Mercredi")),
+            ("4", _("Jeudi")),
+            ("5", _("Vendredi")),
+            ("6", _("Samedi")),
+            ("7", _("Dimanche")),
+        ],
+    }
+
     if request.method == "POST":
         traject_form = TrajectForm(request.POST)
         proposed_form = ProposedTrajectForm(request.POST)
@@ -473,54 +495,66 @@ def proposed_traject(request, researchesTraject_id=None):
         groupe_uid = uuid.uuid4()
 
         proposed_trajects, success = save_proposed_traject(
-            request,
-            traject_form,
-            proposed_form,
+            request=request,
+            traject_form=traject_form,
+            proposed_form=proposed_form,
             groupe_name=groupe_name,
             groupe_uid=groupe_uid,
         )
 
         if success:
-            created_count = len(proposed_trajects or [])
+            proposed_trajects = proposed_trajects or []
+            created_count = len(proposed_trajects)
             total_matches = sum(len(find_matching_trajects(p)) for p in proposed_trajects)
-            matched_any = total_matches > 0
 
-            if matched_any:
+            if total_matches > 0:
                 messages.success(
                     request,
-                    f"{created_count} proposition(s) enregistrée(s) avec {total_matches} matching(s) trouvés."
+                    _("%(count)s proposition(s) enregistrée(s) avec %(matches)s matching(s) trouvé(s).") % {
+                        "count": created_count,
+                        "matches": total_matches,
+                    }
                 )
                 return redirect("my_matchings_proposed")
 
             messages.warning(
                 request,
-                f"{created_count} proposition(s) enregistrée(s), mais aucun matching trouvé."
+                _("%(count)s proposition(s) enregistrée(s), mais aucun matching trouvé.") % {
+                    "count": created_count,
+                }
             )
             return redirect("my_proposed_trajects")
 
-        messages.error(request, "Erreur dans le formulaire. Veuillez corriger les champs.")
-    else:
-        traject_form = TrajectForm()
-        proposed_form = ProposedTrajectForm()
+        messages.error(
+            request,
+            _("Veuillez corriger les erreurs dans le formulaire.")
+        )
 
-    fav_addresses = list(
-        FavoriteAddress.objects
-        .filter(user=request.user)
-        .order_by("label", "address")
-        .values("label", "address", "place_id")
+        return render(
+            request,
+            "trajects/proposed_traject.html",
+            {
+                **context_base,
+                "traject_form": traject_form,
+                "proposed_form": proposed_form,
+                "tr_weekdays": request.POST.getlist("tr_weekdays"),
+            },
+        )
+
+    traject_form = TrajectForm()
+    proposed_form = ProposedTrajectForm()
+
+    return render(
+        request,
+        "trajects/proposed_traject.html",
+        {
+            **context_base,
+            "traject_form": traject_form,
+            "proposed_form": proposed_form,
+            "tr_weekdays": [],
+        },
     )
-
-    return render(request, "trajects/proposed_traject.html", {
-        "traject_form": traject_form,
-        "proposed_form": proposed_form,
-        "researched_traject": researchesTraject_id,
-        "fav_addresses": fav_addresses,
-        "days_of_week": [
-            ("1", "Lundi"), ("2", "Mardi"), ("3", "Mercredi"),
-            ("4", "Jeudi"), ("5", "Vendredi"), ("6", "Samedi"), ("7", "Dimanche"),
-        ],
-    }) 
-
+    
 @login_required
 def simple_proposed_traject(request):
     """
@@ -541,46 +575,66 @@ def simple_proposed_traject(request):
             groupe_uid = uuid.uuid4()
 
             proposed_trajects, success = save_simple_proposed_traject(
-                request,
-                form,
+                request=request,
+                form=form,
                 groupe_name=groupe_name,
                 groupe_uid=groupe_uid,
             )
 
             if success:
-                created_count = len(proposed_trajects or [])
+                proposed_trajects = proposed_trajects or []
+                created_count = len(proposed_trajects)
                 total_matches = sum(len(find_matching_trajects(p)) for p in proposed_trajects)
-                matched_any = total_matches > 0
 
-                if matched_any:
+                if total_matches > 0:
                     messages.success(
                         request,
-                        f"{created_count} trajet(s) simplifié(s) enregistré(s) avec {total_matches} matching(s) trouvés."
+                        _("%(count)s trajet(s) simplifié(s) enregistré(s) avec %(matches)s matching(s) trouvé(s).") % {
+                            "count": created_count,
+                            "matches": total_matches,
+                        }
                     )
                     return redirect("my_matchings_simple")
 
                 messages.warning(
                     request,
-                    f"{created_count} trajet(s) simplifié(s) enregistré(s), mais aucun matching trouvé."
+                    _("%(count)s trajet(s) simplifié(s) enregistré(s), mais aucun matching trouvé.") % {
+                        "count": created_count,
+                    }
                 )
                 return redirect("my_simple_trajects")
 
-            messages.error(request, "Erreur dans le formulaire. Veuillez corriger les champs.")
+            messages.error(
+                request,
+                _("Erreur lors de l’enregistrement du trajet. Veuillez corriger les champs.")
+            )
         else:
-            messages.error(request, "Veuillez corriger les erreurs dans le formulaire.")
+            messages.error(
+                request,
+                _("Veuillez corriger les erreurs dans le formulaire.")
+            )
     else:
         form = SimpleProposedTrajectForm()
 
-    return render(request, "trajects/simple_proposed_traject.html", {
-        "form": form,
-        "days_of_week": [
-            ("1", "Lundi"), ("2", "Mardi"), ("3", "Mercredi"),
-            ("4", "Jeudi"), ("5", "Vendredi"), ("6", "Samedi"), ("7", "Dimanche"),
-        ],
-        "tr_weekdays": request.POST.getlist("tr_weekdays") if request.method == "POST" else [],
-        "fav_addresses": fav_addresses,
-    })
-
+    return render(
+        request,
+        "trajects/simple_proposed_traject.html",
+        {
+            "form": form,
+            "days_of_week": [
+                ("1", _("Lundi")),
+                ("2", _("Mardi")),
+                ("3", _("Mercredi")),
+                ("4", _("Jeudi")),
+                ("5", _("Vendredi")),
+                ("6", _("Samedi")),
+                ("7", _("Dimanche")),
+            ],
+            "tr_weekdays": request.POST.getlist("tr_weekdays") if request.method == "POST" else [],
+            "fav_addresses": fav_addresses,
+        },
+    )
+    
 @login_required
 def researched_traject(request):
     """
@@ -596,6 +650,16 @@ def researched_traject(request):
         .values("label", "address", "place_id")
     )
 
+    context_base = {
+        "transport_modes": transport_modes,
+        "fav_addresses": fav_addresses,
+        "days_of_week": [
+            ("1", _("Lundi")), ("2", _("Mardi")), ("3", _("Mercredi")),
+            ("4", _("Jeudi")), ("5", _("Vendredi")), ("6", _("Samedi")), ("7", _("Dimanche")),
+        ],
+        "service": service,
+    }
+
     if request.method == "POST":
         traject_form = TrajectForm(request.POST)
         researched_form = ResearchedTrajectForm(request.POST, user=request.user)
@@ -604,68 +668,63 @@ def researched_traject(request):
         groupe_uid = uuid.uuid4()
 
         researched_trajects, success = save_researched_traject(
-            request,
-            traject_form,
-            researched_form,
+            request=request,
+            traject_form=traject_form,
+            researched_form=researched_form,
             groupe_name=groupe_name,
             groupe_uid=groupe_uid,
         )
 
         if success:
-            created_count = len(researched_trajects or [])
+            researched_trajects = researched_trajects or []
+            created_count = len(researched_trajects)
             total_matches = sum(len(find_matching_trajects(r)) for r in researched_trajects)
-            matched_any = total_matches > 0
 
-            if matched_any:
+            if total_matches > 0:
                 messages.success(
                     request,
-                    f"{created_count} recherche(s) enregistrée(s) avec {total_matches} matching(s) trouvés."
+                    _("%(count)s recherche(s) enregistrée(s) avec %(matches)s matching(s) trouvé(s).") % {
+                        "count": created_count,
+                        "matches": total_matches,
+                    }
                 )
                 return redirect("my_matchings_researched")
 
             messages.warning(
                 request,
-                f"{created_count} recherche(s) enregistrée(s), mais aucun matching trouvé."
+                _("%(count)s recherche(s) enregistrée(s), mais aucun matching trouvé.") % {
+                    "count": created_count,
+                }
             )
             return redirect("my_researched_trajects")
 
-        messages.error(request, "Erreur dans le formulaire. Veuillez corriger les champs.")
+        messages.error(request, _("Veuillez corriger les erreurs dans le formulaire."))
 
-        return render(request, "trajects/searched_traject.html", {
-            "traject_form": traject_form,
-            "researched_form": researched_form,
-            "transport_modes": transport_modes,
-            "fav_addresses": fav_addresses,
-            "days_of_week": [
-                ("1", "Lundi"), ("2", "Mardi"), ("3", "Mercredi"),
-                ("4", "Jeudi"), ("5", "Vendredi"), ("6", "Samedi"), ("7", "Dimanche"),
-            ],
-            "start_adress": request.POST.get("start_adress", ""),
-            "end_adress": request.POST.get("end_adress", ""),
-            "departure_time": request.POST.get("departure_time", ""),
-            "arrival_time": request.POST.get("arrival_time", ""),
-            "recurrence_type": request.POST.get("recurrence_type", ""),
-            "tr_weekdays": request.POST.getlist("tr_weekdays"),
-            "date_debut": request.POST.get("date_debut", ""),
-            "date_fin": request.POST.get("date_fin", ""),
-            "service": service,
-        })
+        return render(
+            request,
+            "trajects/searched_traject.html",
+            {
+                **context_base,
+                "traject_form": traject_form,
+                "researched_form": researched_form,
+                "tr_weekdays": request.POST.getlist("tr_weekdays"),
+            },
+        )
 
     traject_form = TrajectForm()
     researched_form = ResearchedTrajectForm(user=request.user)
 
-    return render(request, "trajects/searched_traject.html", {
-        "traject_form": traject_form,
-        "researched_form": researched_form,
-        "transport_modes": transport_modes,
-        "fav_addresses": fav_addresses,
-        "days_of_week": [
-            ("1", "Lundi"), ("2", "Mardi"), ("3", "Mercredi"),
-            ("4", "Jeudi"), ("5", "Vendredi"), ("6", "Samedi"), ("7", "Dimanche"),
-        ],
-        "service": service,
-    })
-
+    return render(
+        request,
+        "trajects/searched_traject.html",
+        {
+            **context_base,
+            "traject_form": traject_form,
+            "researched_form": researched_form,
+            "tr_weekdays": [],
+        },
+    )
+    
 def generate_recurrent_proposals(
     request,
     recurrent_dates,
@@ -860,29 +919,20 @@ def save_proposed_traject(request, traject_form, proposed_form, groupe_name=None
 
     traject = traject_form.save(commit=False)
 
-    print("DEBUG save_proposed_traject")
-    print("start_place_id:", traject_form.cleaned_data.get("start_place_id"))
-    print("end_place_id:", traject_form.cleaned_data.get("end_place_id"))
-
     for field in ["start_place_id", "end_place_id"]:
         place_id = traject_form.cleaned_data.get(field)
-        print("FIELD:", field, "PLACE_ID:", place_id)
 
         if not place_id:
             continue
 
         details = get_place_details(place_id)
-        print("DETAILS:", details)
 
-        if "lat" in details and "lng" in details:
+        if details and "lat" in details and "lng" in details:
             point = Point(details["lng"], details["lat"], srid=4326)
             if field == "start_place_id":
                 traject.start_point = point
             else:
                 traject.end_point = point
-
-    print("start_point before save:", traject.start_point)
-    print("end_point before save:", traject.end_point)
 
     traject.save()
 
@@ -934,30 +984,20 @@ def save_researched_traject(request, traject_form, researched_form, groupe_name=
 
     traject = traject_form.save(commit=False)
 
-    # DEBUG temporaire
-    print("DEBUG save_researched_traject")
-    print("start_place_id:", traject_form.cleaned_data.get("start_place_id"))
-    print("end_place_id:", traject_form.cleaned_data.get("end_place_id"))
-
     for field in ["start_place_id", "end_place_id"]:
         place_id = traject_form.cleaned_data.get(field)
-        print("FIELD:", field, "PLACE_ID:", place_id)
 
         if not place_id:
             continue
 
         details = get_place_details(place_id)
-        print("DETAILS:", details)
 
-        if "lat" in details and "lng" in details:
+        if details and "lat" in details and "lng" in details:
             point = Point(details["lng"], details["lat"], srid=4326)
             if field == "start_place_id":
                 traject.start_point = point
             else:
                 traject.end_point = point
-
-    print("start_point before save:", traject.start_point)
-    print("end_point before save:", traject.end_point)
 
     traject.save()
 
@@ -1011,6 +1051,7 @@ def save_simple_proposed_traject(request, form, groupe_name=None, groupe_uid=Non
     groupe_uid = groupe_uid or uuid.uuid4()
 
     start_adress = cleaned.get("start_adress")
+    start_place_id = cleaned.get("start_place_id")
     transport_modes = cleaned.get("transport_modes")
     number_of_places = cleaned.get("number_of_places") or 1
     search_radius_km = cleaned.get("search_radius_km")
@@ -1032,23 +1073,28 @@ def save_simple_proposed_traject(request, form, groupe_name=None, groupe_uid=Non
 
     traject = Traject.objects.create(
         start_adress=start_adress,
-        end_adress=""
+        end_adress="",
+        start_place_id=start_place_id or None,
     )
-
-    start_place_id = request.POST.get("start_place_id")
-    print("DEBUG save_simple_proposed_traject start_place_id:", start_place_id)
 
     if start_place_id:
         start_details = get_place_details(start_place_id)
-        print("DEBUG start_details:", start_details)
 
-        if "lat" in start_details and "lng" in start_details:
-            traject.start_point = Point(start_details["lng"], start_details["lat"], srid=4326)
+        if start_details and "lat" in start_details and "lng" in start_details:
+            traject.start_point = Point(
+                start_details["lng"],
+                start_details["lat"],
+                srid=4326,
+            )
             traject.save(update_fields=["start_point"])
 
-    print("DEBUG simple traject start_point after save:", traject.start_point)
-
     proposed_trajects = []
+
+    recurrence_days_value = (
+        "|" + "|".join(map(str, selected_days)) + "|"
+        if selected_days else None
+    )
+
     for date_obj in recurrent_dates:
         proposed = ProposedTraject.objects.create(
             user=user,
@@ -1061,7 +1107,7 @@ def save_simple_proposed_traject(request, form, groupe_name=None, groupe_uid=Non
             groupe_uid=groupe_uid,
             recurrence_type=recurrence_type,
             recurrence_interval=None,
-            recurrence_days="|" + "|".join(map(str, selected_days)) + "|" if selected_days else None,
+            recurrence_days=recurrence_days_value,
             date_debut=date_debut,
             date_fin=date_fin,
         )

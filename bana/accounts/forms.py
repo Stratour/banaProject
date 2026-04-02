@@ -2,6 +2,7 @@ from django import forms
 from allauth.account.forms import SignupForm
 from django.contrib.auth.models import User
 from accounts.models import Profile, Languages, Child, Review, FavoriteAddress
+from django.utils.translation import gettext_lazy as _
 
 
 SERVICE_CHOICES = [
@@ -10,10 +11,10 @@ SERVICE_CHOICES = [
 ]
 
 TRANSPORT_MODES_CHOICES = [
-    ('car', 'Voiture'),
-    ('bike', 'Vélo'),
-    ('public_transport', 'Transport en commun'),
-    ('walking', 'À pied'),
+    ('car', _('Voiture')),
+    ('bike', _('Vélo')),
+    ('public_transport', _('Transport en commun')),
+    ('walking', _('À pied')),
 ]
 
 
@@ -206,13 +207,13 @@ class FavoriteAddressForm(TailwindFormMixin, forms.ModelForm):
         widgets = {
             "label": forms.TextInput(attrs={
                 "class": "form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm",
-                "placeholder": "Ex: Maison / École / Travail",
+                "placeholder": _("Ex: Maison / École / Travail"),
                 'autocomplete': 'off'
             }),
             "address": forms.TextInput(attrs={
                 "id": "favorite_address",
                 "class": "w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand",
-                "placeholder": "Entrez une adresse",
+                "placeholder": _("Entrez une adresse"),
                 'autocomplete': 'off'
             }),
             "place_id": forms.HiddenInput(),

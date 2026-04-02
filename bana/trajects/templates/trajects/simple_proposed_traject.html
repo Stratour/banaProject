@@ -1,13 +1,13 @@
 {% extends "allauth/layouts/base.html" %}
 {% load static i18n %}
 
-{% block head_title %}Créer une demande de trajet{% endblock %}
+{% block head_title %}{% trans "Rechercher un trajet" %}{% endblock %}
 
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
 
   <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
-    Rechercher un trajet
+    {% trans "Rechercher un trajet" %}
   </h1>
 
   {% if messages %}
@@ -20,18 +20,17 @@
   
   {% include "./component_simple_tabs.html" %}
   
-  <form class="my-12 space-y-16" method="post" action="{% url 'simple_proposed_traject' %}">
-    {% csrf_token %}
-    
-    <!-- Étape 1 : ville de départ -->
-    <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
-      <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/icon/Icon_step_path.svg' %}" alt="Départ">
-      
-      <div class="flex-1 space-y-6 w-full">
-      <!-- 🏷️ Nom du groupe de trajets -->
+<form class="my-12 space-y-16" method="post" action="{% url 'simple_proposed_traject' %}" novalidate>
+  {% csrf_token %}
+
+  <!-- Étape 1 : ville de départ -->
+  <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
+    <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/icon/Icon_step_path.svg' %}" alt="Départ">
+
+    <div class="flex-1 space-y-6 w-full">
       <div class="mb-6">
         <label for="groupe_name" class="block text-sm font-medium text-gray-700 mb-1">
-          Nom du trajet
+          {% trans "Nom du trajet" %}
         </label>
 
         <input
@@ -39,136 +38,193 @@
           id="groupe_name"
           name="groupe_name"
           value="{{ request.POST.groupe_name|default_if_none:'' }}"
-          class="form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-          placeholder="Ex: École Charleroi (matin)"
+          class="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-brand focus:border-brand"
+          placeholder='{% trans "Ex: École Charleroi (matin)" %}'
           maxlength="80"
         />
 
         <p class="mt-1 text-xs text-gray-500">
-          Ce nom servira à regrouper vos recherches.
+          {% trans "Ce nom servira à regrouper vos trajets." %}
         </p>
       </div>
-        <div>
-          <label class="block text-sm font-bold text-brand uppercase mb-1">Ville de départ</label>
-          {{ form.start_adress }}
-          <input type="hidden" id="start_place_id" name="start_place_id">
-          <ul id="start-suggestion-list"
-          class="bg-white shadow-md mt-1 max-h-48 overflow-auto"></ul>
-        </div>
-      </div>
- 
 
-    <!-- Rayon de recherche -->
       <div>
-        <label class="block text-sm font-bold text-brand uppercase mb-1">Rayon de recherche (km)</label>
-        <div class="flex items-center gap-4">
-          {{ form.search_radius_km }}
-          <div class="flex items-center gap-2 bg-brand px-4 py-2 rounded-lg min-w-fit">
-            <span class=" text-brand-50">km</span>
-          </div>
-        </div>
-        <p class="text-xs text-gray-500 mt-2">Sélectionnez dans quel rayon vous souhaitez aider (1-50 km)</p> 
-      
+        <label class="block text-sm font-bold text-brand uppercase mb-1">
+          {% trans "Ville de départ" %}
+        </label>
+
+        {{ form.start_adress }}
+        {{ form.start_place_id }}
+
+        {% for error in form.start_adress.errors %}
+          <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+        {% endfor %}
+
+        {% for error in form.start_place_id.errors %}
+          <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+        {% endfor %}
+
+        <ul id="start-suggestion-list" class="bg-white shadow-md mt-1 max-h-48 overflow-auto"></ul>
       </div>
-       </div>
-    <hr class="my-10">
-    
-    <!-- Étape 2 : calendrier -->
-    <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
-      <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/icon/Icon_step_calendar.svg' %}" alt="Logo Bana">
-      
-      <div class="flex-1 space-y-6 w-full">
-        <div>
-          <label class="block text-sm font-bold text-brand uppercase mb-1">Jours de la semaine</label>
-          <div class="flex flex-wrap gap-2" id="weekday-selector">
-            {% for i, day in days_of_week %}
-            <label data-index="{{ i }}"
-            class="w-10 h-10 flex items-center justify-center text-xs font-semibold 
-            rounded-full cursor-pointer border border-gray-300 text-gray-400
-            {% if i in tr_weekdays %}
-            bg-brand-50 text-brand border-brand
-            {% endif %}">
-            {{ day|slice:":2" }}
-            <input type="checkbox" name="tr_weekdays" value="{{ i }}" class="hidden"
-            {% if i in tr_weekdays %}checked{% endif %}>
-          </label>
+    </div>
+
+    <div>
+      <label class="block text-sm font-bold text-brand uppercase mb-1">
+        {% trans "Rayon de recherche" %} (km)
+      </label>
+
+      <div class="flex items-center gap-4">
+        {{ form.search_radius_km }}
+        <div class="flex items-center gap-2 bg-brand px-4 py-2 rounded-lg min-w-fit">
+          <span class="text-brand-50">km</span>
+        </div>
+      </div>
+
+      {% for error in form.search_radius_km.errors %}
+        <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+      {% endfor %}
+
+      <p class="text-xs text-gray-500 mt-2">
+        {% trans "Sélectionnez dans quel rayon vous souhaitez rechercher un trajet (1-50 km)" %}
+      </p>
+    </div>
+  </div>
+
+  <hr class="my-10">
+
+  <!-- Étape 2 : calendrier -->
+  <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
+    <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/icon/Icon_step_calendar.svg' %}" alt="Logo Bana">
+
+    <div class="flex-1 space-y-6 w-full">
+      <div>
+        <label class="block text-sm font-bold text-brand uppercase mb-2">
+          {% trans "Jours de la semaine" %}
+        </label>
+
+        <div class="flex flex-wrap gap-2" id="weekday-selector">
+          {% for i, day in days_of_week %}
+            <label
+              data-index="{{ i }}"
+              class="w-10 h-10 flex items-center justify-center text-xs font-semibold rounded-full cursor-pointer border transition
+                {% if i in tr_weekdays %}
+                  bg-brand-50 text-brand border-brand
+                {% else %}
+                  border-gray-300 text-gray-400 hover:border-brand hover:text-brand
+                {% endif %}"
+            >
+              {{ day|slice:":2" }}
+              <input
+                type="checkbox"
+                name="tr_weekdays"
+                value="{{ i }}"
+                class="hidden"
+                {% if i in tr_weekdays %}checked{% endif %}
+              >
+            </label>
           {% endfor %}
         </div>
+
+        {% for error in form.tr_weekdays.errors %}
+          <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+        {% endfor %}
       </div>
-      
+
       <div class="flex flex-col md:flex-row gap-6">
         <div class="flex-1">
-          <label class="block text-sm font-medium uppercase text-brand">Récurrence</label>
-          {% for radio in form.recurrence_type %}
-          <label class="block text-sm">{{ radio.tag }} {{ radio.choice_label }}</label>
+          <label class="block text-sm font-bold uppercase text-brand mb-2">
+            {% trans "Récurrence" %}
+          </label>
+
+          <div class="space-y-2">
+            {% for radio in form.recurrence_type %}
+              <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                {{ radio.tag }}
+                <span>{{ radio.choice_label }}</span>
+              </label>
+            {% endfor %}
+          </div>
+
+          {% for error in form.recurrence_type.errors %}
+            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
           {% endfor %}
         </div>
+
         <div class="flex-1">
-          <label class="block text-sm font-medium uppercase text-brand">Date de début</label>
+          <label class="block text-sm font-bold uppercase text-brand mb-1">
+            {% trans "Date de début" %}
+          </label>
+
           {{ form.date_debut }}
+
+          {% for error in form.date_debut.errors %}
+            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+          {% endfor %}
         </div>
+
         <div class="flex-1" id="date_fin_container">
-          <label class="block text-sm font-medium uppercase text-brand">Date de fin</label>
+          <label class="block text-sm font-bold uppercase text-brand mb-1">
+            {% trans "Date de fin" %}
+          </label>
+
           {{ form.date_fin }}
+
+          {% for error in form.date_fin.errors %}
+            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+          {% endfor %}
         </div>
       </div>
-      
+
       <div class="max-w-xl">
-        <label class="block text-sm font-medium uppercase text-brand mb-1">
-          {% trans "Moyen de transport" %}
+        <label class="block text-sm font-bold uppercase text-brand mb-2">
+          {% trans "Moyens de transport" %}
         </label>
 
         <div class="flex flex-wrap gap-2">
           {% for cb in form.transport_modes %}
-            <label class="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-md border border-gray-200 hover:bg-gray-50 cursor-pointer transition">
+            <label class="inline-flex items-center gap-2 px-3 py-2 text-sm rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer transition">
               {{ cb.tag }}
               <span class="text-gray-700">{{ cb.choice_label }}</span>
             </label>
           {% endfor %}
         </div>
 
-        {% if form.transport_modes.errors %}
-          <p class="mt-1 text-xs text-red-600">
-            {{ form.transport_modes.errors }}
-          </p>
-        {% endif %}
+        {% for error in form.transport_modes.errors %}
+          <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+        {% endfor %}
       </div>
     </div>
-    </div>
-  
+  </div>
+
   <hr class="my-10">
-  
-  <!-- Étape 3 : enfants -->
+
+  <!-- Étape 3 : places -->
   <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
     <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/icon/Icon_step_child.svg' %}" alt="Logo Bana">
-    
+
     <div class="flex-1 space-y-6 w-full">
-      <div>
-        <label class="block text-sm font-bold text-brand uppercase mb-1">Enfants à accompagner</label>
-        <div class="space-y-2">
-          {% for checkbox in form.children %}
-          <label class="inline-flex items-center space-x-2">
-            {{ checkbox.tag }}
-            <span>{{ checkbox.choice_label }}</span>
-          </label>
-          {% endfor %}
-        </div>
-      </div>
-      
       <div class="flex flex-col md:flex-row gap-6">
         <div class="flex-1">
-          <label class="block text-sm font-medium uppercase text-brand">Places disponibles</label>
+          <label class="block text-sm font-bold uppercase text-brand mb-1">
+            {% trans "Places disponibles" %}
+          </label>
+
           {{ form.number_of_places }}
+
+          {% for error in form.number_of_places.errors %}
+            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+          {% endfor %}
         </div>
       </div>
     </div>
   </div>
-    
-    <!-- Bouton -->
-    <div class="text-center">
-      <button type="submit"
-      class="w-full sm:w-auto px-6 py-3 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition">
-      Enregistrer ce trajet
+
+  <div class="text-center">
+    <button
+      type="submit"
+      class="w-full sm:w-auto px-6 py-3 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition"
+    >
+      {% trans "Enregistrer le trajet" %}
     </button>
   </div>
 </form>

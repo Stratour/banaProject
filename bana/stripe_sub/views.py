@@ -2,6 +2,7 @@ import logging
 from datetime import datetime
 import pytz
 import stripe
+from django.urls import reverse
 
 from django.conf import settings
 from django.contrib import messages
@@ -69,14 +70,22 @@ def create_checkout_session(request):
     status = profile.service
     price_id = request.POST.get('price_id')
 
+    success_url = request.build_absolute_uri(
+        reverse("payment_successful")
+    ) + "?session_id={CHECKOUT_SESSION_ID}"
+
+    cancel_url = request.build_absolute_uri(
+        reverse("payment_cancelled")
+    )
+
     checkout_session = stripe.checkout.Session.create(
         payment_method_types=['card'],
         mode="subscription",
         line_items=[{'price': price_id, 'quantity': 1}],
         customer_email=request.user.email,
-        success_url=request.build_absolute_uri('/subscription/success/') + '?session_id={CHECKOUT_SESSION_ID}',
-        cancel_url=request.build_absolute_uri('/subscription/cancel/'),
-        metadata={"user_id": request.user.id}  # ✅ obligatoire
+        success_url=success_url,
+        cancel_url=cancel_url,
+        metadata={"user_id": request.user.id}
     )
 
     print(f"✅ Checkout session créée : {checkout_session.id} pour user={request.user.id}")

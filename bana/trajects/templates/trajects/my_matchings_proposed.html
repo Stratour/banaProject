@@ -1,13 +1,13 @@
 {% extends "allauth/layouts/base.html" %}
 {% load i18n %}
 
-{% block head_title %}Propositions de matchings{% endblock %}
+{% block head_title %}{% trans "Mes matchings" %}{% endblock %}
 
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl p-16 space-y-10">
   
   <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
-    Mes matchings
+    {% trans "Mes matchings" %}
   </h1>
 
   {% if messages %}
@@ -35,13 +35,13 @@
           <header class="flex items-start justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
               <div class="min-w-0">
-               <p class="text-xs text-gray-500">Nom du trajet</p>
+               <p class="text-xs text-gray-500">{% trans "Nom du trajet" %}</p>
                 <h2 class="text-xl font-bold text-gray-900">
                   {{ proposed.groupe_name|default:"Mon trajet" }}
                 </h2>
                 <p class="text-xs text-gray-500">
-                  Du {{ item.stats.first_date|date:"d/m/Y" }}
-                  au {{ item.stats.last_date|date:"d/m/Y" }}
+                  {% trans "Du" %} {{ item.stats.first_date|date:"d/m/Y" }}
+                  {% trans "au" %} {{ item.stats.last_date|date:"d/m/Y" }}
                 </p>
               </div>
             </div>
@@ -61,7 +61,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
                 </svg>
-                Départ
+                {% trans "Départ" %}
               </p>
               <p>
                 <span class="font-medium">{{ proposed.traject.start_adress }}</span>
@@ -83,7 +83,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M5 5v14M5 5h10l-2 4 2 4H5"/>
                 </svg>
-                Arrivée
+                {% trans "Arrivée" %}
               </p>
               <p>
                 <span class="font-medium">{{ proposed.traject.end_adress }}</span>
@@ -104,7 +104,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
                 </svg>
-                Transport
+                {% trans "Transport" %}
               </p>
               <div class="mt-2 flex flex-wrap gap-2">
                 {% for mode in proposed.transport_modes.all %}
@@ -115,34 +115,34 @@
                           <!-- car -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
-                                  <p>Voiture</p>
+                                  d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/> 
                           </svg>
+                          <p>{% trans "Voiture" %}</p>
                         {% elif "bike" in key %}
                           <!-- bike -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <circle cx="6" cy="17" r="3" stroke-width="2"/>
                             <circle cx="18" cy="17" r="3" stroke-width="2"/>
                             <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                  d="M6 17l6-8 2 3h4"/>
-                                  <p>Vélo</p>
+                                  d="M6 17l6-8 2 3h4"/>                                  
                           </svg>
+                          <p>{% trans "Vélo" %}</p>
                         {% elif "transport" in key %}
                           <!-- bus/tram -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <rect x="4" y="4" width="16" height="12" rx="2" stroke-width="2"/>
                             <path stroke-width="2" d="M4 11h16M8 20l2-2m6 2l-2-2"/>
-                            <p>Transport en commun</p>
                             <circle cx="8" cy="16" r="1" />
                             <circle cx="16" cy="16" r="1" />
                           </svg>
+                          <p>{% trans "Transport en commun" %}</p>
                         {% elif "walking" in key %}
                           <!-- walking -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                   d="M13 5a2 2 0 11-4 0 2 2 0 014 0zM12 7l-2 4-2 2m4-6l2 3 3 1m-7 1l-2 6m5-5l-1 5"/>
-                                  <p>A pied</p>
                           </svg>
+                          <p>{% trans "À pied" %}</p>
                         {% else %}
                           <!-- default -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -156,25 +156,30 @@
                     {% endwith %}
                   {% endwith %}
                 {% empty %}
-                  <span class="text-gray-400">Non spécifié</span>
+                  <span class="text-gray-400">{% trans "Non spécifié" %}</span>
                 {% endfor %}
               </div>
 
               
         <!-- ✅ Matchs trouvés -->
         <div class="mt-6 border-t border-gray-100 pt-4 space-y-3">
-          <p class="text-sm font-semibold text-gray-900">Matchings trouvés :</p>
+          <p class="text-sm font-semibold text-gray-900">{% trans "Matchings trouvés" %} :</p>
 
           {% for m in item.matches %}
             <div class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 p-4 bg-gray-50">
               <div class="flex items-center gap-3 min-w-0">
                 <div class="h-14 w-14 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] overflow-hidden">
                   {% if m.user.profile.profile_picture %}
-                    <a href="{% url 'accounts:profile_user' user_id=m.user.id %}">
+                    <a {% if is_abonned %}
+                        href="{% url 'accounts:profile_user' user_id=m.user.id %}"
+                        {% endif %}>
                       <img src="{{ m.user.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="User">
                     </a>
                   {% else %}
-                    <a href="{% url 'accounts:profile_user' user_id=m.user.id %}" class="flex items-center justify-center w-full h-full">
+                    <a {% if is_abonned %}
+                        href="{% url 'accounts:profile_user' user_id=m.user.id %}" 
+                        {% endif %}
+                        class="flex items-center justify-center w-full h-full">
                       <span class="text-lg font-bold text-brand">
                       {% if m.user.profile.ci_is_verified %}
                         {{ m.user.profile.verified_first_name|slice:":1" }}.{{ m.user.profile.verified_last_name|slice:":1" }}
@@ -197,11 +202,11 @@
                       {% endif %}
                       </a>
                     {% else %}
-                      <span class="text-red-700">Abonnement requis</span>
+                      <span class="text-red-700">{% trans "Abonnement requis pour voir le profil" %}</span>
                     {% endif %}
                   </p>
                   <p class="text-xs text-gray-600">
-                    Du {{ m.date_debut|date:"d/m/Y" }} au {{ m.date_fin|date:"d/m/Y" }}
+                    {% trans "Du" %} {{ m.date_debut|date:"d/m/Y" }} {% trans "au" %} {{ m.date_fin|date:"d/m/Y" }}
                   </p>
                 </div>
               </div>
@@ -209,11 +214,11 @@
               <!-- bouton detail à brancher plus tard -->
               <a href="{% url 'my_matchings_proposed_detail' proposed.groupe_uid m.groupe_uid  m.user.id%}"
                  class="inline-flex items-center bg-brand gap-2 py-2 px-4 text-white hover:bg-brand-dark rounded-full text-sm font-semibold">
-                Voir les dates
+                {% trans "Voir les dates" %}
               </a>
             </div>
           {% empty %}
-            <p class="text-sm text-gray-500">Aucun matching pour ce groupe.</p>
+            <p class="text-sm text-gray-500">{% trans "Aucun matching pour ce trajet." %}</p>
           {% endfor %}
         </div>
 
@@ -223,7 +228,7 @@
   </div>
 {% else %}
   <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
-    Vous n'avez aucune correspondance de trajet pour l’instant.
+    {% trans "Vous n’avez aucune correspondance de trajet pour l’instant." %}
   </div>
 {% endif %}
 

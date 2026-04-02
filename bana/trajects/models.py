@@ -8,6 +8,37 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.gis.db import models as gis_models
 import uuid
 from django.utils import timezone
+    
+        
+class Traject(models.Model):
+    start_adress = models.CharField(_("Adresse de départ"), max_length=255)
+    end_adress = models.CharField(_("Adresse d’arrivée"), max_length=255)
+
+    start_place_id = models.CharField(max_length=255, blank=True, null=True)
+    end_place_id = models.CharField(max_length=255, blank=True, null=True)
+
+    start_point = gis_models.PointField(_("Coordonnée de départ"), srid=4326, geography=True, null=True, blank=True)
+    end_point = gis_models.PointField(_("Coordonnée d’arrivée"), srid=4326, geography=True, null=True, blank=True)
+
+    address = models.CharField(max_length=255, blank=True, null=True)#A voir si utile
+
+    distance = models.FloatField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = _("Trajet")
+        verbose_name_plural = _("Trajets")
+
+    def __str__(self):
+        return f"{self.start_adress} → {self.end_adress}"
+
+    def get_coordinates(self):
+        return {
+            "starting_coordinate": self.start_point,
+            "ending_coordinate": self.end_point,
+        }
 
 class TransportMode(models.Model):
     name = models.CharField(max_length=100)
@@ -26,40 +57,7 @@ class TransportMode(models.Model):
     def __str__(self):
         """Affiche la traduction dans l’admin et ailleurs."""
         return str(self.display_name)
-
-
-class Traject(models.Model):
-    # Adresse en une ligne
-    start_adress = models.CharField("Adresse de départ", max_length=255)
-    end_adress = models.CharField("Adresse d’arrivée",max_length=255)
-    start_point = gis_models.PointField("Coordonnée de départ",srid=4326, geography=True, null=True, blank=True)
-    end_point = gis_models.PointField("Coordonnée d'arrivé",srid=4326 ,geography=True, null=True, blank=True)
     
-    # Point latitude/longitude
-    address = models.CharField(max_length=255, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    is_test = models.BooleanField(default=True, blank=True, null=True)  # pour marquer les trajets test
-    
-    start_place_id = models.CharField(max_length=255, blank=True, null=True)
-    end_place_id = models.CharField(max_length=255, blank=True, null=True)
-    # Distance entre le point de départ et d'arrivée (facultatif)
-    distance = models.FloatField(blank=True, null=True)
-
-    class Meta:
-        ordering = ['-created_at']
-        
-    def __str__(self):
-        if self.end_adress:
-            return f"{self.start_adress} - ({self.end_adress})"
-        return self.start_adress
-
-    def get_coordinates(self):
-        return {
-            'starting_coordinate': self.start_point,
-            'ending_coordinate': self.end_point,
-        }
-
-
 class ProposedTraject(models.Model):
     NUMBER_PLACE = [(str(i), str(i)) for i in range(1, 8)]
         
@@ -132,28 +130,23 @@ class ProposedTraject(models.Model):
 
 
 class ResearchedTraject(models.Model):
-
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='researched_trajects', null=True, blank=True)
     traject = models.ForeignKey(Traject, on_delete=models.CASCADE)
-    
+
     groupe_name = models.CharField(max_length=80, blank=True, null=True)
     groupe_uid = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True)
-    # Informations de base du trajet
+
     departure_time = models.TimeField()
     arrival_time = models.TimeField()
 
-    # Id des enfants provenant de la table accounts.Child
     children = models.ManyToManyField(Child, related_name='researched_trajects')
-
-
-    # Modes de transport souhaités
     transport_modes = models.ManyToManyField(TransportMode, related_name='researched_trajects', blank=True)
-    
+
     date = models.DateField(blank=True, null=True)
     date_debut = models.DateField(blank=True, null=True)
     date_fin = models.DateField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
-    
+
     recurrence_type = models.CharField(
         max_length=30,
         choices=[
@@ -165,19 +158,9 @@ class ResearchedTraject(models.Model):
     )
     recurrence_interval = models.IntegerField(blank=True, null=True)
     recurrence_days = models.CharField(max_length=255, blank=True, null=True)
-    
+
     def __str__(self):
         return f"{self.user.username} - ({self.date}) - {self.traject.start_adress} → {self.traject.end_adress}"
-
-    @classmethod
-    def get_researched_trajects_by_user(cls, user):
-        return cls.objects.filter(user=user)
-
-    @property
-    def is_past(self):
-        if not self.date:
-            return False
-        return self.date < timezone.now().date()
 
 class Reservation(models.Model):
     STATUS_CHOICES = [

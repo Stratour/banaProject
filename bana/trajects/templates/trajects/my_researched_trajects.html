@@ -1,13 +1,13 @@
 {% extends 'allauth/layouts/base.html' %}
 {% load static i18n %}
 
-{% block head_title %}Mes recherches de trajet{% endblock %}
+{% block head_title %}{% trans "Mes trajets" %}{% endblock %}
 
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
 
   <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
-    Mes recherches de trajet
+    {% trans "Mes trajets" %}
   </h1>
 
   {% if messages %}
@@ -31,13 +31,13 @@
           <header class="flex items-start justify-between gap-4">
             <div class="flex items-center gap-3 min-w-0">
               <div class="min-w-0">
-               <p class="text-xs text-gray-500">Nom du trajet</p>
+               <p class="text-xs text-gray-500">{% trans "Nom du trajet" %}</p>
                 <h2 class="text-xl font-bold text-gray-900">
                   {{ researched.groupe_name|default:"Mon trajet" }}
                 </h2>
                 <p class="text-xs text-gray-500">
-                  Du {{ researched.groupe_first_date|date:"d/m/Y" }}
-                  au {{ researched.groupe_last_date|date:"d/m/Y" }}
+                  {% trans "Du" %} {{ researched.groupe_first_date|date:"d/m/Y" }}
+                  {% trans "au" %} {{ researched.groupe_last_date|date:"d/m/Y" }}
                 </p>
               </div>
             </div>
@@ -91,7 +91,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
                 </svg>
-                Départ
+                {% trans "Départ" %}
               </p>
               <p>
                 <span class="font-medium">{{ researched.traject.start_adress }}</span>
@@ -113,7 +113,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M5 5v14M5 5h10l-2 4 2 4H5"/>
                 </svg>
-                Arrivée
+                {% trans "Arrivée" %}
               </p>
               <p>
                 <span class="font-medium">{{ researched.traject.end_adress }}</span>
@@ -134,7 +134,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
                 </svg>
-                Transport
+                {% trans "Transport" %}
               </p>
               <div class="mt-2 flex flex-wrap gap-2">
                 {% for mode in researched.transport_modes.all %}
@@ -145,34 +145,34 @@
                           <!-- car -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
-                                  <p>Voiture</p>
+                                  d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/> 
                           </svg>
+                          <p>{% trans "Voiture" %}</p>
                         {% elif "bike" in key %}
                           <!-- bike -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <circle cx="6" cy="17" r="3" stroke-width="2"/>
                             <circle cx="18" cy="17" r="3" stroke-width="2"/>
                             <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                  d="M6 17l6-8 2 3h4"/>
-                                  <p>Vélo</p>
+                                  d="M6 17l6-8 2 3h4"/>                                  
                           </svg>
+                          <p>{% trans "Vélo" %}</p>
                         {% elif "transport" in key %}
                           <!-- bus/tram -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <rect x="4" y="4" width="16" height="12" rx="2" stroke-width="2"/>
                             <path stroke-width="2" d="M4 11h16M8 20l2-2m6 2l-2-2"/>
-                            <p>Transport en commun</p>
                             <circle cx="8" cy="16" r="1" />
                             <circle cx="16" cy="16" r="1" />
                           </svg>
+                          <p>{% trans "Transport en commun" %}</p>
                         {% elif "walking" in key %}
                           <!-- walking -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                             <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                   d="M13 5a2 2 0 11-4 0 2 2 0 014 0zM12 7l-2 4-2 2m4-6l2 3 3 1m-7 1l-2 6m5-5l-1 5"/>
-                                  <p>A pied</p>
                           </svg>
+                          <p>{% trans "À pied" %}</p>
                         {% else %}
                           <!-- default -->
                           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -186,7 +186,7 @@
                     {% endwith %}
                   {% endwith %}
                 {% empty %}
-                  <span class="text-gray-400">Non spécifié</span>
+                  <span class="text-gray-400">{% trans "Non spécifié" %}</span>
                 {% endfor %}
               </div>
             </div>
@@ -203,7 +203,7 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M16 3.13a4 4 0 010 7.75"/>
                 </svg>
-                Enfant(s)
+                {% trans "Enfant(s)" %}
               </p>
               <div class="mt-2 flex flex-wrap gap-2">
                 {% for child in researched.children.all %}
@@ -216,22 +216,19 @@
               </div>
             </div>
 
-            <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
-            <a href="{% url 'my_researched_groupe_detail' researched.groupe_uid %}"
-               class="ml-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm">
-              Voir les dates
-            </a>
-          </div>
-          </div>
-          <!-- 👉 Lien détail -->
-            
+            <footer class="mt-5 flex justify-end">
+                <a href="{% url 'my_researched_groupe_detail' researched.groupe_uid %}" 
+                class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                {% trans "Voir les dates" %}
+              </a>
+              </footer>
         </article>
       {% endfor %}
     </div>
   
   {% else %}
     <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
-      Vous n’avez proposé aucun trajet pour l’instant.
+      {% trans "Vous n’avez aucun trajet pour l’instant." %}
     </div>
   {% endif %}
 </div>

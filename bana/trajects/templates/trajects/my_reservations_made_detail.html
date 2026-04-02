@@ -2,14 +2,14 @@
 {% load static i18n %}
 
 {% block head_title %}
-  Détail réservation
+  {% trans "Mes réservations" %}
 {% endblock %}
 
 {% block content %}
   <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-8">
 
     <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
-      Demandes de trajets
+      {% trans "Mes réservations" %}
     </h1>
 
     {% if messages %}
@@ -55,21 +55,24 @@
                         {% endif %}
                       </a>
                     {% else %}
-                      <span class="text-red-700">Abonnement requis</span>
+                      <span class="text-red-700">{% trans "Abonnement requis pour voir le profil" %}</span>
                     {% endif %}
                   </p>
                   <p class="text-xs text-gray-500">
-                    Du {{ stats.first_date|date:"d/m/Y" }} au {{ stats.last_date|date:"d/m/Y" }}
+                    {% trans "Du" %} {{ stats.first_date|date:"d/m/Y" }} {% trans "au" %} {{ stats.last_date|date:"d/m/Y" }}
                   </p>
                 </div>
         </div>
 
-        <a href="{% url 'my_reservations' %}" class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">← Retour</a>
+        <a href="{% url 'my_reservations' %}" 
+        class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
+        ← {% trans "Retour" %}
+      </a>
       </header>
     </article>
 
     <div class="space-y-4">
-      <h3 class="text-lg font-semibold text-gray-900">Dates réservées</h3>
+      <h3 class="text-lg font-semibold text-gray-900">{% trans "Dates réservées" %}</h3>
 
       {% for row in rows %}
         {% with r=row.reservation p=row.proposal research=row.research %}
@@ -79,27 +82,27 @@
                 <p class="text-sm font-semibold text-gray-900">{{ p.date|date:'l d F Y' }}</p>
                 <p class="text-xs text-gray-600 mt-1">{{ research.departure_time|default:'—' }} → {{ research.arrival_time|default:'—' }}</p>
                 <p class="text-xs text-gray-600 mt-1">
-                  <strong>Places demandées :</strong> {{ r.number_of_places }}
+                  <strong>{% trans "Places demandées" %} :</strong> {{ r.number_of_places }}
                 </p>
                 <p class="text-xs text-gray-600 mt-1">
-                  <strong>Places restantes :</strong> {{ row.remaining_places }}
+                  <strong>{% trans "Places restantes" %} :</strong> {{ row.remaining_places }}
                 </p>
               </div>
 
               <div>
                 {% if r.status == 'confirmed' %}
-                  <span class="inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-3 py-1 text-xs font-semibold">Confirmée</span>
+                  <span class="inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-3 py-1 text-xs font-semibold">{% trans "Confirmée" %}</span>
                 {% elif r.status == 'pending' %}
-                  <span class="inline-flex items-center rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1 text-xs font-semibold">En attente</span>
+                  <span class="inline-flex items-center rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1 text-xs font-semibold">{% trans "En attente" %}</span>
                 {% else %}
-                  <span class="inline-flex items-center rounded-full bg-red-50 text-red-700 border border-red-200 px-3 py-1 text-xs font-semibold">Annulée</span>
+                  <span class="inline-flex items-center rounded-full bg-red-50 text-red-700 border border-red-200 px-3 py-1 text-xs font-semibold">{% trans "Annulée" %}</span>
                 {% endif %}
               </div>
             </div>
           </article>
         {% endwith %}
       {% empty %}
-        <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">Aucune réservation trouvée.</div>
+        <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">{% trans "Aucune réservation trouvée." %}</div>
       {% endfor %}
     </div>
   </div>

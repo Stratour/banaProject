@@ -1,13 +1,13 @@
 {% extends "allauth/layouts/base.html" %}
 {% load i18n %}
 
-{% block head_title %}Mes matchings{% endblock %}
+{% block head_title %}{% trans "Mes matchings" %}{% endblock %}
 
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl p-16 space-y-10">
   
   <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
-    Mes matchings
+    {% trans "Mes matchings" %}
   </h1>
 
   {% if messages %}
@@ -30,11 +30,16 @@
         <div class="flex items-center gap-3 min-w-0">
           <div class="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] overflow-hidden">
             {% if parent_header.user.profile.profile_picture %}
-              <a href="{% url 'accounts:profile_user' user_id=parent_header.user.id %}">
+              <a {% if is_abonned %}
+                  href="{% url 'accounts:profile_user' user_id=parent_header.user.id %}"
+                  {% endif %}>
                 <img src="{{ parent_header.user.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="User">
               </a>
             {% else %}
-              <a href="{% url 'accounts:profile_user' user_id=parent_header.user.id %}" class="flex items-center justify-center w-full h-full">
+              <a {% if is_abonned %}
+                  href="{% url 'accounts:profile_user' user_id=parent_header.user.id %}" 
+                  {% endif %}
+                  class="flex items-center justify-center w-full h-full">
                 <span class="text-xl sm:text-2xl font-bold text-brand">
                   {% if parent_header.user.profile.ci_is_verified %}
                     {{ parent_header.user.profile.verified_first_name|slice:":1" }}.{{ parent_header.user.profile.verified_last_name|slice:":1" }}
@@ -59,19 +64,20 @@
                   {% endif %}
                 </a>
               {% else %}
-                <span class="text-red-700">Abonnement requis</span>
+                <span class="text-red-700">{% trans "Abonnement requis pour voir le profil" %}</span>
               {% endif %}
             </p>
             <p class="text-xs text-gray-500">
-              Du {{ parent_stats.first_date|date:"d/m/Y" }} au {{ parent_stats.last_date|date:"d/m/Y" }}
-              • {{ parent_stats.count }} date(s)
+              {% trans "Du" %} {{ parent_stats.first_date|date:"d/m/Y" }} 
+              {% trans "au" %} {{ parent_stats.last_date|date:"d/m/Y" }}
+              
             </p>
           </div>
         </div>
 
         <a href="{% url 'my_matchings_simple' %}"
          class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-        ← Retour
+        ← {% trans "Retour" %}
       </a>
       </header>
 
@@ -86,7 +92,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
             </svg>
-            Départ
+            {% trans "Départ" %}
           </p>
           <p>
             <span class="font-medium">{{ parent_header.traject.start_adress }}</span>
@@ -101,7 +107,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M5 5v14M5 5h10l-2 4 2 4H5"/>
             </svg>
-            Arrivée
+            {% trans "Arrivée" %}
           </p>
           <p>
             <span class="font-medium">{{ parent_header.traject.end_adress }}</span>
@@ -117,7 +123,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
             </svg>
-            Transport
+            {% trans "Transport" %}
           </p>
           <div class="mt-2 flex flex-wrap gap-2">
             {% for mode in parent_header.transport_modes.all %}
@@ -129,33 +135,33 @@
                       <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
-                              <p>Voiture</p>
                       </svg>
+                      <p>{% trans "Voiture" %}</p>
                     {% elif "bike" in key %}
                       <!-- bike -->
                       <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <circle cx="6" cy="17" r="3" stroke-width="2"/>
                         <circle cx="18" cy="17" r="3" stroke-width="2"/>
                         <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                              d="M6 17l6-8 2 3h4"/>
-                              <p>Vélo</p>
+                              d="M6 17l6-8 2 3h4"/>                    
                       </svg>
+                      <p>{% trans "Vélo" %}</p>
                     {% elif "transport" in key %}
                       <!-- bus/tram -->
                       <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <rect x="4" y="4" width="16" height="12" rx="2" stroke-width="2"/>
                         <path stroke-width="2" d="M4 11h16M8 20l2-2m6 2l-2-2"/>
-                        <p>Transport en commun</p>
                         <circle cx="8" cy="16" r="1" />
                         <circle cx="16" cy="16" r="1" />
                       </svg>
+                      <p>{% trans "Transport en commun" %}</p>
                     {% elif "walking" in key %}
                       <!-- walking -->
                       <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                         <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                              d="M13 5a2 2 0 11-4 0 2 2 0 014 0zM12 7l-2 4-2 2m4-6l2 3 3 1m-7 1l-2 6m5-5l-1 5"/>
-                              <p>A pied</p>
+                              d="M13 5a2 2 0 11-4 0 2 2 0 014 0zM12 7l-2 4-2 2m4-6l2 3 3 1m-7 1l-2 6m5-5l-1 5"/>                
                       </svg>
+                      <p>{% trans "À pied" %}</p>
                     {% else %}
                       <!-- default -->
                       <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -169,7 +175,7 @@
                 {% endwith %}
               {% endwith %}
             {% empty %}
-              <span class="text-gray-400">Non spécifié</span>
+              <span class="text-gray-400">{% trans "Non spécifié" %}</span>
             {% endfor %}
           </div>
         </div>
@@ -185,7 +191,7 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M16 3.13a4 4 0 010 7.75"/>
             </svg>
-            Enfant(s)
+            {% trans "Enfant(s)" %}
           </p>
           <div class="mt-2 flex flex-wrap gap-2">
             {% for child in parent_header.children.all %}
@@ -194,7 +200,7 @@
                       class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium hover:bg-gray-100 transition">
                 {{ child.chld_name }} {{ child.chld_surname|slice:":1"}}.
                 {% if child.age %}
-                  <span class="ml-1 text-gray-500">— {{ child.age }} ans</span>
+                  <span class="ml-1 text-gray-500">— {{ child.age }} {% trans "ans" %}</span>
                 {% endif %}
               </button>
             {% empty %}
@@ -220,7 +226,7 @@
                     </h3>
                     <p class="text-sm text-gray-500">
                       {% if child.age %}
-                        {{ child.age }} ans
+                        {{ child.age }} {% trans "ans" %}
                       {% endif %}
                     </p>
                   </div>
@@ -236,13 +242,13 @@
                 <div class="flex flex-wrap gap-2">
                   {% if child.chld_seat %}
                     <span class="inline-flex items-center rounded-full bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 text-xs font-semibold">
-                      Siège enfant requis
+                      {% trans "Siège enfant requis" %}
                     </span>
                   {% endif %}
                   
                   {% if child.chld_disability %}
                     <span class="inline-flex items-center rounded-full bg-red-50 text-red-700 border border-red-200 px-3 py-1 text-xs font-semibold">
-                      Porteur d’un handicap
+                      {% trans "Porteur d’un handicap" %}
                     </span>
                   {% endif %}
                 </div>
@@ -251,7 +257,7 @@
                   {% if languages %}
                     <div class="space-y-2">
                       <p class="text-xs font-bold uppercase text-brand">
-                        Langues parlées
+                        {% trans "Langues parlées" %}
                       </p>
                       <div class="flex flex-wrap gap-2">
                         {% for language in languages %}
@@ -267,7 +273,7 @@
                 {% if child.chld_special_needs %}
                   <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
                     <p class="text-xs font-bold uppercase text-amber-700 mb-1">
-                      Besoins spécifiques
+                      {% trans "Besoins spécifiques" %}
                     </p>
                     <p class="text-sm text-amber-900 whitespace-pre-line">
                       {{ child.chld_special_needs }}
@@ -279,7 +285,7 @@
                   <button type="button"
                           onclick="document.getElementById('child-modal-{{ child.id }}-parent-header').close()"
                           class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                    Fermer
+                    {% trans "Fermer" %}
                   </button>
                 </div>
               
@@ -293,7 +299,7 @@
   {% endif %}
 
   <div class="space-y-4">
-    <h3 class="text-lg font-semibold text-gray-900">Dates disponibles</h3>
+    <h3 class="text-lg font-semibold text-gray-900">{% trans "Dates disponibles" %}</h3>
 
     {% if rows %}
       {% for row in rows %}
@@ -307,7 +313,7 @@
               </p>
 
               <p class="text-xs text-gray-600 mt-1">
-                <strong>Places restantes :</strong>
+                <strong>{% trans "Places restantes" %} :</strong>
                 {% if row.remaining_places is not None %}
                   {{ row.remaining_places }}
                 {% else %}
@@ -319,23 +325,23 @@
             <div class="text-right">
               {% if row.is_past %}
                 <span class="inline-block mt-2 text-xs px-3 py-1 rounded-full bg-gray-100 text-gray-500">
-                  Date passée
+                  {% trans "Date passée" %}
                 </span>
               {% elif is_abonned %}
                 {% if r.id in parent_confirmed_ids %}
                   <button class="inline-flex items-center bg-green-600 gap-2 py-2 px-4 mt-2 text-white rounded-full" disabled>
-                    Confirmé
+                    {% trans "Confirmé" %}
                   </button>
                 {% elif r.id in parent_pending_ids %}
                   <button class="inline-flex items-center bg-gray-400 gap-2 py-2 px-4 mt-2 text-white rounded-full" disabled>
-                    En attente
+                    {% trans "En attente" %}
                   </button>
                 {% else %}
                   <form method="post" action="{% url 'propose_help' r.id %}">
                     {% csrf_token %}
                     <button type="submit"
                             class="inline-flex items-center bg-brand gap-2 py-2 px-4 mt-2 text-white hover:bg-brand-dark rounded-full text-sm font-semibold">
-                      Proposer mon aide
+                      {% trans "Proposer mon aide" %}
                     </button>
                   </form>
                 {% endif %}
@@ -343,7 +349,7 @@
                 <a href="{% url 'subscription' %}">
                   <button type="button"
                           class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 mt-2 text-white rounded-full text-sm font-semibold">
-                    S'abonner
+                    {% trans "S'abonner" %}
                   </button>
                 </a>
               {% endif %}
@@ -354,7 +360,7 @@
       {% endfor %}
     {% else %}
       <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
-        Aucune date correspondante trouvée.
+        {% trans "Aucune date correspondante trouvée." %}
       </div>
     {% endif %}
   </div>
