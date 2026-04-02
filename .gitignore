@@ -23,9 +23,8 @@ logs/
 gunicorn.pid
 
 # Media temporaires ou sensibles si besoin
-# media/
-# Ne décommente que si tu ne veux pas versionner media
-
+media/
+staticfiles/
 # =========================
 # IDE / éditeurs
 # =========================
