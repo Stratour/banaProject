@@ -2,3 +2,4 @@
 $ sudo systemctl status bana-gunicorn
 $ sudo systemctl stop bana-gunicorn
 $ sudo systemctl start bana-gunicorn
+$ sudo systemctl restart bana-gunicorn

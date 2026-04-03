@@ -1,101 +1,44 @@
-{% extends "allauth/layouts/base.html" %}
-{% load static i18n %}
-
-{% block head_title %}{% trans "Mes trajets" %}{% endblock %}
+{% extends 'allauth/layouts/base.html' %}
+{% load i18n %}
+{% block head_title %}{% trans "Mes matchings" %}{% endblock %}
 
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
-
   <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
-    {% trans "Mes trajets" %}
+    {% trans "Mes matchings" %}
   </h1>
 
   {% if messages %}
-    <ul class="mb-6 space-y-2">
+    <ul class="mb-6">
       {% for message in messages %}
         <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
       {% endfor %}
     </ul>
   {% endif %}
 
-  <!-- Onglets -->
-  {% include "./component_proposed_tabs.html" %}
+  {% include "trajects/partials/tabs_recherche.html" %}
 
-  
-    {% if proposed_trajects %}
-    <div class="space-y-5">    
-      {% for proposed in proposed_trajects %}
-        <article
-          class="group rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all ring-1 ring-transparent hover:ring-brand/10">
-
-          <!-- Header -->
+  {% if groups %}
+    <div class="space-y-5">
+      {% for item in groups %}
+        {% with researched=item.header %}
+        <article class="group rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm hover:shadow-md transition-all ring-1 ring-transparent hover:ring-brand/10">
           <header class="flex items-start justify-between gap-4">
-            <div class="flex items-center gap-3 min-w-0">
-              <div class="min-w-0">
-               <p class="text-xs text-gray-500">{% trans "Nom du trajet" %}</p>
-                <h2 class="text-xl font-bold text-gray-900">
-                  {{ proposed.groupe_name|default:"Mon trajet" }}
-                </h2>
-                <p class="text-xs text-gray-500">
-                  {% trans "Du" %} {{ proposed.groupe_first_date|date:"d/m/Y" }}
-                  {% trans "au" %} {{ proposed.groupe_last_date|date:"d/m/Y" }}
-                </p>
-              </div>
-            </div>
-            
-            <button type="button"
-                onclick="document.getElementById('delete-proposed-{{ proposed.groupe_uid }}').showModal()"
-                class="inline-flex items-center gap-2 rounded-full border border-red-300 text-red-700 px-3 py-1.5 text-sm font-semibold hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300">
-                
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m-7 0V5a2 2 0 012-2h2a2 2 0 012 2v2"/>
-                </svg>
-                {% trans "Supprimer" %}
-            </button>
-
-            <dialog id="delete-proposed-{{ proposed.groupe_uid }}" class="rounded-xl p-0 w-full max-w-md">
-             <form method="POST" action="{% url 'delete_proposed_groupe' proposed.groupe_uid %}" class="p-6 space-y-5">
-              {% csrf_token %}
-              <header class="space-y-1">
-              <h3 class="text-lg font-semibold text-gray-900">{% trans "Supprimer le trajet" %}</h3>
-              <p class="text-sm text-gray-600">
-                {% trans "Êtes-vous sûr de vouloir supprimer ce trajet ?" %}
+            <div class="min-w-0">
+              <p class="text-xs text-gray-500">{% trans "Nom du trajet" %}</p>
+              <h2 class="text-xl font-bold text-gray-900">
+                {{ researched.groupe_name|default:"Mon trajet" }}
+              </h2>
+              <p class="text-xs text-gray-500">
+                {% trans "Du" %} {{ item.stats.first_date|date:"d/m/Y" }}
+                {% trans "au" %} {{ item.stats.last_date|date:"d/m/Y" }}
               </p>
-            </header>
-
-            <div class="flex items-center justify-end gap-3 pt-2">
-              <button type="button"
-                      onclick="document.getElementById('delete-proposed-{{ proposed.groupe_uid }}').close()"
-                      class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
-                {% trans "Annuler" %}
-              </button>
-              <button type="submit"
-                      class="bg-red-500 text-white px-4 py-2 rounded-full font-bold hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
-                {% trans "Confirmer" %}
-              </button>
-            </form>
-            </dialog>
-
-            <!-- Badge simplifié 
-            <div>
-              {% if proposed.is_simple %}
-                <span class="inline-flex items-center gap-1.5 rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1 text-xs font-semibold">
-                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                  </svg>
-                  Trajet simplifié
-                </span>
-              {% endif %}
-            </div>-->
+            </div>
           </header>
 
           <div class="my-4 border-t border-gray-100"></div>
 
-          <!-- Meta -->
           <div class="grid gap-4 sm:grid-cols-2">
-            <!-- Départ -->
             <div class="space-y-2 text-sm text-gray-700">
               <p class="font-semibold text-gray-900 flex items-center gap-2">
                 <!-- map-pin -->
@@ -108,39 +51,36 @@
                 {% trans "Départ" %}
               </p>
               <p>
-                <span class="font-medium">{{ proposed.traject.start_adress }}</span>
-                <span class="mx-1 text-gray-400">·</span>
-                <!-- clock -->
+                <span class="font-medium">{{ researched.traject.start_adress }}</span>
                 <svg class="inline h-4 w-4 -mt-0.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                {{ proposed.departure_time|default:"—" }}
+                {{ researched.departure_time|default:"—" }}
               </p>
             </div>
 
-            <!-- Arrivée !-->
             <div class="space-y-2 text-sm text-gray-700">
               <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <!-- flag -->
+                <!-- map-pin -->
                 <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M5 5v14M5 5h10l-2 4 2 4H5"/>
+                        d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
                 </svg>
                 {% trans "Arrivée" %}
               </p>
               <p>
-                <span class="font-medium">{{ proposed.traject.end_adress }}</span>
-                <span class="mx-1 text-gray-400">·</span>
+                <span class="font-medium">{{ researched.traject.end_adress }}</span>
                 <svg class="inline h-4 w-4 -mt-0.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
-                {{ proposed.arrival_time|default:"—" }}
+                {{ researched.arrival_time|default:"—" }}
               </p>
             </div>
 
-            <!-- Transport -->
             <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
               <p class="font-semibold text-gray-900 flex items-center gap-2">
                 <!-- car -->
@@ -151,7 +91,7 @@
                 {% trans "Transport" %}
               </p>
               <div class="mt-2 flex flex-wrap gap-2">
-                {% for mode in proposed.transport_modes.all %}
+                {% for mode in researched.transport_modes.all %}
                   {% with label=mode.name|default:mode %}
                     {% with key=label|lower %}
                       <span class="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand-50 text-brand px-2.5 py-1 text-xs font-medium">
@@ -203,60 +143,101 @@
                   <span class="text-gray-400">{% trans "Non spécifié" %}</span>
                 {% endfor %}
               </div>
-            </div>
+          </div>
 
-            <!-- Langues
-            <div class="space-y-2 text-sm text-gray-700">
-              <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <circle cx="12" cy="12" r="9" stroke-width="2"/>
-                  <path stroke-width="2" d="M2 12h20M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/>
-                </svg>
-                Langue(s) parlée(s)
-              </p>
-              <div class="mt-2 flex flex-wrap gap-2">
-                {% for language in proposed.languages.all %}
-                  <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
-                    {{ language.lang_name }}
-                  </span>
-                {% empty %}
-                  <span class="text-gray-400">Aucune spécifiée</span>
-                {% endfor %}
-              </div>
-            </div>-->
-
-            <!-- Détails (si non simple) -->
-            {% if proposed.details %}
             <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
-              <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <!-- doc -->
+               <p class="font-semibold text-gray-900 flex items-center gap-2">
+                <!-- users -->
                 <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M7 7h10M7 11h10M7 15h7"/>
+                        d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/>
+                  <circle cx="9" cy="7" r="4" stroke-width="2"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M23 20v-2a4 4 0 00-3-3.87"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M16 3.13a4 4 0 010 7.75"/>
                 </svg>
-                {% trans "Détails" %}
+                {% trans "Enfant(s)" %}
               </p>
-              <p class="text-gray-700">{{ proposed.details }}</p>
+              <div class="mt-2 flex flex-wrap gap-2">
+                {% for child in researched.children.all %}
+                  <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
+                    {{ child.chld_name }} {{ child.chld_surname }}
+                  </span>
+                {% empty %}
+                  <span class="text-gray-400">—</span>
+                {% endfor %}
+              </div>
             </div>
-            {% endif %}
-            </div>
+          </div>
 
-            <footer class="mt-5 flex justify-end">
-                <a href="{% url 'my_proposed_groupe_detail' proposed.groupe_uid %}" 
-                class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                {% trans "Voir les dates" %}
-              </a>
-              </footer>
-          
+          <div class="mt-6 border-t border-gray-100 pt-4 space-y-3">
+            <p class="text-sm font-semibold text-gray-900">{% trans "Matchings trouvés" %} :</p>
+
+            {% for m in item.matches %}
+              <div class="flex items-center justify-between gap-4 rounded-xl border border-gray-100 p-4 bg-gray-50">
+                <div class="flex items-center gap-3 min-w-0">
+                  <div class="h-14 w-14 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] overflow-hidden">
+                    {% if m.user.profile.profile_picture %}
+                      <a {% if is_abonned %}
+                          href="{% url 'accounts:profile_user' user_id=m.user.id %}"
+                          {% endif %}>
+                        <img src="{{ m.user.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="User">
+                      </a>
+                    {% else %}
+                      <a {% if is_abonned %} 
+                          href="{% url 'accounts:profile_user' user_id=m.user.id %}" 
+                          {% endif %}
+                          class="flex items-center justify-center w-full h-full">
+                        <span class="text-lg font-bold text-brand">
+                          {% if m.user.profile.ci_is_verified %}
+                            {{ m.user.profile.verified_first_name|slice:":1" }}.{{ m.user.profile.verified_last_name|slice:":1" }}
+                          {% else %}
+                            {{ m.user.first_name|slice:":1" }}.{{ m.user.last_name|slice:":1" }}
+                          {% endif %}
+                        </span>
+                      </a>
+                    {% endif %}
+                  </div>
+
+                  <div class="min-w-0">
+                    <p class="text-sm font-semibold text-gray-900">
+                      {% if is_abonned %}
+                        <a href="{% url 'accounts:profile_user' user_id=m.user.id %}" class="text-blue-600 hover:underline">
+                          {% if m.user.profile.ci_is_verified %}
+                            {{ m.user.profile.verified_first_name }} {{ m.user.profile.verified_last_name|slice:":1" }}.
+                          {% else %}
+                            {{ m.user.first_name }} {{ m.user.last_name|slice:":1" }}.
+                          {% endif %}
+                        </a>
+                      {% else %}
+                        <span class="text-red-700">{% trans "Abonnement requis pour voir le profil" %}</span>
+                      {% endif %}
+                    </p>
+                    <p class="text-xs text-gray-600">
+                      {% trans "Du" %} {{ m.date_debut|date:"d/m/Y"|default:"—" }}
+                      {% trans "au" %} {{ m.date_fin|date:"d/m/Y"|default:"—" }}
+                    </p>
+                  </div>
+                </div>
+
+                <a href="{% url 'my_matchings_researched_detail' researched.groupe_uid m.groupe_uid m.user.id %}"
+                   class="inline-flex items-center bg-brand gap-2 py-2 px-4 text-white hover:bg-brand-dark rounded-full text-sm font-semibold">
+                  {% trans "Voir les dates" %}
+                </a>
+              </div>
+            {% empty %}
+              <p class="text-sm text-gray-500">{% trans "Aucun matching pour ce trajet." %}</p>
+            {% endfor %}
+          </div>
         </article>
+        {% endwith %}
       {% endfor %}
     </div>
-  
   {% else %}
     <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
-      {% trans "Vous n’avez aucun trajet pour l’instant." %}
+      {% trans "Vous n’avez aucune correspondance de trajet pour l’instant." %}
     </div>
   {% endif %}
-
 </div>
 {% endblock %}

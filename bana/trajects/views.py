@@ -3,22 +3,18 @@ from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
-from django.core.exceptions import ObjectDoesNotExist
 from .utils.geocoding import get_autocomplete_suggestions, get_place_details
 from django.conf import settings
 from django.contrib import messages
 from accounts.models import Child, FavoriteAddress
 from stripe_sub.models import Subscription
 from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode, Reservation
-from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm, SimpleProposedTrajectForm, ResearchedTrajectForm
+from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm, SimpleProposedTrajectForm
 from django.db.models import Q, Min, Max, Count
-from django.core.paginator import Paginator
-from django.utils.timezone import now
 from datetime import datetime, timedelta, date
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
-from django.db.models import Sum, Max
 import uuid
 from django.utils import timezone
 from django.db import transaction
@@ -29,15 +25,8 @@ from django.contrib.auth import get_user_model
 User = get_user_model()
 
 def _available_places(proposal):
-    """
-    Places restantes = number_of_places.
-    On considère que number_of_places est déjà décrémenté
-    lors des confirmations de réservation.
-    """
-    try:
-        return max(0, int(proposal.number_of_places or 0))
-    except (TypeError, ValueError):
-        return 0
+    """Places restantes — number_of_places est décrémenté à chaque confirmation."""
+    return max(0, proposal.number_of_places)
 
 def _normalized_service(user):
     service = getattr(getattr(user, "profile", None), "service", None)
@@ -88,9 +77,71 @@ def _has_enough_places(proposal, researched):
     """
     Vérifie que le trajet proposé possède assez de places
     pour le nombre d'enfants liés à la recherche.
+    Utilise .all() pour bénéficier du prefetch_related si disponible.
     """
-    required_places = max(1, researched.children.count())
+    required_places = max(1, len(researched.children.all()))
     return _available_places(proposal) >= required_places
+
+
+def _aggregate_groupes(queryset):
+    """Regroupe un queryset par groupe_uid avec stats de dates."""
+    return (
+        queryset
+        .values('groupe_uid')
+        .annotate(first_date=Min('date'), last_date=Max('date'), count=Count('id'))
+        .order_by('-last_date')
+    )
+
+
+def _collect_matches(queryset):
+    """Collecte tous les matchings pour chaque objet d'un queryset."""
+    results = []
+    for obj in queryset:
+        results.extend(find_matching_trajects(obj))
+    return results
+
+
+def _delete_groupe(request, model, filters, redirect_success, redirect_error):
+    """Supprime un groupe entier. POST uniquement."""
+    if request.method != "POST":
+        messages.error(request, "Action non autorisée.")
+        return redirect(redirect_error)
+    count, _ = model.objects.filter(user=request.user, **filters).delete()
+    if not count:
+        messages.error(request, "Groupe introuvable.")
+        return redirect(redirect_success)
+    messages.success(request, f"Groupe supprimé ({count} date(s)).")
+    return redirect(redirect_success)
+
+
+def _delete_single(request, model, filters, redirect_name, groupe_uid, success_msg):
+    """Supprime une occurrence unique. POST uniquement."""
+    if request.method != "POST":
+        messages.error(request, "Action non autorisée.")
+        return redirect(redirect_name, groupe_uid=groupe_uid)
+    obj = get_object_or_404(model, user=request.user, **filters)
+    obj.delete()
+    messages.success(request, success_msg)
+    return redirect(redirect_name, groupe_uid=groupe_uid)
+
+
+def _build_match_rows(matched_dates_qs, proposed_by_date, today, extra_fields_fn=None, skip_if_no_proposal=False):
+    """Construit la liste de rows pour les vues de matching détail."""
+    rows = []
+    for research in matched_dates_qs:
+        proposal = proposed_by_date.get(research.date)
+        if skip_if_no_proposal and not proposal:
+            continue
+        row = {
+            "research": research,
+            "is_past": bool(research.date and research.date < today),
+            "children_count": len(research.children.all()),
+            "remaining_places": _available_places(proposal) if proposal else None,
+        }
+        if extra_fields_fn:
+            row.update(extra_fields_fn(research, proposal))
+        rows.append(row)
+    return rows
 
 
 def find_matches_for_parent_research(research, default_radius_km=5, time_tolerance_minutes=45):
@@ -100,21 +151,11 @@ def find_matches_for_parent_research(research, default_radius_km=5, time_toleran
     - yaya simple rayon
     - parent proposed (A -> B)
     """
-    print("\n==============================")
-    print("DEBUG PARENT RESEARCH:", research.id, research.date)
-    print("Research user:", research.user.id, _normalized_service(research.user))
-    print("Research start_point:", bool(research.traject and research.traject.start_point))
-    print("Research end_point:", bool(research.traject and research.traject.end_point))
-    print("Research departure:", research.departure_time)
-    print("Research arrival:", research.arrival_time)
-    print("Research transport_modes:", list(research.transport_modes.values_list("id", flat=True)))
-    print("==============================")
-
     if not research.traject or not research.traject.start_point:
-        print("STOP: research sans start_point")
         return []
 
-    research_mode_ids = list(research.transport_modes.values_list("id", flat=True))
+    research_mode_ids = [tm.id for tm in research.transport_modes.all()]
+    required_places = max(1, research.children.count())
 
     base_qs = (
         ProposedTraject.objects
@@ -126,34 +167,18 @@ def find_matches_for_parent_research(research, default_radius_km=5, time_toleran
         .filter(distance_start__lte=D(km=50))
     )
 
-    print("DEBUG base_qs count:", base_qs.count())
-
     valid_pks = []
 
     for proposal in base_qs:
-        print("\n--- Proposal candidate ---")
-        print("Proposal id:", proposal.id)
-        print("Proposal user:", proposal.user.id, _normalized_service(proposal.user))
-        print("Proposal is_simple:", proposal.is_simple)
-        print("Proposal start_point:", bool(proposal.traject and proposal.traject.start_point))
-        print("Proposal end_point:", bool(proposal.traject and proposal.traject.end_point))
-        print("Proposal departure:", proposal.departure_time)
-        print("Proposal arrival:", proposal.arrival_time)
-        print("Proposal places:", proposal.number_of_places)
-        print("Proposal transport_modes:", list(proposal.transport_modes.values_list("id", flat=True)))
-
         if not proposal.traject or not proposal.traject.start_point:
-            print("SKIP: proposal sans start_point")
             continue
 
         proposal_service = _normalized_service(proposal.user)
 
         if proposal.is_simple and proposal_service != "yaya":
-            print("SKIP: proposal simple mais user non yaya")
             continue
 
         if not proposal.is_simple and proposal_service not in ["yaya", "parent"]:
-            print("SKIP: proposal précise avec service invalide")
             continue
 
         start_distance_m = (
@@ -163,57 +188,36 @@ def find_matches_for_parent_research(research, default_radius_km=5, time_toleran
         )
 
         allowed_radius_km = proposal.search_radius_km if proposal.is_simple else default_radius_km
-        print("Start distance (m):", start_distance_m)
-        print("Allowed radius (m):", D(km=allowed_radius_km).m)
 
         if start_distance_m > D(km=allowed_radius_km).m:
-            print("SKIP: distance départ trop grande")
             continue
 
-        proposal_mode_ids = list(proposal.transport_modes.values_list("id", flat=True))
+        proposal_mode_ids = [tm.id for tm in proposal.transport_modes.all()]
         if not _same_transport_mode(research_mode_ids, proposal_mode_ids):
-            print("SKIP: aucun mode de transport commun")
             continue
 
-        enough_places = _has_enough_places(proposal, research)
-        print("Enough places:", enough_places)
-        if not enough_places:
-            print("SKIP: pas assez de places")
+        if _available_places(proposal) < required_places:
             continue
 
         if proposal.is_simple:
-            print("MATCH: simple proposal validée")
             valid_pks.append(proposal.pk)
             continue
 
         if not (research.traject.end_point and proposal.traject.end_point):
-            print("SKIP: end_point manquant")
             continue
 
         end_distance_m = research.traject.end_point.distance(proposal.traject.end_point)
-        print("End distance (raw):", end_distance_m)
 
         if end_distance_m > D(km=default_radius_km).m:
-            print("SKIP: distance arrivée trop grande")
             continue
 
-        dep_ok = _time_ok(research.departure_time, proposal.departure_time, time_tolerance_minutes)
-        arr_ok = _time_ok(research.arrival_time, proposal.arrival_time, time_tolerance_minutes)
-        print("Departure time OK:", dep_ok)
-        print("Arrival time OK:", arr_ok)
-
-        if not dep_ok:
-            print("SKIP: heure départ incompatible")
+        if not _time_ok(research.departure_time, proposal.departure_time, time_tolerance_minutes):
             continue
 
-        if not arr_ok:
-            print("SKIP: heure arrivée incompatible")
+        if not _time_ok(research.arrival_time, proposal.arrival_time, time_tolerance_minutes):
             continue
 
-        print("MATCH: precise proposal validée")
         valid_pks.append(proposal.pk)
-
-    print("DEBUG valid_pks:", valid_pks)
 
     return list(
         ProposedTraject.objects
@@ -227,20 +231,7 @@ def find_matches_for_precise_offer(proposal, default_radius_km=5, time_tolerance
     """
     Offre précise (parent ou yaya) => match avec parent researched.
     """
-    print("\n==============================")
-    print("DEBUG PRECISE OFFER:", proposal.id, proposal.date)
-    print("Proposal user:", proposal.user.id, _normalized_service(proposal.user))
-    print("Proposal is_simple:", proposal.is_simple)
-    print("Proposal start_point:", bool(proposal.traject and proposal.traject.start_point))
-    print("Proposal end_point:", bool(proposal.traject and proposal.traject.end_point))
-    print("Proposal departure:", proposal.departure_time)
-    print("Proposal arrival:", proposal.arrival_time)
-    print("Proposal places:", proposal.number_of_places)
-    print("Proposal transport_modes:", list(proposal.transport_modes.values_list("id", flat=True)))
-    print("==============================")
-
     if not proposal.traject or not proposal.traject.start_point:
-        print("STOP: proposal sans start_point")
         return []
 
     proposal_mode_ids = list(proposal.transport_modes.values_list("id", flat=True))
@@ -255,28 +246,14 @@ def find_matches_for_precise_offer(proposal, default_radius_km=5, time_tolerance
         .filter(distance_start__lte=D(km=50))
     )
 
-    print("DEBUG base_qs count:", base_qs.count())
-
     valid_pks = []
 
     for research in base_qs:
-        print("\n--- Research candidate ---")
-        print("Research id:", research.id)
-        print("Research user:", research.user.id, _normalized_service(research.user))
-        print("Research start_point:", bool(research.traject and research.traject.start_point))
-        print("Research end_point:", bool(research.traject and research.traject.end_point))
-        print("Research departure:", research.departure_time)
-        print("Research arrival:", research.arrival_time)
-        print("Research children_count:", research.children.count())
-        print("Research transport_modes:", list(research.transport_modes.values_list("id", flat=True)))
-
         research_service = _normalized_service(research.user)
         if research_service != "parent":
-            print("SKIP: research user non parent")
             continue
 
         if not research.traject or not research.traject.start_point:
-            print("SKIP: research sans start_point")
             continue
 
         start_distance_m = (
@@ -284,52 +261,32 @@ def find_matches_for_precise_offer(proposal, default_radius_km=5, time_tolerance
             if research.distance_start is not None
             else research.traject.start_point.distance(proposal.traject.start_point)
         )
-        print("Start distance (m):", start_distance_m)
-        print("Allowed radius (m):", D(km=default_radius_km).m)
 
         if start_distance_m > D(km=default_radius_km).m:
-            print("SKIP: distance départ trop grande")
             continue
 
-        research_mode_ids = list(research.transport_modes.values_list("id", flat=True))
+        research_mode_ids = [tm.id for tm in research.transport_modes.all()]
         if not _same_transport_mode(proposal_mode_ids, research_mode_ids):
-            print("SKIP: aucun mode de transport commun")
             continue
 
-        enough_places = _has_enough_places(proposal, research)
-        print("Enough places:", enough_places)
-        if not enough_places:
-            print("SKIP: pas assez de places")
+        if not _has_enough_places(proposal, research):
             continue
 
         if not (proposal.traject.end_point and research.traject.end_point):
-            print("SKIP: end_point manquant")
             continue
 
         end_distance_m = proposal.traject.end_point.distance(research.traject.end_point)
-        print("End distance (raw):", end_distance_m)
 
         if end_distance_m > D(km=default_radius_km).m:
-            print("SKIP: distance arrivée trop grande")
             continue
 
-        dep_ok = _time_ok(proposal.departure_time, research.departure_time, time_tolerance_minutes)
-        arr_ok = _time_ok(proposal.arrival_time, research.arrival_time, time_tolerance_minutes)
-        print("Departure time OK:", dep_ok)
-        print("Arrival time OK:", arr_ok)
-
-        if not dep_ok:
-            print("SKIP: heure départ incompatible")
+        if not _time_ok(proposal.departure_time, research.departure_time, time_tolerance_minutes):
             continue
 
-        if not arr_ok:
-            print("SKIP: heure arrivée incompatible")
+        if not _time_ok(proposal.arrival_time, research.arrival_time, time_tolerance_minutes):
             continue
 
-        print("MATCH: precise research validée")
         valid_pks.append(research.pk)
-
-    print("DEBUG valid_pks:", valid_pks)
 
     return list(
         ResearchedTraject.objects
@@ -344,17 +301,7 @@ def find_matches_for_simple_offer(simple_proposal, time_tolerance_minutes=45):
     Yaya simple rayon => match avec parent researched.
     Ici on ne vérifie pas le point B.
     """
-    print("\n==============================")
-    print("DEBUG SIMPLE OFFER:", simple_proposal.id, simple_proposal.date)
-    print("Simple proposal user:", simple_proposal.user.id, _normalized_service(simple_proposal.user))
-    print("Simple proposal start_point:", bool(simple_proposal.traject and simple_proposal.traject.start_point))
-    print("Simple proposal radius:", simple_proposal.search_radius_km)
-    print("Simple proposal places:", simple_proposal.number_of_places)
-    print("Simple proposal transport_modes:", list(simple_proposal.transport_modes.values_list("id", flat=True)))
-    print("==============================")
-
     if not simple_proposal.traject or not simple_proposal.traject.start_point:
-        print("STOP: simple proposal sans start_point")
         return []
 
     proposal_mode_ids = list(simple_proposal.transport_modes.values_list("id", flat=True))
@@ -370,25 +317,14 @@ def find_matches_for_simple_offer(simple_proposal, time_tolerance_minutes=45):
         .filter(distance_start__lte=D(km=max(allowed_radius_km, 50)))
     )
 
-    print("DEBUG base_qs count:", base_qs.count())
-
     valid_pks = []
 
     for research in base_qs:
-        print("\n--- Research candidate ---")
-        print("Research id:", research.id)
-        print("Research user:", research.user.id, _normalized_service(research.user))
-        print("Research start_point:", bool(research.traject and research.traject.start_point))
-        print("Research children_count:", research.children.count())
-        print("Research transport_modes:", list(research.transport_modes.values_list("id", flat=True)))
-
         research_service = _normalized_service(research.user)
         if research_service != "parent":
-            print("SKIP: research user non parent")
             continue
 
         if not research.traject or not research.traject.start_point:
-            print("SKIP: research sans start_point")
             continue
 
         start_distance_m = (
@@ -397,28 +333,17 @@ def find_matches_for_simple_offer(simple_proposal, time_tolerance_minutes=45):
             else research.traject.start_point.distance(simple_proposal.traject.start_point)
         )
 
-        print("Start distance (m):", start_distance_m)
-        print("Allowed radius (m):", D(km=allowed_radius_km).m)
-
         if start_distance_m > D(km=allowed_radius_km).m:
-            print("SKIP: distance départ trop grande")
             continue
 
-        research_mode_ids = list(research.transport_modes.values_list("id", flat=True))
+        research_mode_ids = [tm.id for tm in research.transport_modes.all()]
         if not _same_transport_mode(proposal_mode_ids, research_mode_ids):
-            print("SKIP: aucun mode de transport commun")
             continue
 
-        enough_places = _has_enough_places(simple_proposal, research)
-        print("Enough places:", enough_places)
-        if not enough_places:
-            print("SKIP: pas assez de places")
+        if not _has_enough_places(simple_proposal, research):
             continue
 
-        print("MATCH: simple research validée")
         valid_pks.append(research.pk)
-
-    print("DEBUG valid_pks:", valid_pks)
 
     return list(
         ResearchedTraject.objects
@@ -532,7 +457,7 @@ def proposed_traject(request, researchesTraject_id=None):
 
         return render(
             request,
-            "trajects/proposed_traject.html",
+            "trajects/proposition/creer.html",
             {
                 **context_base,
                 "traject_form": traject_form,
@@ -546,7 +471,7 @@ def proposed_traject(request, researchesTraject_id=None):
 
     return render(
         request,
-        "trajects/proposed_traject.html",
+        "trajects/proposition/creer.html",
         {
             **context_base,
             "traject_form": traject_form,
@@ -618,7 +543,7 @@ def simple_proposed_traject(request):
 
     return render(
         request,
-        "trajects/simple_proposed_traject.html",
+        "trajects/proposition_rayon/creer.html",
         {
             "form": form,
             "days_of_week": [
@@ -702,7 +627,7 @@ def researched_traject(request):
 
         return render(
             request,
-            "trajects/searched_traject.html",
+            "trajects/recherche/creer.html",
             {
                 **context_base,
                 "traject_form": traject_form,
@@ -716,7 +641,7 @@ def researched_traject(request):
 
     return render(
         request,
-        "trajects/searched_traject.html",
+        "trajects/recherche/creer.html",
         {
             **context_base,
             "traject_form": traject_form,
@@ -1123,59 +1048,39 @@ def save_simple_proposed_traject(request, form, groupe_name=None, groupe_uid=Non
 @login_required
 def my_proposed_trajects(request):
     user = request.user
-    today = timezone.now().date()
     is_abonned = Subscription.is_user_abonned(user)
 
-    # 1) On récupère les groupes (uid + stats)
-    groupes = (
-        ProposedTraject.objects
-        .filter(user=user, is_active=True, is_simple=False)
-        .values('groupe_uid')
-        .annotate(
-            first_date=Min('date'),
-            last_date=Max('date'),
-            count=Count('id')
-        )
-        .order_by('-last_date')
+    groupes = _aggregate_groupes(
+        ProposedTraject.objects.filter(user=user, is_active=True, is_simple=False)
     )
 
-    # 2) Pour chaque groupe, on prend 1 occurrence "header" (objet complet)
     proposed_headers = []
     for g in groupes:
         header = (
             ProposedTraject.objects
-            .filter(user=user, groupe_uid=g['groupe_uid'], is_active=True)
-            .order_by('date', 'departure_time')
+            .filter(user=user, groupe_uid=g["groupe_uid"], is_active=True)
+            .order_by("date", "departure_time")
             .first()
         )
-
         if not header:
             continue
-        
-        # ✅ On “colle” des infos de groupe sur l’objet pour le template
-        header.groupe_count = g['count']
-        header.groupe_first_date = g['first_date']
-        header.groupe_last_date = g['last_date']
-
+        header.groupe_count = g["count"]
+        header.groupe_first_date = g["first_date"]
+        header.groupe_last_date = g["last_date"]
         proposed_headers.append(header)
 
-    return render(request, 'trajects/my_proposed_trajects.html', {
-        'proposed_trajects': proposed_headers,  
-        'is_abonned': is_abonned,
+    return render(request, "trajects/proposition/trajets_liste.html", {
+        "proposed_trajects": proposed_headers,
+        "is_abonned": is_abonned,
     })
 
 @login_required
 def my_simple_trajects(request):
     user = request.user
-    today = timezone.now().date()
     is_abonned = Subscription.is_user_abonned(user)
 
-    groupes = (
-        ProposedTraject.objects
-        .filter(user=user, is_simple=True, is_active=True)
-        .values('groupe_uid')
-        .annotate(first_date=Min('date'), last_date=Max('date'), count=Count('id'))
-        .order_by('-last_date')
+    groupes = _aggregate_groupes(
+        ProposedTraject.objects.filter(user=user, is_simple=True, is_active=True)
     )
 
     headers = []
@@ -1194,36 +1099,18 @@ def my_simple_trajects(request):
         header.groupe_last_date = g['last_date']
         headers.append(header)
 
-    return render(request, 'trajects/my_simple_trajects.html', {
+    return render(request, 'trajects/proposition_rayon/trajets_liste.html', {
         'simple_trajects': headers,
         'is_abonned': is_abonned,
     })
     
 @login_required
 def my_researched_trajects(request):
-    """
-    Liste les recherches de trajets actives du parent.
-    """
-    """user_trajects = ResearchedTraject.objects.filter(
-        user=request.user,
-        is_active=True,
-        date__gte=date.today()
-    ).order_by('date', 'departure_time')
-    """
     user = request.user
-    today = timezone.now().date()
     is_abonned = Subscription.is_user_abonned(user)
     
-    groupes = (
-        ResearchedTraject.objects
-        .filter(user=user, is_active=True)
-        .values('groupe_uid',)
-        .annotate(
-            first_date=Min('date'),
-            last_date=Max('date'),
-            count=Count('id')
-        )
-        .order_by('-last_date')
+    groupes = _aggregate_groupes(
+        ResearchedTraject.objects.filter(user=user, is_active=True)
     )
     
     researched_headers = []
@@ -1245,7 +1132,7 @@ def my_researched_trajects(request):
         researched_headers.append(header)
 
 
-    return render(request, 'trajects/my_researched_trajects.html', {
+    return render(request, 'trajects/recherche/trajets_liste.html', {
         'researched_trajects': researched_headers,
         'is_abonned': is_abonned,
     })
@@ -1279,7 +1166,7 @@ def my_proposed_groupe_detail(request, groupe_uid):
     
     occurrences_past = occurrences_all.filter(date__lt=today).order_by('-date', '-departure_time')
 
-    return render(request, 'trajects/my_proposed_groupe_detail.html', {
+    return render(request, 'trajects/proposition/trajet_detail.html', {
         'header': header,
         'occurrences_upcoming': occurrences_upcoming,
         'occurrences_past': occurrences_past,
@@ -1313,7 +1200,7 @@ def my_simple_groupe_detail(request, groupe_uid):
     occurrences_past = occurrences_all.filter(date__lt=today).order_by('-date', '-departure_time')
 
     
-    return render(request, 'trajects/my_simple_groupe_detail.html', {
+    return render(request, 'trajects/proposition_rayon/trajet_detail.html', {
         'header': header,
         'occurrences_upcoming': occurrences_upcoming,
         'occurrences_past': occurrences_past,
@@ -1346,7 +1233,7 @@ def my_researched_groupe_detail(request, groupe_uid):
     
     occurrences_past = occurrences_all.filter(date__lt=today).order_by('-date', '-departure_time')
     
-    return render(request, 'trajects/my_researched_groupe_detail.html', {
+    return render(request, 'trajects/recherche/trajet_detail.html', {
         'header': researched_header,
         'occurrences_upcoming': occurrences_upcoming,
         'occurrences_past': occurrences_past,
@@ -1367,16 +1254,8 @@ def my_matchings_proposed(request):
     today = timezone.now().date()
     is_abonned = Subscription.is_user_abonned(user)
 
-    groupes = (
-        ProposedTraject.objects
-        .filter(user=user, is_active=True, is_simple=False)
-        .values("groupe_uid")
-        .annotate(
-            first_date=Min("date"),
-            last_date=Max("date"),
-            count=Count("id")
-        )
-        .order_by("-last_date")
+    groupes = _aggregate_groupes(
+        ProposedTraject.objects.filter(user=user, is_active=True, is_simple=False)
     )
 
     headers = []
@@ -1392,14 +1271,12 @@ def my_matchings_proposed(request):
         if not header:
             continue
 
-        matched_researches = []
-        for proposal in (
+        matched_researches = _collect_matches(
             ProposedTraject.objects
             .filter(user=user, is_active=True, is_simple=False, groupe_uid=g["groupe_uid"])
             .select_related("traject", "user", "user__profile")
             .prefetch_related("transport_modes", "languages")
-        ):
-            matched_researches.extend(find_matching_trajects(proposal))
+        )
 
         pair_map = {}
         for research in matched_researches:
@@ -1417,7 +1294,7 @@ def my_matchings_proposed(request):
             "is_past": bool(g["last_date"] and g["last_date"] < today),
         })
     
-    return render(request, "trajects/my_matchings_proposed.html", {
+    return render(request, "trajects/proposition/matchings.html", {
         "groups": headers,
         "is_abonned": is_abonned,
         "today": today,
@@ -1432,16 +1309,8 @@ def my_matchings_simple(request):
     today = timezone.now().date()
     is_abonned = Subscription.is_user_abonned(user)
 
-    groupes = (
-        ProposedTraject.objects
-        .filter(user=user, is_active=True, is_simple=True)
-        .values("groupe_uid")
-        .annotate(
-            first_date=Min("date"),
-            last_date=Max("date"),
-            count=Count("id")
-        )
-        .order_by("-last_date")
+    groupes = _aggregate_groupes(
+        ProposedTraject.objects.filter(user=user, is_active=True, is_simple=True)
     )
 
     headers = []
@@ -1457,14 +1326,12 @@ def my_matchings_simple(request):
         if not header:
             continue
 
-        matched_researches = []
-        for proposal in (
+        matched_researches = _collect_matches(
             ProposedTraject.objects
             .filter(user=user, is_active=True, is_simple=True, groupe_uid=g["groupe_uid"])
             .select_related("traject")
             .prefetch_related("transport_modes")
-        ):
-            matched_researches.extend(find_matching_trajects(proposal))
+        )
 
         pair_map = {}
         for research in matched_researches:
@@ -1482,7 +1349,7 @@ def my_matchings_simple(request):
             "is_past": bool(g["last_date"] and g["last_date"] < today),
         })
 
-    return render(request, "trajects/my_matchings_simple.html", {
+    return render(request, "trajects/proposition_rayon/matchings.html", {
         "groups": headers,
         "is_abonned": is_abonned,
         "today": today,
@@ -1500,16 +1367,8 @@ def my_matchings_researched(request):
     today = timezone.now().date()
     is_abonned = Subscription.is_user_abonned(user)
 
-    groupes = (
-        ResearchedTraject.objects
-        .filter(user=user, is_active=True)
-        .values("groupe_uid")
-        .annotate(
-            first_date=Min("date"),
-            last_date=Max("date"),
-            count=Count("id")
-        )
-        .order_by("-last_date")
+    groupes = _aggregate_groupes(
+        ResearchedTraject.objects.filter(user=user, is_active=True)
     )
 
     headers = []
@@ -1525,14 +1384,12 @@ def my_matchings_researched(request):
         if not header:
             continue
 
-        matched_proposals = []
-        for research in (
+        matched_proposals = _collect_matches(
             ResearchedTraject.objects
             .filter(user=user, is_active=True, groupe_uid=g["groupe_uid"])
             .select_related("traject")
             .prefetch_related("transport_modes", "children")
-        ):
-            matched_proposals.extend(find_matching_trajects(research))
+        )
 
         pair_map = {}
         for proposal in matched_proposals:
@@ -1550,7 +1407,7 @@ def my_matchings_researched(request):
             "is_past": bool(g["last_date"] and g["last_date"] < today),
         })
 
-    return render(request, "trajects/my_matchings_researched.html", {
+    return render(request, "trajects/recherche/matchings.html", {
         "groups": headers,
         "is_abonned": is_abonned,
         "today": today,
@@ -1584,7 +1441,7 @@ def my_matchings_proposed_detail(request, proposed_groupe_uid, researched_groupe
     )
     header = proposed_qs.first()
     if not header:
-        return render(request, "trajects/my_matchings_proposed_detail.html", {
+        return render(request, "trajects/proposition/matching_detail.html", {
             "error": "Groupe proposé introuvable.",
             "is_abonned": is_abonned,
         })
@@ -1604,7 +1461,7 @@ def my_matchings_proposed_detail(request, proposed_groupe_uid, researched_groupe
     )
     parent_header = researched_qs.first()
     if not parent_header:
-        return render(request, "trajects/my_matchings_proposed_detail.html", {
+        return render(request, "trajects/proposition/matching_detail.html", {
             "header": header,
             "error": "Groupe du parent introuvable.",
             "is_abonned": is_abonned,
@@ -1635,18 +1492,9 @@ def my_matchings_proposed_detail(request, proposed_groupe_uid, researched_groupe
     )
 
     proposed_by_date = {p.date: p for p in proposed_qs}
+    rows = _build_match_rows(matched_dates_qs, proposed_by_date, today)
 
-    rows = []
-    for research in matched_dates_qs:
-        proposal = proposed_by_date.get(research.date)
-        rows.append({
-            "research": research,
-            "is_past": bool(research.date and research.date < today),
-            "children_count": research.children.count(),
-            "remaining_places": _available_places(proposal) if proposal else None,
-        })
-
-    return render(request, "trajects/my_matchings_proposed_detail.html", {
+    return render(request, "trajects/proposition/matching_detail.html", {
         "header": header,
         "proposed_stats": proposed_stats,
         "parent_header": parent_header,
@@ -1682,7 +1530,7 @@ def my_matchings_simple_detail(request, proposed_groupe_uid, researched_groupe_u
     )
     header = proposed_qs.first()
     if not header:
-        return render(request, "trajects/my_matchings_simple_detail.html", {
+        return render(request, "trajects/proposition_rayon/matching_detail.html", {
             "error": "Groupe simple introuvable.",
             "is_abonned": is_abonned,
         })
@@ -1702,7 +1550,7 @@ def my_matchings_simple_detail(request, proposed_groupe_uid, researched_groupe_u
     )
     parent_header = researched_qs.first()
     if not parent_header:
-        return render(request, "trajects/my_matchings_simple_detail.html", {
+        return render(request, "trajects/proposition_rayon/matching_detail.html", {
             "header": header,
             "error": "Groupe du parent introuvable.",
             "is_abonned": is_abonned,
@@ -1733,21 +1581,15 @@ def my_matchings_simple_detail(request, proposed_groupe_uid, researched_groupe_u
     )
 
     proposed_by_date = {p.date: p for p in proposed_qs}
-
-    rows = []
-    for research in matched_dates_qs:
-        proposal = proposed_by_date.get(research.date)
-
-        rows.append({
-            "research": research,
-            "is_past": bool(research.date and research.date < today),
-            "children_count": research.children.count(),
-            "remaining_places": _available_places(proposal) if proposal else None,
+    rows = _build_match_rows(
+        matched_dates_qs, proposed_by_date, today,
+        extra_fields_fn=lambda _, proposal: {
             "radius_km": proposal.search_radius_km if proposal else None,
             "transport_modes": proposal.transport_modes.all() if proposal else [],
-        })
+        },
+    )
 
-    return render(request, "trajects/my_matchings_simple_detail.html", {
+    return render(request, "trajects/proposition_rayon/matching_detail.html", {
         "header": header,
         "proposed_stats": proposed_stats,
         "parent_header": parent_header,
@@ -1774,7 +1616,7 @@ def my_matchings_researched_detail(request, researched_groupe_uid, proposed_grou
     )
     researched_header = researched_qs.first()
     if not researched_header:
-        return render(request, "trajects/my_matchings_researched_detail.html", {
+        return render(request, "trajects/recherche/matching_detail.html", {
             "error": "Groupe de recherche introuvable.",
             "is_abonned": is_abonned,
         })
@@ -1798,7 +1640,7 @@ def my_matchings_researched_detail(request, researched_groupe_uid, proposed_grou
     )
     proposed_header = proposed_qs.first()
     if not proposed_header:
-        return render(request, "trajects/my_matchings_researched_detail.html", {
+        return render(request, "trajects/recherche/matching_detail.html", {
             "researched_header": researched_header,
             "error": "Groupe proposé introuvable.",
             "is_abonned": is_abonned,
@@ -1855,28 +1697,18 @@ def my_matchings_researched_detail(request, researched_groupe_uid, proposed_grou
         ).values_list("proposed_traject_id", "researched_traject_id")
     )
 
-    rows = []
-    for research in researched_qs:
-        proposal = proposed_by_date.get(research.date)
-        if not proposal:
-            continue
-
-        reservation_key = f"{proposal.id}_{research.id}"
-
-        print("DEBUG row reservation_key:", reservation_key)
-
-        rows.append({
-            "research": research,
+    rows = _build_match_rows(
+        researched_qs, proposed_by_date, today,
+        skip_if_no_proposal=True,
+        extra_fields_fn=lambda research, proposal: {
             "proposal": proposal,
-            "reservation_key": reservation_key,
-            "is_past": bool(research.date and research.date < today),
-            "children_count": research.children.count(),
-            "remaining_places": _available_places(proposal),
+            "reservation_key": f"{proposal.id}_{research.id}",
             "is_simple": proposal.is_simple,
             "radius_km": proposal.search_radius_km if proposal.is_simple else None,
-        })
+        },
+    )
 
-    return render(request, "trajects/my_matchings_researched_detail.html", {
+    return render(request, "trajects/recherche/matching_detail.html", {
         "researched_header": researched_header,
         "researched_stats": researched_stats,
         "proposed_header": proposed_header,
@@ -1913,136 +1745,62 @@ def all_researched_trajects(request):
 @login_required
 @transaction.atomic
 def delete_proposed_groupe(request, groupe_uid):
-    if request.method != "POST":
-        messages.error(request, "Action non autorisée.")
-        return redirect('my_proposed_trajects', groupe_uid=groupe_uid)
-
-    qs = ProposedTraject.objects.filter(
-        user=request.user,
-        groupe_uid=groupe_uid,
-        is_simple=False,
+    return _delete_groupe(
+        request, ProposedTraject,
+        filters={"groupe_uid": groupe_uid, "is_simple": False},
+        redirect_success="my_proposed_trajects",
+        redirect_error="my_proposed_trajects",
     )
-
-    if not qs.exists():
-        messages.error(request, "Groupe introuvable.")
-        return redirect('my_proposed_trajects')
-
-    count = qs.count()
-    qs.delete()
-
-    messages.success(request, f"Groupe supprimé ({count} date(s)).")
-    return redirect('my_proposed_trajects')
 
 @login_required
 def delete_proposed_traject(request, groupe_uid, pk):
-    trajet = get_object_or_404(
-        ProposedTraject,
-        pk=pk,
-        user=request.user,
+    return _delete_single(
+        request, ProposedTraject,
+        filters={"pk": pk, "groupe_uid": groupe_uid, "is_simple": False},
+        redirect_name="my_proposed_groupe_detail",
         groupe_uid=groupe_uid,
-        is_simple=False,
+        success_msg="La date du trajet proposé a été supprimée.",
     )
-
-    if request.method == "POST":
-        trajet.delete()
-        messages.success(request, "La date du trajet proposé a été supprimée.")
-        return redirect('my_proposed_groupe_detail', groupe_uid=groupe_uid)
-
-    messages.error(request, "Action non autorisée.")
-    return redirect('my_proposed_groupe_detail', groupe_uid=groupe_uid)
 
 @login_required
 @transaction.atomic
 def delete_simple_groupe(request, groupe_uid):
-    """
-    Supprime tout un groupe de trajets simples.
-    Sécurité :
-    - POST uniquement
-    - uniquement les trajets de l'utilisateur connecté
-    - uniquement les ProposedTraject marqués is_simple=True
-    """
-    if request.method != "POST":
-        messages.error(request, "Action non autorisée.")
-        return redirect('my_simple_trajects')
-
-    qs = ProposedTraject.objects.filter(
-        user=request.user,
-        groupe_uid=groupe_uid,
-        is_simple=True,
+    return _delete_groupe(
+        request, ProposedTraject,
+        filters={"groupe_uid": groupe_uid, "is_simple": True},
+        redirect_success="my_simple_trajects",
+        redirect_error="my_simple_trajects",
     )
-
-    if not qs.exists():
-        messages.error(request, "Groupe simple introuvable.")
-        return redirect('my_simple_trajects')
-
-    count = qs.count()
-    qs.delete()
-
-    messages.success(request, f"Groupe supprimé ({count} date(s)).")
-    return redirect('my_simple_trajects')
 
 @login_required
 def delete_simple_traject(request, groupe_uid, pk):
-    """
-    Supprime une seule occurrence d’un trajet simple.
-    Sécurité :
-    - POST uniquement
-    - uniquement les trajets simples de l'utilisateur connecté
-    """
-    trajet = get_object_or_404(
-        ProposedTraject,
-        pk=pk,
-        user=request.user,
+    return _delete_single(
+        request, ProposedTraject,
+        filters={"pk": pk, "groupe_uid": groupe_uid, "is_simple": True},
+        redirect_name="my_simple_groupe_detail",
         groupe_uid=groupe_uid,
-        is_simple=True,
+        success_msg="La date du trajet simplifié a été supprimée.",
     )
 
-    if request.method == "POST":
-        trajet.delete()
-        messages.success(request, "La date du trajet simplifié a été supprimée.")
-        return redirect('my_simple_groupe_detail', groupe_uid=groupe_uid)
-
-    messages.error(request, "Action non autorisée.")
-    return redirect('my_simple_groupe_detail', groupe_uid=groupe_uid)
-    
 @login_required
 def delete_researched_traject(request, groupe_uid, pk):
-    trajet = get_object_or_404(
-        ResearchedTraject,
-        pk=pk,
-        user=request.user,
-        groupe_uid=groupe_uid
+    return _delete_single(
+        request, ResearchedTraject,
+        filters={"pk": pk, "groupe_uid": groupe_uid},
+        redirect_name="my_researched_groupe_detail",
+        groupe_uid=groupe_uid,
+        success_msg="La date du trajet recherché a été supprimée.",
     )
-
-    if request.method == "POST":
-        trajet.delete()
-        messages.success(request, "La date du trajet recherché a été supprimée.")
-        return redirect('my_researched_groupe_detail', groupe_uid=groupe_uid)
-
-    messages.error(request, "Action non autorisée.")
-    return redirect('my_researched_groupe_detail', groupe_uid=groupe_uid)
 
 @login_required
 @transaction.atomic
 def delete_researched_groupe(request, groupe_uid):
-    if request.method != "POST":
-        messages.error(request, "Action non autorisée.")
-        return redirect('my_researched_groupe_detail', groupe_uid=groupe_uid)
-
-    qs = ResearchedTraject.objects.filter(
-        user=request.user,
-        groupe_uid=groupe_uid
+    return _delete_groupe(
+        request, ResearchedTraject,
+        filters={"groupe_uid": groupe_uid},
+        redirect_success="my_researched_trajects",
+        redirect_error="my_researched_trajects",
     )
-
-    if not qs.exists():
-        messages.error(request, "Groupe introuvable.")
-        return redirect('my_researched_trajects')
-
-    count = qs.count()
-    qs.delete()
-
-    messages.success(request, f"Groupe supprimé ({count} date(s)).")
-    return redirect('my_researched_trajects')
 
 
 
@@ -2466,7 +2224,7 @@ def my_reservations(request):
             "count": item["count"],
         })
 
-    return render(request, 'trajects/my_reservations.html', {
+    return render(request, 'trajects/reservation/trajets_liste.html', {
         'made_reservations': made_reservations,
         'received_reservations': received_reservations,
         'is_abonned': is_abonned,
@@ -2529,7 +2287,7 @@ def my_reservations_made_detail(
 
     return render(
         request,
-        "trajects/my_reservations_made_detail.html",
+        "trajects/reservation/faites_detail.html",
         {
             "header": header,
             "stats": stats,
@@ -2595,7 +2353,7 @@ def my_reservations_received_detail(
 
     return render(
         request,
-        "trajects/my_reservations_received_detail.html",
+        "trajects/reservation/recues_detail.html",
         {
             "header": header,
             "stats": stats,

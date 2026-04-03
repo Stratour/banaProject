@@ -18,7 +18,7 @@
   </ul>
   {% endif %}
   
-  {% include "./component_researched_tabs.html" %}
+  {% include "trajects/partials/tabs_recherche.html" %}
   
 <form method="POST" action="{% url 'researched_traject' %}" class="my-12 space-y-16" novalidate>
   {% csrf_token %}
