@@ -18,7 +18,7 @@
     </ul>
   {% endif %}
 
-  {% include "./component_researched_tabs.html" %}
+  {% include "trajects/partials/tabs_recherche.html" %}
 
 
  {% if researched_trajects %}
@@ -214,7 +214,6 @@
                   <span class="text-gray-400">—</span>
                 {% endfor %}
               </div>
-            </div>
 
             <footer class="mt-5 flex justify-end">
                 <a href="{% url 'my_researched_groupe_detail' researched.groupe_uid %}" 
