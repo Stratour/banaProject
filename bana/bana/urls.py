@@ -30,7 +30,6 @@ urlpatterns += i18n_patterns(
     path('about/', views.about, name='about'),
     path('work/', views.work, name='work'),
     path('parent/', views.parent, name='parent'),
-    path('welcome/', account_views.welcome, name="welcome"),
 
     # Admin Interfaces
     path('bana_admin/', include('bana_admin.urls')),

@@ -95,7 +95,44 @@
       </div>
       {% endif %}
 {% endcomment %}
-      <div 
+      {% if not onboarding_complete %}
+      <div class="rounded-xl border border-yellow-300 bg-yellow-50 p-5 mb-2">
+        <h2 class="text-base font-semibold text-yellow-800 mb-3">{% trans "Complétez votre profil pour commencer" %}</h2>
+        <ul class="space-y-2">
+          {% for step in onboarding_steps %}
+          <li class="flex items-start gap-3 text-sm">
+            {% if step.done %}
+              <span class="mt-0.5 flex-shrink-0 text-green-600">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </span>
+              <span class="text-gray-500 line-through">{{ step.label }}</span>
+            {% else %}
+              <span class="mt-0.5 flex-shrink-0 text-yellow-500">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" />
+                </svg>
+              </span>
+              <span>
+                {% if step.method == "post" %}
+                <form method="post" action="{{ step.url }}" class="inline">
+                  {% csrf_token %}
+                  <button type="submit" class="font-medium text-[#007F73] hover:underline bg-transparent border-0 p-0 cursor-pointer">{{ step.label }}</button>
+                </form>
+                {% else %}
+                <a href="{{ step.url }}" class="font-medium text-[#007F73] hover:underline">{{ step.label }}</a>
+                {% endif %}
+                <span class="text-gray-500"> — {{ step.detail }}</span>
+              </span>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+
+      <div
           id="public-profile-section"
           hx-get="{% url 'accounts:profile_public' %}" 
           hx-trigger="load" 

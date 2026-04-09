@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from allauth.account.adapter import get_adapter
 from allauth.account.models import EmailAddress, EmailConfirmation
 from django.utils.translation import gettext as _
@@ -21,31 +21,93 @@ from allauth.account.views import PasswordChangeView
 
 from .forms import ProfileUpdateForm, ChildForm, ReviewForm, UserUpdateForm, FavoriteAddressForm
 from accounts.models import Profile, Child, Review, FavoriteAddress
+from stripe_sub.models import Subscription
 
 logger = logging.getLogger(__name__)
 
 # ==================== LOGIN / LOGOUT / PROFILE ==================== #
 
-@login_required
-def welcome(request):
-    user = request.user    
-    return render(request, "account/welcome.html", {"user" : user})
+def get_onboarding_steps(user, profile):
+    """Retourne la liste des étapes d'onboarding avec leur état."""
+    is_abonned = Subscription.is_user_abonned(user)
+    # La CI vérifiée valide automatiquement le prénom/nom (Stripe Identity les met à jour)
+    has_name = bool(user.first_name and user.last_name) or profile.ci_is_verified
 
+    steps = [
+        {
+            "label": _("Renseigner votre prénom et nom"),
+            "done": has_name,
+            "url": reverse("accounts:profile_edit"),
+            "detail": _("Requis pour accéder aux trajets"),
+        },
+        {
+            "label": _("Souscrire un abonnement"),
+            "done": is_abonned,
+            "url": reverse("subscription"),
+            "detail": _("Requis pour voir les profils et réserver"),
+        },
+    ]
+
+    if is_abonned:
+        steps += [
+            {
+                "label": _("Vérifier votre identité (CI)"),
+                "done": profile.ci_is_verified,
+                "url": reverse("create_verification_session"),
+                "detail": _("Obligatoire pour réserver"),
+                "method": "post",
+            },
+            {
+                "label": _("Déposer votre certificat BVM"),
+                "done": bool(profile.document_bvm),
+                "url": reverse("accounts:profile_edit"),
+                "detail": _("En attente de validation admin"),
+            },
+            {
+                "label": _("Ajouter une photo de profil"),
+                "done": bool(profile.profile_picture),
+                "url": reverse("accounts:profile_edit"),
+                "detail": _("Requise pour utiliser votre abonnement"),
+            },
+        ]
+
+    if profile.service == "Parent":
+        steps.append({
+            "label": _("Ajouter un enfant"),
+            "done": user.children.exists(),
+            "url": reverse("accounts:add_child"),
+            "detail": _("Nécessaire pour créer une recherche de trajet"),
+        })
+
+    return steps
 
 @login_required(login_url="/accounts/login/")
 def profile_view(request):
     """Page profil (tableau de bord). S’assure qu’un Profile existe et le passe au template."""
-    profile, _ = Profile.objects.get_or_create(user=request.user)
-    return render(request, "account/profile/profile.html", {"profile": profile})
+    profile, _created = Profile.objects.get_or_create(user=request.user)
+
+    # Message de bienvenue au premier passage après inscription
+    if not profile.onboarding_seen:
+        profile.onboarding_seen = True
+        profile.save(update_fields=["onboarding_seen"])
+        messages.success(request, _("Bienvenue sur BanaCommunity ! Complétez votre profil pour commencer."))
+
+    onboarding_steps = get_onboarding_steps(request.user, profile)
+    onboarding_complete = all(s["done"] for s in onboarding_steps)
+
+    return render(request, "account/profile/profile.html", {
+        "profile": profile,
+        "onboarding_steps": onboarding_steps,
+        "onboarding_complete": onboarding_complete,
+    })
 
 
 @login_required
 def profile_user(request, user_id=None):
-    """Profil public d’un autre utilisateur + notes/avis."""
-    if user_id and user_id == request.user.id:
-        return redirect("accounts:profile")
+    """Profil public d’un utilisateur + notes/avis. Fonctionne aussi pour son propre profil."""
+    user = get_object_or_404(User.objects.select_related('profile'), id=user_id)
+    is_own_profile = (user == request.user)
 
-    user = get_object_or_404(User, id=user_id)
     reviews = Review.objects.filter(reviewed_user=user)
     reviews_count = reviews.count()
     average_rating = reviews.aggregate(Avg("rating"))["rating__avg"] or 0
@@ -55,27 +117,33 @@ def profile_user(request, user_id=None):
     has_half_star = (average_rating - full_stars) >= 0.5
     empty_stars = 5 - full_stars - (1 if has_half_star else 0)
 
-    existing_review = Review.objects.filter(reviewer=request.user, reviewed_user=user).first()
-    allow_review = existing_review is None
+    existing_review = None
+    allow_review = False
+    is_editing = False
+    form = None
 
-    is_editing = "edit_review" in request.GET and existing_review
-    form = ReviewForm(instance=existing_review if is_editing else None)
+    if not is_own_profile:
+        existing_review = Review.objects.filter(reviewer=request.user, reviewed_user=user).first()
+        allow_review = existing_review is None
+        is_editing = "edit_review" in request.GET and existing_review
+        form = ReviewForm(instance=existing_review if is_editing else None)
 
-    if request.method == "POST":
-        form = ReviewForm(request.POST, instance=existing_review if is_editing else None)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.reviewer = request.user
-            review.reviewed_user = user
-            review.save()
-            messages.success(request, "Votre note a été mise à jour.")
-            return redirect("accounts:profile_user", user_id=user.id)
+        if request.method == "POST":
+            form = ReviewForm(request.POST, instance=existing_review if is_editing else None)
+            if form.is_valid():
+                review = form.save(commit=False)
+                review.reviewer = request.user
+                review.reviewed_user = user
+                review.save()
+                messages.success(request, "Votre note a été mise à jour.")
+                return redirect("accounts:profile_user", user_id=user.id)
 
     return render(
         request,
         "account/profile/profile_user.html",
         {
             "user": user,
+            "is_own_profile": is_own_profile,
             "reviews": reviews,
             "average_rating": round(average_rating, 1),
             "reviews_count": reviews_count,
@@ -149,6 +217,7 @@ def profile_edit(request):
         if form.is_valid() and user_form.is_valid():
             form.save()
             user_form.save()
+            profile.update_profile_verified()
             messages.success(request, "Profil mis à jour.")
             return redirect("accounts:profile")
     else:
@@ -163,14 +232,16 @@ def profile_edit(request):
 
 
 @login_required
-def profile_children(request):
-    """Page enfants (menu profil)."""
-    return render(request, "account/profile/profile_children.html")
-
-@login_required
 def profile_security(request):
     """Page Sécurité & connexion (sans HTMX)."""
-    return render(request, "account/profile/profile_security.html")
+    pending = EmailAddress.objects.filter(
+        user=request.user, verified=False, primary=False
+    ).values_list("email", flat=True).first()
+    password_errors = request.session.pop('password_form_errors', {})
+    return render(request, "account/profile/profile_security.html", {
+        "pending_email": pending,
+        "password_errors": password_errors,
+    })
 
 
 @login_required
@@ -202,6 +273,12 @@ class CustomPasswordChangeView(PasswordChangeView):
         flows.password_change.finalize_password_change(self.request, form.user)
         messages.success(self.request, "Mot de passe mis à jour.")
         return redirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        self.request.session['password_form_errors'] = {
+            field: list(errors) for field, errors in form.errors.items()
+        }
+        return redirect(reverse_lazy("accounts:profile_security"))
 
 
 # ==================== EMAIL (affichage / modification) ==================== #
@@ -266,8 +343,22 @@ def email_change_confirm(request, key):
             messages.error(request, _("Ce lien n'est pas valide pour cet utilisateur."))
             return redirect("accounts:profile_security")
 
-        # Confirme l'email (Allauth fait le reste via signal)
+        # Confirme l'email
         confirmation.confirm(request)
+
+        # Allauth ne met pas automatiquement à jour user.email quand primary=False
+        # On force la promotion du nouvel email en adresse principale
+        email_address.refresh_from_db()
+        if email_address.verified:
+            with transaction.atomic():
+                request.user.emailaddress_set.exclude(pk=email_address.pk).update(primary=False)
+                email_address.primary = True
+                email_address.save(update_fields=["primary"])
+                request.user.email = email_address.email
+                request.user.save(update_fields=["email"])
+            messages.success(request, _("Votre adresse e-mail a été mise à jour."))
+        else:
+            messages.error(request, _("La confirmation a échoué. Veuillez réessayer."))
 
         return redirect("accounts:profile_security")
 
@@ -293,7 +384,10 @@ def profile_children_view(request):
 def add_child_view(request):
     """
     Ajoute un enfant et affiche la liste.
+    Supporte un paramètre `next` pour rediriger après l'ajout.
     """
+    next_url = request.GET.get("next") or request.POST.get("next") or ""
+
     if request.method == "POST":
         form = ChildForm(request.POST)
         if form.is_valid():
@@ -302,12 +396,18 @@ def add_child_view(request):
             child.save()
             form.save_m2m()
             messages.success(request, "Enfant ajouté avec succès.")
+            if next_url:
+                return redirect(next_url)
             return redirect("accounts:profile_child")
     else:
         form = ChildForm()
 
     children = request.user.children.all()
-    return render(request, "account/profile/profil_add_child.html", {"form": form, "children": children})
+    return render(request, "account/profile/profil_add_child.html", {
+        "form": form,
+        "children": children,
+        "next_url": next_url,
+    })
 
 @login_required
 def delete_child_view(request, child_id):

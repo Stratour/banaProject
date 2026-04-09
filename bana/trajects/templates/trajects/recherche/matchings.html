@@ -30,7 +30,7 @@
                 {{ researched.groupe_name|default:"Mon trajet" }}
               </h2>
               <p class="text-xs text-gray-500">
-                {% trans "Du" %} {{ item.stats.first_date|date:"d/m/Y" }}
+                {% trans "Du" %} {{ item.stats.next_date|date:"d/m/Y" }}
                 {% trans "au" %} {{ item.stats.last_date|date:"d/m/Y" }}
               </p>
             </div>
@@ -215,8 +215,8 @@
                       {% endif %}
                     </p>
                     <p class="text-xs text-gray-600">
-                      {% trans "Du" %} {{ m.date_debut|date:"d/m/Y"|default:"—" }}
-                      {% trans "au" %} {{ m.date_fin|date:"d/m/Y"|default:"—" }}
+                      {% trans "Du" %} {{ m.matched_date_debut|date:"d/m/Y"|default:"—" }}
+                      {% trans "au" %} {{ m.matched_date_fin|date:"d/m/Y"|default:"—" }}
                     </p>
                   </div>
                 </div>

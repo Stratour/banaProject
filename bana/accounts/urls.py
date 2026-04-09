@@ -12,8 +12,6 @@ urlpatterns = [
     path('profil/mes-enfants/', views.profile_children_view, name='profile_child'),
     path('profil/mes-enfants/ajouter-enfant/', views.add_child_view, name='add_child'),
     path('profil/mes-enfants/supprimer-enfant/<int:child_id>/', views.delete_child_view, name='delete_child'),
-    #path('profil/enfant/', views.profile_children, name='profile_children'),
-    
     path('profil/mes-adresses/', views.profile_addresses, name='profile_addresses'),
     path('profil/mes-adresses/ajouter-adresses/', views.create_address, name='create_address'),
     path('profil/mes-adresses/<uuid:uid>/supprimer-adresse/', views.delete_address, name='delete_address'),

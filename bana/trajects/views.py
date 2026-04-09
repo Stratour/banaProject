@@ -1,6 +1,7 @@
 import re
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404, render, redirect
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .utils.geocoding import get_autocomplete_suggestions, get_place_details
@@ -10,7 +11,7 @@ from accounts.models import Child, FavoriteAddress
 from stripe_sub.models import Subscription
 from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode, Reservation
 from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm, SimpleProposedTrajectForm
-from django.db.models import Q, Min, Max, Count
+from django.db.models import Q, Min, Max, Count, Case, When, DateField
 from datetime import datetime, timedelta, date
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
@@ -21,8 +22,50 @@ from django.db import transaction
 from django.utils.translation import gettext_lazy as _
 
 from django.contrib.auth import get_user_model
+from functools import wraps
 
 User = get_user_model()
+
+
+def name_required(view_func):
+    """Bloque l'accès si le prénom ou le nom n'est pas renseigné.
+    La CI vérifiée valide automatiquement le prénom/nom (Stripe Identity les met à jour)."""
+    @login_required
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        profile = request.user.profile
+        has_name = bool(request.user.first_name and request.user.last_name)
+        if not has_name and not profile.ci_is_verified:
+            messages.warning(
+                request,
+                _("Veuillez renseigner votre prénom et votre nom avant d'accéder aux trajets."),
+            )
+            return redirect("accounts:profile_edit")
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
+def subscription_complete_required(view_func):
+    """Réservé aux abonnés ayant complété CI + BVM + photo."""
+    @login_required
+    @wraps(view_func)
+    def wrapper(request, *args, **kwargs):
+        user = request.user
+        if not Subscription.is_user_abonned(user):
+            messages.warning(
+                request,
+                _("Vous devez être abonné pour effectuer cette action."),
+            )
+            return redirect("accounts:profile")
+        profile = user.profile
+        if not (profile.ci_is_verified and profile.document_bvm and profile.profile_picture):
+            messages.warning(
+                request,
+                _("Veuillez compléter votre vérification (identité, BVM et photo) avant d'effectuer cette action."),
+            )
+            return redirect("accounts:profile")
+        return view_func(request, *args, **kwargs)
+    return wrapper
 
 def _available_places(proposal):
     """Places restantes — number_of_places est décrémenté à chaque confirmation."""
@@ -53,7 +96,6 @@ def get_matching_source_type(obj):
 
     return None
 
-
 def _time_ok(t1, t2, tolerance_minutes=45):
     """
     Compare deux heures avec une tolérance.
@@ -83,12 +125,22 @@ def _has_enough_places(proposal, researched):
     return _available_places(proposal) >= required_places
 
 
-def _aggregate_groupes(queryset):
-    """Regroupe un queryset par groupe_uid avec stats de dates."""
+def _aggregate_groupes(queryset, today=None):
+    """Regroupe un queryset par groupe_uid avec stats de dates.
+
+    next_date = prochaine date à venir (>= today) pour ce groupe.
+    Si None, toutes les occurrences sont passées.
+    """
+    _today = today or timezone.now().date()
     return (
         queryset
         .values('groupe_uid')
-        .annotate(first_date=Min('date'), last_date=Max('date'), count=Count('id'))
+        .annotate(
+            first_date=Min('date'),
+            last_date=Max('date'),
+            next_date=Min(Case(When(date__gte=_today, then='date'), output_field=DateField())),
+            count=Count('id'),
+        )
         .order_by('-last_date')
     )
 
@@ -385,7 +437,7 @@ def find_matching_trajects(obj, default_radius_km=5, time_tolerance_minutes=45):
 #  Vues création de trajets
 # ============================
 
-@login_required
+@name_required
 def proposed_traject(request, researchesTraject_id=None):
     """
     Création d'un trajet proposé précis A -> B
@@ -480,7 +532,7 @@ def proposed_traject(request, researchesTraject_id=None):
         },
     )
     
-@login_required
+@name_required
 def simple_proposed_traject(request):
     """
     Création d'un trajet simple rayon (Yaya).
@@ -560,11 +612,19 @@ def simple_proposed_traject(request):
         },
     )
     
-@login_required
+@name_required
 def researched_traject(request):
     """
     Création d'une recherche parent.
     """
+    # Un Parent doit avoir au moins un enfant enregistré avant de créer une recherche
+    if not request.user.children.exists():
+        messages.warning(
+            request,
+            _("Vous devez d'abord ajouter un enfant avant de créer une recherche de trajet."),
+        )
+        return redirect(reverse("accounts:add_child") + "?next=" + reverse("researched_traject"))
+
     transport_modes = TransportMode.objects.all()
     service = getattr(request.user.profile, "service", None)
 
@@ -1045,7 +1105,7 @@ def save_simple_proposed_traject(request, form, groupe_name=None, groupe_uid=Non
 # 🧭 VUES UTILISATEURS
 # ============================================================
 
-@login_required
+@name_required
 def my_proposed_trajects(request):
     user = request.user
     is_abonned = Subscription.is_user_abonned(user)
@@ -1074,7 +1134,7 @@ def my_proposed_trajects(request):
         "is_abonned": is_abonned,
     })
 
-@login_required
+@name_required
 def my_simple_trajects(request):
     user = request.user
     is_abonned = Subscription.is_user_abonned(user)
@@ -1104,7 +1164,7 @@ def my_simple_trajects(request):
         'is_abonned': is_abonned,
     })
     
-@login_required
+@name_required
 def my_researched_trajects(request):
     user = request.user
     is_abonned = Subscription.is_user_abonned(user)
@@ -1141,7 +1201,7 @@ def my_researched_trajects(request):
 # 🧭 VUES UTILISATEURS DETAIL 
 # ============================================================
 
-@login_required
+@name_required
 def my_proposed_groupe_detail(request, groupe_uid):
     user = request.user
     is_abonned = Subscription.is_user_abonned(user)
@@ -1175,7 +1235,7 @@ def my_proposed_groupe_detail(request, groupe_uid):
         
     })
       
-@login_required
+@name_required
 def my_simple_groupe_detail(request, groupe_uid):
     user = request.user
     is_abonned = Subscription.is_user_abonned(user)
@@ -1208,7 +1268,7 @@ def my_simple_groupe_detail(request, groupe_uid):
         'is_abonned': is_abonned,
     })
     
-@login_required
+@name_required
 def my_researched_groupe_detail(request, groupe_uid):
     user = request.user
     is_abonned = Subscription.is_user_abonned(user)
@@ -1245,7 +1305,7 @@ def my_researched_groupe_detail(request, groupe_uid):
 # 🔵 Matching des trajets 
 # ============================================================
 
-@login_required
+@name_required
 def my_matchings_proposed(request):
     """
     Proposed précis (parent ou yaya) -> match avec parent researched.
@@ -1255,11 +1315,15 @@ def my_matchings_proposed(request):
     is_abonned = Subscription.is_user_abonned(user)
 
     groupes = _aggregate_groupes(
-        ProposedTraject.objects.filter(user=user, is_active=True, is_simple=False)
+        ProposedTraject.objects.filter(user=user, is_active=True, is_simple=False),
+        today=today,
     )
 
     headers = []
     for g in groupes:
+        if g["last_date"] and g["last_date"] < today:
+            continue
+
         header = (
             ProposedTraject.objects
             .filter(user=user, is_active=True, is_simple=False, groupe_uid=g["groupe_uid"])
@@ -1273,7 +1337,7 @@ def my_matchings_proposed(request):
 
         matched_researches = _collect_matches(
             ProposedTraject.objects
-            .filter(user=user, is_active=True, is_simple=False, groupe_uid=g["groupe_uid"])
+            .filter(user=user, is_active=True, is_simple=False, groupe_uid=g["groupe_uid"], date__gte=today)
             .select_related("traject", "user", "user__profile")
             .prefetch_related("transport_modes", "languages")
         )
@@ -1281,8 +1345,16 @@ def my_matchings_proposed(request):
         pair_map = {}
         for research in matched_researches:
             key = (research.groupe_uid, research.user_id)
-            pair_map[key] = research
-            
+            if key not in pair_map:
+                pair_map[key] = research
+                research.matched_date_debut = research.date
+                research.matched_date_fin = research.date
+            else:
+                existing = pair_map[key]
+                if research.date:
+                    existing.matched_date_debut = min(existing.matched_date_debut, research.date) if existing.matched_date_debut else research.date
+                    existing.matched_date_fin = max(existing.matched_date_fin, research.date) if existing.matched_date_fin else research.date
+
         if not pair_map:
             continue
 
@@ -1291,16 +1363,15 @@ def my_matchings_proposed(request):
             "stats": g,
             "matches": list(pair_map.values()),
             "matches_count": len(pair_map),
-            "is_past": bool(g["last_date"] and g["last_date"] < today),
         })
-    
+
     return render(request, "trajects/proposition/matchings.html", {
         "groups": headers,
         "is_abonned": is_abonned,
         "today": today,
     })
 
-@login_required
+@name_required
 def my_matchings_simple(request):
     """
     Yaya simple rayon -> match avec parent researched.
@@ -1310,11 +1381,15 @@ def my_matchings_simple(request):
     is_abonned = Subscription.is_user_abonned(user)
 
     groupes = _aggregate_groupes(
-        ProposedTraject.objects.filter(user=user, is_active=True, is_simple=True)
+        ProposedTraject.objects.filter(user=user, is_active=True, is_simple=True),
+        today=today,
     )
 
     headers = []
     for g in groupes:
+        if g["last_date"] and g["last_date"] < today:
+            continue
+
         header = (
             ProposedTraject.objects
             .filter(user=user, is_active=True, is_simple=True, groupe_uid=g["groupe_uid"])
@@ -1328,7 +1403,7 @@ def my_matchings_simple(request):
 
         matched_researches = _collect_matches(
             ProposedTraject.objects
-            .filter(user=user, is_active=True, is_simple=True, groupe_uid=g["groupe_uid"])
+            .filter(user=user, is_active=True, is_simple=True, groupe_uid=g["groupe_uid"], date__gte=today)
             .select_related("traject")
             .prefetch_related("transport_modes")
         )
@@ -1336,17 +1411,24 @@ def my_matchings_simple(request):
         pair_map = {}
         for research in matched_researches:
             key = (research.groupe_uid, research.user_id)
-            pair_map[key] = research
+            if key not in pair_map:
+                pair_map[key] = research
+                research.matched_date_debut = research.date
+                research.matched_date_fin = research.date
+            else:
+                existing = pair_map[key]
+                if research.date:
+                    existing.matched_date_debut = min(existing.matched_date_debut, research.date) if existing.matched_date_debut else research.date
+                    existing.matched_date_fin = max(existing.matched_date_fin, research.date) if existing.matched_date_fin else research.date
 
         if not pair_map:
             continue
-        
+
         headers.append({
             "header": header,
             "stats": g,
             "matches": list(pair_map.values()),
             "matches_count": len(pair_map),
-            "is_past": bool(g["last_date"] and g["last_date"] < today),
         })
 
     return render(request, "trajects/proposition_rayon/matchings.html", {
@@ -1355,7 +1437,7 @@ def my_matchings_simple(request):
         "today": today,
     })
 
-@login_required
+@name_required
 def my_matchings_researched(request):
     """
     Parent researched -> match avec :
@@ -1368,11 +1450,15 @@ def my_matchings_researched(request):
     is_abonned = Subscription.is_user_abonned(user)
 
     groupes = _aggregate_groupes(
-        ResearchedTraject.objects.filter(user=user, is_active=True)
+        ResearchedTraject.objects.filter(user=user, is_active=True),
+        today=today,
     )
 
     headers = []
     for g in groupes:
+        if g["last_date"] and g["last_date"] < today:
+            continue
+
         header = (
             ResearchedTraject.objects
             .filter(user=user, is_active=True, groupe_uid=g["groupe_uid"])
@@ -1386,7 +1472,7 @@ def my_matchings_researched(request):
 
         matched_proposals = _collect_matches(
             ResearchedTraject.objects
-            .filter(user=user, is_active=True, groupe_uid=g["groupe_uid"])
+            .filter(user=user, is_active=True, groupe_uid=g["groupe_uid"], date__gte=today)
             .select_related("traject")
             .prefetch_related("transport_modes", "children")
         )
@@ -1394,17 +1480,24 @@ def my_matchings_researched(request):
         pair_map = {}
         for proposal in matched_proposals:
             key = (proposal.groupe_uid, proposal.user_id, proposal.is_simple)
-            pair_map[key] = proposal
+            if key not in pair_map:
+                pair_map[key] = proposal
+                proposal.matched_date_debut = proposal.date
+                proposal.matched_date_fin = proposal.date
+            else:
+                existing = pair_map[key]
+                if proposal.date:
+                    existing.matched_date_debut = min(existing.matched_date_debut, proposal.date) if existing.matched_date_debut else proposal.date
+                    existing.matched_date_fin = max(existing.matched_date_fin, proposal.date) if existing.matched_date_fin else proposal.date
 
         if not pair_map:
             continue
-        
+
         headers.append({
             "header": header,
             "stats": g,
             "matches": list(pair_map.values()),
             "matches_count": len(pair_map),
-            "is_past": bool(g["last_date"] and g["last_date"] < today),
         })
 
     return render(request, "trajects/recherche/matchings.html", {
@@ -1417,11 +1510,15 @@ def my_matchings_researched(request):
 # 🔵 MATCHINGS DES TRAJETS DETAIL
 # ============================================================
    
-@login_required
+@name_required
 def my_matchings_proposed_detail(request, proposed_groupe_uid, researched_groupe_uid, parent_user_id):
     user = request.user
     today = timezone.now().date()
     is_abonned = Subscription.is_user_abonned(user)
+    profile = user.profile
+    is_subscription_complete = is_abonned and bool(
+        profile.ci_is_verified and profile.document_bvm and profile.profile_picture
+    )
 
     parent_pending_ids = set(
         Reservation.objects.filter(proposed_traject__user=user, status="pending")
@@ -1449,6 +1546,7 @@ def my_matchings_proposed_detail(request, proposed_groupe_uid, researched_groupe
     proposed_stats = proposed_qs.aggregate(
         first_date=Min("date"),
         last_date=Max("date"),
+        next_date=Min(Case(When(date__gte=today, then="date"), output_field=DateField())),
         count=Count("id")
     )
 
@@ -1470,11 +1568,12 @@ def my_matchings_proposed_detail(request, proposed_groupe_uid, researched_groupe
     parent_stats = researched_qs.aggregate(
         first_date=Min("date"),
         last_date=Max("date"),
+        next_date=Min(Case(When(date__gte=today, then="date"), output_field=DateField())),
         count=Count("id")
     )
 
     matched_researched_ids = set()
-    for proposal in proposed_qs:
+    for proposal in proposed_qs.filter(date__gte=today):
         matched = find_matching_trajects(proposal)
         matched_researched_ids.update([m.id for m in matched])
 
@@ -1485,32 +1584,40 @@ def my_matchings_proposed_detail(request, proposed_groupe_uid, researched_groupe
             user_id=parent_user_id,
             groupe_uid=researched_groupe_uid,
             is_active=True,
+            date__gte=today,
         )
         .select_related("traject", "user", "user__profile")
         .prefetch_related("transport_modes", "children", "children__chld_languages")
         .order_by("date", "departure_time")
     )
 
-    proposed_by_date = {p.date: p for p in proposed_qs}
+    proposed_by_date = {p.date: p for p in proposed_qs.filter(date__gte=today)}
     rows = _build_match_rows(matched_dates_qs, proposed_by_date, today)
+    matched_parent_stats = matched_dates_qs.aggregate(first_date=Min("date"), last_date=Max("date"))
 
     return render(request, "trajects/proposition/matching_detail.html", {
         "header": header,
         "proposed_stats": proposed_stats,
         "parent_header": parent_header,
         "parent_stats": parent_stats,
+        "matched_parent_stats": matched_parent_stats,
         "rows": rows,
         "is_abonned": is_abonned,
+        "is_subscription_complete": is_subscription_complete,
         "today": today,
         "parent_pending_ids": parent_pending_ids,
         "parent_confirmed_ids": parent_confirmed_ids,
-    }) 
+    })
 
-@login_required
+@name_required
 def my_matchings_simple_detail(request, proposed_groupe_uid, researched_groupe_uid, parent_user_id):
     user = request.user
     today = timezone.now().date()
     is_abonned = Subscription.is_user_abonned(user)
+    profile = user.profile
+    is_subscription_complete = is_abonned and bool(
+        profile.ci_is_verified and profile.document_bvm and profile.profile_picture
+    )
 
     parent_pending_ids = set(
         Reservation.objects.filter(proposed_traject__user=user, status="pending")
@@ -1538,6 +1645,7 @@ def my_matchings_simple_detail(request, proposed_groupe_uid, researched_groupe_u
     proposed_stats = proposed_qs.aggregate(
         first_date=Min("date"),
         last_date=Max("date"),
+        next_date=Min(Case(When(date__gte=today, then="date"), output_field=DateField())),
         count=Count("id")
     )
 
@@ -1559,11 +1667,12 @@ def my_matchings_simple_detail(request, proposed_groupe_uid, researched_groupe_u
     parent_stats = researched_qs.aggregate(
         first_date=Min("date"),
         last_date=Max("date"),
+        next_date=Min(Case(When(date__gte=today, then="date"), output_field=DateField())),
         count=Count("id")
     )
 
     matched_researched_ids = set()
-    for proposal in proposed_qs:
+    for proposal in proposed_qs.filter(date__gte=today):
         matched = find_matching_trajects(proposal)
         matched_researched_ids.update([m.id for m in matched])
 
@@ -1574,13 +1683,14 @@ def my_matchings_simple_detail(request, proposed_groupe_uid, researched_groupe_u
             user_id=parent_user_id,
             groupe_uid=researched_groupe_uid,
             is_active=True,
+            date__gte=today,
         )
         .select_related("traject", "user", "user__profile")
         .prefetch_related("transport_modes", "children", "children__chld_languages")
         .order_by("date", "departure_time")
     )
 
-    proposed_by_date = {p.date: p for p in proposed_qs}
+    proposed_by_date = {p.date: p for p in proposed_qs.filter(date__gte=today)}
     rows = _build_match_rows(
         matched_dates_qs, proposed_by_date, today,
         extra_fields_fn=lambda _, proposal: {
@@ -1588,24 +1698,31 @@ def my_matchings_simple_detail(request, proposed_groupe_uid, researched_groupe_u
             "transport_modes": proposal.transport_modes.all() if proposal else [],
         },
     )
+    matched_parent_stats = matched_dates_qs.aggregate(first_date=Min("date"), last_date=Max("date"))
 
     return render(request, "trajects/proposition_rayon/matching_detail.html", {
         "header": header,
         "proposed_stats": proposed_stats,
         "parent_header": parent_header,
         "parent_stats": parent_stats,
+        "matched_parent_stats": matched_parent_stats,
         "rows": rows,
         "is_abonned": is_abonned,
+        "is_subscription_complete": is_subscription_complete,
         "today": today,
         "parent_pending_ids": parent_pending_ids,
         "parent_confirmed_ids": parent_confirmed_ids,
     })
 
-@login_required
+@name_required
 def my_matchings_researched_detail(request, researched_groupe_uid, proposed_groupe_uid, matched_user_id):
     user = request.user
     today = timezone.now().date()
     is_abonned = Subscription.is_user_abonned(user)
+    profile = user.profile
+    is_subscription_complete = is_abonned and bool(
+        profile.ci_is_verified and profile.document_bvm and profile.profile_picture
+    )
 
     researched_qs = (
         ResearchedTraject.objects
@@ -1624,6 +1741,7 @@ def my_matchings_researched_detail(request, researched_groupe_uid, proposed_grou
     researched_stats = researched_qs.aggregate(
         first_date=Min("date"),
         last_date=Max("date"),
+        next_date=Min(Case(When(date__gte=today, then="date"), output_field=DateField())),
         count=Count("id")
     )
 
@@ -1649,11 +1767,12 @@ def my_matchings_researched_detail(request, researched_groupe_uid, proposed_grou
     proposed_stats = proposed_qs.aggregate(
         first_date=Min("date"),
         last_date=Max("date"),
+        next_date=Min(Case(When(date__gte=today, then="date"), output_field=DateField())),
         count=Count("id")
     )
 
     matched_proposed_ids = set()
-    for research in researched_qs:
+    for research in researched_qs.filter(date__gte=today):
         matched = find_matching_trajects(research)
         matched_proposed_ids.update([m.id for m in matched])
 
@@ -1664,6 +1783,7 @@ def my_matchings_researched_detail(request, researched_groupe_uid, proposed_grou
             user_id=matched_user_id,
             groupe_uid=proposed_groupe_uid,
             is_active=True,
+            date__gte=today,
         )
         .select_related("traject", "user", "user__profile")
         .prefetch_related("transport_modes", "languages")
@@ -1707,20 +1827,23 @@ def my_matchings_researched_detail(request, researched_groupe_uid, proposed_grou
             "radius_km": proposal.search_radius_km if proposal.is_simple else None,
         },
     )
+    matched_proposed_stats = matched_dates_qs.aggregate(first_date=Min("date"), last_date=Max("date"))
 
     return render(request, "trajects/recherche/matching_detail.html", {
         "researched_header": researched_header,
         "researched_stats": researched_stats,
         "proposed_header": proposed_header,
         "proposed_stats": proposed_stats,
+        "matched_proposed_stats": matched_proposed_stats,
         "rows": rows,
         "my_pending_keys": my_pending_keys,
         "my_confirmed_keys": my_confirmed_keys,
         "my_canceled_keys": my_canceled_keys,
         "is_abonned": is_abonned,
+        "is_subscription_complete": is_subscription_complete,
         "today": today,
     })
-    
+
 # ============================================================
 # TOUT LES TRAJETS
 # ============================================================
@@ -1876,7 +1999,7 @@ def place_details_view(request):
 # ============================================================
 
 
-@login_required
+@subscription_complete_required
 def manage_reservation(request, reservation_id, action):
     next_url = request.GET.get("next")
     reservation = get_object_or_404(
@@ -2006,7 +2129,7 @@ def manage_reservation(request, reservation_id, action):
         messages.success(request, "Réservation refusée.")
         return redirect(next_url or "my_reservations")
 
-@login_required
+@subscription_complete_required
 def auto_reserve(request, proposed_id, researched_id):
     next_url = request.POST.get("next")
     proposed_traject = get_object_or_404(ProposedTraject, id=proposed_id, is_active=True)
@@ -2057,7 +2180,7 @@ def auto_reserve(request, proposed_id, researched_id):
     messages.success(request, "Votre demande de réservation a été envoyée.")
     return redirect(next_url or 'my_matchings_researched')
 
-@login_required
+@subscription_complete_required
 def propose_help(request, researched_id):
     research = get_object_or_404(ResearchedTraject, id=researched_id)
     next_url = request.POST.get("next")
@@ -2089,7 +2212,7 @@ def propose_help(request, researched_id):
     messages.success(request, "Votre aide a été proposée et le parent a été informé par email.")
     return redirect(next_url or 'my_matchings_proposed')
 
-@login_required
+@name_required
 def my_reservations(request):
     user = request.user
     is_abonned = Subscription.is_user_abonned(user)
@@ -2230,7 +2353,7 @@ def my_reservations(request):
         'is_abonned': is_abonned,
     })
     
-@login_required
+@name_required
 def my_reservations_made_detail(
     request, researched_groupe_uid, proposed_groupe_uid, matched_user_id):
     user = request.user
@@ -2296,7 +2419,7 @@ def my_reservations_made_detail(
         },
     )
 
-@login_required
+@name_required
 def my_reservations_received_detail(
     request, proposed_groupe_uid, researched_groupe_uid, parent_user_id):
     user = request.user

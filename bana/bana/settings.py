@@ -367,7 +367,7 @@ ACCOUNT_LOGIN_REDIRECT_URL = 'accounts:profile'
 
 
 # 🔒 Empêche que des bots puissent détecter les emails existants
-ACCOUNT_PREVENT_ENUMERATION = False  # sécurité activée
+ACCOUNT_PREVENT_ENUMERATION = True
 
 # 🔐 Envoie un vrai lien sécurisé (sans stocker de clé en DB)
 ACCOUNT_EMAIL_CONFIRMATION_HMAC = True

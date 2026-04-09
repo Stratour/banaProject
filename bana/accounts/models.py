@@ -1,6 +1,7 @@
 
 
 from django.db import models
+from django.db.models import Q
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import User
@@ -33,6 +34,33 @@ class Profile(models.Model):
     # ✅ Champs liés à Stripe Identity
     verified_first_name = models.CharField(max_length=100, blank=True, null=True)
     verified_last_name = models.CharField(max_length=100, blank=True, null=True)
+
+    onboarding_seen = models.BooleanField(default=False)
+
+    @property
+    def trips_count(self):
+        from trajects.models import Reservation
+        today = timezone.now().date()
+        return (
+            Reservation.objects
+            .filter(
+                Q(proposed_traject__user=self.user, proposed_traject__date__lt=today) |
+                Q(user=self.user, researched_traject__date__lt=today),
+                status='confirmed',
+            )
+            .distinct()
+            .count()
+        )
+
+    def update_profile_verified(self):
+        is_complete = bool(
+            self.profile_picture and
+            self.address and
+            self.languages.exists()
+        )
+        if self.prfl_is_verified != is_complete:
+            self.prfl_is_verified = is_complete
+            self.save(update_fields=['prfl_is_verified'])
 
     def __str__(self):
         return self.user.username

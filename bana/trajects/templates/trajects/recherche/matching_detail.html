@@ -66,8 +66,8 @@
               {% endif %}
             </p>
             <p class="text-xs text-gray-500">
-              {% trans "Du" %} {{ proposed_stats.first_date|date:"d/m/Y" }} 
-              {% trans "au" %} {{ proposed_stats.last_date|date:"d/m/Y" }}
+              {% trans "Du" %} {{ matched_proposed_stats.first_date|date:"d/m/Y"|default:"—" }}
+              {% trans "au" %} {{ matched_proposed_stats.last_date|date:"d/m/Y"|default:"—" }}
             </p>
           </div>
                     {% comment "S'affiche pas au bon endroit" %}
@@ -269,14 +269,26 @@
                 </span>
 
               {% else %}
-                <form method="POST" action="{% url 'auto_reserve' p.id research.id %}">
-                  {% csrf_token %}
-                  <input type="hidden" name="next" value="{{ request.path }}">
-                  <button type="submit"
-                          class="inline-flex items-center bg-brand gap-2 py-2 px-4 mt-2 text-white hover:bg-brand-dark rounded-full text-sm font-semibold">
-                    {% trans "Réserver" %}
-                  </button>
-                </form>
+                {% if is_subscription_complete %}
+                  <form method="POST" action="{% url 'auto_reserve' p.id research.id %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <button type="submit"
+                            class="inline-flex items-center bg-brand gap-2 py-2 px-4 mt-2 text-white hover:bg-brand-dark rounded-full text-sm font-semibold">
+                      {% trans "Réserver" %}
+                    </button>
+                  </form>
+                {% elif is_abonned %}
+                  <a href="{% url 'accounts:profile' %}"
+                     class="inline-flex items-center gap-1 mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-3 py-1 font-medium hover:bg-amber-100">
+                    ⚠ {% trans "Complétez votre vérification pour réserver" %}
+                  </a>
+                {% else %}
+                  <a href="{% url 'subscription' %}"
+                     class="inline-flex items-center gap-1 mt-2 text-xs text-brand bg-green-50 border border-green-200 rounded-full px-3 py-1 font-medium hover:bg-green-100">
+                    {% trans "Abonnez-vous pour réserver" %}
+                  </a>
+                {% endif %}
               {% endif %}
             </div>
           </div>

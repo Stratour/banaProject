@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-09 21:21+0200\n"
+"POT-Creation-Date: 2026-04-09 21:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,80 +17,74 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
 #: trajects/forms.py:19 trajects/views.py:457 trajects/views.py:602
 #: trajects/views.py:642
 msgid "Lundi"
-msgstr "Monday"
+msgstr ""
 
 #: trajects/forms.py:19 trajects/views.py:458 trajects/views.py:603
 #: trajects/views.py:642
 msgid "Mardi"
-msgstr "Tuesday"
+msgstr ""
 
 #: trajects/forms.py:19 trajects/views.py:459 trajects/views.py:604
 #: trajects/views.py:642
 msgid "Mercredi"
-msgstr "Wednesday"
+msgstr ""
 
 #: trajects/forms.py:19 trajects/views.py:460 trajects/views.py:605
 #: trajects/views.py:643
 msgid "Jeudi"
-msgstr "Thursday"
+msgstr ""
 
 #: trajects/forms.py:19 trajects/views.py:461 trajects/views.py:606
 #: trajects/views.py:643
 msgid "Vendredi"
-msgstr "Friday"
+msgstr ""
 
 #: trajects/forms.py:19 trajects/views.py:462 trajects/views.py:607
 #: trajects/views.py:643
 msgid "Samedi"
-msgstr "Saturday"
+msgstr ""
 
 #: trajects/forms.py:19 trajects/views.py:463 trajects/views.py:608
 #: trajects/views.py:643
 msgid "Dimanche"
-msgstr "Sunday"
+msgstr ""
 
 #: trajects/forms.py:24 trajects/forms.py:37
 msgid "Trajets occasionnels"
-msgstr "Occasional trajects"
+msgstr ""
 
 #: trajects/forms.py:25
 msgid "Trajets chaque semaine"
-msgstr "Every week"
+msgstr ""
 
 #: trajects/forms.py:26
 msgid "Trajets une semaine sur deux"
-msgstr "Every other week"
+msgstr ""
 
 #: trajects/forms.py:43
 msgid "La date de début ne peut pas être antérieure à la date d'aujourd'hui."
-msgstr "The start date cannot be earlier than today."
+msgstr ""
 
 #: trajects/forms.py:51 trajects/forms.py:211 trajects/forms.py:349
 #: trajects/forms.py:479
 msgid "Veuillez sélectionner au moins un jour de la semaine."
-msgstr "Please select at least one day of the week."
+msgstr ""
 
 #: trajects/forms.py:65
 msgid "Veuillez choisir une date de fin."
-msgstr "Please choose an end date."
+msgstr ""
 
 #: trajects/forms.py:71
-#, fuzzy
-#| msgid "Veuillez choisir une date de fin."
 msgid ""
 "Veuillez choisir une date de fin lorsque plusieurs jours sont sélectionnés."
-msgstr "Please choose an end date."
+msgstr ""
 
 #: trajects/forms.py:77
-#, fuzzy
-#| msgid ""
-#| "La date de début ne peut pas être antérieure à la date d'aujourd'hui."
 msgid "La date de fin ne peut pas être antérieure à la date de début."
-msgstr "The start date cannot be earlier than today."
+msgstr ""
 
 #: trajects/forms.py:85
 msgid ""
@@ -99,34 +93,30 @@ msgstr ""
 
 #: trajects/forms.py:103
 msgid "Entrez une adresse de départ (Ville, code postal)"
-msgstr "Enter a starting address (City, postcode)"
+msgstr ""
 
 #: trajects/forms.py:109
 msgid "Entrez une adresse d’arrivée (Ville, code postal)"
-msgstr "Enter an arrival address (City, postcode)"
+msgstr ""
 
 #: trajects/forms.py:131 trajects/forms.py:416
-#, fuzzy
-#| msgid "Veuillez sélectionner au moins un jour de la semaine."
 msgid "Veuillez sélectionner une adresse de départ valide dans la liste."
-msgstr "Please select at least one day of the week."
+msgstr ""
 
 #: trajects/forms.py:137
-#, fuzzy
-#| msgid "Veuillez sélectionner au moins un jour de la semaine."
 msgid "Veuillez sélectionner une adresse d’arrivée valide dans la liste."
-msgstr "Please select at least one day of the week."
+msgstr ""
 
 #: trajects/forms.py:146 trajects/forms.py:298 trajects/forms.py:425
 #: trajects/templates/trajects/proposition/creer.html:206
 #: trajects/templates/trajects/proposition_rayon/creer.html:180
 #: trajects/templates/trajects/recherche/creer.html:195
 msgid "Moyens de transport"
-msgstr "Means of transport"
+msgstr ""
 
 #: trajects/forms.py:149 trajects/forms.py:301 trajects/forms.py:428
 msgid "Veuillez sélectionner au moins un moyen de transport."
-msgstr "Please select at least one mode of transport."
+msgstr ""
 
 #: trajects/forms.py:159
 msgid "Langue parlée"
@@ -134,18 +124,16 @@ msgstr ""
 
 #: trajects/forms.py:169 trajects/forms.py:449
 msgid "Veuillez renseigner l'heure de départ."
-msgstr "Please enter the departure time."
+msgstr ""
 
 #: trajects/forms.py:171 trajects/forms.py:250 trajects/forms.py:451
 #: trajects/forms.py:514
-#, fuzzy
-#| msgid "Date de début"
 msgid "Heure de départ"
-msgstr "Start date"
+msgstr ""
 
 #: trajects/forms.py:181 trajects/forms.py:461
 msgid "Veuillez renseigner l'heure d’arrivée."
-msgstr "Please enter the arrival time."
+msgstr ""
 
 #: trajects/forms.py:183 trajects/forms.py:251 trajects/forms.py:463
 #: trajects/forms.py:515
@@ -154,7 +142,7 @@ msgstr ""
 
 #: trajects/forms.py:187 trajects/forms.py:306
 msgid "-- Sélectionnez le nombre de places --"
-msgstr "-- Select the number of seats --"
+msgstr ""
 
 #: trajects/forms.py:192 trajects/forms.py:252 trajects/forms.py:311
 #: trajects/forms.py:383
@@ -162,17 +150,13 @@ msgid "Nombre de places"
 msgstr ""
 
 #: trajects/forms.py:194 trajects/forms.py:313
-#, fuzzy
-#| msgid "Veuillez sélectionner au moins un jour de la semaine."
 msgid "Veuillez sélectionner un nombre de places."
-msgstr "Please select at least one day of the week."
+msgstr ""
 
 #: trajects/forms.py:203 trajects/forms.py:253 trajects/forms.py:341
 #: trajects/forms.py:385 trajects/forms.py:471 trajects/forms.py:517
-#, fuzzy
-#| msgid "Récurrence"
 msgid "Type de récurrence"
-msgstr "Recurrence"
+msgstr ""
 
 #: trajects/forms.py:209 trajects/forms.py:347 trajects/forms.py:477
 msgid "Jours spécifiques"
@@ -183,51 +167,45 @@ msgstr ""
 #: trajects/templates/trajects/proposition_rayon/creer.html:155
 #: trajects/templates/trajects/recherche/creer.html:172
 msgid "Date de début"
-msgstr "Start date"
+msgstr ""
 
 #: trajects/forms.py:230 trajects/forms.py:368 trajects/forms.py:498
 #: trajects/templates/trajects/proposition/creer.html:194
 #: trajects/templates/trajects/proposition_rayon/creer.html:167
 #: trajects/templates/trajects/recherche/creer.html:183
 msgid "Date de fin"
-msgstr "End date"
+msgstr ""
 
 #: trajects/forms.py:249 trajects/templates/trajects/proposition/creer.html:271
 #: trajects/templates/trajects/proposition/trajet_detail.html:180
 #: trajects/templates/trajects/proposition/trajets_liste.html:237
 msgid "Détails"
-msgstr "details"
+msgstr ""
 
 #: trajects/forms.py:254 trajects/forms.py:386 trajects/forms.py:518
-#, fuzzy
-#| msgid "Date de début"
 msgid "Date de début de récurrence"
-msgstr "Start date"
+msgstr ""
 
 #: trajects/forms.py:255 trajects/forms.py:387 trajects/forms.py:519
-#, fuzzy
-#| msgid "Date de début"
 msgid "Date de fin de récurrence"
-msgstr "Start date"
+msgstr ""
 
 #: trajects/forms.py:260
 msgid "Ajoutez des détails utiles pour les passagers"
 msgstr ""
 
 #: trajects/forms.py:274 trajects/forms.py:405
-#, fuzzy
-#| msgid "Veuillez sélectionner au moins un jour de la semaine."
 msgid "Veuillez sélectionner un nombre de places valide."
-msgstr "Please select at least one day of the week."
+msgstr ""
 
 #: trajects/forms.py:281
 msgid "Entrez le point de départ (Adresse, ville, code postal)"
-msgstr "Enter the starting point (Address, city, postal code)"
+msgstr ""
 
 #: trajects/forms.py:284
 #: trajects/templates/trajects/proposition_rayon/creer.html:53
 msgid "Ville de départ"
-msgstr "Start date"
+msgstr ""
 
 #: trajects/forms.py:318 trajects/forms.py:384
 msgid "Rayon de recherche (km)"
@@ -238,10 +216,8 @@ msgid "Dans quel rayon souhaitez-vous aider ? (1-50 km)"
 msgstr ""
 
 #: trajects/forms.py:330
-#, fuzzy
-#| msgid "Veuillez renseigner l'heure de départ."
 msgid "Veuillez renseigner un rayon de recherche."
-msgstr "Please enter the departure time."
+msgstr ""
 
 #: trajects/forms.py:331
 msgid "Le rayon doit être d’au moins 1 km."
@@ -252,10 +228,8 @@ msgid "Le rayon ne peut pas dépasser 50 km."
 msgstr ""
 
 #: trajects/forms.py:397
-#, fuzzy
-#| msgid "Veuillez renseigner l'heure de départ."
 msgid "Veuillez renseigner une ville de départ."
-msgstr "Please enter the departure time."
+msgstr ""
 
 #: trajects/forms.py:436
 msgid "Choix du ou des enfants"
@@ -263,27 +237,23 @@ msgstr ""
 
 #: trajects/forms.py:438
 msgid "Vous devez sélectionner au moins un enfant."
-msgstr "You must select at least one child."
+msgstr ""
 
 #: trajects/forms.py:516
 msgid "Date du trajet"
 msgstr ""
 
 #: trajects/models.py:14
-#, fuzzy
-#| msgid "Date de début"
 msgid "Adresse de départ"
-msgstr "Start date"
+msgstr ""
 
 #: trajects/models.py:15
 msgid "Adresse d’arrivée"
 msgstr ""
 
 #: trajects/models.py:20
-#, fuzzy
-#| msgid "Date de début"
 msgid "Coordonnée de départ"
-msgstr "Start date"
+msgstr ""
 
 #: trajects/models.py:21
 msgid "Coordonnée d’arrivée"
@@ -294,10 +264,8 @@ msgid "Trajet"
 msgstr ""
 
 #: trajects/models.py:32
-#, fuzzy
-#| msgid "Mes trajets"
 msgid "Trajets"
-msgstr "My trajects"
+msgstr ""
 
 #: trajects/models.py:51
 #: trajects/templates/trajects/proposition/matching_detail.html:149
@@ -315,7 +283,7 @@ msgstr "My trajects"
 #: trajects/templates/trajects/reservation/trajets_liste.html:135
 #: trajects/templates/trajects/reservation/trajets_liste.html:426
 msgid "Voiture"
-msgstr "Car"
+msgstr ""
 
 #: trajects/models.py:52
 #: trajects/templates/trajects/proposition/matching_detail.html:158
@@ -333,7 +301,7 @@ msgstr "Car"
 #: trajects/templates/trajects/reservation/trajets_liste.html:144
 #: trajects/templates/trajects/reservation/trajets_liste.html:435
 msgid "Vélo"
-msgstr "Bike"
+msgstr ""
 
 #: trajects/models.py:53
 #: trajects/templates/trajects/proposition/matching_detail.html:167
@@ -351,7 +319,7 @@ msgstr "Bike"
 #: trajects/templates/trajects/reservation/trajets_liste.html:153
 #: trajects/templates/trajects/reservation/trajets_liste.html:444
 msgid "Transport en commun"
-msgstr "Public transport"
+msgstr ""
 
 #: trajects/models.py:54
 #: trajects/templates/trajects/proposition/matching_detail.html:174
@@ -369,19 +337,19 @@ msgstr "Public transport"
 #: trajects/templates/trajects/reservation/trajets_liste.html:160
 #: trajects/templates/trajects/reservation/trajets_liste.html:451
 msgid "À pied"
-msgstr "Walking"
+msgstr ""
 
 #: trajects/models.py:95 trajects/models.py:153
 msgid "Une semaine seulement"
-msgstr "One week only"
+msgstr ""
 
 #: trajects/models.py:96 trajects/models.py:154
 msgid "Chaque semaine"
-msgstr "Every week"
+msgstr ""
 
 #: trajects/models.py:97 trajects/models.py:155
 msgid "Une semaine sur deux"
-msgstr "Every other week"
+msgstr ""
 
 #: trajects/models.py:167
 #: trajects/templates/trajects/proposition/matching_detail.html:355
@@ -389,23 +357,23 @@ msgstr "Every other week"
 #: trajects/templates/trajects/recherche/matching_detail.html:263
 #: trajects/templates/trajects/reservation/faites_detail.html:96
 msgid "En attente"
-msgstr "Pending"
+msgstr ""
 
 #: trajects/models.py:168
 #: trajects/templates/trajects/reservation/faites_detail.html:94
 msgid "Confirmée"
-msgstr "Confirmed"
+msgstr ""
 
 #: trajects/models.py:169
 #: trajects/templates/trajects/reservation/faites_detail.html:98
 msgid "Annulée"
-msgstr "Cancelled"
+msgstr ""
 
 #: trajects/templates/trajects/partials/tabs_proposition.html:18
 #: trajects/templates/trajects/partials/tabs_proposition_rayon.html:17
 #: trajects/templates/trajects/partials/tabs_recherche.html:18
 msgid "Nouveau trajet"
-msgstr "New trajects"
+msgstr ""
 
 #: trajects/templates/trajects/partials/tabs_proposition.html:55
 #: trajects/templates/trajects/partials/tabs_proposition_rayon.html:54
@@ -423,7 +391,7 @@ msgstr "New trajects"
 #: trajects/templates/trajects/recherche/trajets_liste.html:4
 #: trajects/templates/trajects/recherche/trajets_liste.html:10
 msgid "Mes trajets"
-msgstr "My trajects"
+msgstr ""
 
 #: trajects/templates/trajects/partials/tabs_proposition.html:71
 #: trajects/templates/trajects/partials/tabs_proposition_rayon.html:70
@@ -441,12 +409,12 @@ msgstr "My trajects"
 #: trajects/templates/trajects/recherche/matchings.html:3
 #: trajects/templates/trajects/recherche/matchings.html:8
 msgid "Mes matchings"
-msgstr "My matchings"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/creer.html:4
 #: trajects/templates/trajects/proposition/creer.html:11
 msgid "Proposer un trajet"
-msgstr "Suggest a traject"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/creer.html:34
 #: trajects/templates/trajects/proposition/matchings.html:38
@@ -461,18 +429,18 @@ msgstr "Suggest a traject"
 #: trajects/templates/trajects/recherche/trajet_detail.html:34
 #: trajects/templates/trajects/recherche/trajets_liste.html:34
 msgid "Nom du trajet"
-msgstr "Traject name"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/creer.html:43
 #: trajects/templates/trajects/recherche/creer.html:43
 msgid "Ex: Trajet maison-école"
-msgstr "Ex: Home-to-school trajects"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/creer.html:48
 #: trajects/templates/trajects/proposition_rayon/creer.html:47
 #: trajects/templates/trajects/recherche/creer.html:48
 msgid "Ce nom servira à regrouper vos trajets."
-msgstr "This name will be used to group your trajects."
+msgstr ""
 
 #: trajects/templates/trajects/proposition/creer.html:54
 #: trajects/templates/trajects/proposition/matching_detail.html:104
@@ -491,7 +459,7 @@ msgstr "This name will be used to group your trajects."
 #: trajects/templates/trajects/reservation/trajets_liste.html:89
 #: trajects/templates/trajects/reservation/trajets_liste.html:379
 msgid "Départ"
-msgstr "Departure"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/creer.html:85
 #: trajects/templates/trajects/proposition/matching_detail.html:120
@@ -507,37 +475,37 @@ msgstr "Departure"
 #: trajects/templates/trajects/reservation/trajets_liste.html:106
 #: trajects/templates/trajects/reservation/trajets_liste.html:396
 msgid "Arrivée"
-msgstr "Arrival"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/creer.html:130
 #: trajects/templates/trajects/proposition_rayon/creer.html:102
 #: trajects/templates/trajects/recherche/creer.html:125
 msgid "Jours de la semaine"
-msgstr "Days of the week"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/creer.html:164
 #: trajects/templates/trajects/proposition_rayon/creer.html:136
 #: trajects/templates/trajects/recherche/creer.html:153
 msgid "Récurrence"
-msgstr "Recurrence"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/creer.html:238
 #: trajects/templates/trajects/recherche/creer.html:223
 msgid "Enfants à accompagner"
-msgstr "Children to accompany"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/creer.html:245
 #: trajects/templates/trajects/proposition/trajet_detail.html:229
 #: trajects/templates/trajects/proposition_rayon/creer.html:209
 #: trajects/templates/trajects/proposition_rayon/trajet_detail.html:169
 msgid "Places disponibles"
-msgstr "Places available"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/creer.html:285
 #: trajects/templates/trajects/proposition_rayon/creer.html:227
 #: trajects/templates/trajects/recherche/creer.html:244
 msgid "Enregistrer le trajet"
-msgstr "Save traject"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:73
 #: trajects/templates/trajects/proposition/matchings.html:205
@@ -550,7 +518,7 @@ msgstr "Save traject"
 #: trajects/templates/trajects/reservation/trajets_liste.html:61
 #: trajects/templates/trajects/reservation/trajets_liste.html:352
 msgid "Abonnement requis pour voir le profil"
-msgstr "Subscription required to view the profile"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:79
 #: trajects/templates/trajects/proposition/matchings.html:43
@@ -572,7 +540,7 @@ msgstr "Subscription required to view the profile"
 #: trajects/templates/trajects/reservation/trajets_liste.html:65
 #: trajects/templates/trajects/reservation/trajets_liste.html:356
 msgid "Du"
-msgstr "From"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:80
 #: trajects/templates/trajects/proposition/matchings.html:44
@@ -594,7 +562,7 @@ msgstr "From"
 #: trajects/templates/trajects/reservation/trajets_liste.html:65
 #: trajects/templates/trajects/reservation/trajets_liste.html:356
 msgid "au"
-msgstr "to"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:88
 #: trajects/templates/trajects/proposition/trajet_detail.html:194
@@ -605,7 +573,7 @@ msgstr "to"
 #: trajects/templates/trajects/reservation/faites_detail.html:69
 #: trajects/templates/trajects/reservation/recues_detail.html:66
 msgid "Retour"
-msgstr "Back"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:136
 #: trajects/templates/trajects/proposition/matchings.html:107
@@ -622,7 +590,7 @@ msgstr "Back"
 #: trajects/templates/trajects/reservation/trajets_liste.html:122
 #: trajects/templates/trajects/reservation/trajets_liste.html:413
 msgid "Transport"
-msgstr "Transport"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:188
 #: trajects/templates/trajects/proposition/matchings.html:159
@@ -639,7 +607,7 @@ msgstr "Transport"
 #: trajects/templates/trajects/reservation/trajets_liste.html:174
 #: trajects/templates/trajects/reservation/trajets_liste.html:465
 msgid "Non spécifié"
-msgstr "Not specified"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:204
 #: trajects/templates/trajects/proposition/matching_detail.html:328
@@ -650,7 +618,7 @@ msgstr "Not specified"
 #: trajects/templates/trajects/reservation/trajets_liste.html:190
 #: trajects/templates/trajects/reservation/trajets_liste.html:480
 msgid "Enfant(s)"
-msgstr "Child(ren)"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:213
 #: trajects/templates/trajects/proposition/matching_detail.html:239
@@ -661,48 +629,48 @@ msgstr "Child(ren)"
 #: trajects/templates/trajects/reservation/trajets_liste.html:489
 #: trajects/templates/trajects/reservation/trajets_liste.html:515
 msgid "ans"
-msgstr "years"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:255
 #: trajects/templates/trajects/proposition_rayon/matching_detail.html:246
 #: trajects/templates/trajects/reservation/trajets_liste.html:241
 #: trajects/templates/trajects/reservation/trajets_liste.html:531
 msgid "Siège enfant requis"
-msgstr "Child seat required"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:261
 #: trajects/templates/trajects/proposition_rayon/matching_detail.html:252
 #: trajects/templates/trajects/reservation/trajets_liste.html:247
 #: trajects/templates/trajects/reservation/trajets_liste.html:537
 msgid "Porteur d’un handicap"
-msgstr "A person with a disability"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:270
 #: trajects/templates/trajects/proposition_rayon/matching_detail.html:261
 #: trajects/templates/trajects/reservation/trajets_liste.html:256
 #: trajects/templates/trajects/reservation/trajets_liste.html:546
 msgid "Langues parlées"
-msgstr "Languages spoken"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:286
 #: trajects/templates/trajects/proposition_rayon/matching_detail.html:277
 #: trajects/templates/trajects/reservation/trajets_liste.html:272
 #: trajects/templates/trajects/reservation/trajets_liste.html:562
 msgid "Besoins spécifiques"
-msgstr "Specific requirements"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:298
 #: trajects/templates/trajects/proposition_rayon/matching_detail.html:289
 #: trajects/templates/trajects/reservation/trajets_liste.html:284
 #: trajects/templates/trajects/reservation/trajets_liste.html:574
 msgid "Fermer"
-msgstr "Close"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:313
 #: trajects/templates/trajects/proposition_rayon/matching_detail.html:303
 #: trajects/templates/trajects/recherche/matching_detail.html:225
 msgid "Dates disponibles"
-msgstr "Available dates"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:332
 #: trajects/templates/trajects/proposition_rayon/matching_detail.html:317
@@ -710,33 +678,33 @@ msgstr "Available dates"
 #: trajects/templates/trajects/reservation/faites_detail.html:88
 #: trajects/templates/trajects/reservation/recues_detail.html:89
 msgid "Places restantes"
-msgstr "Places remaining"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:344
 #: trajects/templates/trajects/proposition_rayon/matching_detail.html:329
 #: trajects/templates/trajects/recherche/matching_detail.html:253
 msgid "Date passée"
-msgstr "Date has passed"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:350
 #: trajects/templates/trajects/proposition_rayon/matching_detail.html:334
 #: trajects/templates/trajects/recherche/matching_detail.html:258
 #: trajects/templates/trajects/reservation/recues_detail.html:108
 msgid "Confirmé"
-msgstr "Confirmed"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:362
 msgid "Complet"
-msgstr "Complete"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:366
 msgid "Pas assez de place"
-msgstr "Not enough space"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:375
 #: trajects/templates/trajects/proposition_rayon/matching_detail.html:346
 msgid "Proposer mon aide"
-msgstr "Offer my help"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matching_detail.html:381
 #: trajects/templates/trajects/proposition_rayon/matching_detail.html:352
@@ -752,13 +720,13 @@ msgstr ""
 #: trajects/templates/trajects/proposition_rayon/matching_detail.html:369
 #: trajects/templates/trajects/recherche/matching_detail.html:301
 msgid "Aucune date correspondante trouvée."
-msgstr "No matching dates found."
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matchings.html:166
 #: trajects/templates/trajects/proposition_rayon/matchings.html:137
 #: trajects/templates/trajects/recherche/matchings.html:175
 msgid "Matchings trouvés"
-msgstr "Matchings found"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matchings.html:217
 #: trajects/templates/trajects/proposition/trajets_liste.html:247
@@ -769,25 +737,25 @@ msgstr "Matchings found"
 #: trajects/templates/trajects/reservation/trajets_liste.html:298
 #: trajects/templates/trajects/reservation/trajets_liste.html:589
 msgid "Voir les dates"
-msgstr "See the dates"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matchings.html:221
 #: trajects/templates/trajects/proposition_rayon/matchings.html:192
 #: trajects/templates/trajects/recherche/matchings.html:230
 msgid "Aucun matching pour ce trajet."
-msgstr "No matches found for this traject."
+msgstr ""
 
 #: trajects/templates/trajects/proposition/matchings.html:231
 #: trajects/templates/trajects/proposition_rayon/matchings.html:202
 #: trajects/templates/trajects/recherche/matchings.html:239
 msgid "Vous n’avez aucune correspondance de trajet pour l’instant."
-msgstr "There are currently no traject connections available."
+msgstr ""
 
 #: trajects/templates/trajects/proposition/trajet_detail.html:209
 #: trajects/templates/trajects/proposition_rayon/trajet_detail.html:146
 #: trajects/templates/trajects/recherche/trajet_detail.html:206
 msgid "Dates à venir"
-msgstr "Upcoming dates"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/trajet_detail.html:223
 #: trajects/templates/trajects/proposition/trajet_detail.html:291
@@ -799,19 +767,19 @@ msgstr "Upcoming dates"
 #: trajects/templates/trajects/recherche/trajet_detail.html:280
 #: trajects/templates/trajects/recherche/trajets_liste.html:53
 msgid "Supprimer"
-msgstr "Delete"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/trajet_detail.html:244
 #: trajects/templates/trajects/proposition_rayon/trajet_detail.html:184
 #: trajects/templates/trajects/recherche/trajet_detail.html:235
 msgid "Supprimer cette date"
-msgstr "Delete traject"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/trajet_detail.html:247
 #: trajects/templates/trajects/proposition_rayon/trajet_detail.html:187
 #: trajects/templates/trajects/recherche/trajet_detail.html:237
 msgid "Êtes-vous sûr de vouloir supprimer cette date ?"
-msgstr "Are you sure you want to delete this traject?"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/trajet_detail.html:255
 #: trajects/templates/trajects/proposition/trajets_liste.html:71
@@ -820,7 +788,7 @@ msgstr "Are you sure you want to delete this traject?"
 #: trajects/templates/trajects/recherche/trajet_detail.html:245
 #: trajects/templates/trajects/recherche/trajets_liste.html:70
 msgid "Annuler"
-msgstr "Cancelled"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/trajet_detail.html:259
 #: trajects/templates/trajects/proposition/trajets_liste.html:75
@@ -830,89 +798,89 @@ msgstr "Cancelled"
 #: trajects/templates/trajects/recherche/trajets_liste.html:74
 #: trajects/templates/trajects/reservation/recues_detail.html:98
 msgid "Confirmer"
-msgstr "Confirmed"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/trajet_detail.html:273
 #: trajects/templates/trajects/proposition_rayon/trajet_detail.html:212
 #: trajects/templates/trajects/recherche/trajet_detail.html:262
 msgid "Date(s) passée(s)"
-msgstr "Past date(s)"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/trajet_detail.html:302
 #: trajects/templates/trajects/proposition_rayon/trajet_detail.html:239
 #: trajects/templates/trajects/recherche/trajet_detail.html:291
 msgid "Aucune date active dans ce trajet."
-msgstr "There are no active dates for this traject."
+msgstr ""
 
 #: trajects/templates/trajects/proposition/trajet_detail.html:310
 #: trajects/templates/trajects/proposition_rayon/trajet_detail.html:247
 #: trajects/templates/trajects/recherche/trajet_detail.html:299
 msgid "Trajet introuvable."
-msgstr "Traject not found"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/trajets_liste.html:61
 #: trajects/templates/trajects/proposition_rayon/trajets_liste.html:71
 #: trajects/templates/trajects/recherche/trajets_liste.html:60
 msgid "Supprimer le trajet"
-msgstr "Delete traject"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/trajets_liste.html:63
 #: trajects/templates/trajects/proposition_rayon/trajets_liste.html:73
 #: trajects/templates/trajects/recherche/trajets_liste.html:62
 msgid "Êtes-vous sûr de vouloir supprimer ce trajet ?"
-msgstr "Are you sure you want to delete this traject?"
+msgstr ""
 
 #: trajects/templates/trajects/proposition/trajets_liste.html:257
 #: trajects/templates/trajects/proposition_rayon/trajets_liste.html:213
 #: trajects/templates/trajects/recherche/trajets_liste.html:230
 msgid "Vous n’avez aucun trajet pour l’instant."
-msgstr "You don't have any traject at the moment."
+msgstr ""
 
 #: trajects/templates/trajects/proposition_rayon/creer.html:4
 #: trajects/templates/trajects/proposition_rayon/creer.html:10
 #: trajects/templates/trajects/recherche/creer.html:4
 #: trajects/templates/trajects/recherche/creer.html:10
 msgid "Rechercher un trajet"
-msgstr "Search a traject"
+msgstr ""
 
 #: trajects/templates/trajects/proposition_rayon/creer.html:42
 msgid "Ex: École Charleroi (matin)"
-msgstr "Ex: School Charleroi (morning)"
+msgstr ""
 
 #: trajects/templates/trajects/proposition_rayon/creer.html:73
 msgid "Rayon de recherche"
-msgstr "Search radius"
+msgstr ""
 
 #: trajects/templates/trajects/proposition_rayon/creer.html:88
 msgid ""
 "Sélectionnez dans quel rayon vous souhaitez rechercher un trajet (1-50 km)"
-msgstr "Select in which radius you want to search for a traject (1-50 km)"
+msgstr ""
 
 #: trajects/templates/trajects/proposition_rayon/matchings.html:66
 msgid "Rayon"
-msgstr "Radius"
+msgstr ""
 
 #: trajects/templates/trajects/proposition_rayon/trajet_detail.html:60
 #: trajects/templates/trajects/proposition_rayon/trajets_liste.html:109
 msgid "dans un rayon de"
-msgstr "in a radius of"
+msgstr ""
 
 #: trajects/templates/trajects/proposition_rayon/trajets_liste.html:126
 msgid "Place(s)"
-msgstr "Place(s)"
+msgstr ""
 
 #: trajects/templates/trajects/proposition_rayon/trajets_liste.html:130
 msgid "place(s) restante(s)"
-msgstr "Remaining place(s)"
+msgstr ""
 
 #: trajects/templates/trajects/recherche/matching_detail.html:268
 #: trajects/templates/trajects/reservation/recues_detail.html:112
 msgid "Annulé"
-msgstr "Cancelled"
+msgstr ""
 
 #: trajects/templates/trajects/recherche/matching_detail.html:278
 msgid "Réserver"
-msgstr "Reserve"
+msgstr ""
 
 #: trajects/templates/trajects/recherche/matching_detail.html:284
 msgid "Complétez votre vérification pour réserver"
@@ -929,52 +897,50 @@ msgstr ""
 #: trajects/templates/trajects/reservation/trajets_liste.html:5
 #: trajects/templates/trajects/reservation/trajets_liste.html:10
 msgid "Mes réservations"
-msgstr "My reservations"
+msgstr ""
 
 #: trajects/templates/trajects/reservation/faites_detail.html:75
 msgid "Dates réservées"
-msgstr "Dates reserved"
+msgstr ""
 
 #: trajects/templates/trajects/reservation/faites_detail.html:85
 #: trajects/templates/trajects/reservation/recues_detail.html:86
 msgid "Places demandées"
-msgstr "Places requested"
+msgstr ""
 
 #: trajects/templates/trajects/reservation/faites_detail.html:105
 msgid "Aucune réservation trouvée."
-msgstr "No reservation found."
+msgstr ""
 
 #: trajects/templates/trajects/reservation/recues_detail.html:72
 #: trajects/templates/trajects/reservation/trajets_liste.html:313
 msgid "Demandes reçues"
-msgstr "Requests received"
+msgstr ""
 
 #: trajects/templates/trajects/reservation/recues_detail.html:103
 msgid "Refuser"
-msgstr "Refuse"
+msgstr ""
 
 #: trajects/templates/trajects/reservation/recues_detail.html:121
 msgid "Aucune demande trouvée."
-msgstr "No request found."
+msgstr ""
 
 #: trajects/templates/trajects/reservation/trajets_liste.html:22
-#, fuzzy
-#| msgid "Réservations effectuées"
 msgid "Réservations effectuées "
-msgstr "Reservations made"
+msgstr ""
 
 #: trajects/templates/trajects/reservation/trajets_liste.html:70
 #: trajects/templates/trajects/reservation/trajets_liste.html:361
 msgid "date(s)"
-msgstr "date(s)"
+msgstr ""
 
 #: trajects/templates/trajects/reservation/trajets_liste.html:305
 msgid "Aucune réservation effectuée"
-msgstr "No reservation made"
+msgstr ""
 
 #: trajects/templates/trajects/reservation/trajets_liste.html:596
 msgid "Aucune demande reçue"
-msgstr "No request received"
+msgstr ""
 
 #: trajects/views.py:41
 msgid ""
@@ -1040,53 +1006,3 @@ msgstr ""
 #, python-format
 msgid "%(count)s recherche(s) enregistrée(s), mais aucun matching trouvé."
 msgstr ""
-
-#~ msgid "S'abonner"
-#~ msgstr "Subscribe"
-
-#~ msgid "Veuillez choisir une date de début."
-#~ msgstr "Please choose a start date."
-
-#~ msgid "Moyen de transport"
-#~ msgstr "Mode of transport"
-
-#, fuzzy
-#~ msgid "Aucun matching pour l’instant."
-#~ msgstr "No matching found at the moment."
-
-#~ msgid "Propositions de matchings"
-#~ msgstr "Suggested matches"
-
-#, fuzzy
-#~| msgid "Abonnement requis pour voir le profil"
-#~ msgid "Abonnement requis"
-#~ msgstr "Subscription required to view the profile"
-
-#, fuzzy
-#~| msgid "Enregistrer la recherche de trajet"
-#~ msgid "Mes recherches de trajet"
-#~ msgstr "My trajects"
-
-#~ msgid "Ce nom servira à regrouper vos recherches."
-#~ msgstr "This name will be used to group your research."
-
-#, fuzzy
-#~| msgid "Créer une demande de trajet"
-#~ msgid "Créer un trajet"
-#~ msgstr "Create a traject"
-
-#, fuzzy
-#~| msgid "Retour"
-#~ msgid "← Retour"
-#~ msgstr "Back"
-
-#, fuzzy
-#~| msgid "Places restantes"
-#~ msgid "Places restantes :"
-#~ msgstr "Places remaining"
-
-#~ msgid "Une fois"
-#~ msgstr "Once"
-
-#~ msgid "Toutes les semaines"
-#~ msgstr "Every week"

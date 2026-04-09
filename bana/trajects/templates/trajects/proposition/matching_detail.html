@@ -74,10 +74,10 @@
               {% endif %}
             </p>
 
-            {% if parent_stats.first_date and parent_stats.last_date %}
+            {% if matched_parent_stats.first_date %}
               <p class="text-xs text-gray-500">
-                {% trans "Du" %} {{ parent_stats.first_date|date:"d/m/Y" }}
-                {% trans "au" %} {{ parent_stats.last_date|date:"d/m/Y" }}
+                {% trans "Du" %} {{ matched_parent_stats.first_date|date:"d/m/Y" }}
+                {% trans "au" %} {{ matched_parent_stats.last_date|date:"d/m/Y" }}
               </p>
             {% endif %}
           </div>
@@ -366,23 +366,28 @@
                         {% trans "Pas assez de place" %} ({{ avail }}/{{ required }})
                       </span>
                     {% else %}
-                      <form method="post" action="{% url 'propose_help' r.id %}">
-                        {% csrf_token %}
-                        <input type="hidden" name="next" value="{{ request.path }}">
-                        <button type="submit"
-                                class="inline-flex items-center bg-brand gap-2 py-2 px-4 mt-2 text-white hover:bg-brand-dark rounded-full text-sm font-semibold">
-                          {% trans "Proposer mon aide" %}
-                        </button>
-                      </form>
+                      {% if is_subscription_complete %}
+                        <form method="post" action="{% url 'propose_help' r.id %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="next" value="{{ request.path }}">
+                          <button type="submit"
+                                  class="inline-flex items-center bg-brand gap-2 py-2 px-4 mt-2 text-white hover:bg-brand-dark rounded-full text-sm font-semibold">
+                            {% trans "Proposer mon aide" %}
+                          </button>
+                        </form>
+                      {% else %}
+                        <a href="{% url 'accounts:profile' %}"
+                           class="inline-flex items-center gap-1 mt-2 text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded-full px-3 py-1 font-medium hover:bg-amber-100">
+                          ⚠ {% trans "Complétez votre vérification pour proposer votre aide" %}
+                        </a>
+                      {% endif %}
                     {% endif %}
                   {% endwith %}
                 {% endif %}
               {% else %}
-                <a href="{% url 'subscription' %}">
-                  <button type="button"
-                          class="inline-flex items-center bg-green-500 gap-2 py-2 px-4 mt-2 text-white hover:bg-brand-50 hover:text-brand rounded-full text-sm font-semibold">
-                    {% trans "S'abonner" %}
-                  </button>
+                <a href="{% url 'subscription' %}"
+                   class="inline-flex items-center gap-1 mt-2 text-xs text-brand bg-green-50 border border-green-200 rounded-full px-3 py-1 font-medium hover:bg-green-100">
+                  {% trans "Abonnez-vous pour proposer votre aide" %}
                 </a>
               {% endif %}
             </div>

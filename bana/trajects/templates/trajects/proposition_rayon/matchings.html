@@ -36,7 +36,7 @@
               {{ h.groupe_name|default:"Mon trajet dans un rayon" }}
             </h2>
             <p class="text-xs text-gray-500">
-              {% trans "Du" %} {{ group.stats.first_date|date:"d/m/Y" }} 
+              {% trans "Du" %} {{ group.stats.next_date|date:"d/m/Y" }}
               {% trans "au" %} {{ group.stats.last_date|date:"d/m/Y" }}
               
             </p>
@@ -177,8 +177,8 @@
                     {% endif %}
                   </p>
                   <p class="text-xs text-gray-600">
-                    {% trans "Du" %} {{ m.date_debut|date:"d/m/Y" }} 
-                    {% trans "au" %} {{ m.date_fin|date:"d/m/Y" }}
+                    {% trans "Du" %} {{ m.matched_date_debut|date:"d/m/Y"|default:"—" }}
+                    {% trans "au" %} {{ m.matched_date_fin|date:"d/m/Y"|default:"—" }}
                   </p>
                 </div>
               </div>

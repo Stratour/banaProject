@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-09-25 16:24+0000\n"
+"POT-Creation-Date: 2026-04-09 21:49+0200\n"
 "PO-Revision-Date: 2025-07-25 20:26+0200\n"
 "Last-Translator: Jos van Leeuwen <jos.van.leeuwen@proton.me>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/allauth/django-"
@@ -19,15 +19,51 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.11-dev\n"
 
-#: accounts/models.py:47
+#: accounts/forms.py:14
+#: accounts/templates/account/partials/profile_public.html:122
+#: accounts/templates/account/profile/profile_user.html:108
+msgid "Voiture"
+msgstr ""
+
+#: accounts/forms.py:15
+#: accounts/templates/account/partials/profile_public.html:131
+#: accounts/templates/account/profile/profile_user.html:117
+msgid "Vélo"
+msgstr ""
+
+#: accounts/forms.py:16
+#: accounts/templates/account/partials/profile_public.html:141
+#: accounts/templates/account/profile/profile_user.html:127
+msgid "Transport en commun"
+msgstr ""
+
+#: accounts/forms.py:17
+#: accounts/templates/account/partials/profile_public.html:149
+#: accounts/templates/account/profile/profile_user.html:135
+msgid "À pied"
+msgstr ""
+
+#: accounts/forms.py:210
+msgid "Ex: Maison / École / Travail"
+msgstr ""
+
+#: accounts/forms.py:216
+msgid "Entrez une adresse"
+msgstr ""
+
+#: accounts/models.py:82
 msgid "Garçon"
 msgstr ""
 
-#: accounts/models.py:48
+#: accounts/models.py:83
 msgid "Fille"
 msgstr ""
 
-#: accounts/signals.py:48
+#: accounts/models.py:124
+msgid "Ex: Maison, École, Sport..."
+msgstr ""
+
+#: accounts/signals.py:49
 msgid "Adresse email changée avec succès."
 msgstr ""
 
@@ -79,89 +115,48 @@ msgid "Alternative options"
 msgstr "Andere opties"
 
 #: accounts/templates/account/email.html:4
-#: accounts/templates/account/email.html:16
 msgid "Email Addresses"
 msgstr "E-mailadressen"
 
-#: accounts/templates/account/email.html:20
-msgid "The following email addresses are associated with your account:"
-msgstr "De volgende e-mailadressen zijn gekoppeld aan jouw account:"
-
-#: accounts/templates/account/email.html:42
-msgid "Verified"
-msgstr "Geverifieerd"
-
-#: accounts/templates/account/email.html:44
-msgid "Unverified"
-msgstr "Ongeverifieerd"
-
-#: accounts/templates/account/email.html:47
-msgid "Primary"
-msgstr "Primair"
-
-#: accounts/templates/account/email.html:55
-msgid "Make Primary"
-msgstr "Maak primair"
-
-#: accounts/templates/account/email.html:56
-#: accounts/templates/account/email.html:126
-#: accounts/templates/account/email_change.html:37
-msgid "Re-send Verification"
-msgstr "Stuur verificatie e-mail opnieuw"
-
-#: accounts/templates/account/email.html:57
-#: accounts/templates/mfa/webauthn/authenticator_confirm_delete.html:16
-#: accounts/templates/mfa/webauthn/authenticator_list.html:60
-#: accounts/templates/socialaccount/connections.html:54
-msgid "Remove"
-msgstr "Verwijder"
-
-#: accounts/templates/account/email.html:65
-msgid "Add Email Address"
-msgstr "Voeg e-mailadres toe"
-
-#: accounts/templates/account/email.html:71
-msgid "Add Email"
-msgstr "E-mail toevoegen"
-
-#: accounts/templates/account/email.html:89
-msgid "Do you really want to remove the selected email address?"
-msgstr "Wil je het geselecteerde e-mailadres echt verwijderen?"
-
-#: accounts/templates/account/email.html:98
+#: accounts/templates/account/email.html:9
 #: accounts/templates/account/email_change.html:5
 #: accounts/templates/account/email_change.html:9
 msgid "Email Address"
 msgstr "E-mailadres"
 
-#: accounts/templates/account/email.html:110
-#: accounts/templates/account/email.html:118
+#: accounts/templates/account/email.html:21
+#: accounts/templates/account/email.html:29
 #: accounts/templates/account/email_change.html:21
 #: accounts/templates/account/email_change.html:29
 msgid "Current email"
 msgstr "Huidig email"
 
-#: accounts/templates/account/email.html:120
+#: accounts/templates/account/email.html:31
 #: accounts/templates/account/email_change.html:31
 msgid "Changing to"
 msgstr "Wordt veranderd in"
 
-#: accounts/templates/account/email.html:124
+#: accounts/templates/account/email.html:35
 #: accounts/templates/account/email_change.html:35
 msgid "Your email address is still pending verification."
 msgstr "Je e-mailadres wacht op verificatie."
 
-#: accounts/templates/account/email.html:130
+#: accounts/templates/account/email.html:37
+#: accounts/templates/account/email_change.html:37
+msgid "Re-send Verification"
+msgstr "Stuur verificatie e-mail opnieuw"
+
+#: accounts/templates/account/email.html:41
 #: accounts/templates/account/email_change.html:41
 msgid "Cancel Change"
 msgstr "Annuleer wijziging"
 
-#: accounts/templates/account/email.html:138
+#: accounts/templates/account/email.html:49
 #: accounts/templates/account/email_change.html:49
 msgid "Change to"
 msgstr "Wijzig naar"
 
-#: accounts/templates/account/email.html:144
+#: accounts/templates/account/email.html:55
 #: accounts/templates/account/email_change.html:55
 msgid "Change Email"
 msgstr "E-mail wijzigen"
@@ -169,37 +164,20 @@ msgstr "E-mail wijzigen"
 #: accounts/templates/account/email/account_already_exists_message.txt:4
 #, python-format
 msgid ""
-"You are receiving this email because you or someone else tried to signup for "
-"an\n"
-"account using email address:\n"
+"Vous recevez cet email parce que vous ou quelqu'un d'autre a tenté de créer "
+"un compte avec l'adresse e-mail :\n"
 "\n"
 "%(email)s\n"
 "\n"
-"However, an account using that email address already exists.  In case you "
-"have\n"
-"forgotten about this, please use the password forgotten procedure to "
-"recover\n"
-"your account:\n"
+"Cependant, un compte avec cette adresse existe déjà. Si vous avez oublié "
+"votre mot de passe, vous pouvez le réinitialiser via le lien suivant :\n"
 "\n"
 "%(password_reset_url)s"
 msgstr ""
-"Je ontvangt deze e-mail omdat jij of iemand anders geprobeerd heeft een "
-"account\n"
-"te registreren met dit e-mail adres:\n"
-"\n"
-"%(email)s\n"
-"\n"
-"Echter, er bestaat al een account met dit e-mail adres.  Als je dit "
-"vergeten\n"
-"was, gebruik dan de wachtwoord vergeten procedure om de toegang tot je "
-"account\n"
-"te herstellen:\n"
-"\n"
-"%(password_reset_url)s"
 
 #: accounts/templates/account/email/account_already_exists_subject.txt:3
-msgid "Account Already Exists"
-msgstr "Account bestaat al"
+msgid "Un compte existe déjà avec cette adresse"
+msgstr ""
 
 #: accounts/templates/account/email/base_message.txt:2
 msgid ""
@@ -214,26 +192,21 @@ msgstr ""
 
 #: accounts/templates/account/email/base_notification.txt:5
 msgid ""
-"You are receiving this mail because the following change was made to your "
-"account:"
-msgstr "Je ontvangt deze e-mail vanwege de volgende wijziging aan je account:"
+"Vous recevez ce message car la modification suivante a été apportée à votre "
+"compte :"
+msgstr ""
 
 #: accounts/templates/account/email/base_notification.txt:10
 #, python-format
 msgid ""
-"If you do not recognize this change then please take proper security "
-"precautions immediately. The change to your account originates from:\n"
+"Si vous ne reconnaissez pas cette modification, prenez immédiatement les "
+"mesures de sécurité nécessaires. La modification de votre compte provient "
+"de :\n"
 "\n"
-"- IP address: %(ip)s\n"
-"- Browser: %(user_agent)s\n"
-"- Date: %(timestamp)s"
+"- Adresse IP : %(ip)s\n"
+"- Navigateur : %(user_agent)s\n"
+"- Date : %(timestamp)s"
 msgstr ""
-"Herken je deze wijziging niet? Neem dan onmiddelijk voorzorgsmaatregelen en "
-"beveilig je account. Deze wijzigingen komen van:\n"
-"\n"
-"- IP adres: %(ip)s\n"
-"- Browser: %(user_agent)s\n"
-"- Datum: %(timestamp)s"
 
 #: accounts/templates/account/email/email_change_confirmation_message.txt:3
 #, python-format
@@ -254,129 +227,140 @@ msgid "Changement d'adresse Email"
 msgstr "E-mail wijzigen"
 
 #: accounts/templates/account/email/email_changed_message.txt:4
-#, python-format
-msgid "Your email has been changed from %(from_email)s to %(to_email)s."
+#, fuzzy, python-format
+#| msgid "Your email has been changed from %(from_email)s to %(to_email)s."
+msgid ""
+"Votre adresse e-mail a été modifiée de %(from_email)s vers %(to_email)s."
 msgstr "Je email adres is gewijzigd van %(from_email)s naar %(to_email)s."
 
 #: accounts/templates/account/email/email_changed_subject.txt:3
-msgid "Email Changed"
-msgstr "E-mailadres gewijzigd"
+#, fuzzy
+#| msgid "Add Email"
+msgid "Adresse e-mail modifiée"
+msgstr "E-mail toevoegen"
 
 #: accounts/templates/account/email/email_confirm_message.txt:4
-msgid "Your email has been confirmed."
+#, fuzzy
+#| msgid "Your email has been confirmed."
+msgid "Votre adresse e-mail a été confirmée."
 msgstr "Je e-mailadres is bevestigd."
 
 #: accounts/templates/account/email/email_confirm_subject.txt:3
-msgid "Email Confirmation"
-msgstr "E-mailadres bevestiging"
+#, fuzzy
+#| msgid "Add Email"
+msgid "Adresse e-mail confirmée"
+msgstr "E-mail toevoegen"
 
 #: accounts/templates/account/email/email_confirmation_message.txt:6
 #, python-format
 msgid ""
-"Merci de t’être inscrit sur %(site_name)s !\n"
-"Pour finaliser ton inscription et confirmer ton adresse e-mail, clique sur "
-"le lien ci-dessous :\n"
+"Merci pour votre inscription sur %(site_name)s !\n"
+"Afin de finaliser votre inscription et de confirmer votre adresse e-mail, "
+"veuillez cliquer sur le lien ci-dessous :\n"
 msgstr ""
 
 #: accounts/templates/account/email/email_confirmation_subject.txt:3
-msgid "Please Confirm Your Email Address"
-msgstr "Bevestig je e-mailadres"
+#, fuzzy
+#| msgid "Removed email address %(email)s."
+msgid "Confirmez votre adresse e-mail"
+msgstr "E-mailadres %(email)s verwijderd."
 
 #: accounts/templates/account/email/email_deleted_message.txt:4
 #, python-format
-msgid "Email address %(deleted_email)s has been removed from your account."
-msgstr "Email adres %(deleted_email)s is ontkoppeld van je account."
+msgid "L'adresse e-mail %(deleted_email)s a été supprimée de votre compte."
+msgstr ""
 
 #: accounts/templates/account/email/email_deleted_subject.txt:3
-msgid "Email Removed"
-msgstr "E-mailadres verwijderd"
+#, fuzzy
+#| msgid "Add Email"
+msgid "Adresse e-mail supprimée"
+msgstr "E-mail toevoegen"
 
 #: accounts/templates/account/email/password_changed_message.txt:4
-msgid "Your password has been changed."
-msgstr "Je wachtwoord is gewijzigd."
+msgid "Votre mot de passe a été modifié."
+msgstr ""
 
 #: accounts/templates/account/email/password_changed_subject.txt:3
-msgid "Password Changed"
-msgstr "Wachtwoord gewijzigd"
+#, fuzzy
+#| msgid "Mot de passe oublié ?"
+msgid "Mot de passe modifié"
+msgstr "Wachtwoord vergeten?"
 
 #: accounts/templates/account/email/password_reset_code_message.txt:5
 msgid ""
-"Your password reset code is listed below. Please enter it in your open "
-"browser window."
+"Votre code de réinitialisation du mot de passe est indiqué ci-dessous. "
+"Veuillez le saisir dans la fenêtre de votre navigateur."
 msgstr ""
-"Je wachtwoordherstelcode staat hieronder. Voer deze code in je geopende "
-"browservenster in."
 
 #: accounts/templates/account/email/password_reset_code_message.txt:9
 #: accounts/templates/account/email/unknown_account_message.txt:6
-msgid "This mail can be safely ignored if you did not initiate this action."
-msgstr "Je kunt deze mail gerust negeren als je dit niet zelf gedaan hebt."
+msgid ""
+"Vous pouvez ignorer cet email en toute sécurité si vous n'êtes pas à "
+"l'origine de cette action."
+msgstr ""
 
 #: accounts/templates/account/email/password_reset_code_subject.txt:3
-msgid "Password Reset Code"
-msgstr "Wachtwoordherstelcode"
+msgid "Code de réinitialisation du mot de passe"
+msgstr ""
 
 #: accounts/templates/account/email/password_reset_key_message.txt:4
 msgid ""
-"You're receiving this email because you or someone else has requested a "
-"password reset for your user account.\n"
-"It can be safely ignored if you did not request a password reset. Click the "
-"link below to reset your password."
+"Vous recevez cet email parce que vous ou quelqu'un d'autre a demandé une "
+"réinitialisation de mot de passe pour votre compte.\n"
+"Vous pouvez ignorer cet email en toute sécurité si vous n'avez pas demandé "
+"de réinitialisation. Cliquez sur le lien ci-dessous pour réinitialiser votre "
+"mot de passe."
 msgstr ""
-"Je ontvangt deze mail omdat er een verzoek is ingelegd om je wachtwoord "
-"opnieuw\n"
-"in te stellen. Je kunt deze mail gerust negeren als je dit niet zelf gedaan\n"
-"hebt. Anders, klik op de volgende link om je wachtwoord opnieuw in te "
-"stellen."
 
 #: accounts/templates/account/email/password_reset_key_message.txt:9
 #, python-format
-msgid "In case you forgot, your username is %(username)s."
-msgstr "Deze link hoort bij je account met gebruikersnaam %(username)s."
+msgid ""
+"Au cas où vous l'auriez oublié, votre nom d'utilisateur est %(username)s."
+msgstr ""
 
 #: accounts/templates/account/email/password_reset_key_subject.txt:3
-msgid "Password Reset Email"
-msgstr "Nieuw wachtwoord"
+#, fuzzy
+#| msgid "Envoyer le lien de réinitialisation"
+msgid "Lien de réinitialisation du mot de passe"
+msgstr "Stuur de resetlink"
 
 #: accounts/templates/account/email/password_reset_message.txt:4
-msgid "Your password has been reset."
-msgstr "Je wachtwoord is opnieuw ingesteld."
+msgid "Votre mot de passe a été réinitialisé."
+msgstr ""
 
 #: accounts/templates/account/email/password_reset_subject.txt:3
-#: accounts/templates/account/password_reset.html:5
-#: accounts/templates/account/password_reset.html:11
-#: accounts/templates/account/password_reset_done.html:5
-#: accounts/templates/account/password_reset_done.html:13
-msgid "Password Reset"
-msgstr "Nieuw wachtwoord"
+#: accounts/templates/account/password_reset_done.html:4
+#: accounts/templates/account/password_reset_from_key.html:4
+msgid "Réinitialisation du mot de passe"
+msgstr ""
 
 #: accounts/templates/account/email/password_set_message.txt:4
-msgid "Your password has been set."
-msgstr "Je wachtwoord is ingesteld."
+msgid "Votre mot de passe a été défini."
+msgstr ""
 
 #: accounts/templates/account/email/password_set_subject.txt:3
-msgid "Password Set"
-msgstr "Wachtwoord ingesteld"
+#, fuzzy
+#| msgid "Mot de passe"
+msgid "Mot de passe défini"
+msgstr "Wachtwoord"
 
 #: accounts/templates/account/email/unknown_account_message.txt:4
 #, python-format
 msgid ""
-"You are receiving this email because you, or someone else, tried to access "
-"an account with email %(email)s. However, we do not have any record of such "
-"an account in our database."
+"Vous recevez cet email parce que vous, ou quelqu'un d'autre, a tenté "
+"d'accéder à un compte avec l'adresse e-mail %(email)s. Cependant, nous "
+"n'avons aucun compte associé à cette adresse dans notre base de données."
 msgstr ""
-"Je ontvang deze e-mail omdat jij, of iemand anders, een poging gedaan heeft "
-"een account met e-mailadres %(email)s te gebruiken. Echter, dit account "
-"bestaat niet."
 
 #: accounts/templates/account/email/unknown_account_message.txt:8
-msgid "If it was you, you can sign up for an account using the link below."
+msgid ""
+"Si c'est bien vous, vous pouvez créer un compte en cliquant sur le lien ci-"
+"dessous."
 msgstr ""
-"Als jij dit wel hebt gedaan, dan kun je je via de volgende link registreren."
 
 #: accounts/templates/account/email/unknown_account_subject.txt:3
-msgid "Unknown Account"
-msgstr "Onbekend account"
+msgid "Compte introuvable"
+msgstr ""
 
 #: accounts/templates/account/email_change_form.html:13
 #, fuzzy
@@ -411,8 +395,8 @@ msgstr ""
 #: accounts/templates/account/email_confirm.html:44
 #, python-format
 msgid ""
-"This email confirmation link expired or is invalid. Please <a href="
-"\"%(email_url)s\">issue a new email confirmation request</a>."
+"This email confirmation link expired or is invalid. Please <a "
+"href=\"%(email_url)s\">issue a new email confirmation request</a>."
 msgstr ""
 "Deze e-mail verificatie link is verlopen of niet geldig. Dien een\n"
 "<a href=\"%(email_url)s\">nieuw e-mail verificatie verzoek</a> in."
@@ -427,25 +411,25 @@ msgstr ""
 msgid "Bienvenue"
 msgstr "Welkom"
 
-#: accounts/templates/account/login.html:21
+#: accounts/templates/account/login.html:30
 #: accounts/templates/account/signup.html:39
 #, fuzzy
 msgid "E-mail"
 msgstr "E-mail"
 
-#: accounts/templates/account/login.html:38
-#: accounts/templates/account/profile/profile_security.html:87
+#: accounts/templates/account/login.html:47
+#: accounts/templates/account/profile/profile_security.html:93
 #: accounts/templates/account/signup.html:54
 msgid "Mot de passe"
 msgstr "Wachtwoord"
 
-#: accounts/templates/account/login.html:55
+#: accounts/templates/account/login.html:64
 msgid "Se souvenir de moi"
 msgstr "Onthoud mij"
 
-#: accounts/templates/account/login.html:58
+#: accounts/templates/account/login.html:67
 #: accounts/templates/account/partials/password_settings.html:51
-#: accounts/templates/account/profile/profile_security.html:114
+#: accounts/templates/account/profile/profile_security.html:131
 msgid "Mot de passe oublié ?"
 msgstr "Wachtwoord vergeten?"
 
@@ -485,6 +469,10 @@ msgstr "E-mailadres %(email)s verwijderd."
 #, python-format
 msgid "Successfully signed in as %(name)s."
 msgstr "Je bent nu ingelogd als %(name)s."
+
+#: accounts/templates/account/messages/logged_in.txt:5
+msgid "Connexion réussie en tant que "
+msgstr ""
 
 #: accounts/templates/account/messages/logged_out.txt:2
 msgid "You have signed out."
@@ -534,21 +522,21 @@ msgid "Non vérifiée"
 msgstr ""
 
 #: accounts/templates/account/partials/email_settings.html:26
-#: accounts/templates/account/profile/profile_security.html:77
+#: accounts/templates/account/profile/profile_security.html:83
 #, fuzzy
 #| msgid "Re-send Verification"
 msgid "Renvoyer la vérification"
 msgstr "Stuur verificatie e-mail opnieuw"
 
 #: accounts/templates/account/partials/email_settings.html:45
-#: accounts/templates/account/profile/profile_security.html:54
+#: accounts/templates/account/profile/profile_security.html:60
 #, fuzzy
 #| msgid "Change Email"
 msgid "Changer d’e-mail"
 msgstr "E-mail wijzigen"
 
 #: accounts/templates/account/partials/email_settings.html:49
-#: accounts/templates/account/profile/profile_security.html:58
+#: accounts/templates/account/profile/profile_security.html:64
 #, fuzzy
 #| msgid "Removed email address %(email)s."
 msgid "nouvelle adresse e-mail"
@@ -556,8 +544,8 @@ msgstr "E-mailadres %(email)s verwijderd."
 
 #: accounts/templates/account/partials/email_settings.html:55
 #: accounts/templates/account/partials/password_settings.html:55
-#: accounts/templates/account/profile/profile_security.html:65
-#: accounts/templates/account/profile/profile_security.html:118
+#: accounts/templates/account/profile/profile_security.html:71
+#: accounts/templates/account/profile/profile_security.html:135
 msgid "Mettre à jour"
 msgstr "Bijwerken"
 
@@ -566,22 +554,23 @@ msgid "Un e-mail de confirmation peut être envoyé."
 msgstr ""
 
 #: accounts/templates/account/partials/password_settings.html:20
-#: accounts/templates/account/profile/profile_security.html:94
+#: accounts/templates/account/profile/profile_security.html:100
 msgid "Mot de passe actuel"
 msgstr "Huidig wachtwoord"
 
 #: accounts/templates/account/partials/password_settings.html:29
-#: accounts/templates/account/profile/profile_security.html:100
+#: accounts/templates/account/password_reset_from_key.html:18
+#: accounts/templates/account/profile/profile_security.html:109
 msgid "Nouveau mot de passe"
 msgstr "Nieuw wachtwoord"
 
 #: accounts/templates/account/partials/password_settings.html:36
-#: accounts/templates/account/profile/profile_security.html:103
+#: accounts/templates/account/profile/profile_security.html:116
 msgid "8 caractères minimum, mélangez lettres/chiffres/symboles."
 msgstr ""
 
 #: accounts/templates/account/partials/password_settings.html:41
-#: accounts/templates/account/profile/profile_security.html:107
+#: accounts/templates/account/profile/profile_security.html:121
 msgid "Confirmer le nouveau mot de passe"
 msgstr "Bevestig het nieuwe wachtwoord"
 
@@ -590,13 +579,13 @@ msgid "Infos privées"
 msgstr "Privégegevens"
 
 #: accounts/templates/account/partials/profile_info.html:11
-#: accounts/templates/account/profile/profil_add_child.html:21
+#: accounts/templates/account/profile/profil_add_child.html:31
 #: accounts/templates/account/profile/profile_edit.html:53
 msgid "Prénom"
 msgstr "Voornaam"
 
 #: accounts/templates/account/partials/profile_info.html:22
-#: accounts/templates/account/profile/profil_add_child.html:32
+#: accounts/templates/account/profile/profil_add_child.html:42
 #: accounts/templates/account/profile/profile_edit.html:64
 msgid "Nom"
 msgstr "Naam"
@@ -607,6 +596,8 @@ msgid "Email"
 msgstr "E-mail"
 
 #: accounts/templates/account/partials/profile_info.html:41
+#: accounts/templates/account/profile/profile_edit.html:96
+#: accounts/templates/account/profile/profile_user.html:77
 msgid "Ville"
 msgstr ""
 
@@ -622,6 +613,7 @@ msgstr ""
 
 #: accounts/templates/account/partials/profile_info.html:75
 #: accounts/templates/account/profile/profile_edit.html:149
+#: accounts/templates/account/profile/profile_user.html:81
 msgid "Bio"
 msgstr ""
 
@@ -665,42 +657,55 @@ msgstr ""
 
 #: accounts/templates/account/partials/profile_public.html:4
 #: accounts/templates/account/profile/profile.html:4
-#: accounts/templates/allauth/layouts/admin-side-nav.html:29
+#: accounts/templates/allauth/layouts/admin-side-nav.html:49
 msgid "Mon profil"
 msgstr ""
 
 #: accounts/templates/account/partials/profile_public.html:12
 #: accounts/templates/account/profile/profile_edit.html:75
-#: accounts/templates/account/profile/profile_user.html:24
 msgid "Photo de profil"
 msgstr ""
 
-#: accounts/templates/account/partials/profile_public.html:53
+#: accounts/templates/account/partials/profile_public.html:52
 msgid "Note utilisateur"
 msgstr ""
 
-#: accounts/templates/account/partials/profile_public.html:113
-msgid "trajets effectués"
+#: accounts/templates/account/partials/profile_public.html:85
+msgid "avis"
 msgstr ""
 
-#: accounts/templates/account/partials/profile_public.html:117
+#: accounts/templates/account/partials/profile_public.html:165
+#: accounts/templates/account/profile/profile_user.html:151
+msgid "Non spécifié"
+msgstr ""
+
+#: accounts/templates/account/partials/profile_public.html:176
+#: accounts/templates/account/profile/profile_user.html:160
+msgid "trajet(s) effectué(s)"
+msgstr ""
+
+#: accounts/templates/account/partials/profile_public.html:179
+#: accounts/templates/account/profile/profile_user.html:163
 msgid "Membre depuis le"
 msgstr ""
 
-#: accounts/templates/account/partials/profile_public.html:120
+#: accounts/templates/account/partials/profile_public.html:182
+#: accounts/templates/account/profile/profile_user.html:167
 msgid "Dernière connexion"
 msgstr ""
 
-#: accounts/templates/account/password_change.html:19
-#: accounts/templates/account/password_change.html:57
-#: accounts/templates/account/password_change.html:60
+#: accounts/templates/account/password_change.html:28
 msgid "Change Password"
 msgstr "Wachtwoord wijzigen"
 
-#: accounts/templates/account/password_change.html:21
-#: accounts/templates/account/password_change.html:63
+#: accounts/templates/account/password_change.html:31
 msgid "Forgot Password?"
 msgstr "Wachtwoord vergeten?"
+
+#: accounts/templates/account/password_reset.html:5
+#: accounts/templates/account/password_reset.html:11
+msgid "Password Reset"
+msgstr "Nieuw wachtwoord"
 
 #: accounts/templates/account/password_reset.html:13
 msgid ""
@@ -727,66 +732,209 @@ msgstr "Herinnert u zich uw wachtwoord nog?"
 msgid "Sign In"
 msgstr "Aanmelden"
 
-#: accounts/templates/account/password_reset_done.html:19
-msgid ""
-"We have sent you an email. If you have not received it please check your "
-"spam folder. Otherwise contact us if you do not receive it in a few minutes."
+#: accounts/templates/account/password_reset_done.html:9
+msgid "Vérifiez vos emails"
 msgstr ""
-"Volg de link in de verificatie e-mail om de controle af te ronden. Neem a.u."
-"b. contact met ons op als je de e-mail niet binnen enkele minuten ontvangt."
+
+#: accounts/templates/account/password_reset_done.html:11
+msgid ""
+"Nous vous avons envoyé un email. Si vous ne le recevez pas, vérifiez vos "
+"spams. Contactez-nous si vous ne le recevez pas dans quelques minutes."
+msgstr ""
+
+#: accounts/templates/account/password_reset_done.html:17
+#: accounts/templates/account/password_reset_from_key.html:60
+msgid "Retour à la connexion"
+msgstr ""
+
+#: accounts/templates/account/password_reset_from_key.html:11
+msgid "Lien invalide"
+msgstr ""
+
+#: accounts/templates/account/password_reset_from_key.html:14
+#, python-format
+msgid ""
+"Ce lien de réinitialisation est invalide ou a déjà été utilisé. Veuillez "
+"effectuer une <a href=\"%(passwd_reset_url)s\" class=\"text-brand font-"
+"semibold hover:underline\">nouvelle demande</a>."
+msgstr ""
+
+#: accounts/templates/account/password_reset_from_key.html:19
+#, fuzzy
+#| msgid "Confirmer le nouveau mot de passe"
+msgid "Choisissez un nouveau mot de passe pour votre compte."
+msgstr "Bevestig het nieuwe wachtwoord"
+
+#: accounts/templates/account/password_reset_from_key.html:52
+#, fuzzy
+#| msgid "Confirmer mot de passe"
+msgid "Enregistrer le mot de passe"
+msgstr "Wachtwoord bevestigen"
 
 #: accounts/templates/account/profile/profil_add_child.html:3
-#: accounts/templates/account/profile/profile_children.html:31
+#: accounts/templates/account/profile/profile_children.html:134
+#: accounts/views.py:76
 msgid "Ajouter un enfant"
 msgstr ""
 
-#: accounts/templates/account/profile/profil_add_child.html:43
+#: accounts/templates/account/profile/profil_add_child.html:53
 #, fuzzy
 #| msgid "Mot de passe"
 msgid "Date de naissance"
 msgstr "Wachtwoord"
 
-#: accounts/templates/account/profile/profil_add_child.html:54
+#: accounts/templates/account/profile/profil_add_child.html:64
 msgid "Genre"
 msgstr ""
 
-#: accounts/templates/account/profile/profil_add_child.html:66
-#: accounts/templates/account/profile/profile_children.html:18
+#: accounts/templates/account/profile/profil_add_child.html:74
+msgid "Langue(s) parlée(s)"
+msgstr ""
+
+#: accounts/templates/account/profile/profil_add_child.html:86
+#: accounts/templates/account/profile/profile_children.html:62
 msgid "Siège enfant requis"
 msgstr ""
 
-#: accounts/templates/account/profile/profil_add_child.html:78
-msgid "Retour au profil"
+#: accounts/templates/account/profile/profil_add_child.html:95
+#: accounts/templates/account/profile/profile_children.html:68
+msgid "Porteur d’un handicap"
 msgstr ""
 
-#: accounts/templates/account/profile/profil_add_child.html:81
+#: accounts/templates/account/profile/profil_add_child.html:105
+#: accounts/templates/account/profile/profile_children.html:77
+msgid "Besoins spécifiques"
+msgstr ""
+
+#: accounts/templates/account/profile/profil_add_child.html:119
+#: accounts/templates/account/profile/profile_add_address.html:45
+#: accounts/templates/account/profile/profile_user.html:24
+msgid "Retour"
+msgstr ""
+
+#: accounts/templates/account/profile/profil_add_child.html:122
 msgid "Ajouter l'enfant"
 msgstr ""
 
-#: accounts/templates/account/profile/profil_add_child.html:89
+#: accounts/templates/account/profile/profil_add_child.html:131
 msgid "Enfants déjà enregistrés"
 msgstr ""
 
-#: accounts/templates/account/profile/profile.html:24
+#: accounts/templates/account/profile/profile.html:100
+#, fuzzy
+#| msgid "Créez un compte pour commencer."
+msgid "Complétez votre profil pour commencer"
+msgstr "Maak een account aan om te beginnen."
+
+#: accounts/templates/account/profile/profile.html:140
 msgid "Chargement du profil public..."
 msgstr ""
 
-#: accounts/templates/account/profile/profile.html:36
+#: accounts/templates/account/profile/profile.html:152
 msgid "Chargement des infos privées..."
 msgstr ""
 
+#: accounts/templates/account/profile/profile_add_address.html:3
+#: accounts/templates/account/profile/profile_addresses.html:76
+msgid "Ajouter une adresse"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_add_address.html:11
+msgid "Ajouter une adresse favorite"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_add_address.html:20
+#, fuzzy
+#| msgid "Mot de passe"
+msgid "Nom de l'adresse"
+msgstr "Wachtwoord"
+
+#: accounts/templates/account/profile/profile_add_address.html:28
+#, fuzzy
+#| msgid "IP Address"
+msgid "Adresse"
+msgstr "IP adres"
+
+#: accounts/templates/account/profile/profile_add_address.html:50
+#: accounts/templates/account/profile/profile_edit.html:202
+msgid "Enregistrer"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_addresses.html:3
+#: accounts/templates/allauth/layouts/admin-side-nav.html:71
+#, fuzzy
+#| msgid "email addresses"
+msgid "Mes adresses"
+msgstr "e-mailadressen"
+
+#: accounts/templates/account/profile/profile_addresses.html:19
+msgid "Mes adresses favorites"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_addresses.html:39
+#: accounts/templates/account/profile/profile_children.html:90
+#: accounts/templates/account/profile/profile_user.html:324
+#, fuzzy
+#| msgid "primary"
+msgid "Supprimer"
+msgstr "Primair"
+
+#: accounts/templates/account/profile/profile_addresses.html:47
+msgid "Supprimer l'adresse"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_addresses.html:49
+msgid "Êtes-vous sûr de vouloir supprimer cette adresse favorite ?"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_addresses.html:57
+#: accounts/templates/account/profile/profile_children.html:113
+#: accounts/templates/account/profile/profile_edit.html:198
+#: accounts/templates/account/profile/profile_security.html:170
+#: accounts/templates/account/profile/profile_user.html:288
+msgid "Annuler"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_addresses.html:61
+#: accounts/templates/account/profile/profile_children.html:118
+#: accounts/templates/account/profile/profile_security.html:174
+#, fuzzy
+#| msgid "Confirm"
+msgid "Confirmer"
+msgstr "Bevestigen"
+
+#: accounts/templates/account/profile/profile_addresses.html:70
+msgid "Vous n'avez pas encore ajouté d'adresse."
+msgstr ""
+
 #: accounts/templates/account/profile/profile_children.html:3
-#: accounts/templates/account/profile/profile_children.html:8
-#: accounts/templates/allauth/layouts/admin-header.html:89
-#: accounts/templates/allauth/layouts/admin-side-nav.html:43
+#: accounts/templates/account/profile/profile_children.html:19
+#: accounts/templates/allauth/layouts/admin-header.html:97
+#: accounts/templates/allauth/layouts/admin-side-nav.html:63
 msgid "Mes enfants"
 msgstr ""
 
-#: accounts/templates/account/profile/profile_children.html:16
-msgid "né(e) le"
+#: accounts/templates/account/profile/profile_children.html:36
+msgid "Né(e) le"
 msgstr ""
 
-#: accounts/templates/account/profile/profile_children.html:25
+#: accounts/templates/account/profile/profile_children.html:38
+msgid "ans"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_children.html:46
+msgid "Langues parlées"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_children.html:102
+msgid "Supprimer l'enfant"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_children.html:105
+msgid "Êtes-vous sûr de vouloir supprimer cet enfant ?"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_children.html:128
 msgid "Vous n'avez pas encore ajouté d'enfant."
 msgstr ""
 
@@ -799,7 +947,7 @@ msgid "Identité"
 msgstr ""
 
 #: accounts/templates/account/profile/profile_edit.html:78
-msgid "PNG, JPG, ou GIF."
+msgid "JPG ou PNG."
 msgstr ""
 
 #: accounts/templates/account/profile/profile_edit.html:91
@@ -807,10 +955,6 @@ msgstr ""
 #| msgid "social application"
 msgid "Localisation"
 msgstr "social application"
-
-#: accounts/templates/account/profile/profile_edit.html:96
-msgid "Adresse (Code postal / Ville)"
-msgstr ""
 
 #: accounts/templates/account/profile/profile_edit.html:115
 msgid "Préférences"
@@ -841,18 +985,9 @@ msgstr ""
 msgid "Formats acceptés : PDF, JPG, PNG. Ce document reste privé."
 msgstr ""
 
-#: accounts/templates/account/profile/profile_edit.html:198
-#: accounts/templates/account/profile/profile_security.html:153
-msgid "Annuler"
-msgstr ""
-
-#: accounts/templates/account/profile/profile_edit.html:202
-msgid "Enregistrer"
-msgstr ""
-
 #: accounts/templates/account/profile/profile_security.html:4
 #: accounts/templates/account/profile/profile_security.html:11
-#: accounts/templates/allauth/layouts/admin-header.html:146
+#: accounts/templates/allauth/layouts/admin-header.html:154
 msgid "Sécurité & connexion"
 msgstr ""
 
@@ -862,37 +997,82 @@ msgstr ""
 msgid "Adresse e-mail"
 msgstr "E-mail toevoegen"
 
-#: accounts/templates/account/profile/profile_security.html:128
+#: accounts/templates/account/profile/profile_security.html:54
+#, python-format
+msgid ""
+"En attente de confirmation pour <strong>%(email)s</strong>. Vérifiez vos "
+"emails."
+msgstr ""
+
+#: accounts/templates/account/profile/profile_security.html:145
 msgid "Zone sensible"
 msgstr ""
 
-#: accounts/templates/account/profile/profile_security.html:129
+#: accounts/templates/account/profile/profile_security.html:146
 msgid ""
 "Désactivez votre compte. Un administrateur devra le réactiver pour reprendre "
 "l'accès."
 msgstr ""
 
-#: accounts/templates/account/profile/profile_security.html:134
-msgid "Supprimer mon compte"
-msgstr ""
+#: accounts/templates/account/profile/profile_security.html:151
+#, fuzzy
+#| msgid "Créer mon compte"
+msgid "Désactiver mon compte"
+msgstr "Maak mijn account aan"
 
-#: accounts/templates/account/profile/profile_security.html:145
+#: accounts/templates/account/profile/profile_security.html:162
 msgid "Désactiver le compte"
 msgstr ""
 
-#: accounts/templates/account/profile/profile_security.html:146
+#: accounts/templates/account/profile/profile_security.html:163
 msgid ""
 "Vous ne pourrez plus vous connecter sans réactivation par un administrateur."
 msgstr ""
 
-#: accounts/templates/account/profile/profile_security.html:157
-#, fuzzy
-#| msgid "Confirm"
-msgid "Confirmer"
-msgstr "Bevestigen"
-
 #: accounts/templates/account/profile/profile_user.html:5
-msgid "Profile"
+msgid "Profil de"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_user.html:40
+msgid "Profil de "
+msgstr ""
+
+#: accounts/templates/account/profile/profile_user.html:76
+msgid "Contact"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_user.html:177
+msgid "Avis"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_user.html:181
+#: accounts/templates/account/profile/profile_user.html:212
+msgid "Note moyenne"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_user.html:212
+msgid "Pas encore d’avis"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_user.html:216
+msgid "Avis reçus"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_user.html:259
+msgid "Aucun avis pour le moment"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_user.html:266
+#: accounts/templates/account/profile/profile_user.html:271
+msgid "Laisser un avis"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_user.html:284
+msgid "Sauvegarder"
+msgstr ""
+
+#: accounts/templates/account/profile/profile_user.html:320
+msgid "Modifier"
 msgstr ""
 
 #: accounts/templates/account/reauthenticate.html:6
@@ -966,13 +1146,15 @@ msgstr ""
 "ontvangen, je wachtwoord opnieuw kunt instellen, enz."
 
 #: accounts/templates/account/verification_sent.html:5
-#: accounts/templates/account/verification_sent.html:12
+#: accounts/templates/account/verification_sent.html:14
+#: accounts/templates/account/verification_sent.html:29
 #: accounts/templates/account/verified_email_required.html:5
 #: accounts/templates/account/verified_email_required.html:11
 msgid "Verify Your Email Address"
 msgstr "Verifieer je e-mailadres"
 
-#: accounts/templates/account/verification_sent.html:15
+#: accounts/templates/account/verification_sent.html:19
+#: accounts/templates/account/verification_sent.html:32
 msgid ""
 "We have sent an email to you for verification. Follow the link provided to "
 "finalize the signup process. If you do not see the verification email in "
@@ -1013,93 +1195,63 @@ msgstr ""
 "<strong>Merk op:</strong> je kunt altijd <a href=\"%(email_url)s\">je e-mail "
 "adres wijzigen</a>."
 
-#: accounts/templates/account/welcome.html:5
-#: accounts/templates/account/welcome.html:13
-msgid "Bienvenue sur Bana"
-msgstr ""
-
-#: accounts/templates/account/welcome.html:11
-#, fuzzy
-#| msgid "email confirmation"
-msgid "Email confirmé 🎉"
-msgstr "e-mailadres bevestiging"
-
-#: accounts/templates/account/welcome.html:17
-msgid ""
-"Merci pour ton inscription. Tu peux maintenant accéder à toutes les "
-"fonctionnalités de Bana."
-msgstr ""
-
-#: accounts/templates/account/welcome.html:22
-#, python-format
-msgid ""
-"\n"
-"        Rends-toi sur <a href=\"%(profile_url)s\" class=\"text-brand font-"
-"semibold underline\">\"mon profil\"</a> afin de finaliser ton profil et "
-"accéder aux fonctionnalités de trajet.\n"
-"      "
-msgstr ""
-
-#: accounts/templates/account/welcome.html:29
-msgid "Aller à l'accueil"
-msgstr ""
-
 #: accounts/templates/allauth/layouts/admin-footer-mobile.html:23
-#: accounts/templates/allauth/layouts/admin-header.html:98
-#: accounts/templates/allauth/layouts/admin-side-nav.html:60
+#: accounts/templates/allauth/layouts/admin-header.html:106
+#: accounts/templates/allauth/layouts/admin-side-nav.html:89
+#: accounts/templates/allauth/layouts/admin-side-nav.html:99
 msgid "Rechercher"
 msgstr ""
 
 #: accounts/templates/allauth/layouts/admin-footer-mobile.html:39
-#: accounts/templates/allauth/layouts/admin-header.html:107
-#: accounts/templates/allauth/layouts/admin-side-nav.html:68
+#: accounts/templates/allauth/layouts/admin-header.html:115
+#: accounts/templates/allauth/layouts/admin-side-nav.html:108
 msgid "Proposer"
 msgstr ""
 
 #: accounts/templates/allauth/layouts/admin-footer-mobile.html:56
-#: accounts/templates/allauth/layouts/admin-header.html:128
+#: accounts/templates/allauth/layouts/admin-header.html:136
 msgid "Réservations"
 msgstr ""
 
 #: accounts/templates/allauth/layouts/admin-footer-mobile.html:73
-#: accounts/templates/allauth/layouts/admin-header.html:80
+#: accounts/templates/allauth/layouts/admin-header.html:88
 msgid "Profil"
 msgstr ""
 
-#: accounts/templates/allauth/layouts/admin-header.html:50
+#: accounts/templates/allauth/layouts/admin-header.html:58
 #, fuzzy
 #| msgid "Menu:"
 msgid "Menu"
 msgstr "Menu:"
 
-#: accounts/templates/allauth/layouts/admin-header.html:70
+#: accounts/templates/allauth/layouts/admin-header.html:78
 msgid "Accueil"
 msgstr ""
 
-#: accounts/templates/allauth/layouts/admin-header.html:137
-#: accounts/templates/allauth/layouts/admin-side-nav.html:99
+#: accounts/templates/allauth/layouts/admin-header.html:145
+#: accounts/templates/allauth/layouts/admin-side-nav.html:143
 msgid "Abonnement"
 msgstr ""
 
-#: accounts/templates/allauth/layouts/admin-side-nav.html:35
+#: accounts/templates/allauth/layouts/admin-side-nav.html:55
 #, fuzzy
 #| msgid "email confirmations"
 msgid "Mes informations"
 msgstr "e-mailadres bevestigingen"
 
-#: accounts/templates/allauth/layouts/admin-side-nav.html:53
+#: accounts/templates/allauth/layouts/admin-side-nav.html:80
 msgid "Mes trajets"
 msgstr ""
 
-#: accounts/templates/allauth/layouts/admin-side-nav.html:85
+#: accounts/templates/allauth/layouts/admin-side-nav.html:128
 msgid "Mes réservations"
 msgstr ""
 
-#: accounts/templates/allauth/layouts/admin-side-nav.html:93
+#: accounts/templates/allauth/layouts/admin-side-nav.html:137
 msgid "Paramètres"
 msgstr ""
 
-#: accounts/templates/allauth/layouts/admin-side-nav.html:106
+#: accounts/templates/allauth/layouts/admin-side-nav.html:150
 msgid "Sécurité et connexion"
 msgstr ""
 
@@ -1342,6 +1494,12 @@ msgstr "Verwijder beveiligingssleutel"
 msgid "Are you sure you want to remove this security key?"
 msgstr "Weet je zeker dat je deze beveiligingssleutel wilt verwijderen?"
 
+#: accounts/templates/mfa/webauthn/authenticator_confirm_delete.html:16
+#: accounts/templates/mfa/webauthn/authenticator_list.html:60
+#: accounts/templates/socialaccount/connections.html:54
+msgid "Remove"
+msgstr "Verwijder"
+
 #: accounts/templates/mfa/webauthn/authenticator_list.html:18
 msgid "Key"
 msgstr "Sleutel"
@@ -1510,8 +1668,8 @@ msgstr "Aanmelden geannuleerd"
 #, python-format
 msgid ""
 "You decided to cancel logging in to our site using one of your existing "
-"accounts. If this was a mistake, please proceed to <a href=\"%(login_url)s"
-"\">sign in</a>."
+"accounts. If this was a mistake, please proceed to <a "
+"href=\"%(login_url)s\">sign in</a>."
 msgstr ""
 "Je hebt het aanmelden via een extern account geannuleerd. Als dit een "
 "vergissing was, <a href=\"%(login_url)s\">meld je dan opnieuw aan</a>."
@@ -1593,33 +1751,266 @@ msgstr "Elders uitloggen"
 msgid "Sign Out"
 msgstr "Afmelden"
 
-#: accounts/views.py:204
+#: accounts/views.py:38
+msgid "Renseigner votre prénom et nom"
+msgstr ""
+
+#: accounts/views.py:41
+msgid "Requis pour accéder aux trajets"
+msgstr ""
+
+#: accounts/views.py:44
+msgid "Souscrire un abonnement"
+msgstr ""
+
+#: accounts/views.py:47
+msgid "Requis pour voir les profils et réserver"
+msgstr ""
+
+#: accounts/views.py:54
+msgid "Vérifier votre identité (CI)"
+msgstr ""
+
+#: accounts/views.py:57
+msgid "Obligatoire pour réserver"
+msgstr ""
+
+#: accounts/views.py:61
+msgid "Déposer votre certificat BVM"
+msgstr ""
+
+#: accounts/views.py:64
+#, fuzzy
+#| msgid "Re-send Verification"
+msgid "En attente de validation admin"
+msgstr "Stuur verificatie e-mail opnieuw"
+
+#: accounts/views.py:67
+msgid "Ajouter une photo de profil"
+msgstr ""
+
+#: accounts/views.py:70
+msgid "Requise pour utiliser votre abonnement"
+msgstr ""
+
+#: accounts/views.py:79
+msgid "Nécessaire pour créer une recherche de trajet"
+msgstr ""
+
+#: accounts/views.py:93
+msgid "Bienvenue sur BanaCommunity ! Complétez votre profil pour commencer."
+msgstr ""
+
+#: accounts/views.py:301
 msgid "Veuillez saisir une adresse email valide."
 msgstr ""
 
-#: accounts/views.py:208
+#: accounts/views.py:305
 msgid "Cette adresse email est déjà votre adresse actuelle."
 msgstr ""
 
-#: accounts/views.py:213
+#: accounts/views.py:310
 msgid "Cette adresse email est déjà utilisée."
 msgstr ""
 
-#: accounts/views.py:233
+#: accounts/views.py:330
 msgid "Un email de confirmation a été envoyé à votre nouvelle adresse."
 msgstr ""
 
-#: accounts/views.py:235
+#: accounts/views.py:332
 msgid "Erreur lors de l'envoi de l'email de confirmation."
 msgstr ""
 
-#: accounts/views.py:246
+#: accounts/views.py:343
 msgid "Ce lien n'est pas valide pour cet utilisateur."
 msgstr ""
 
-#: accounts/views.py:255
+#: accounts/views.py:359
+msgid "Votre adresse e-mail a été mise à jour."
+msgstr ""
+
+#: accounts/views.py:361
+msgid "La confirmation a échoué. Veuillez réessayer."
+msgstr ""
+
+#: accounts/views.py:366
 msgid "Ce lien de confirmation n'est plus valide."
 msgstr ""
+
+#~ msgid "The following email addresses are associated with your account:"
+#~ msgstr "De volgende e-mailadressen zijn gekoppeld aan jouw account:"
+
+#~ msgid "Verified"
+#~ msgstr "Geverifieerd"
+
+#~ msgid "Unverified"
+#~ msgstr "Ongeverifieerd"
+
+#~ msgid "Primary"
+#~ msgstr "Primair"
+
+#~ msgid "Make Primary"
+#~ msgstr "Maak primair"
+
+#~ msgid "Add Email Address"
+#~ msgstr "Voeg e-mailadres toe"
+
+#~ msgid "Add Email"
+#~ msgstr "E-mail toevoegen"
+
+#~ msgid "Do you really want to remove the selected email address?"
+#~ msgstr "Wil je het geselecteerde e-mailadres echt verwijderen?"
+
+#, python-format
+#~ msgid ""
+#~ "You are receiving this email because you or someone else tried to signup "
+#~ "for an\n"
+#~ "account using email address:\n"
+#~ "\n"
+#~ "%(email)s\n"
+#~ "\n"
+#~ "However, an account using that email address already exists.  In case you "
+#~ "have\n"
+#~ "forgotten about this, please use the password forgotten procedure to "
+#~ "recover\n"
+#~ "your account:\n"
+#~ "\n"
+#~ "%(password_reset_url)s"
+#~ msgstr ""
+#~ "Je ontvangt deze e-mail omdat jij of iemand anders geprobeerd heeft een "
+#~ "account\n"
+#~ "te registreren met dit e-mail adres:\n"
+#~ "\n"
+#~ "%(email)s\n"
+#~ "\n"
+#~ "Echter, er bestaat al een account met dit e-mail adres.  Als je dit "
+#~ "vergeten\n"
+#~ "was, gebruik dan de wachtwoord vergeten procedure om de toegang tot je "
+#~ "account\n"
+#~ "te herstellen:\n"
+#~ "\n"
+#~ "%(password_reset_url)s"
+
+#~ msgid "Account Already Exists"
+#~ msgstr "Account bestaat al"
+
+#~ msgid ""
+#~ "You are receiving this mail because the following change was made to your "
+#~ "account:"
+#~ msgstr ""
+#~ "Je ontvangt deze e-mail vanwege de volgende wijziging aan je account:"
+
+#, python-format
+#~ msgid ""
+#~ "If you do not recognize this change then please take proper security "
+#~ "precautions immediately. The change to your account originates from:\n"
+#~ "\n"
+#~ "- IP address: %(ip)s\n"
+#~ "- Browser: %(user_agent)s\n"
+#~ "- Date: %(timestamp)s"
+#~ msgstr ""
+#~ "Herken je deze wijziging niet? Neem dan onmiddelijk voorzorgsmaatregelen "
+#~ "en beveilig je account. Deze wijzigingen komen van:\n"
+#~ "\n"
+#~ "- IP adres: %(ip)s\n"
+#~ "- Browser: %(user_agent)s\n"
+#~ "- Datum: %(timestamp)s"
+
+#~ msgid "Email Changed"
+#~ msgstr "E-mailadres gewijzigd"
+
+#~ msgid "Email Confirmation"
+#~ msgstr "E-mailadres bevestiging"
+
+#~ msgid "Please Confirm Your Email Address"
+#~ msgstr "Bevestig je e-mailadres"
+
+#, python-format
+#~ msgid "Email address %(deleted_email)s has been removed from your account."
+#~ msgstr "Email adres %(deleted_email)s is ontkoppeld van je account."
+
+#~ msgid "Email Removed"
+#~ msgstr "E-mailadres verwijderd"
+
+#~ msgid "Your password has been changed."
+#~ msgstr "Je wachtwoord is gewijzigd."
+
+#~ msgid "Password Changed"
+#~ msgstr "Wachtwoord gewijzigd"
+
+#~ msgid ""
+#~ "Your password reset code is listed below. Please enter it in your open "
+#~ "browser window."
+#~ msgstr ""
+#~ "Je wachtwoordherstelcode staat hieronder. Voer deze code in je geopende "
+#~ "browservenster in."
+
+#~ msgid "This mail can be safely ignored if you did not initiate this action."
+#~ msgstr "Je kunt deze mail gerust negeren als je dit niet zelf gedaan hebt."
+
+#~ msgid "Password Reset Code"
+#~ msgstr "Wachtwoordherstelcode"
+
+#~ msgid ""
+#~ "You're receiving this email because you or someone else has requested a "
+#~ "password reset for your user account.\n"
+#~ "It can be safely ignored if you did not request a password reset. Click "
+#~ "the link below to reset your password."
+#~ msgstr ""
+#~ "Je ontvangt deze mail omdat er een verzoek is ingelegd om je wachtwoord "
+#~ "opnieuw\n"
+#~ "in te stellen. Je kunt deze mail gerust negeren als je dit niet zelf "
+#~ "gedaan\n"
+#~ "hebt. Anders, klik op de volgende link om je wachtwoord opnieuw in te "
+#~ "stellen."
+
+#, python-format
+#~ msgid "In case you forgot, your username is %(username)s."
+#~ msgstr "Deze link hoort bij je account met gebruikersnaam %(username)s."
+
+#~ msgid "Password Reset Email"
+#~ msgstr "Nieuw wachtwoord"
+
+#~ msgid "Your password has been reset."
+#~ msgstr "Je wachtwoord is opnieuw ingesteld."
+
+#~ msgid "Your password has been set."
+#~ msgstr "Je wachtwoord is ingesteld."
+
+#~ msgid "Password Set"
+#~ msgstr "Wachtwoord ingesteld"
+
+#, python-format
+#~ msgid ""
+#~ "You are receiving this email because you, or someone else, tried to "
+#~ "access an account with email %(email)s. However, we do not have any "
+#~ "record of such an account in our database."
+#~ msgstr ""
+#~ "Je ontvang deze e-mail omdat jij, of iemand anders, een poging gedaan "
+#~ "heeft een account met e-mailadres %(email)s te gebruiken. Echter, dit "
+#~ "account bestaat niet."
+
+#~ msgid "If it was you, you can sign up for an account using the link below."
+#~ msgstr ""
+#~ "Als jij dit wel hebt gedaan, dan kun je je via de volgende link "
+#~ "registreren."
+
+#~ msgid "Unknown Account"
+#~ msgstr "Onbekend account"
+
+#~ msgid ""
+#~ "We have sent you an email. If you have not received it please check your "
+#~ "spam folder. Otherwise contact us if you do not receive it in a few "
+#~ "minutes."
+#~ msgstr ""
+#~ "Volg de link in de verificatie e-mail om de controle af te ronden. Neem a."
+#~ "u.b. contact met ons op als je de e-mail niet binnen enkele minuten "
+#~ "ontvangt."
+
+#, fuzzy
+#~| msgid "email confirmation"
+#~ msgid "Email confirmé 🎉"
+#~ msgstr "e-mailadres bevestiging"
 
 #~ msgid "Your password is now changed."
 #~ msgstr "Je wachtwoord is gewijzigd."
@@ -1792,12 +2183,6 @@ msgstr ""
 
 #~ msgid "verified"
 #~ msgstr "geverifieerd"
-
-#~ msgid "primary"
-#~ msgstr "Primair"
-
-#~ msgid "email addresses"
-#~ msgstr "e-mailadressen"
 
 #~ msgid "created"
 #~ msgstr "aangemaakt"
@@ -2081,8 +2466,8 @@ msgstr ""
 #~ msgstr "Aanmeldcode"
 
 #~ msgid ""
-#~ "If you have not created an account yet, then please %(link)ssign up"
-#~ "%(end_link)s first."
+#~ "If you have not created an account yet, then please %(link)ssign "
+#~ "up%(end_link)s first."
 #~ msgstr ""
 #~ "Als je nog geen account hebt %(link)sregistreer%(end_link)s je dan eerst."
 
@@ -2267,8 +2652,8 @@ msgstr ""
 
 #~ msgid ""
 #~ "Please sign in with one\n"
-#~ "of your existing third party accounts. Or, <a href=\"%(signup_url)s"
-#~ "\">sign up</a>\n"
+#~ "of your existing third party accounts. Or, <a "
+#~ "href=\"%(signup_url)s\">sign up</a>\n"
 #~ "for a %(site_name)s account and sign in below:"
 #~ msgstr ""
 #~ "Meld je aan met een van je bestaande externe accounts. Of, <a \n"

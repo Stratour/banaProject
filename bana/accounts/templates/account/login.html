@@ -15,6 +15,15 @@
     <form method="post" class="lg:w-1/2" action="{{ login_url }}">
       {% csrf_token %}
 
+      {# Non-field errors #}
+      {% if form.non_field_errors %}
+        <div class="mb-6 space-y-0.5">
+          {% for error in form.non_field_errors %}
+            <p class="text-xs font-medium text-red-500">{{ error }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+      
       {# Username / Email #}
       <div class="form-group mb-8">
         <label for="login" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">
@@ -61,15 +70,6 @@
 
       {% if redirect_field_value %}
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
-      {% endif %}
-
-      {# Non-field errors #}
-      {% if form.non_field_errors %}
-        <div class="mb-6 space-y-0.5">
-          {% for error in form.non_field_errors %}
-            <p class="text-xs font-medium text-red-500">{{ error }}</p>
-          {% endfor %}
-        </div>
       {% endif %}
 
       {# Submit #}

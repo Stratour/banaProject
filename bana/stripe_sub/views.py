@@ -96,6 +96,15 @@ def create_checkout_session(request):
 
 @login_required
 def payment_successful(request):
+    profile = Profile.objects.get(user=request.user)
+
+    def _profile_steps(profile):
+        return {
+            "ci_verified": profile.ci_is_verified,
+            "has_bvm": bool(profile.document_bvm),
+            "has_photo": bool(profile.profile_picture),
+        }
+
     subscription = Subscription.objects.filter(user=request.user, is_active=True).order_by('-current_period_end').first()
     if subscription:
         print(f"DEBUG Abonnement trouvé en DB: {subscription}")
@@ -106,12 +115,14 @@ def payment_successful(request):
             "end_date": subscription.current_period_end,
             "is_active": subscription.is_active,
             "payment_type": "Abonnement",
+            **_profile_steps(profile),
         })
 
     session_id = request.GET.get("session_id")
     if not session_id:
         return render(request, "stripe_sub/payment_successful.html", {
-            "error": "Abonnement en cours de traitement, réessayez dans quelques secondes."
+            "error": "Abonnement en cours de traitement, réessayez dans quelques secondes.",
+            **_profile_steps(profile),
         })
 
     try:
@@ -121,7 +132,7 @@ def payment_successful(request):
         if not subscription_id:
             raise ValueError("Aucun abonnement associé à cette session Stripe.")
 
-        # Récupère l'abonnement complet
+        # Récupère l’abonnement complet
         stripe_sub = stripe.Subscription.retrieve(subscription_id)
         print(f"DEBUG Stripe subscription: {stripe_sub}")
 
@@ -138,11 +149,13 @@ def payment_successful(request):
             "end_date": subscription.current_period_end,
             "is_active": subscription.is_active,
             "payment_type": "Abonnement",
+            **_profile_steps(profile),
         })
     except Exception as e:
         print(f"ERROR récupération Stripe subscription: {e}")
         return render(request, "stripe_sub/payment_successful.html", {
-            "error": f"Impossible de récupérer l’abonnement Stripe : {e}"
+            "error": f"Impossible de récupérer l’abonnement Stripe : {e}",
+            **_profile_steps(profile),
         })
 
 

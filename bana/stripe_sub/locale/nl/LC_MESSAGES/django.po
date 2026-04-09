@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-09 21:21+0200\n"
+"POT-Creation-Date: 2026-04-09 21:28+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,76 +17,71 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-
 #: stripe_sub/templates/stripe_sub/payment_cancelled.html:4
 msgid "Abonnement annulé"
-msgstr "Cancel subscription"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/payment_cancelled.html:12
 msgid "Abonnement"
-msgstr "Subscription"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/payment_cancelled.html:16
 msgid "Paiement annulé"
-msgstr "Payment is cancelled"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/payment_cancelled.html:18
 msgid ""
 "Votre transaction a été annulée ou a échoué. Vous pouvez réessayer ou "
 "demander de l'aide à un administrateur"
 msgstr ""
-"Your transaction was canceled or failed. You can try again or ask for help "
-"from an administrator"
 
 #: stripe_sub/templates/stripe_sub/payment_cancelled.html:26
 msgid "Retour au menu de paiement"
-msgstr "Return to the payment menu"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/payment_successful.html:4
 msgid "Abonnement activé"
-msgstr "Active subscription"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/payment_successful.html:14
 msgid "Abonnement activé avec succès"
-msgstr "Subscription successfully activated"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/payment_successful.html:18
 #: stripe_sub/templates/stripe_sub/subscription.html:63
 msgid "Produit"
-msgstr "Product"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/payment_successful.html:22
 #: stripe_sub/templates/stripe_sub/subscription.html:79
 msgid "Prix"
-msgstr "Price"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/payment_successful.html:23
 #: stripe_sub/templates/stripe_sub/subscription.html:80
 msgid "an"
-msgstr "year"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/payment_successful.html:26
 msgid "Début"
-msgstr "Start"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/payment_successful.html:30
 msgid "Fin"
-msgstr "End"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/payment_successful.html:35
 #, python-format
 msgid " Votre abonnement <strong>%(product)s</strong> est maintenant actif."
-msgstr "Your <strong>%(product)s</strong> subscription is now active."
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/payment_successful.html:36
-#, fuzzy
-#| msgid "Il restera valide jusqu’au"
 msgid "Il restera valide jusqu'au"
-msgstr "It will remain valid until"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/payment_successful.html:41
 msgid "Retour"
-msgstr "Back"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/payment_successful.html:51
 msgid "Bienvenue dans la famille Bana — une dernière étape importante"
@@ -153,7 +148,7 @@ msgstr ""
 #: stripe_sub/templates/stripe_sub/subscription.html:4
 #: stripe_sub/templates/stripe_sub/subscription.html:13
 msgid "Mon abonnement"
-msgstr "My subscription"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/subscription.html:24
 msgid ""
@@ -164,11 +159,6 @@ msgid ""
 "par des Yayas ou d’autres parents pour vos besoins quotidiens.\n"
 "                "
 msgstr ""
-" As a <span class=\"font-semibold\">Parent</span>, your main goal is to "
-"<strong>find help for your children's rides</strong>. \n"
-"                  You can easily find trajects offered by Yayas or other "
-"parents to meet your daily needs.\n"
-"                "
 
 #: stripe_sub/templates/stripe_sub/subscription.html:29
 msgid ""
@@ -181,30 +171,18 @@ msgid ""
 "en charge d’autres enfants pour aider la communauté.</li>\n"
 "                  "
 msgstr ""
-" \n"
-"                  <li><span class=\"font-medium text-brand-200\">Search a "
-"traject</span><br>find the trajects offered by Yayas or other parents for "
-"your children.</li>\n"
-"                  <li><span class=\"font-medium text-brand-200\">Suggest a "
-"traject</span><br>if you’re making a traject, you can also give a lift to "
-"other children to help the community.</li>\n"
-"                  "
 
 #: stripe_sub/templates/stripe_sub/subscription.html:34
 msgid ""
 "Ainsi, vous bénéficiez à la fois d’un soutien pour vos déplacements et "
 "participez à la solidarité entre familles"
 msgstr ""
-"Thus, you benefit from both support for your travels and participate in the "
-"solidarity between families"
 
 #: stripe_sub/templates/stripe_sub/subscription.html:43
 msgid ""
 " Avec <span class=\"font-semibold\">Yaya</span>, vous pouvez proposer "
 "différents types de trajets adaptés aux besoins des parents :"
 msgstr ""
-" With <span class=\"font-semibold\">Yaya</span>, you can propose different "
-"types of trajects adapted to the needs of parents:"
 
 #: stripe_sub/templates/stripe_sub/subscription.html:46
 msgid ""
@@ -219,39 +197,31 @@ msgid ""
 "rayon kilométrique choisi.</li>\n"
 "                "
 msgstr ""
-"\n"
-"   <li>✅ <span class=\"font-medium\">Classic traject</span> : a traject "
-"from a point <strong>A</strong> to a point <strong>B</strong>, whether for a "
-"single day or regularly on a defined period. </li>\n"
-"   <li>✅ <span class=\"font-medium\">Simplified traject</span> : you only "
-"indicate a <strong>place of departure</strong>, without precise destination, "
-"to allow helping any parent in a chosen kilometric radius. </li>\n"
-"                "
 
 #: stripe_sub/templates/stripe_sub/subscription.html:70
 msgid "Statut"
-msgstr "Statut"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/subscription.html:72
 msgid "Actif"
-msgstr "Active"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/subscription.html:74
 msgid "Inactif"
-msgstr "Inactive"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/subscription.html:84
 msgid "Période de l'abonnement"
-msgstr "Period of the subscription"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/subscription.html:107
 msgid "Vous n’avez pas encore d’abonnement actif."
-msgstr "You do not have an active subscription yet."
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/subscription.html:116
 msgid "S’abonner pour"
-msgstr "Subscribe for"
+msgstr ""
 
 #: stripe_sub/templates/stripe_sub/subscription.html:116
 msgid "ans"
-msgstr "years"
+msgstr ""

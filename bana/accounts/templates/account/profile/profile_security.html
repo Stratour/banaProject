@@ -49,6 +49,12 @@
     </p>
   </div>
 
+  {% if pending_email %}
+    <p class="text-sm text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg px-3 py-2">
+      {% blocktrans with email=pending_email %}En attente de confirmation pour <strong>{{ email }}</strong>. Vérifiez vos emails.{% endblocktrans %}
+    </p>
+  {% endif %}
+
   <form method="post" action="{% url 'accounts:email_edit' %}" class="space-y-3 max-w-md">
     {% csrf_token %}
     <label class="block text-sm font-semibold text-gray-900">{% trans "Changer d’e-mail" %}</label>
@@ -93,20 +99,31 @@
         <div>
           <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Mot de passe actuel" %}</label>
           <input type="password" name="oldpassword" autocomplete="current-password" required
-                 class="w-full border border-brand px-4 py-2 shadow-sm rounded-full focus:ring-brand focus:border-brand" />
+                 class="w-full border {% if password_errors.oldpassword %}border-red-400{% else %}border-brand{% endif %} px-4 py-2 shadow-sm rounded-full focus:ring-brand focus:border-brand" />
+          {% for error in password_errors.oldpassword %}
+            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+          {% endfor %}
         </div>
 
         <div>
           <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Nouveau mot de passe" %}</label>
           <input type="password" name="password1" autocomplete="new-password" required
-                 class="w-full border border-brand px-4 py-2 shadow-sm rounded-full focus:ring-brand focus:border-brand" />
-          <p class="mt-1 text-xs text-gray-500">{% trans "8 caractères minimum, mélangez lettres/chiffres/symboles." %}</p>
+                 class="w-full border {% if password_errors.password1 %}border-red-400{% else %}border-brand{% endif %} px-4 py-2 shadow-sm rounded-full focus:ring-brand focus:border-brand" />
+          {% for error in password_errors.password1 %}
+            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+          {% endfor %}
+          {% if not password_errors.password1 %}
+            <p class="mt-1 text-xs text-gray-500">{% trans "8 caractères minimum, mélangez lettres/chiffres/symboles." %}</p>
+          {% endif %}
         </div>
 
         <div>
           <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Confirmer le nouveau mot de passe" %}</label>
           <input type="password" name="password2" autocomplete="new-password" required
-                 class="w-full border border-brand px-4 py-2 shadow-sm rounded-full focus:ring-brand focus:border-brand" />
+                 class="w-full border {% if password_errors.password2 %}border-red-400{% else %}border-brand{% endif %} px-4 py-2 shadow-sm rounded-full focus:ring-brand focus:border-brand" />
+          {% for error in password_errors.password2 %}
+            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+          {% endfor %}
         </div>
 
         <div class="flex items-center justify-between pt-2">
@@ -131,7 +148,7 @@
       <button type="button"
               onclick="document.getElementById('deactivate-modal').showModal()"
               class="inline-flex items-center gap-2 rounded-full border border-red-300 text-red-700 px-4 py-2 text-sm font-semibold hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300">
-        {% trans "Supprimer mon compte" %}
+        {% trans "Désactiver mon compte" %}
       </button>
     </section>
   </article>

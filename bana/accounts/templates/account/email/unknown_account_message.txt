@@ -1,10 +1,10 @@
 {% extends "account/email/base_message.txt" %}
 {% load i18n %}
 
-{% block content %}{% autoescape off %}{% blocktranslate %}You are receiving this email because you, or someone else, tried to access an account with email {{ email }}. However, we do not have any record of such an account in our database.{% endblocktranslate %}
+{% block content %}{% autoescape off %}{% blocktranslate %}Vous recevez cet email parce que vous, ou quelqu'un d'autre, a tenté d'accéder à un compte avec l'adresse e-mail {{ email }}. Cependant, nous n'avons aucun compte associé à cette adresse dans notre base de données.{% endblocktranslate %}
 
-{% blocktranslate %}This mail can be safely ignored if you did not initiate this action.{% endblocktranslate %}
+{% blocktranslate %}Vous pouvez ignorer cet email en toute sécurité si vous n'êtes pas à l'origine de cette action.{% endblocktranslate %}
 
-{% blocktranslate %}If it was you, you can sign up for an account using the link below.{% endblocktranslate %}
+{% blocktranslate %}Si c'est bien vous, vous pouvez créer un compte en cliquant sur le lien ci-dessous.{% endblocktranslate %}
 
 {{ signup_url }}{% endautoescape %}{% endblock content %}
