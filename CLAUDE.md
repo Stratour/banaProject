@@ -32,20 +32,22 @@ python manage.py disable_past_trajects
 python manage.py collectstatic
 ```
 
-**Tailwind CSS** — run from project root while running the dev server:
+**Tailwind CSS** — run from the `bana/` directory:
 ```bash
+cd bana/
 python manage.py tailwind start
 ```
 If Tailwind node modules are missing:
 ```bash
-cd bana/theme/static_src && npm install && npm install cross-env && cd ../../..
+cd bana/theme/static_src && npm install && npm install cross-env
 ```
 
-**Production servers:**
+**Production servers** (managed by systemd — use `deploy.sh` to deploy):
 ```bash
-gunicorn -c gunicorn_config.py bana.wsgi:application        # WSGI (port 9768)
-daphne -b 0.0.0.0 -p 8001 bana.asgi:application             # ASGI for WebSocket
+sudo systemctl restart bana-gunicorn   # WSGI via gunicorn (port 9768)
+daphne -b 0.0.0.0 -p 8001 bana.asgi:application  # ASGI for WebSocket
 ```
+Gunicorn config: `gunicorn_config.py` at project root.
 
 There is no configured test runner or linter in this project.
 
@@ -131,3 +133,36 @@ The database credentials are currently hardcoded in `settings.py` (not from `.en
 - Tailwind compiled CSS: `bana/theme/static/`
 - Collected static: `bana/staticfiles/` (after `collectstatic`)
 - User uploads: `bana/media/`
+
+### Vues & HTMX
+
+Les vues sont quasi-exclusivement des **FBV** avec `@login_required` et `@require_http_methods`. `HtmxMiddleware` (de `django-htmx`) ajoute `request.htmx` à chaque requête. Pattern standard pour les vues HTMX :
+
+```python
+def ma_vue(request):
+    if request.htmx:
+        return render(request, "app/partials/fragment.html", context)
+    return render(request, "app/page_complete.html", context)
+```
+
+### Formulaires
+
+- **`TailwindFormMixin`** (`accounts/forms.py`) — applique automatiquement les classes Tailwind par type de widget. À utiliser comme mixin de base pour tout nouveau formulaire.
+- **`RecurrenceValidationMixin`** (`trajects/forms.py`) — validation de récurrence partagée entre les trois formulaires de trajet.
+
+### Contrôle d'accès
+
+Les vues réservées aux administrateurs utilisent `SuperuserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin)` défini dans `bana_admin/`. Pas de décorateurs `@permission_required` dans le projet — la vérification superuser est le seul mécanisme d'élévation de droits.
+
+### Conventions ORM
+
+- Toujours utiliser `select_related()` / `prefetch_related()` sur les querysets GIS pour éviter les requêtes N+1.
+- Utiliser `@transaction.atomic` sur les vues de suppression qui cascadent sur plusieurs modèles (voir les vues `delete_*_groupe` dans `trajects/views.py`).
+
+### URLs
+
+Les URLs localisées sont enveloppées dans `i18n_patterns()` avec `prefix_default_language=True` (le français reçoit le préfixe `/fr/`). Le webhook Stripe et le sélecteur de langue sont **délibérément en dehors** de `i18n_patterns`. Les routes de groupe utilisent `<uuid:groupe_uid>` (pas des PKs entiers).
+
+### Frontend
+
+JavaScript vanilla uniquement — pas de React/Vue. Fichiers JS dans `bana/static/bana/js/`. Modules réutilisables : `modal.js`, `toast.js`, `carousel.js`, `address_autocomplete.js`. Couleur de marque Tailwind : `#007F73` (définie dans `theme/static_src/tailwind.config.js`).

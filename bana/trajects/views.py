@@ -2216,65 +2216,135 @@ def propose_help(request, researched_id):
 def my_reservations(request):
     user = request.user
     is_abonned = Subscription.is_user_abonned(user)
+    today = date.today()
+
+    tab = request.GET.get('tab', 'active')
+    if tab not in ('active', 'history'):
+        tab = 'active'
+
+    # =========================
+    # Compteurs d'onglets (requêtes légères)
+    # =========================
+    active_count = (
+        Reservation.objects.filter(user=user, proposed_traject__date__gte=today)
+        .values('researched_traject__groupe_uid', 'proposed_traject__groupe_uid', 'proposed_traject__user_id')
+        .distinct().count()
+        + Reservation.objects.filter(proposed_traject__user=user, researched_traject__date__gte=today)
+        .values('proposed_traject__groupe_uid', 'researched_traject__groupe_uid', 'user_id')
+        .distinct().count()
+    )
+    history_count = (
+        Reservation.objects.filter(user=user, proposed_traject__date__lt=today)
+        .values('researched_traject__groupe_uid', 'proposed_traject__groupe_uid', 'proposed_traject__user_id')
+        .distinct().count()
+        + Reservation.objects.filter(proposed_traject__user=user, researched_traject__date__lt=today)
+        .values('proposed_traject__groupe_uid', 'researched_traject__groupe_uid', 'user_id')
+        .distinct().count()
+    )
+
+    # =========================
+    # Groupement selon l'onglet
+    # =========================
+    if tab == 'active':
+        # Groupes avec au moins une date future (tous statuts, y compris annulés)
+        made_qs_filter = dict(user=user, proposed_traject__date__gte=today)
+        made_exclude = {}
+        made_date_field = 'proposed_traject__date'
+        made_group_keys = ['researched_traject__groupe_uid', 'proposed_traject__groupe_uid', 'proposed_traject__user_id']
+        made_header_filter = lambda item: dict(
+            user=user,
+            proposed_traject__date__gte=today,
+            researched_traject__groupe_uid=item['researched_traject__groupe_uid'],
+            proposed_traject__groupe_uid=item['proposed_traject__groupe_uid'],
+            proposed_traject__user_id=item['proposed_traject__user_id'],
+        )
+
+        received_qs_filter = dict(proposed_traject__user=user, researched_traject__date__gte=today)
+        received_exclude = {}
+        received_date_field = 'researched_traject__date'
+        received_group_keys = ['proposed_traject__groupe_uid', 'researched_traject__groupe_uid', 'user_id']
+        received_header_filter = lambda item: dict(
+            proposed_traject__user=user,
+            researched_traject__date__gte=today,
+            proposed_traject__groupe_uid=item['proposed_traject__groupe_uid'],
+            researched_traject__groupe_uid=item['researched_traject__groupe_uid'],
+            user_id=item['user_id'],
+        )
+
+        made_date_filter = {}
+        received_date_filter = {}
+    else:
+        # Groupes avec au moins une date passée (tous statuts)
+        made_qs_filter = dict(user=user, proposed_traject__date__lt=today)
+        made_exclude = {}
+        made_date_field = 'proposed_traject__date'
+        made_group_keys = ['researched_traject__groupe_uid', 'proposed_traject__groupe_uid', 'proposed_traject__user_id']
+        made_header_filter = lambda item: dict(
+            user=user,
+            proposed_traject__date__lt=today,
+            researched_traject__groupe_uid=item['researched_traject__groupe_uid'],
+            proposed_traject__groupe_uid=item['proposed_traject__groupe_uid'],
+            proposed_traject__user_id=item['proposed_traject__user_id'],
+        )
+
+        received_qs_filter = dict(proposed_traject__user=user, researched_traject__date__lt=today)
+        received_exclude = {}
+        received_date_field = 'researched_traject__date'
+        received_group_keys = ['proposed_traject__groupe_uid', 'researched_traject__groupe_uid', 'user_id']
+        received_header_filter = lambda item: dict(
+            proposed_traject__user=user,
+            researched_traject__date__lt=today,
+            proposed_traject__groupe_uid=item['proposed_traject__groupe_uid'],
+            researched_traject__groupe_uid=item['researched_traject__groupe_uid'],
+            user_id=item['user_id'],
+        )
+
+        made_date_filter = {}
+        received_date_filter = {}
 
     # =========================
     # Réservations faites (parent)
     # =========================
-    made_raw = (
-        Reservation.objects
-        .filter(user=user)
+    made_base = (
+        Reservation.objects.filter(**made_qs_filter)
         .select_related(
             'proposed_traject', 'researched_traject',
             'proposed_traject__traject', 'researched_traject__traject',
             'proposed_traject__user', 'proposed_traject__user__profile'
         )
-        .prefetch_related(
-            'researched_traject__children',
-            'researched_traject__children__chld_languages',
-        )
-        .exclude(status='canceled')
+        .prefetch_related('researched_traject__children', 'researched_traject__children__chld_languages')
     )
+    if made_exclude:
+        made_base = made_base.exclude(**made_exclude)
 
     made_grouped = (
-        made_raw
-        .values(
-            'researched_traject__groupe_uid',
-            'proposed_traject__groupe_uid',
-            'proposed_traject__user_id',
-        )
+        made_base
+        .values(*made_group_keys)
         .annotate(
-            first_date=Min('proposed_traject__date'),
-            last_date=Max('proposed_traject__date'),
+            first_date=Min(made_date_field),
+            last_date=Max(made_date_field),
             count=Count('id'),
         )
         .order_by('-last_date')
     )
+    if made_date_filter:
+        made_grouped = made_grouped.filter(**made_date_filter)
 
     made_reservations = []
     for item in made_grouped:
         header = (
             Reservation.objects
-            .filter(
-                user=user,
-                researched_traject__groupe_uid=item['researched_traject__groupe_uid'],
-                proposed_traject__groupe_uid=item['proposed_traject__groupe_uid'],
-                proposed_traject__user_id=item['proposed_traject__user_id'],
-            )
+            .filter(**made_header_filter(item))
             .select_related(
                 'proposed_traject', 'researched_traject',
                 'proposed_traject__traject', 'researched_traject__traject',
                 'proposed_traject__user', 'proposed_traject__user__profile'
             )
-            .prefetch_related(
-                'researched_traject__children',
-                'researched_traject__children__chld_languages',
-            )
+            .prefetch_related('researched_traject__children', 'researched_traject__children__chld_languages')
             .first()
         )
-
         if not header:
             continue
-
         made_reservations.append({
             "header": header,
             "first_date": item["first_date"],
@@ -2285,61 +2355,46 @@ def my_reservations(request):
     # =========================
     # Réservations reçues (yaya)
     # =========================
-    received_raw = (
-        Reservation.objects
-        .filter(proposed_traject__user=user)
+    received_base = (
+        Reservation.objects.filter(**received_qs_filter)
         .select_related(
             'user', 'user__profile',
             'proposed_traject', 'researched_traject',
             'proposed_traject__traject', 'researched_traject__traject'
         )
-        .prefetch_related(
-            'researched_traject__children',
-            'researched_traject__children__chld_languages',
-        )
-        .exclude(status='canceled')
+        .prefetch_related('researched_traject__children', 'researched_traject__children__chld_languages')
     )
+    if received_exclude:
+        received_base = received_base.exclude(**received_exclude)
 
     received_grouped = (
-        received_raw
-        .values(
-            'proposed_traject__groupe_uid',
-            'researched_traject__groupe_uid',
-            'user_id',
-        )
+        received_base
+        .values(*received_group_keys)
         .annotate(
-            first_date=Min('researched_traject__date'),
-            last_date=Max('researched_traject__date'),
+            first_date=Min(received_date_field),
+            last_date=Max(received_date_field),
             count=Count('id'),
         )
         .order_by('-last_date')
     )
+    if received_date_filter:
+        received_grouped = received_grouped.filter(**received_date_filter)
 
     received_reservations = []
     for item in received_grouped:
         header = (
             Reservation.objects
-            .filter(
-                proposed_traject__user=user,
-                proposed_traject__groupe_uid=item['proposed_traject__groupe_uid'],
-                researched_traject__groupe_uid=item['researched_traject__groupe_uid'],
-                user_id=item['user_id'],
-            )
+            .filter(**received_header_filter(item))
             .select_related(
                 'user', 'user__profile',
                 'proposed_traject', 'researched_traject',
                 'proposed_traject__traject', 'researched_traject__traject'
             )
-            .prefetch_related(
-                'researched_traject__children',
-                'researched_traject__children__chld_languages',
-            )
+            .prefetch_related('researched_traject__children', 'researched_traject__children__chld_languages')
             .first()
         )
-
         if not header:
             continue
-
         received_reservations.append({
             "header": header,
             "first_date": item["first_date"],
@@ -2347,11 +2402,19 @@ def my_reservations(request):
             "count": item["count"],
         })
 
-    return render(request, 'trajects/reservation/trajets_liste.html', {
+    context = {
         'made_reservations': made_reservations,
         'received_reservations': received_reservations,
         'is_abonned': is_abonned,
-    })
+        'tab': tab,
+        'active_count': active_count,
+        'history_count': history_count,
+    }
+
+    if request.htmx:
+        return render(request, 'trajects/reservation/partials/reservations_content.html', context)
+
+    return render(request, 'trajects/reservation/trajets_liste.html', context)
     
 @name_required
 def my_reservations_made_detail(
@@ -2393,12 +2456,15 @@ def my_reservations_made_detail(
         count=Count("id"),
     )
 
+    tab = request.GET.get('tab', 'active')
+    if tab not in ('active', 'history'):
+        tab = 'active'
+
     rows = []
     for r in reservations_qs:
         # number_of_places du trajet proposé = places restantes
         # donc on ne resoustrait surtout pas confirmed_users.count()
         remaining_places = _available_places(r.proposed_traject)
-
         rows.append(
             {
                 "reservation": r,
@@ -2408,6 +2474,18 @@ def my_reservations_made_detail(
             }
         )
 
+    today = date.today()
+    if tab == 'active':
+        rows = [row for row in rows if row['proposal'].date >= today]
+    else:
+        rows = [row for row in rows if row['proposal'].date < today]
+
+    if rows:
+        dates = [row['proposal'].date for row in rows]
+        stats = {'first_date': min(dates), 'last_date': max(dates), 'count': len(rows)}
+    else:
+        stats = {'first_date': None, 'last_date': None, 'count': 0}
+
     return render(
         request,
         "trajects/reservation/faites_detail.html",
@@ -2416,6 +2494,7 @@ def my_reservations_made_detail(
             "stats": stats,
             "rows": rows,
             "is_abonned": is_abonned,
+            "tab": tab,
         },
     )
 
@@ -2459,12 +2538,15 @@ def my_reservations_received_detail(
         count=Count("id"),
     )
 
+    tab = request.GET.get('tab', 'active')
+    if tab not in ('active', 'history'):
+        tab = 'active'
+
     rows = []
     for r in reservations_qs:
         # Même logique :
         # number_of_places du ProposedTraject est déjà le stock restant
         remaining_places = _available_places(r.proposed_traject)
-
         rows.append(
             {
                 "reservation": r,
@@ -2474,6 +2556,18 @@ def my_reservations_received_detail(
             }
         )
 
+    today = date.today()
+    if tab == 'active':
+        rows = [row for row in rows if row['research'].date >= today]
+    else:
+        rows = [row for row in rows if row['research'].date < today]
+
+    if rows:
+        dates = [row['research'].date for row in rows]
+        stats = {'first_date': min(dates), 'last_date': max(dates), 'count': len(rows)}
+    else:
+        stats = {'first_date': None, 'last_date': None, 'count': 0}
+
     return render(
         request,
         "trajects/reservation/recues_detail.html",
@@ -2482,5 +2576,6 @@ def my_reservations_received_detail(
             "stats": stats,
             "rows": rows,
             "is_abonned": is_abonned,
+            "tab": tab,
         },
     )
