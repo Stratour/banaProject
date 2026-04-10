@@ -3,7 +3,6 @@ from . import views
 
 app_name = 'bana_admin'
 
-print('================ admin_urls.py :: ')
 urlpatterns = [
     path('admin_view', views.admin_view, name='admin_view'),
     path('validate_members', views.validate_members, name='validate_members'),

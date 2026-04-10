@@ -439,12 +439,6 @@ def create_address(request):
         if form.is_valid():
             addr = form.save(commit=False)
             addr.user = request.user
-
-            print("DEBUG create_address")
-            print("label:", addr.label)
-            print("address:", addr.address)
-            print("place_id:", addr.place_id)
-
             addr.save()
 
             messages.success(request, "Adresse favorite enregistrée.")

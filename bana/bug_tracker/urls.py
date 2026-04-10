@@ -4,7 +4,6 @@ from . import views
 
 app_name = 'bug_tracker'
 
-print('================ bug_tracker_urls.py :: ')
 urlpatterns = [
     #path('', views.bug_tracker, name='bug_tracker'),
     # Vues principales

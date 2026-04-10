@@ -1,89 +1,241 @@
 {% extends 'layouts/base.html' %}
-{% block title %}Tableau de bord Administrateur{% endblock %}
+{% block title %}Tableau de bord — Statistiques{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto p-8 min-h-screen">
-    <h1 class="text-4xl font-light mb-10 text-gray-800 border-b pb-4 text-center">📊 Tableau de bord des visites</h1>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 min-h-screen">
 
     {% include "./layout/nav_admin.html" %}
 
-    <!-- Périodes -->
-    <div class="flex-wrap items-center mb-10 space-x-0 bg-gray-100 rounded-xl p-1 inline-flex shadow-inner">
-        <a href="?period=global" class="px-5 py-2 text-sm rounded-lg font-medium {% if period == 'global' %}bg-white text-gray-800 shadow-md{% else %}text-gray-600 hover:bg-gray-200{% endif %}">Global</a>
-        <a href="?period=day" class="px-5 py-2 text-sm rounded-lg font-medium {% if period == 'day' %}bg-white text-gray-800 shadow-md{% else %}text-gray-600 hover:bg-gray-200{% endif %}">Aujourd'hui</a>
-        <a href="?period=week" class="px-5 py-2 text-sm rounded-lg font-medium {% if period == 'week' %}bg-white text-gray-800 shadow-md{% else %}text-gray-600 hover:bg-gray-200{% endif %}">Cette semaine</a>
-        <a href="?period=month" class="px-5 py-2 text-sm rounded-lg font-medium {% if period == 'month' %}bg-white text-gray-800 shadow-md{% else %}text-gray-600 hover:bg-gray-200{% endif %}">Ce mois</a>
-    </div>
-
-    <!-- Statistiques compactes -->
-    <div class="overflow-x-auto mb-8">
-        <div class="flex gap-4 items-stretch w-max">
-            <div class="w-48 flex-shrink-0 p-3 rounded-lg bg-indigo-50 border border-indigo-100 shadow-sm">
-                <div class="text-xs font-semibold text-indigo-600 uppercase">Visiteurs</div>
-                <div class="mt-2 text-2xl font-bold text-indigo-700">{{ anonymous_visits }}</div>
-            </div>
-            <div class="w-48 flex-shrink-0 p-3 rounded-lg bg-green-50 border border-green-100 shadow-sm">
-                <div class="text-xs font-semibold text-green-600 uppercase">Utilisateurs connectés</div>
-                <div class="mt-2 text-2xl font-bold text-green-700">{{ user_profile_visits }}</div>
-            </div>
-            <div class="w-48 flex-shrink-0 p-3 rounded-lg bg-yellow-50 border border-yellow-100 shadow-sm">
-                <div class="text-xs font-semibold text-yellow-700 uppercase">Nouveaux inscrits</div>
-                <div class="mt-2 text-2xl font-bold text-yellow-700">
-                    {% if period == 'jour' %}{{ stats.new_users_day|default:0 }}{% elif period == 'week' %}{{ stats.new_users_week }}{% elif period == 'month' %}{{ stats.new_users_month }}{% else %}{{ stats.new_users_total }}{% endif %}
-                </div>
-            </div>
+    <!-- En-tête + sélecteur de période -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Statistiques du site</h1>
+            <p class="text-sm text-gray-500 mt-0.5">Activité en temps réel des visiteurs et membres</p>
+        </div>
+        <div class="inline-flex items-center bg-gray-100 rounded-xl p-1 shadow-inner text-sm gap-0.5">
+            {% for slug, label in period_choices %}
+            <a href="?period={{ slug }}"
+               class="px-4 py-1.5 rounded-lg font-medium transition-all
+                      {% if period == slug %}bg-brand text-white shadow-sm{% else %}text-gray-500 hover:text-gray-800 hover:bg-white/60{% endif %}">
+                {{ label }}
+            </a>
+            {% endfor %}
         </div>
     </div>
 
-    <!-- Tableau utilisateurs -->
-    <div class="bg-white border border-gray-200 shadow-sm rounded-lg overflow-x-auto">
-        <table class="min-w-full table-auto">
-            <thead class="bg-gray-50 border-b border-gray-200">
-                <tr>
-                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Utilisateur</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600 uppercase">Dernière visite</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-100">
-                {% for v in visits %}
-                <tr class="hover:bg-gray-50 transition">
-                    <td class="px-6 py-3 text-gray-800">{{ v.username }}</td>
-                    <td class="px-6 py-3 text-gray-600">{{ v.last_login|date:"d M Y H:i" }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="2" class="text-center py-6 text-gray-500">Aucune donnée à afficher</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    <!-- KPI cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
 
-    <!-- Pagination -->
-    {% if visits.has_other_pages %}
-    <div class="flex justify-center mt-6">
-        <nav class="inline-flex rounded-lg shadow-sm isolate" aria-label="Pagination">
-            {% if visits.has_previous %}
-                <a href="?period={{ period }}&page={{ visits.previous_page_number }}" class="px-3 py-2 text-gray-600 hover:bg-gray-100 border border-gray-200 rounded-l-lg transition">← Précédent</a>
-            {% else %}
-                <span class="px-3 py-2 text-gray-400 bg-gray-50 border border-gray-200 rounded-l-lg cursor-not-allowed">← Précédent</span>
-            {% endif %}
-
-            {% for num in visits.paginator.page_range %}
-                {% if visits.number == num %}
-                    <span class="px-3 py-2 bg-gray-50 text-gray-400 border font-semibold">{{ num }}</span>
-                {% else %}
-                    <a href="?period={{ period }}&page={{ num }}" class="px-3 py-2 text-gray-600 border border-gray-200 hover:bg-gray-100 transition">{{ num }}</a>
+        <!-- Visites totales -->
+        <div class="relative overflow-hidden rounded-2xl p-5 bg-gradient-to-br from-teal-500 to-brand text-white shadow-md">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white/20 flex-shrink-0">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                </span>
+                <p class="text-xs font-semibold uppercase tracking-widest text-teal-100">Visites totales</p>
+            </div>
+            <p class="text-4xl font-extrabold">{{ total_visits }}</p>
+            <!-- Barre connectés / anonymes -->
+            <div class="mt-4">
+                {% if total_visits > 0 %}
+                <div class="flex rounded-full overflow-hidden h-1.5 bg-white/20">
+                    <div class="bg-white transition-all" style="width: {% widthratio authenticated_visits total_visits 100 %}%"></div>
+                </div>
                 {% endif %}
-            {% endfor %}
+                <div class="flex justify-between mt-1.5 text-xs text-teal-100">
+                    <span>{{ authenticated_visits }} connectés</span>
+                    <span>{{ anonymous_visits }} anonymes</span>
+                </div>
+            </div>
+        </div>
 
-            {% if visits.has_next %}
-                <a href="?period={{ period }}&page={{ visits.next_page_number }}" class="px-3 py-2 text-gray-600 hover:bg-gray-100 border border-gray-200 rounded-r-lg transition">Suivant →</a>
-            {% else %}
-                <span class="px-3 py-2 text-gray-400 bg-gray-50 border border-gray-200 rounded-r-lg cursor-not-allowed">Suivant →</span>
-            {% endif %}
-        </nav>
+        <!-- Membres actifs -->
+        <div class="relative overflow-hidden rounded-2xl p-5 bg-white border border-gray-100 shadow-sm">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-50 flex-shrink-0">
+                    <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </span>
+                <p class="text-xs font-semibold uppercase tracking-widest text-emerald-600">Membres actifs</p>
+            </div>
+            <p class="text-4xl font-extrabold text-gray-900">{{ authenticated_visits }}</p>
+        </div>
+
+        <!-- Nouveaux inscrits -->
+        <div class="relative overflow-hidden rounded-2xl p-5 bg-white border border-gray-100 shadow-sm">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-violet-50 flex-shrink-0">
+                    <svg class="w-5 h-5 text-violet-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/>
+                    </svg>
+                </span>
+                <p class="text-xs font-semibold uppercase tracking-widest text-violet-600">Nouveaux inscrits</p>
+            </div>
+            <p class="text-4xl font-extrabold text-gray-900">{{ new_members }}</p>
+        </div>
+
+        <!-- Total membres -->
+        <div class="relative overflow-hidden rounded-2xl p-5 bg-white border border-gray-100 shadow-sm">
+            <div class="flex items-center gap-3 mb-3">
+                <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-amber-50 flex-shrink-0">
+                    <svg class="w-5 h-5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                    </svg>
+                </span>
+                <p class="text-xs font-semibold uppercase tracking-widest text-amber-600">Total membres</p>
+            </div>
+            <p class="text-4xl font-extrabold text-gray-900">{{ kpis.total_members }}</p>
+        </div>
+
     </div>
-    {% endif %}
+
+    <!-- Table des visites -->
+    <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <div>
+                <h2 class="text-sm font-bold text-gray-800">Journal des visites</h2>
+                <p class="text-xs text-gray-400 mt-0.5">Chaque ligne = dernière visite connue par IP</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="inline-flex items-center gap-1.5 text-xs text-gray-500">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 inline-block"></span> Connecté
+                </span>
+                <span class="inline-flex items-center gap-1.5 text-xs text-gray-500">
+                    <span class="w-2 h-2 rounded-full bg-gray-300 inline-block"></span> Anonyme
+                </span>
+                <span class="text-xs text-gray-400 border-l border-gray-200 pl-3">
+                    {{ visits.paginator.count }} enregistrement{{ visits.paginator.count|pluralize }}
+                </span>
+            </div>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full">
+                <thead>
+                    <tr class="bg-gray-50 border-b border-gray-100">
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide w-8"></th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide">Visiteur</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide">Statut</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide">Adresse IP</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide hidden lg:table-cell">Navigateur</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wide">Dernière visite</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    {% for v in visits %}
+                    <tr class="hover:bg-gray-50/80 transition-colors group">
+
+                        <!-- Indicateur coloré -->
+                        <td class="pl-4 py-3">
+                            {% if v.user %}
+                            <span class="block w-2 h-2 rounded-full bg-emerald-400 mx-auto"></span>
+                            {% else %}
+                            <span class="block w-2 h-2 rounded-full bg-gray-300 mx-auto"></span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Nom / avatar -->
+                        <td class="px-6 py-3">
+                            {% if v.user %}
+                            <div class="flex items-center gap-2.5">
+                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-brand/10 text-brand text-xs font-bold flex-shrink-0 ring-1 ring-brand/20">
+                                    {{ v.user.username|first|upper }}
+                                </span>
+                                <span class="text-sm font-semibold text-gray-800">{{ v.user.username }}</span>
+                            </div>
+                            {% else %}
+                            <div class="flex items-center gap-2.5">
+                                <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-400 flex-shrink-0">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                    </svg>
+                                </span>
+                                <span class="text-sm text-gray-400 italic">Visiteur anonyme</span>
+                            </div>
+                            {% endif %}
+                        </td>
+
+                        <!-- Badge statut -->
+                        <td class="px-6 py-3">
+                            {% if v.user %}
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200">
+                                Connecté
+                            </span>
+                            {% else %}
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500 ring-1 ring-gray-200">
+                                Anonyme
+                            </span>
+                            {% endif %}
+                        </td>
+
+                        <!-- IP -->
+                        <td class="px-6 py-3">
+                            <span class="font-mono text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-md border border-gray-100">{{ v.ip_address }}</span>
+                        </td>
+
+                        <!-- Navigateur -->
+                        <td class="px-6 py-3 hidden lg:table-cell">
+                            <span class="text-xs text-gray-400 truncate block max-w-[240px]" title="{{ v.user_agent }}">
+                                {{ v.user_agent|truncatechars:50 }}
+                            </span>
+                        </td>
+
+                        <!-- Timestamp -->
+                        <td class="px-6 py-3 whitespace-nowrap">
+                            <span class="text-sm font-medium text-gray-700">{{ v.timestamp|date:"d M Y" }}</span>
+                            <span class="text-xs text-gray-400 ml-1">{{ v.timestamp|date:"H:i" }}</span>
+                        </td>
+
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="px-6 py-16 text-center">
+                            <div class="flex flex-col items-center gap-2 text-gray-400">
+                                <svg class="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                <span class="text-sm">Aucune visite enregistrée pour cette période.</span>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if visits.has_other_pages %}
+        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50/50">
+            <span class="text-xs text-gray-400">Page <span class="font-semibold text-gray-600">{{ visits.number }}</span> sur {{ visits.paginator.num_pages }}</span>
+            <div class="inline-flex items-center gap-1">
+                {% if visits.has_previous %}
+                <a href="?period={{ period }}&page={{ visits.previous_page_number }}"
+                   class="px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition shadow-sm">← Précédent</a>
+                {% endif %}
+
+                {% for num in visits.paginator.page_range %}
+                    {% if visits.number == num %}
+                    <span class="px-3 py-1.5 text-xs font-bold text-white bg-brand rounded-lg shadow-sm">{{ num }}</span>
+                    {% elif num >= visits.number|add:"-2" and num <= visits.number|add:"2" %}
+                    <a href="?period={{ period }}&page={{ num }}"
+                       class="px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition shadow-sm">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if visits.has_next %}
+                <a href="?period={{ period }}&page={{ visits.next_page_number }}"
+                   class="px-3 py-1.5 text-xs font-medium text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition shadow-sm">Suivant →</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
 </div>
 {% endblock content %}

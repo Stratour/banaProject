@@ -26,6 +26,7 @@ class SiteVisit(models.Model):
     ip_address = models.GenericIPAddressField()
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
     timestamp = models.DateTimeField(auto_now=True)  # dernière visite
+    user_agent = models.CharField(max_length=512, blank=True, default='')
 
     class Meta:
         unique_together = ('ip_address', 'user')

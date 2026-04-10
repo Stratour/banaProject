@@ -12,98 +12,95 @@ from accounts.models import Profile
 from datetime import timedelta
 from django.db.models import Count
 from django.core.paginator import Paginator
-from .utils import get_site_stats  
-from django.core.cache import cache
+from .utils import get_site_stats
 
 
 def admin_view(request):
-    print('================ admin_views :: ')
     context = {}
-    users = User.objects.all()
     profiles = Profile.objects.all()
     context.update({'profiles': profiles})
-
-    print('================== Users :: ', users)
-    print('================== Profiles :: ', profiles)
-    
     return render(request, 'bana_admin/admin_view.html', context)
 
 
 def site_stats_view(request):
-    """
-    Vue admin : affiche
-    - nombre de visiteurs anonymes
-    - nombre de visites utilisateurs (/profile)
-    - derniers utilisateurs actifs
-    - statistiques sur les nouveaux inscrits
-    """
     now = timezone.now()
     period = request.GET.get("period", "global")
 
-    # Clés anonymes
-    day_key = f"anonymous_visits:{now.date()}"
-    week_key = f"anonymous_visits_week:{now.isocalendar().week}"
-    month_key = f"anonymous_visits_month:{now.year}-{now.month}"
+    period_map = {"day": 1, "week": 7, "month": 30}
+    days = period_map.get(period)
+    year_start = now.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
+    period_start = now - timedelta(days=days) if days else None
+    if period == "year":
+        period_start = year_start
 
-    # Filtrage période
-    if period == "day":
-        anonymous_visits = cache.get(day_key, 0)
-    elif period == "week":
-        anonymous_visits = cache.get(week_key, 0)
-    elif period == "month":
-        anonymous_visits = cache.get(month_key, 0)
-    else:
-        anonymous_visits = sum(
-            v for k, v in getattr(cache, "_cache", {}).items() if k.startswith("anonymous_visits")
-        )
+    today_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    week_ago   = now - timedelta(days=7)
+    month_ago  = now - timedelta(days=30)
 
-    # Visites utilisateurs (profile)
-    user_profile_visits = cache.get("user_profile_visits", 0)
+    # Visites filtrées par période
+    anon_qs = SiteVisit.objects.filter(user__isnull=True)
+    auth_qs = SiteVisit.objects.filter(user__isnull=False).select_related('user')
+    if period_start:
+        anon_qs = anon_qs.filter(timestamp__gte=period_start)
+        auth_qs = auth_qs.filter(timestamp__gte=period_start)
 
-    # Nouveaux utilisateurs
-    week_ago = now - timedelta(days=7)
-    month_ago = now - timedelta(days=30)
-    stats = {
-        "new_users_week": User.objects.filter(date_joined__gte=week_ago).count(),
-        "new_users_month": User.objects.filter(date_joined__gte=month_ago).count(),
-        "new_users_total": User.objects.count(),
+    anonymous_visits    = anon_qs.count()
+    authenticated_visits = auth_qs.count()
+    total_visits        = anonymous_visits + authenticated_visits
+
+    # KPIs fixes (indépendants de la période)
+    kpis = {
+        "total_members":    User.objects.count(),
+        "new_today":        User.objects.filter(date_joined__gte=today_start).count(),
+        "new_week":         User.objects.filter(date_joined__gte=week_ago).count(),
+        "new_month":        User.objects.filter(date_joined__gte=month_ago).count(),
+        "active_today":     SiteVisit.objects.filter(user__isnull=False, timestamp__gte=today_start).count(),
+        "active_week":      SiteVisit.objects.filter(user__isnull=False, timestamp__gte=week_ago).count(),
     }
 
-    # Liste des utilisateurs actifs (basée sur cache user_last_seen)
-    active_users = []
-    for user in User.objects.all():
-        last_seen = cache.get(f"user_last_seen:{user.id}")
-        if last_seen:
-            active_users.append({
-                "username": user.username,
-                "last_seen": last_seen,
-            })
+    # Nouveaux inscrits selon période (pour la carte)
+    if period == "day":
+        new_members = kpis["new_today"]
+    elif period == "week":
+        new_members = kpis["new_week"]
+    elif period == "month":
+        new_members = kpis["new_month"]
+    elif period == "year":
+        new_members = User.objects.filter(date_joined__gte=year_start).count()
+    else:
+        new_members = kpis["total_members"]
 
-    # Pagination
-    paginator = Paginator(active_users, 25)
-    page_number = request.GET.get("page")
-    visits = paginator.get_page(page_number)
+    # Table des visites paginée
+    all_visits = SiteVisit.objects.select_related('user')
+    if period_start:
+        all_visits = all_visits.filter(timestamp__gte=period_start)
+    all_visits = all_visits.order_by('-timestamp')
+    paginator = Paginator(all_visits, 10)
+    visits = paginator.get_page(request.GET.get("page"))
 
     context = {
         "period": period,
-        "anonymous_visits": anonymous_visits,
-        "user_profile_visits": user_profile_visits,
-        "stats": stats,
-        "visits": visits,
+        "period_choices": [
+            ("global", "Global"),
+            ("day",    "Aujourd'hui"),
+            ("week",   "Cette semaine"),
+            ("month",  "Ce mois"),
+            ("year",   "Cette année"),
+        ],
+        "anonymous_visits":     anonymous_visits,
+        "authenticated_visits": authenticated_visits,
+        "total_visits":         total_visits,
+        "new_members":          new_members,
+        "kpis":                 kpis,
+        "visits":               visits,
     }
     return render(request, "bana_admin/site_stats.html", context)
 
 
 def validate_members(request):
-    print('================ admin_views :: ')
     context = {}
-    users = User.objects.all()
     profiles = Profile.objects.all()
     context.update({'profiles': profiles})
-
-    print('================== Users :: ', users)
-    print('================== Profiles :: ', profiles)
-    
     return render(request, 'bana_admin/validate_members.html', context)
 
 def verify_bvm_prfl(request, profile_id):
