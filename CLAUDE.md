@@ -145,6 +145,37 @@ def ma_vue(request):
     return render(request, "app/page_complete.html", context)
 ```
 
+### Pagination dans les partials HTMX
+
+Les listes paginées dans des partials HTMX utilisent `django.core.paginator.Paginator`. Les liens de navigation portent `hx-get`, `hx-target` et `hx-push-url` pour recharger le partial sans rechargement complet. Les paramètres de page (`?made_page=`, `?received_page=`) coexistent avec `?tab=` dans l'URL.
+
+```python
+# views.py
+page_obj = Paginator(ma_liste, 10).get_page(request.GET.get('ma_page', 1))
+context['ma_liste'] = page_obj  # passer le Page object, pas la liste brute
+```
+
+```html
+<!-- template partial -->
+{% if ma_liste.has_other_pages %}
+  <nav class="flex justify-center items-center gap-2 mt-6">
+    {% if ma_liste.has_previous %}
+      <a hx-get="?tab={{ tab }}&ma_page={{ ma_liste.previous_page_number }}"
+         hx-target="#mon-conteneur" hx-swap="outerHTML" hx-push-url="true"
+         class="px-3 py-1 rounded border border-gray-200 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">←</a>
+    {% endif %}
+    <span class="px-3 py-1 text-sm text-gray-500">{{ ma_liste.number }} / {{ ma_liste.paginator.num_pages }}</span>
+    {% if ma_liste.has_next %}
+      <a hx-get="?tab={{ tab }}&ma_page={{ ma_liste.next_page_number }}"
+         hx-target="#mon-conteneur" hx-swap="outerHTML" hx-push-url="true"
+         class="px-3 py-1 rounded border border-gray-200 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">→</a>
+    {% endif %}
+  </nav>
+{% endif %}
+```
+
+Changer d'onglet (tab links) reset automatiquement à la page 1 car les liens ne portent pas le paramètre de page.
+
 ### Formulaires
 
 - **`TailwindFormMixin`** (`accounts/forms.py`) — applique automatiquement les classes Tailwind par type de widget. À utiliser comme mixin de base pour tout nouveau formulaire.
@@ -158,6 +189,15 @@ Les vues réservées aux administrateurs utilisent `SuperuserRequiredMixin(Login
 
 - Toujours utiliser `select_related()` / `prefetch_related()` sur les querysets GIS pour éviter les requêtes N+1.
 - Utiliser `@transaction.atomic` sur les vues de suppression qui cascadent sur plusieurs modèles (voir les vues `delete_*_groupe` dans `trajects/views.py`).
+- Les agrégations conditionnelles utilisent `Count('id', filter=Q(status='pending'))` — ne pas faire de `.filter()` séparés qui casseraient le groupement.
+
+### Réservations — architecture vue yaya
+
+La vue `my_reservations` (`trajects/views.py`) groupe les réservations reçues par `proposed_groupe_uid` uniquement (1 carte par trajet, tous parents confondus). Les annotations ORM incluent `requester_count`, `pending_count`, `full_dates_count`, `available_dates_count`.
+
+La vue détail `my_reservations_received_detail(request, proposed_groupe_uid)` regroupe ensuite les réservations par parent (`parents_dict` keyed by `user_id`), chaque parent ayant une liste de `rows` avec `reservation`, `research`, `remaining_places`.
+
+Le template `recues_detail.html` affiche les dates de chaque parent dans un `<table>` compact (pas des `<article>`) pour éviter les pages interminables sur les trajets récurrents.
 
 ### URLs
 

@@ -36,7 +36,7 @@ urlpatterns = [
 
     path('réservations/', views.my_reservations, name='my_reservations'),
     path('réservations/made/<uuid:researched_groupe_uid>/<uuid:proposed_groupe_uid>/<int:matched_user_id>', views.my_reservations_made_detail, name='my_reservations_made_detail'),
-    path('réservations/reçue/<uuid:proposed_groupe_uid>/<uuid:researched_groupe_uid>/<int:parent_user_id>', views.my_reservations_received_detail, name='my_reservations_received_detail'),
+    path('réservations/reçue/<uuid:proposed_groupe_uid>/', views.my_reservations_received_detail, name='my_reservations_received_detail'),
 
     #path('modify/<int:id>/<str:type>/', views.modify_traject, name='modify_traject'),
     #path('reserve/<int:id>/', views.reserve_traject, name='reserve_traject'),

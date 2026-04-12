@@ -1,16 +1,16 @@
 {% extends "allauth/layouts/base.html" %}
 {% load static i18n %}
 
-{% block head_title %}{% trans "Mes réservations" %}{% endblock %}
+{% block head_title %}{% trans "Demandes reçues" %}{% endblock %}
 
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-8">
 
-    <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
-      {% trans "Mes réservations" %}
-    </h1>
+  <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
+    {% trans "Demandes reçues" %}
+  </h1>
 
-    {% if messages %}
+  {% if messages %}
     <ul class="mb-6">
       {% for message in messages %}
         <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
@@ -20,108 +20,201 @@
 
   <div class="space-y-5">
 
-  <article class="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm">
-    <header class="flex items-start justify-between gap-4">
-      <div class="flex items-center gap-3 min-w-0">
-          <div class="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] overflow-hidden">
-                    {% if header.user.profile.profile_picture %}
-                      <a href="{% url 'accounts:profile_user' user_id=header.user.id %}">
-                        <img src="{{ header.user.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="User">
-                      </a>
-                    {% else %}
-                      <a href="{% url 'accounts:profile_user' user_id=header.user.id %}" class="flex items-center justify-center w-full h-full">
-                        <span class="text-xl sm:text-2xl font-bold text-brand">
-                          {% if header.user.profile.ci_is_verified %}
-                            {{ header.user.profile.verified_first_name|slice:":1" }}.{{ header.user.profile.verified_last_name|slice:":1" }}
-                          {% else %}
-                            {{ header.user.first_name|slice:":1" }}.{{ header.user.last_name|slice:":1" }}
-                          {% endif %}
-                        </span>
-                      </a>
-                    {% endif %}
-                  </div>
-                  <div class="min-w-0">
-                  <p class="text-xs text-gray-500">{{ header.user.profile.service|title }}</p>
+    <!-- En-tête : infos du trajet proposé -->
+    <article class="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm">
+      <header class="flex items-start justify-between gap-4">
+        <div>
+          <p class="text-lg font-bold text-gray-900">
+            {{ proposed_traject.traject.start_adress }}
+            <span class="text-gray-400 mx-1">→</span>
+            {{ proposed_traject.traject.end_adress }}
+          </p>
+          <p class="text-xs text-gray-500 mt-1">
+            {% trans "Du" %} {{ stats.first_date|date:"d/m/Y" }} {% trans "au" %} {{ stats.last_date|date:"d/m/Y" }}
+          </p>
+          <p class="text-xs text-gray-400 mt-0.5">
+            {{ stats.departure_time|time:"H\hi"|default:"—" }} → {{ stats.arrival_time|time:"H\hi"|default:"—" }}
+          </p>
+        </div>
+        <a href="{% url 'my_reservations' %}?tab={{ tab }}"
+           class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50 shrink-0">
+          ← {% trans "Retour" %}
+        </a>
+      </header>
+    </article>
 
-                  <p class="text-lg font-bold text-gray-900">
-                    {% if is_abonned %}
-                      <a href="{% url 'accounts:profile_user' user_id=header.user.id %}" class="text-blue-600 hover:underline">
-                        {% if header.user.profile.ci_is_verified %}
-                          {{ header.user.profile.verified_first_name }} {{ header.user.profile.verified_last_name|slice:":1" }}.
-                        {% else %}
-                          {{ header.user.first_name }} {{ header.user.last_name|slice:":1" }}.
-                        {% endif %}
-                      </a>
-                    {% else %}
-                      <span class="text-red-700">{% trans "Abonnement requis pour voir le profil" %}</span>
-                    {% endif %}
-                  </p>
-                  <p class="text-xs text-gray-500">
-                    {% trans "Du" %} {{ stats.first_date|date:"d/m/Y" }} {% trans "au" %} {{ stats.last_date|date:"d/m/Y" }}
-                  </p>
-                </div>
-        </div>  
-      <a href="{% url 'my_reservations' %}?tab={{ tab }}"
-         class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-gray-50">
-        ← {% trans "Retour" %}
-      </a>
-    </header>
-  </article>
+    <!-- Un bloc par parent -->
+    {% for parent_group in parents %}
+      <div class="space-y-3">
 
-  <div class="space-y-4">
-    <h3 class="text-lg font-semibold text-gray-900">{% trans "Demandes reçues" %}</h3>
-
-    {% for row in rows %}
-      {% with r=row.reservation p=row.proposal research=row.research %}
-      <article class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <p class="text-sm font-semibold text-gray-900">
-              {{ research.date|date:"l d F Y" }}
-            </p>
-            <p class="text-xs text-gray-600 mt-1">
-              {{ research.departure_time|default:"—" }} → {{ research.arrival_time|default:"—" }}
-            </p>
-            <p class="text-xs text-gray-600 mt-1">
-              <strong>{% trans "Places demandées" %} :</strong> {{ r.number_of_places }}
-            </p>
-            <p class="text-xs text-gray-600 mt-1">
-              <strong>{% trans "Places restantes" %} :</strong> {{ row.remaining_places }}
-            </p>
-          </div>
-
-          <div class="text-right">
-            {% if r.status == 'pending' %}
-              <div class="flex gap-2">
-                <a href="{% url 'manage_reservation' r.id 'accept' %}?next={{ request.path }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark">
-                  {% trans "Confirmer" %}
-                </a>
-
-                <a href="{% url 'manage_reservation' r.id 'reject' %}?next={{ request.path }}"
-                   class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-red-300 text-red-700 hover:bg-red-50 font-semibold">
-                  {% trans "Refuser" %}
-                </a>
-              </div>
-            {% elif r.status == 'confirmed' %}
-              <span class="inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-3 py-1 text-xs font-semibold">
-                {% trans "Confirmé" %}
-              </span>
+        <!-- Mini carte profil parent -->
+        <div class="flex items-center gap-3 px-1">
+          <div class="h-10 w-10 rounded-full bg-brand-50 ring-2 ring-[#E9F5F1] overflow-hidden shrink-0">
+            {% if parent_group.user.profile.profile_picture %}
+              <a href="{% url 'accounts:profile_user' user_id=parent_group.user.id %}">
+                <img src="{{ parent_group.user.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="User">
+              </a>
             {% else %}
-              <span class="inline-flex items-center rounded-full bg-red-50 text-red-700 border border-red-200 px-3 py-1 text-xs font-semibold">
-                {% trans "Annulé" %}
-              </span>
+              <a href="{% url 'accounts:profile_user' user_id=parent_group.user.id %}" class="flex items-center justify-center w-full h-full">
+                <span class="text-sm font-bold text-brand">
+                  {% if parent_group.user.profile.ci_is_verified %}
+                    {{ parent_group.user.profile.verified_first_name|slice:":1" }}.{{ parent_group.user.profile.verified_last_name|slice:":1" }}
+                  {% else %}
+                    {{ parent_group.user.first_name|slice:":1" }}.{{ parent_group.user.last_name|slice:":1" }}
+                  {% endif %}
+                </span>
+              </a>
             {% endif %}
           </div>
+          <div>
+            <p class="text-sm font-semibold text-gray-900">
+              {% if is_abonned %}
+                <a href="{% url 'accounts:profile_user' user_id=parent_group.user.id %}" class="text-blue-600 hover:underline">
+                  {% if parent_group.user.profile.ci_is_verified %}
+                    {{ parent_group.user.profile.verified_first_name }} {{ parent_group.user.profile.verified_last_name|slice:":1" }}.
+                  {% else %}
+                    {{ parent_group.user.first_name }} {{ parent_group.user.last_name|slice:":1" }}.
+                  {% endif %}
+                </a>
+              {% else %}
+                <span class="text-red-700">{% trans "Abonnement requis pour voir le profil" %}</span>
+              {% endif %}
+            </p>
+            <p class="text-xs text-gray-500">{{ parent_group.rows|length }} {% trans "date(s)" %}</p>
+          </div>
         </div>
-      </article>
-      {% endwith %}
+
+        <!-- Dates de ce parent (tableau compact) -->
+        <div class="rounded-xl border border-gray-200 overflow-hidden">
+          <table class="w-full text-xs">
+            <thead class="bg-gray-50 text-gray-500 uppercase text-[10px]">
+              <tr>
+                <th class="px-4 py-2 text-left font-medium">{% trans "Date" %}</th>
+                <th class="px-4 py-2 text-left font-medium">{% trans "Enfants" %}</th>
+                <th class="px-4 py-2 text-center font-medium">{% trans "Places" %}</th>
+                <th class="px-4 py-2 text-right font-medium">{% trans "Statut" %}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-100 bg-white">
+              {% for row in parent_group.rows %}
+                {% with r=row.reservation research=row.research %}
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3">
+                      <p class="font-medium text-gray-900">{{ research.date|date:"d/m/Y" }}</p>
+                    </td>
+                    <td class="px-4 py-3">
+                      <div class="flex flex-wrap gap-1">
+                        {% for child in research.children.all %}
+                          <button type="button"
+                                  onclick="document.getElementById('child-modal-recvd-{{ child.id }}-{{ research.id }}').showModal()"
+                                  class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium hover:bg-gray-100 transition">
+                            {{ child.chld_name }} {{ child.chld_surname|slice:":1" }}.
+                            {% if child.age %}<span class="ml-1 text-gray-400">{{ child.age }} {% trans "ans" %}</span>{% endif %}
+                          </button>
+                        {% empty %}
+                          <span class="text-gray-400">—</span>
+                        {% endfor %}
+                      </div>
+                    </td>
+                    <td class="px-4 py-3 text-center text-gray-700 font-medium">{{ row.remaining_places }}</td>
+                    <td class="px-4 py-3 text-right">
+                      {% if r.status == 'pending' %}
+                        <div class="flex justify-end gap-1">
+                          <a href="{% url 'manage_reservation' r.id 'accept' %}?next={{ request.path }}%3Ftab%3D{{ tab }}"
+                             class="px-3 py-1 rounded-full bg-brand text-white font-semibold hover:bg-brand-dark">
+                            {% trans "Confirmer" %}
+                          </a>
+                          <a href="{% url 'manage_reservation' r.id 'reject' %}?next={{ request.path }}%3Ftab%3D{{ tab }}"
+                             class="px-3 py-1 rounded-full border border-red-300 text-red-700 hover:bg-red-50 font-semibold">
+                            {% trans "Refuser" %}
+                          </a>
+                        </div>
+                      {% elif r.status == 'confirmed' %}
+                        <span class="inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-2 py-0.5 font-semibold">{% trans "Confirmé" %}</span>
+                      {% else %}
+                        <span class="inline-flex items-center rounded-full bg-red-50 text-red-700 border border-red-200 px-2 py-0.5 font-semibold">{% trans "Annulé" %}</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endwith %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Modales enfants -->
+        {% for row in parent_group.rows %}
+          {% with research=row.research %}
+            {% for child in research.children.all %}
+              <dialog id="child-modal-recvd-{{ child.id }}-{{ research.id }}"
+                      class="rounded-2xl p-0 w-full max-w-lg backdrop:bg-black/40">
+                <div class="p-6 space-y-5">
+                  <div class="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 class="text-lg font-semibold text-gray-900">
+                        {{ child.chld_name }} {{ child.chld_surname|slice:":1" }}.
+                      </h3>
+                      <p class="text-sm text-gray-500">
+                        {% if child.age %}{{ child.age }} {% trans "ans" %}{% endif %}
+                      </p>
+                    </div>
+                    <button type="button"
+                            onclick="document.getElementById('child-modal-recvd-{{ child.id }}-{{ research.id }}').close()"
+                            class="rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition"
+                            aria-label="{% trans 'Fermer' %}">✕</button>
+                  </div>
+                  <div class="flex flex-wrap gap-2">
+                    {% if child.chld_seat %}
+                      <span class="inline-flex items-center rounded-full bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 text-xs font-semibold">
+                        {% trans "Siège enfant requis" %}
+                      </span>
+                    {% endif %}
+                    {% if child.chld_disability %}
+                      <span class="inline-flex items-center rounded-full bg-red-50 text-red-700 border border-red-200 px-3 py-1 text-xs font-semibold">
+                        {% trans "Porteur d'un handicap" %}
+                      </span>
+                    {% endif %}
+                  </div>
+                  {% with languages=child.chld_languages.all %}
+                    {% if languages %}
+                      <div class="space-y-2">
+                        <p class="text-xs font-bold uppercase text-brand">{% trans "Langues parlées" %}</p>
+                        <div class="flex flex-wrap gap-2">
+                          {% for language in languages %}
+                            <span class="inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-3 py-1 text-xs font-semibold">
+                              {{ language.lang_name }}
+                            </span>
+                          {% endfor %}
+                        </div>
+                      </div>
+                    {% endif %}
+                  {% endwith %}
+                  {% if child.chld_special_needs %}
+                    <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+                      <p class="text-xs font-bold uppercase text-amber-700 mb-1">{% trans "Besoins spécifiques" %}</p>
+                      <p class="text-sm text-amber-900 whitespace-pre-line">{{ child.chld_special_needs }}</p>
+                    </div>
+                  {% endif %}
+                  <div class="flex justify-end pt-2">
+                    <button type="button"
+                            onclick="document.getElementById('child-modal-recvd-{{ child.id }}-{{ research.id }}').close()"
+                            class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                      {% trans "Fermer" %}
+                    </button>
+                  </div>
+                </div>
+              </dialog>
+            {% endfor %}
+          {% endwith %}
+        {% endfor %}
+
+      </div>
     {% empty %}
       <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
-        {% trans "Aucune demande trouvée." %}
+        {% if tab == 'active' %}{% trans "Aucune demande active." %}{% else %}{% trans "Aucune demande passée." %}{% endif %}
       </div>
     {% endfor %}
-  </div>
 
+  </div>
 </div>
 {% endblock %}
