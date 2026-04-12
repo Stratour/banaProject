@@ -1,7 +1,7 @@
 {% load static i18n%}
 
 <header>
-    <nav class="px-6 bg-brand text-white xl:px-24 py-4 flex items-center justify-between">
+    <nav class="px-6 bg-brand-gradient-br text-white xl:px-24 py-4 flex items-center justify-between">
         <!-- Logo and Branding -->
         <div class="flex items-center space-x-3">
 
@@ -91,7 +91,7 @@
                 </a>
 
                 <a href="{% url 'account_login' %}"
-                    class="relative bg-brand text-brand-50 px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-50 hover:no-underline before:absolute before:inset-0 before:rounded-full before:border-2 before:border-brand-50">
+                    class="relative text-brand-50 px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-50 hover:no-underline before:absolute before:inset-0 before:rounded-full before:border-2 before:border-brand-50">
                     {% trans "Connexion" %} 
                 </a>
                 {% endif %}

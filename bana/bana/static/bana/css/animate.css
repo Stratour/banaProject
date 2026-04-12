@@ -1,0 +1,25 @@
+/* état initial */
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(40px) scale(0.96);
+  transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* visible */
+.animate-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* variantes */
+.animate-left {
+  transform: translateX(-60px) scale(0.96);
+}
+
+.animate-right {
+  transform: translateX(60px) scale(0.96);
+}
+
+/* .animate-on-scroll {
+  will-change: transform, opacity;
+} */

@@ -51,6 +51,15 @@ module.exports = {
                     200: "#1FAB89",
                     300: "#007F73",
                 },
+                gradient: {
+                    50: "#059669",
+                    100: "#0F5F4B",
+                },
+            },
+            backgroundImage: {
+                'brand-gradient-tl': 'linear-gradient(290deg, #0F5F4B 45%, #0ab092 100%)',
+                'brand-gradient-bl': 'linear-gradient(220deg, #0F5F4B 45%, #0ab092 100%)',
+                'brand-gradient-br': 'linear-gradient(-220deg, #0F5F4B 45%, #0ab092 100%)',
             },
         },
     },
