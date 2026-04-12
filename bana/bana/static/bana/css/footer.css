@@ -1,0 +1,6 @@
+.footer-bg {
+    background-image: url('/static/bana/img/page/footer.svg');
+    background-size: cover;
+    background-position: top;
+    background-repeat: no-repeat;
+}

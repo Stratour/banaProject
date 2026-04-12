@@ -1,39 +1,9 @@
 {% load static i18n %}
-<footer class="h-auto bg-brand text-white relative pb-[calc(4rem+16px)] xl:pb-0">
-
-    <!-- Register/Login Section -->
-
-    <div class="mb-8 p-8 flex justify-center items-center bg-cover bg-center"
-        style="background-image: url('{% static 'bana/img/background/Bana_background_light_green.png' %}');">
-        <div class="flex flex-col items-center gap-4 md:flex-row justify-center p-6">
-
-            {% if user.is_authenticated %}
-            <a href="{% url 'accounts:profile' %}"
-                class="bg-brand text-white px-4 py-2 rounded-full font-bold w-40 text-center hover:bg-brand-dark hover:no-underline">
-                {% trans "Profil" %} 
-            </a>
-            <button type="button"
-                        onclick="document.getElementById('logout-modal').showModal()"
-                        class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
-                    {% trans "Déconnexion" %} 
-                </button>
-
-            {% else %}
-            <a href="{% url 'account_signup' %}"
-                class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
-                {% trans "Inscription" %}
-            </a>
-            <a href="{% url 'account_login' %}"
-                class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand-200 hover:no-underline">
-                {% trans "Connexion" %}
-            </a>
-            {% endif %}
-
-        </div>
-    </div>
+<footer class="footer-bg bg-gray-50 h-auto text-white relative overflow-hidden py-2">
 
     <!-- Main Footer Content -->
-    <div class="max-w-6xl mx-auto px-6 flex flex-col gap-8 md:flex-row md:justify-between">
+    <div class="max-w-6xl mx-auto px-6 pt-36 md:pt-20 flex flex-col gap-8 md:flex-row md:justify-between">
+
         <!-- Logo & Description -->
         <div class="flex flex-row items-center md:items-start lg:w-1/4">
             <div class="relative flex-shrink-0 w-28 h-28">
@@ -41,7 +11,7 @@
                     <path id="circlePath" d="M 10, 50 a 40,40 0 1,1 80,0 40,40 0 1,1 -80,0" fill="none" />
                     <text>
                         <textPath id="circleText" href="#circlePath" startOffset="50%" text-anchor="middle"
-                            style="fill: #84cc16; font-weight: bold; font-size: 0.75rem; ">
+                            style="fill: #84cc16; font-weight: bold; font-size: 0.75rem;">
                             {% trans "ACCOMPAGNER • PARTAGER • GRANDIR • " %}
                         </textPath>
                     </text>
@@ -50,6 +20,7 @@
                     <img src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Bana Logo" class="w-14 h-14">
                 </div>
             </div>
+
             <p class="text-sm font-medium ml-4">
                 {% blocktrans trimmed %}
                 Plateforme de <span class="text-brand-50 font-bold">mobilité partagée</span>
@@ -57,7 +28,6 @@
                 pour les <span class="text-brand-50 font-bold"> trajets des enfants</span>
                 {% endblocktrans %}
             </p>
-
         </div>
 
         <!-- Bana Community Links -->
@@ -79,16 +49,24 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
-                    <span><a href="mailto:contact@bana.mobi"
-                            class="hover:text-brand-50">contact@bana.mobi</a></span>
+                    <span>
+                        <a href="mailto:contact@bana.mobi" class="hover:text-brand-50">
+                            contact@bana.mobi
+                        </a>
+                    </span>
                 </li>
+
                 <li class="flex items-center space-x-2">
                     <svg class="h-8 w-8 text-brand-50" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path
                             d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                     </svg>
-                    <span><a href="tel:+32495283791" class="hover:text-brand-50">+32 495 283 791</a></span>
+                    <span>
+                        <a href="tel:+32495283791" class="hover:text-brand-50">
+                            +32 495 283 791
+                        </a>
+                    </span>
                 </li>
             </ul>
 
@@ -97,63 +75,56 @@
                 <h4 class="font-semibold">{% trans "Rejoignez-nous sur les réseaux sociaux!" %}</h4>
                 <div class="flex space-x-4 mt-2">
                     <a href="https://www.facebook.com/BanaCommunity/" target="_blank">
-                        <img class="w-8 h-8" src="{% static 'bana/img/icon/icon_fb.svg' %}" alt="Icon Facebook">
+                        <img class="w-8 h-8" src="{% static 'bana/img/icon/icon_fb.svg' %}" alt="Facebook">
                     </a>
                     <a href="https://www.instagram.com/bana_tribus/" target="_blank">
-                        <img class="w-8 h-8" src="{% static 'bana/img/icon/icon_insta.svg' %}" alt="Icon Instagram">
+                        <img class="w-8 h-8" src="{% static 'bana/img/icon/icon_insta.svg' %}" alt="Instagram">
                     </a>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Footer Bottom -->
-    <div class="mt-10 border-t border-brand-50 p-8 text-center text-sm">
-        {% comment %}
-        <div class="flex flex-col space-y-2 md:flex-row md:justify-center md:items-center md:space-x-4 md:space-y-0">
-            <a href="#" class="hover:text-brand-50">Confidentiality</a>
-            <a href="#" class="hover:text-brand-50">Legal notice</a>
-            <a href="#" class="hover:text-brand-50">Cookies</a>
-        </div>
-        {% endcomment %}
-        <p class="mt-2">&copy; bana.mobi 2025</p>
+        
+    </div>
+    
+    <div class="mt-10 p-8 text-center text-sm">
+        <p class="mt-2">&copy; bana.mobi 2026</p>
     </div>
 </footer>
 
 {# Ajoute cette modal à la fin de ton template #}
 <dialog id="logout-modal" class="rounded-xl p-0 w-full max-w-md">
-  <form method="post" action="{% url 'accounts:logout' %}" class="p-6 space-y-5">
-    {% csrf_token %}
-    <header class="space-y-1">
-      <h3 class="text-lg font-semibold text-gray-900">Déconnexion</h3>
-      <p class="text-sm text-gray-600">
-        Êtes-vous sûr de vouloir vous déconnecter ?
-      </p>
-    </header>
+    <form method="post" action="{% url 'accounts:logout' %}" class="p-6 space-y-5">
+        {% csrf_token %}
+        <header class="space-y-1">
+            <h3 class="text-lg font-semibold text-gray-900">Déconnexion</h3>
+            <p class="text-sm text-gray-600">
+                Êtes-vous sûr de vouloir vous déconnecter ?
+            </p>
+        </header>
 
-    <div class="flex items-center justify-end gap-3 pt-2">
-      <button type="button"
-              onclick="document.getElementById('logout-modal').close()"
-              class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
-        Annuler
-      </button>
-      <button type="submit"
-              class="bg-brand text-white px-4 py-2 rounded-full font-bold hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
-        Confirmer
-      </button>
-    </div>
-  </form>
+        <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="button" onclick="document.getElementById('logout-modal').close()"
+                class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+                Annuler
+            </button>
+            <button type="submit"
+                class="bg-brand text-white px-4 py-2 rounded-full font-bold hover:bg-brand-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+                Confirmer
+            </button>
+        </div>
+    </form>
 </dialog>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const textPath = document.getElementById('circleText');
+    document.addEventListener("DOMContentLoaded", () => {
+        const textPath = document.getElementById('circleText');
 
-    // récupère la longueur réelle du chemin
-    const pathLength = document.getElementById('circlePath').getTotalLength();
+        // récupère la longueur réelle du chemin
+        const pathLength = document.getElementById('circlePath').getTotalLength();
 
-    // applique la longueur du chemin au texte
-    textPath.setAttribute("textLength", pathLength);
-    textPath.setAttribute("lengthAdjust", "spacingAndGlyphs");
-});
+        // applique la longueur du chemin au texte
+        textPath.setAttribute("textLength", pathLength);
+        textPath.setAttribute("lengthAdjust", "spacingAndGlyphs");
+    });
 </script>
