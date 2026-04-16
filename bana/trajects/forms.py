@@ -316,12 +316,12 @@ class SimpleProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
 
     search_radius_km = forms.IntegerField(
         label=_("Rayon de recherche (km)"),
-        initial=5,
+        initial=1,
         min_value=1,
         max_value=50,
         widget=forms.NumberInput(attrs={
             "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
-            "placeholder": "5",
+            "placeholder": "1",
             "min": "1",
             "max": "50",
         }),

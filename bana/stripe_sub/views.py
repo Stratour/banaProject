@@ -61,6 +61,7 @@ def subscription(request):
         'price': price,
         'product_price': product_price,
         'active_subscription': active_subscription,
+        'page_title': "Mon abonnement",
     })
 
 

@@ -28,21 +28,20 @@
 
 {% url 'index' as index_url %}
 {% url 'my_reservations' as my_reservations_url %}
-{% url 'my_reservations_made_detail' as my_reservations_made_detail_url %}
 {% url 'my_reservations_received_detail' as my_reservations_received_detail_url %}
 
 {% url 'subscription' as subscription_url %}
 {% url 'accounts:profile_security' as profile_security_url %}
 
 <!-- Logo -->
-<div class="p-6 border-b flex justify-center">
+<div class="p-6 flex justify-center">
   <a href="{% url 'home' %}">
     <img class="w-20 h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Logo Bana">
   </a>
 </div>
 
 <!-- Navigation -->
-<nav class="flex-1 p-4 space-y-6 text-sm font-medium text-gray-800">
+<nav class="flex-1 p-4 space-y-6 text-sm font-medium text-gray-800 ">
 
   <!-- Mon profil -->
   <div>
@@ -122,8 +121,8 @@
       {% with current_url=request.resolver_match.url_name %}
       <li>
         <a href="{{ my_reservations_url }}"
-           class="flex items-center gap-2 py-2 px-4 {% if current_url == 'my_reservations' or current_url == 'my_reservations_received_detail' or current_url == 'my_reservations_made_detail' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
-          <img src="{% static 'bana/img/icon/Icon_reservation' %}{% if current_url == 'my_reservations' or current_url == 'my_reservations_received_detail' or current_url == 'my_reservations_made_detail' %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
+           class="flex items-center gap-2 py-2 px-4 {% if current_url == 'my_reservations' or current_url == 'my_reservations_received_detail' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
+          <img src="{% static 'bana/img/icon/Icon_reservation' %}{% if current_url == 'my_reservations' or current_url == 'my_reservations_received_detail' %}_active{% endif %}.svg?v={{ timestamp }}" class="w-5 h-5" alt="">
           {% trans "Mes réservations" %}
         </a>
       </li>

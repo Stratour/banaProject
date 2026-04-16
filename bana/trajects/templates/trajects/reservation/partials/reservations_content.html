@@ -34,261 +34,192 @@
 
   {% if request.user.profile.service == 'Parent' %}
     <section>
-      <h2 class="text-sm font-bold uppercase text-brand tracking-wider">{% trans "Réservations effectuées " %}</h2>
+      <h2 class="text-sm font-bold uppercase text-brand tracking-wider">{% trans "Réservations effectuées" %}</h2>
 
-      {% if made_reservations %}
-        <div class="mt-5 space-y-5">
-          {% for group in made_reservations %}
-            <article class="rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm">
-              <header class="flex items-center justify-between">
-                <div class="flex items-center gap-3 min-w-0">
-                  <div class="h-16 w-16 sm:h-20 sm:w-20 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] overflow-hidden">
-                    {% if group.header.proposed_traject.user.profile.profile_picture %}
-                      <a href="{% url 'accounts:profile_user' user_id=group.header.proposed_traject.user.id %}">
-                        <img src="{{ group.header.proposed_traject.user.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="User">
-                      </a>
-                    {% else %}
-                      <a href="{% url 'accounts:profile_user' user_id=group.header.proposed_traject.user.id %}" class="flex items-center justify-center w-full h-full">
-                        <span class="text-xl sm:text-2xl font-bold text-brand">
-                          {% if group.header.proposed_traject.user.profile.ci_is_verified %}
-                            {{ group.header.proposed_traject.user.profile.verified_first_name|slice:":1" }}.{{ group.header.proposed_traject.user.profile.verified_last_name|slice:":1" }}
-                          {% else %}
-                            {{ group.header.proposed_traject.user.first_name|slice:":1" }}.{{ group.header.proposed_traject.user.last_name|slice:":1" }}
-                          {% endif %}
-                        </span>
-                      </a>
-                    {% endif %}
-                  </div>
+      <div class="mt-5 space-y-4">
+        {% for group in made_reservations %}
+          {% with pt=group.proposed_traject %}
+          <div class="rounded-2xl border border-gray-200 bg-white shadow-sm overflow-hidden">
 
-                <div class="min-w-0">
-                  <p class="text-xs text-gray-500">{{ group.header.proposed_traject.user.profile.service|title }}</p>
-
-                  <p class="text-lg font-bold text-gray-900">
+            <!-- Header Yaya -->
+            <div class="flex items-center gap-3 p-4 sm:p-5 bg-gray-50 border-b border-gray-200">
+              <!-- Avatar -->
+              <div class="h-10 w-10 rounded-full bg-brand-50 ring-2 ring-[#E9F5F1] overflow-hidden shrink-0 flex items-center justify-center">
+                {% if group.yaya %}
+                  {% if group.yaya.profile.profile_picture %}
+                    <img src="{{ group.yaya.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="">
+                  {% else %}
+                    <span class="text-xs font-bold text-brand">
+                      {% if group.yaya.profile.ci_is_verified %}
+                        {{ group.yaya.profile.verified_first_name|slice:":1" }}.{{ group.yaya.profile.verified_last_name|slice:":1" }}
+                      {% else %}
+                        {{ group.yaya.first_name|slice:":1" }}.{{ group.yaya.last_name|slice:":1" }}
+                      {% endif %}
+                    </span>
+                  {% endif %}
+                {% endif %}
+              </div>
+              <!-- Nom Yaya + Route -->
+              <div class="min-w-0 flex-1">
+                <p class="text-sm font-semibold text-gray-900">
+                  {% if group.yaya %}
                     {% if is_abonned %}
-                      <a href="{% url 'accounts:profile_user' user_id=group.header.proposed_traject.user.id %}" class="text-blue-600 hover:underline">
-                        {% if group.header.proposed_traject.user.profile.ci_is_verified %}
-                          {{ group.header.proposed_traject.user.profile.verified_first_name }} {{ group.header.proposed_traject.user.profile.verified_last_name|slice:":1" }}.
+                      <a href="{% url 'accounts:profile_user' user_id=group.yaya.id %}" class="text-blue-600 hover:underline">
+                        {% if group.yaya.profile.ci_is_verified %}
+                          {{ group.yaya.profile.verified_first_name }} {{ group.yaya.profile.verified_last_name|slice:":1" }}.
                         {% else %}
-                          {{ group.header.proposed_traject.user.first_name }} {{ group.header.proposed_traject.user.last_name|slice:":1" }}.
+                          {{ group.yaya.first_name }} {{ group.yaya.last_name|slice:":1" }}.
                         {% endif %}
                       </a>
                     {% else %}
-                      <span class="text-red-700">{% trans "Abonnement requis pour voir le profil" %}</span>
+                      <span class="text-red-700 text-xs">{% trans "Abonnement requis" %}</span>
                     {% endif %}
-                  </p>
-                  <p class="text-xs text-gray-500">
+                  {% else %}
+                    <span class="text-gray-400">—</span>
+                  {% endif %}
+                </p>
+                <p class="text-xs text-gray-500 truncate">
+                  {{ pt.traject.start_adress }} <span class="text-gray-300">→</span> {{ pt.traject.end_adress }}
+                </p>
+              </div>
+              <!-- Dates + badge en attente -->
+              <div class="shrink-0 text-right space-y-1">
+                <p class="text-xs text-gray-500">
+                  {% if group.first_date and group.last_date and group.first_date != group.last_date %}
                     {% trans "Du" %} {{ group.first_date|date:"d/m/Y" }} {% trans "au" %} {{ group.last_date|date:"d/m/Y" }}
-                  </p>
-                </div>
-
-                <div>
-                  <span class="inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold">{{ group.count }} {% trans "date(s)" %}</span>
-                </div>
-              </header>
-
-              <div class="my-4 border-t border-gray-100"></div>
-
-              <!-- trajet -->
-
-              <div class="grid gap-4 sm:grid-cols-2 text-sm">
-                <!-- Départ -->
-                <div class="space-y-2 text-sm text-gray-700">
-              <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <!-- map-pin -->
-                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
-                </svg>
-                {% trans "Départ" %}
-              </p>
-                  <p>
-                    <span class="font-medium">{{ group.header.researched_traject.traject.start_adress }}</span>
-                    <span class="mx-1 text-gray-400">·</span>
-                    {{ group.header.researched_traject.departure_time|default:"—" }}
-                  </p>
-                </div>
-
-                <!-- Arrivée -->
-                <div class="space-y-2 text-sm text-gray-700">
-                   <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <!-- flag -->
-                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M5 5v14M5 5h10l-2 4 2 4H5"/>
-                </svg>
-                {% trans "Arrivée" %}
-              </p>
-                    <span class="font-medium">{{ group.header.researched_traject.traject.end_adress }}</span>
-                    <span class="mx-1 text-gray-400">·</span>
-                    {{ group.header.researched_traject.arrival_time|default:"—" }}
-                  </p>
-                </div>
-
-                <!-- Transport -->
-            <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
-              <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <!-- car -->
-                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
-                </svg>
-                {% trans "Transport" %}
-              </p>
-              <div class="mt-2 flex flex-wrap gap-2">
-                {% for mode in group.header.researched_traject.transport_modes.all %}
-                  {% with label=mode.name|default:mode %}
-                    {% with key=label|lower %}
-                      <span class="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand-50 text-brand px-2.5 py-1 text-xs font-medium">
-                        {% if "car" in key %}
-                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
-                          </svg>
-                          <p>{% trans "Voiture" %}</p>
-                        {% elif "bike" in key %}
-                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <circle cx="6" cy="17" r="3" stroke-width="2"/>
-                            <circle cx="18" cy="17" r="3" stroke-width="2"/>
-                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                  d="M6 17l6-8 2 3h4"/>
-                          </svg>
-                          <p>{% trans "Vélo" %}</p>
-                        {% elif "transport" in key %}
-                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <rect x="4" y="4" width="16" height="12" rx="2" stroke-width="2"/>
-                            <path stroke-width="2" d="M4 11h16M8 20l2-2m6 2l-2-2"/>
-                            <circle cx="8" cy="16" r="1" />
-                            <circle cx="16" cy="16" r="1" />
-                          </svg>
-                          <p>{% trans "Transport en commun" %}</p>
-                        {% elif "walking" in key %}
-                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                  d="M13 5a2 2 0 11-4 0 2 2 0 014 0zM12 7l-2 4-2 2m4-6l2 3 3 1m-7 1l-2 6m5-5l-1 5"/>
-                          </svg>
-                          <p>{% trans "À pied" %}</p>
-                        {% else %}
-                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
-                          </svg>
-                        {% endif %}
-                      </span>
-                    {% endwith %}
-                  {% endwith %}
-                {% empty %}
-                  <span class="text-gray-400">{% trans "Non spécifié" %}</span>
-                {% endfor %}
+                  {% elif group.first_date %}
+                    {{ group.first_date|date:"d/m/Y" }}
+                  {% else %}
+                    —
+                  {% endif %}
+                </p>
+                {% if group.pending_count %}
+                  <span class="inline-flex items-center rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 px-2 py-0.5 text-xs font-semibold">
+                    {{ group.pending_count }} {% trans "en attente" %}
+                  </span>
+                {% endif %}
               </div>
             </div>
 
-          <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
-          <p class="font-semibold text-gray-900 flex items-center gap-2">
-            <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/>
-              <circle cx="9" cy="7" r="4" stroke-width="2"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M23 20v-2a4 4 0 00-3-3.87"/>
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M16 3.13a4 4 0 010 7.75"/>
-            </svg>
-            {% trans "Enfant(s)" %}
-          </p>
-          <div class="mt-2 flex flex-wrap gap-2">
-            {% for child in group.header.researched_traject.children.all %}
-              <button type="button"
-                      onclick="document.getElementById('child-modal-{{ child.id }}-made-{{ forloop.parentloop.counter }}').showModal()"
-                      class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium hover:bg-gray-100 transition">
-                {{ child.chld_name }} {{ child.chld_surname|slice:":1"}}.
-                {% if child.age %}
-                  <span class="ml-1 text-gray-500">— {{ child.age }} {% trans "ans" %}</span>
-                {% endif %}
-              </button>
-            {% empty %}
-              <span class="text-gray-400">—</span>
-            {% endfor %}
-          </div>
-        {% for child in group.header.researched_traject.children.all %}
-            <dialog id="child-modal-{{ child.id }}-made-{{ forloop.parentloop.counter }}"
-                    class="rounded-2xl p-0 w-full max-w-lg backdrop:bg-black/40">
-              <div class="p-6 space-y-5">
-                <div class="flex items-start justify-between gap-4">
-                  <div>
-                    <h3 class="text-lg font-semibold text-gray-900">
-                      {{ child.chld_name }} {{ child.chld_surname|slice:":1" }}.
-                    </h3>
-                    <p class="text-sm text-gray-500">
-                      {% if child.age %}
-                        {{ child.age }} {% trans "ans" %}
-                      {% endif %}
-                    </p>
-                  </div>
-                  <button type="button"
-                          onclick="document.getElementById('child-modal-{{ child.id }}-made-{{ forloop.parentloop.counter }}').close()"
-                          class="rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition"
-                          aria-label="Fermer">
-                    ✕
-                  </button>
-                </div>
-                <div class="flex flex-wrap gap-2">
-                  {% if child.chld_seat %}
-                    <span class="inline-flex items-center rounded-full bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 text-xs font-semibold">
-                      {% trans "Siège enfant requis" %}
-                    </span>
-                  {% endif %}
-                  {% if child.chld_disability %}
-                    <span class="inline-flex items-center rounded-full bg-red-50 text-red-700 border border-red-200 px-3 py-1 text-xs font-semibold">
-                      {% trans "Porteur d'un handicap" %}
-                    </span>
-                  {% endif %}
-                </div>
-                {% with languages=child.chld_languages.all %}
-                  {% if languages %}
-                    <div class="space-y-2">
-                      <p class="text-xs font-bold uppercase text-brand">{% trans "Langues parlées" %}</p>
-                      <div class="flex flex-wrap gap-2">
-                        {% for language in languages %}
-                          <span class="inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-3 py-1 text-xs font-semibold">
-                            {{ language.lang_name }}
-                          </span>
+            <!-- Sous-tableau des dates -->
+            <table class="w-full text-xs">
+              <thead class="bg-white text-gray-500 uppercase text-[10px] border-b border-gray-100">
+                <tr>
+                  <th class="px-4 py-2 text-left font-medium">{% trans "Date" %}</th>
+                  <th class="px-4 py-2 text-left font-medium">{% trans "Heure" %}</th>
+                  <th class="px-4 py-2 text-left font-medium">{% trans "Enfants" %}</th>
+                  {% if tab == 'active' %}<th class="px-4 py-2 text-center font-medium">{% trans "Places" %}</th>{% endif %}
+                  <th class="px-4 py-2 text-right font-medium">{% trans "Statut" %}</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-100">
+                {% for row in group.rows %}
+                  {% with r=row.reservation %}
+                  {% with rt=r.researched_traject %}
+                  <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3 font-medium text-gray-900">{{ r.proposed_traject.date|date:"d/m/Y" }}</td>
+                    <td class="px-4 py-3 text-gray-500">
+                      {% if r.proposed_traject.departure_time %}{{ r.proposed_traject.departure_time|time:"H\hi" }}{% elif rt %}{{ rt.departure_time|time:"H\hi" }}{% else %}—{% endif %} → {% if r.proposed_traject.arrival_time %}{{ r.proposed_traject.arrival_time|time:"H\hi" }}{% elif rt %}{{ rt.arrival_time|time:"H\hi" }}{% else %}—{% endif %}
+                    </td>
+                    <td class="px-4 py-3">
+                      <div class="flex flex-wrap gap-1">
+                        {% for child in rt.children.all %}
+                          <button type="button"
+                                  onclick="document.getElementById('child-modal-made-{{ child.id }}-{{ r.id }}').showModal()"
+                                  class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium hover:bg-gray-100 transition">
+                            {{ child.chld_name }} {{ child.chld_surname|slice:":1" }}.
+                            {% if child.age %}<span class="ml-1 text-gray-400">{{ child.age }} {% trans "ans" %}</span>{% endif %}
+                          </button>
+                        {% empty %}
+                          <span class="text-gray-400">—</span>
                         {% endfor %}
                       </div>
-                    </div>
-                  {% endif %}
-                {% endwith %}
-                {% if child.chld_special_needs %}
-                  <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
-                    <p class="text-xs font-bold uppercase text-amber-700 mb-1">{% trans "Besoins spécifiques" %}</p>
-                    <p class="text-sm text-amber-900 whitespace-pre-line">{{ child.chld_special_needs }}</p>
-                  </div>
-                {% endif %}
-                <div class="flex justify-end pt-2">
-                  <button type="button"
-                          onclick="document.getElementById('child-modal-{{ child.id }}-made-{{ forloop.parentloop.counter }}').close()"
-                          class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                    {% trans "Fermer" %}
-                  </button>
-                </div>
-              </div>
-            </dialog>
-          {% endfor %}
-        </div>
-              </div>
+                    </td>
+                    {% if tab == 'active' %}<td class="px-4 py-3 text-center text-gray-700 font-medium">{{ row.remaining_places }}</td>{% endif %}
+                    <td class="px-4 py-3 text-right">
+                      {% if r.status == 'confirmed' %}
+                        <span class="inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-2 py-0.5 font-semibold">{% trans "Confirmée" %}</span>
+                      {% elif r.status == 'pending' %}
+                        <span class="inline-flex items-center rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 px-2 py-0.5 font-semibold">{% trans "En attente" %}</span>
+                      {% else %}
+                        <span class="inline-flex items-center rounded-full bg-red-50 text-red-700 border border-red-200 px-2 py-0.5 font-semibold">{% trans "Annulée" %}</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endwith %}
+                  {% endwith %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
 
-              <footer class="mt-5 flex justify-end">
-                <a href="{% url 'my_reservations_made_detail' group.header.researched_traject.groupe_uid group.header.proposed_traject.groupe_uid group.header.proposed_traject.user.id %}?tab={{ tab }}"
-                class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                {% trans "Voir les dates" %}
-              </a>
-              </footer>
-            </article>
+          <!-- Modales enfants du groupe (hors tableau) -->
+          {% for row in group.rows %}
+            {% with r=row.reservation %}
+            {% with rt=r.researched_traject %}
+              {% for child in rt.children.all %}
+                <dialog id="child-modal-made-{{ child.id }}-{{ r.id }}"
+                        class="rounded-2xl p-0 w-full max-w-lg backdrop:bg-black/40">
+                  <div class="p-6 space-y-5">
+                    <div class="flex items-start justify-between gap-4">
+                      <div>
+                        <h3 class="text-lg font-semibold text-gray-900">
+                          {{ child.chld_name }} {{ child.chld_surname|slice:":1" }}.
+                        </h3>
+                        <p class="text-sm text-gray-500">{% if child.age %}{{ child.age }} {% trans "ans" %}{% endif %}</p>
+                      </div>
+                      <button type="button"
+                              onclick="document.getElementById('child-modal-made-{{ child.id }}-{{ r.id }}').close()"
+                              class="rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition"
+                              aria-label="{% trans 'Fermer' %}">✕</button>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                      {% if child.chld_seat %}
+                        <span class="inline-flex items-center rounded-full bg-blue-50 text-blue-700 border border-blue-200 px-3 py-1 text-xs font-semibold">{% trans "Siège enfant requis" %}</span>
+                      {% endif %}
+                      {% if child.chld_disability %}
+                        <span class="inline-flex items-center rounded-full bg-red-50 text-red-700 border border-red-200 px-3 py-1 text-xs font-semibold">{% trans "Porteur d'un handicap" %}</span>
+                      {% endif %}
+                    </div>
+                    {% with languages=child.chld_languages.all %}
+                      {% if languages %}
+                        <div class="space-y-2">
+                          <p class="text-xs font-bold uppercase text-brand">{% trans "Langues parlées" %}</p>
+                          <div class="flex flex-wrap gap-2">
+                            {% for language in languages %}
+                              <span class="inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-3 py-1 text-xs font-semibold">{{ language.lang_name }}</span>
+                            {% endfor %}
+                          </div>
+                        </div>
+                      {% endif %}
+                    {% endwith %}
+                    {% if child.chld_special_needs %}
+                      <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3">
+                        <p class="text-xs font-bold uppercase text-amber-700 mb-1">{% trans "Besoins spécifiques" %}</p>
+                        <p class="text-sm text-amber-900 whitespace-pre-line">{{ child.chld_special_needs }}</p>
+                      </div>
+                    {% endif %}
+                    <div class="flex justify-end pt-2">
+                      <button type="button"
+                              onclick="document.getElementById('child-modal-made-{{ child.id }}-{{ r.id }}').close()"
+                              class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        {% trans "Fermer" %}
+                      </button>
+                    </div>
+                  </div>
+                </dialog>
+              {% endfor %}
+            {% endwith %}
+            {% endwith %}
           {% endfor %}
-        </div>
+
+          {% endwith %}
+        {% empty %}
+          <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
+            {% if tab == 'active' %}{% trans "Aucune réservation active" %}{% else %}{% trans "Aucune réservation passée" %}{% endif %}
+          </div>
+        {% endfor %}
+
         {% if made_reservations.has_other_pages %}
           <nav class="flex justify-center items-center gap-2 mt-6">
             {% if made_reservations.has_previous %}
@@ -296,9 +227,7 @@
                  hx-target="#reservations-content" hx-swap="outerHTML" hx-push-url="true"
                  class="px-3 py-1 rounded border border-gray-200 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">←</a>
             {% endif %}
-            <span class="px-3 py-1 text-sm text-gray-500">
-              {{ made_reservations.number }} / {{ made_reservations.paginator.num_pages }}
-            </span>
+            <span class="px-3 py-1 text-sm text-gray-500">{{ made_reservations.number }} / {{ made_reservations.paginator.num_pages }}</span>
             {% if made_reservations.has_next %}
               <a hx-get="?tab={{ tab }}&made_page={{ made_reservations.next_page_number }}"
                  hx-target="#reservations-content" hx-swap="outerHTML" hx-push-url="true"
@@ -306,11 +235,7 @@
             {% endif %}
           </nav>
         {% endif %}
-      {% else %}
-        <div class="mt-5 rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
-          {% if tab == 'active' %}{% trans "Aucune réservation active" %}{% else %}{% trans "Aucune réservation passée" %}{% endif %}
-        </div>
-      {% endif %}
+      </div>
     </section>
 
     <hr class="my-10" />
@@ -318,11 +243,12 @@
 
   <!-- ===================== DEMANDES REÇUES (YAYA) ===================== -->
 
+  {% if request.user.profile.service == 'Yaya' %}
   <section>
     <h2 class="text-sm font-bold uppercase text-brand tracking-wider">{% trans "Demandes reçues" %}</h2>
 
     {% if received_reservations %}
-      <div class="mt-5 space-y-5">
+      <div class="mt-5 space-y-4">
         {% for group in received_reservations %}
           {% with pt=group.header.proposed_traject %}
           <article class="group rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all ring-1 ring-transparent hover:ring-brand/10">
@@ -331,7 +257,7 @@
             <header class="flex items-start justify-between gap-4">
               <div class="min-w-0">
                 <p class="text-xs text-gray-500">{% trans "Nom du trajet" %}</p>
-                <h2 class="text-xl font-bold text-gray-900">{{ pt.groupe_name|default:"Mon trajet" }}</h2>
+                <h2 class="text-xl font-bold text-gray-900">{{ pt.groupe_name|default:_("Mon trajet") }}</h2>
                 <p class="text-xs text-gray-500">
                   {% trans "Du" %} {{ group.first_date|date:"d/m/Y" }} {% trans "au" %} {{ group.last_date|date:"d/m/Y" }}
                 </p>
@@ -340,8 +266,9 @@
 
             <div class="my-4 border-t border-gray-100"></div>
 
-            <!-- Meta -->
+            <!-- Départ / Arrivée -->
             <div class="grid gap-4 sm:grid-cols-2">
+
               <!-- Départ -->
               <div class="space-y-2 text-sm text-gray-700">
                 <p class="font-semibold text-gray-900 flex items-center gap-2">
@@ -360,113 +287,69 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                   </svg>
-                  {{ pt.departure_time|default:"—" }}
+                  {% with dep=pt.departure_time fdep=group.header.researched_traject.departure_time %}
+                    {% if dep %}{{ dep|time:"H\hi" }}{% elif fdep %}{{ fdep|time:"H\hi" }}{% else %}—{% endif %}
+                  {% endwith %}
                 </p>
               </div>
 
-              <!-- Arrivée -->
+              <!-- Arrivée (ou Rayon si is_simple) -->
               <div class="space-y-2 text-sm text-gray-700">
-                <p class="font-semibold text-gray-900 flex items-center gap-2">
-                  <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M5 5v14M5 5h10l-2 4 2 4H5"/>
-                  </svg>
-                  {% trans "Arrivée" %}
-                </p>
-                <p>
-                  <span class="font-medium">{{ pt.traject.end_adress }}</span>
-                  <span class="mx-1 text-gray-400">·</span>
-                  <svg class="inline h-4 w-4 -mt-0.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                  {{ pt.arrival_time|default:"—" }}
-                </p>
-              </div>
-
-              <!-- Transport -->
-              <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
-                <p class="font-semibold text-gray-900 flex items-center gap-2">
-                  <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
-                  </svg>
-                  {% trans "Transport" %}
-                </p>
-                <div class="mt-2 flex flex-wrap gap-2">
-                  {% for mode in pt.transport_modes.all %}
-                    {% with label=mode.name|default:mode %}
-                      {% with key=label|lower %}
-                        <span class="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand-50 text-brand px-2.5 py-1 text-xs font-medium">
-                          {% if "car" in key %}
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
-                            </svg>
-                            <p>{% trans "Voiture" %}</p>
-                          {% elif "bike" in key %}
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                              <circle cx="6" cy="17" r="3" stroke-width="2"/>
-                              <circle cx="18" cy="17" r="3" stroke-width="2"/>
-                              <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                    d="M6 17l6-8 2 3h4"/>
-                            </svg>
-                            <p>{% trans "Vélo" %}</p>
-                          {% elif "transport" in key %}
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                              <rect x="4" y="4" width="16" height="12" rx="2" stroke-width="2"/>
-                              <path stroke-width="2" d="M4 11h16M8 20l2-2m6 2l-2-2"/>
-                              <circle cx="8" cy="16" r="1" />
-                              <circle cx="16" cy="16" r="1" />
-                            </svg>
-                            <p>{% trans "Transport en commun" %}</p>
-                          {% elif "walking" in key %}
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                              <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                    d="M13 5a2 2 0 11-4 0 2 2 0 014 0zM12 7l-2 4-2 2m4-6l2 3 3 1m-7 1l-2 6m5-5l-1 5"/>
-                            </svg>
-                            <p>{% trans "À pied" %}</p>
-                          {% else %}
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"/>
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
-                            </svg>
-                          {% endif %}
-                        </span>
-                      {% endwith %}
+                {% if pt.is_simple %}
+                  <p class="font-semibold text-gray-900 flex items-center gap-2">
+                    <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <circle cx="12" cy="12" r="9" stroke-width="2"/>
+                      <circle cx="12" cy="12" r="3" stroke-width="2"/>
+                    </svg>
+                    {% trans "Rayon" %}
+                  </p>
+                  <p><span class="font-medium">{{ pt.search_radius_km }} km</span></p>
+                {% else %}
+                  <p class="font-semibold text-gray-900 flex items-center gap-2">
+                    <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M5 5v14M5 5h10l-2 4 2 4H5"/>
+                    </svg>
+                    {% trans "Arrivée" %}
+                  </p>
+                  <p>
+                    <span class="font-medium">{{ pt.traject.end_adress }}</span>
+                    <span class="mx-1 text-gray-400">·</span>
+                    <svg class="inline h-4 w-4 -mt-0.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    {% with arr=pt.arrival_time farr=group.header.researched_traject.arrival_time %}
+                      {% if arr %}{{ arr|time:"H\hi" }}{% elif farr %}{{ farr|time:"H\hi" }}{% else %}—{% endif %}
                     {% endwith %}
-                  {% empty %}
-                    <span class="text-gray-400">{% trans "Non spécifié" %}</span>
-                  {% endfor %}
-                </div>
-              </div>
-
-              <!-- Statistiques demandes -->
-              <div class="sm:col-span-2 flex flex-wrap gap-2 pt-1">
-                {% if group.pending_count %}
-                  <span class="inline-flex items-center rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1 text-xs font-semibold">
-                    {{ group.pending_count }} {% trans "en attente" %}
-                  </span>
-                {% endif %}
-                {% if group.full_dates_count %}
-                  <span class="inline-flex items-center rounded-full bg-red-50 text-red-700 border border-red-200 px-3 py-1 text-xs font-semibold">
-                    {{ group.full_dates_count }} {% trans "date(s) complète(s)" %}
-                  </span>
-                {% endif %}
-                {% if group.available_dates_count %}
-                  <span class="inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-3 py-1 text-xs font-semibold">
-                    {{ group.available_dates_count }} {% trans "date(s) disponible(s)" %}
-                  </span>
+                  </p>
                 {% endif %}
               </div>
             </div>
 
+            <!-- Badges stats -->
+            <div class="mt-4 flex flex-wrap gap-2">
+              {% if group.pending_count %}
+                <span class="inline-flex items-center rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1 text-xs font-semibold">
+                  {{ group.pending_count }} {% trans "en attente" %}
+                </span>
+              {% endif %}
+              {% if group.full_dates_count %}
+                <span class="inline-flex items-center rounded-full bg-red-50 text-red-700 border border-red-200 px-3 py-1 text-xs font-semibold">
+                  {{ group.full_dates_count }} {% trans "date(s) complète(s)" %}
+                </span>
+              {% endif %}
+              {% if group.available_dates_count %}
+                <span class="inline-flex items-center rounded-full bg-green-50 text-green-700 border border-green-200 px-3 py-1 text-xs font-semibold">
+                  {{ group.available_dates_count }} {% trans "date(s) disponible(s)" %}
+                </span>
+              {% endif %}
+            </div>
+
             <footer class="mt-5 flex justify-end">
-              <a href="{% url 'my_reservations_received_detail' group.header.proposed_traject.groupe_uid %}?tab={{ tab }}"
-                 class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                {% trans "Voir les demandes" %}
+              <a href="{% url 'my_reservations_received_detail' pt.groupe_uid %}?tab={{ tab }}"
+                 class="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                {% trans "Voir les demandes" %} →
               </a>
             </footer>
           </article>
@@ -496,5 +379,6 @@
       </div>
     {% endif %}
   </section>
+  {% endif %}{# service == 'Yaya' #}
 
 </div>

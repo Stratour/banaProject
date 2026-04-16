@@ -6,53 +6,30 @@
     <meta charset="UTF-8">
     <meta name="description" content="Le service de mobilité partagée pour les enfants conçu pour les trajets maison-école-activités. Gain de temps. Retrouvez de la flexibilité dans votre agenda ...">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="../../static/bana/css/animate.css">
-    <link rel="stylesheet" href="../../static/bana/css/footer.css">
+    <title>{% block title %}{% endblock %}</title>
     <link href="{% static 'bana/img/icon/favicon.ico' %}" rel="icon">
-    <!-- styling part -->
     {% tailwind_css %}
-  <!-- js -->
-  {% comment "" %}
-  <script src="{% static 'members/js/scripts.js' %}" defer ></script>
-  {% endcomment %}
-
-     
-    <!--<link href="{% static 'theme/css/dist/styles.css' %}" rel="stylesheet">-->
-    <!--<link href="{% static 'bana/css/style.css' %}" rel="stylesheet">-->
-    <link href="{% static 'src/style.css' %}" rel="stylesheet">
-
-  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-  <script src="https://js.stripe.com/basil/stripe.js"></script>
-
-  <title>{% block title %}{% endblock  %}</title>
+    <link rel="stylesheet" href="{% static 'bana/css/animate.css' %}">
+    <link rel="stylesheet" href="{% static 'bana/css/footer.css' %}">
+    <script src="https://js.stripe.com/basil/stripe.js"></script>
 </head>
 
-
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col bg-gray-50">
     {% include 'layouts/header.html' %}
 
-    <main class="flex-grow">
+    <main class="flex-grow ">
         {% block content %}
         {% endblock %}
     </main>
 
-    
-    {% include 'layouts/footer.html' %}    
+    {% include 'layouts/footer.html' %}
+
     <script src="https://unpkg.com/htmx.org@2.0.3/dist/htmx.js" integrity="sha384-BBDmZzVt6vjz5YbQqZPtFZW82o8QotoM7RUp5xOxV3nSJ8u2pSdtzFAbGKzTlKtg" crossorigin="anonymous"></script>
     <script src="{% static 'bana/js/carroussel.js' %}"></script>
     <script src="{% static 'bana/js/top-mobile-menu.js' %}"></script>
     <script src="{% static 'bana/js/video.js' %}"></script>
     <script src="{% static 'bana/js/toast.js' %}"></script>
     <script src="{% static 'bana/js/animate.js' %}"></script>
-
-    
-    <!--<script>
-        document.addEvenListener('htmx:configRequest', (event) => {
-            event.detail.headers['X-CSRFToken'] = '{{ csrf_token }}';
-        });
-    </script>-->
-
 </body>
 
 </html>

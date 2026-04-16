@@ -6,46 +6,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="{% static 'bana/img/icon/favicon.ico' %}" rel="icon">
-
-    {% tailwind_css %}
-    <!--<link href="{% static 'theme/css/dist/styles.css' %}" rel="stylesheet"> -->
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'bana/css/toast.css' %}">
-
-
     <title>{% block head_title %}{% endblock %} | Bana</title>
+    <link href="{% static 'bana/img/icon/favicon.ico' %}" rel="icon">
+    {% tailwind_css %}
+    <link rel="stylesheet" href="{% static 'bana/css/toast.css' %}">
+    <link rel="stylesheet" href="{% static 'bana/css/footer.css' %}">
 </head>
 
-<body class="relative min-h-screen md:flex" style="background-image: url('{% static 'bana/img/background/Bana_background_lime.png' %}');
-             background-repeat: no-repeat;
-             background-size: cover;
-             background-position: center;">
+<body class="relative min-h-screen flex flex-col app-bg">
 
-    <!-- Ajouter la bare de navigation de bana -->
+    <!-- Overlay appliqué au body -->
+    <div class="absolute inset-0 bg-gray-50 opacity-90 pointer-events-none z-0"></div>
 
+    <!-- Ligne principale : sidebar + contenu -->
+    <div class="flex flex-1 relative z-10">
 
+        <!-- Side navigation (desktop) -->
+        <aside class="hidden md:flex md:flex-col md:w-64 bg-white shadow-lg min-h-screen rounded-r-2xl">
+            {% include 'allauth/layouts/admin-side-nav.html' %}
+        </aside>
 
-    <!-- overlay appliqué au body -->
-    <div class="absolute inset-0 bg-white opacity-90 pointer-events-none z-0"></div>
+        <!-- Colonne de contenu -->
+        <div class="flex-1 flex flex-col">
+            {% include 'allauth/layouts/admin-header.html' %}
 
+            <main class="flex-1 p-4 md:p-6 pb-24 md:pb-0">
+                {% block content %}
+                {% endblock %}
+            </main>
+        </div>
 
-    <!-- Side navigation (desktop) -->
-    <aside class="hidden md:flex md:flex-col md:w-64 bg-white shadow-lg min-h-screen relative z-10">
-        {% include 'allauth/layouts/admin-side-nav.html' %}
-    </aside>
-
-    <!-- Contenu principal -->
-    <div class="flex-1 flex flex-col relative z-10">
-        {% include 'allauth/layouts/admin-header.html' %}
-
-        <main class="flex-1 p-4 md:p-6 pb-24 md:pb-0">
-            {% block content %}
-            {% endblock %}
-        </main>
     </div>
 
-    {% comment "footer mobile" %}
+    <!-- Footer pleine largeur, en dehors de la ligne sidebar+contenu -->
+    {% include 'layouts/footer.html' %}
+
+    {% comment "Pas utile pour l'instant" %}
     {% include 'allauth/layouts/admin-footer-mobile.html' %}
     {% endcomment %}
 

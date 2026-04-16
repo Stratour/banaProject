@@ -454,6 +454,7 @@ def proposed_traject(request, researchesTraject_id=None):
     context_base = {
         "researched_traject": researchesTraject_id,
         "fav_addresses": fav_addresses,
+        "page_title": _("Proposer un trajet - Nouveau trajet"),
         "days_of_week": [
             ("1", _("Lundi")),
             ("2", _("Mardi")),
@@ -610,6 +611,7 @@ def simple_proposed_traject(request):
             ],
             "tr_weekdays": request.POST.getlist("tr_weekdays") if request.method == "POST" else [],
             "fav_addresses": fav_addresses,
+            "page_title": _("Rechercher un trajet rayon - Nouveau trajet"),
         },
     )
     
@@ -639,6 +641,7 @@ def researched_traject(request):
     context_base = {
         "transport_modes": transport_modes,
         "fav_addresses": fav_addresses,
+        "page_title": _("Rechercher un trajet - Nouveau trajet"),
         "days_of_week": [
             ("1", _("Lundi")), ("2", _("Mardi")), ("3", _("Mercredi")),
             ("4", _("Jeudi")), ("5", _("Vendredi")), ("6", _("Samedi")), ("7", _("Dimanche")),
@@ -1133,6 +1136,7 @@ def my_proposed_trajects(request):
     return render(request, "trajects/proposition/trajets_liste.html", {
         "proposed_trajects": proposed_headers,
         "is_abonned": is_abonned,
+        "page_title": _("Proposer un trajet - Mes trajets"),
     })
 
 @name_required
@@ -1163,6 +1167,7 @@ def my_simple_trajects(request):
     return render(request, 'trajects/proposition_rayon/trajets_liste.html', {
         'simple_trajects': headers,
         'is_abonned': is_abonned,
+        'page_title': _("Rechercher un trajet rayon - Mes trajets"),
     })
     
 @name_required
@@ -1196,6 +1201,7 @@ def my_researched_trajects(request):
     return render(request, 'trajects/recherche/trajets_liste.html', {
         'researched_trajects': researched_headers,
         'is_abonned': is_abonned,
+        'page_title': _("Rechercher un trajet - Mes trajets"),
     })
 
 # ============================================================
@@ -1233,9 +1239,9 @@ def my_proposed_groupe_detail(request, groupe_uid):
         'occurrences_past': occurrences_past,
         'is_abonned': is_abonned,
         'stats': stats,
-        
+        'page_title': _("Proposer un trajet - Mes trajets"),
     })
-      
+
 @name_required
 def my_simple_groupe_detail(request, groupe_uid):
     user = request.user
@@ -1267,6 +1273,7 @@ def my_simple_groupe_detail(request, groupe_uid):
         'occurrences_past': occurrences_past,
         'stats': stats,
         'is_abonned': is_abonned,
+        'page_title': _("Rechercher un trajet rayon - Mes trajets"),
     })
     
 @name_required
@@ -1300,6 +1307,7 @@ def my_researched_groupe_detail(request, groupe_uid):
         'occurrences_past': occurrences_past,
         'is_abonned': is_abonned,
         'stats': stats,
+        'page_title': _("Rechercher un trajet - Mes trajets"),
     })
  
 # ============================================================
@@ -1370,6 +1378,7 @@ def my_matchings_proposed(request):
         "groups": headers,
         "is_abonned": is_abonned,
         "today": today,
+        "page_title": _("Proposer un trajet - Mes matchings"),
     })
 
 @name_required
@@ -1436,6 +1445,7 @@ def my_matchings_simple(request):
         "groups": headers,
         "is_abonned": is_abonned,
         "today": today,
+        "page_title": _("Rechercher un trajet rayon - Mes matchings"),
     })
 
 @name_required
@@ -1505,6 +1515,7 @@ def my_matchings_researched(request):
         "groups": headers,
         "is_abonned": is_abonned,
         "today": today,
+        "page_title": _("Rechercher un trajet - Mes matchings"),
     })
     
 # ============================================================
@@ -1608,6 +1619,7 @@ def my_matchings_proposed_detail(request, proposed_groupe_uid, researched_groupe
         "today": today,
         "parent_pending_ids": parent_pending_ids,
         "parent_confirmed_ids": parent_confirmed_ids,
+        "page_title": _("Proposer un trajet - Mes matchings"),
     })
 
 @name_required
@@ -1713,6 +1725,7 @@ def my_matchings_simple_detail(request, proposed_groupe_uid, researched_groupe_u
         "today": today,
         "parent_pending_ids": parent_pending_ids,
         "parent_confirmed_ids": parent_confirmed_ids,
+        "page_title": _("Rechercher un trajet rayon - Mes matchings"),
     })
 
 @name_required
@@ -1843,6 +1856,7 @@ def my_matchings_researched_detail(request, researched_groupe_uid, proposed_grou
         "is_abonned": is_abonned,
         "is_subscription_complete": is_subscription_complete,
         "today": today,
+        "page_title": _("Rechercher un trajet - Mes matchings"),
     })
 
 # ============================================================
@@ -2247,18 +2261,8 @@ def my_reservations(request):
     # Groupement selon l'onglet
     # =========================
     if tab == 'active':
-        # Groupes avec au moins une date future (tous statuts, y compris annulés)
         made_qs_filter = dict(user=user, proposed_traject__date__gte=today)
-        made_exclude = {}
-        made_date_field = 'proposed_traject__date'
-        made_group_keys = ['researched_traject__groupe_uid', 'proposed_traject__groupe_uid', 'proposed_traject__user_id']
-        made_header_filter = lambda item: dict(
-            user=user,
-            proposed_traject__date__gte=today,
-            researched_traject__groupe_uid=item['researched_traject__groupe_uid'],
-            proposed_traject__groupe_uid=item['proposed_traject__groupe_uid'],
-            proposed_traject__user_id=item['proposed_traject__user_id'],
-        )
+        made_order = 'proposed_traject__date'
 
         received_qs_filter = dict(proposed_traject__user=user, researched_traject__date__gte=today)
         received_exclude = {}
@@ -2268,22 +2272,10 @@ def my_reservations(request):
             proposed_traject__user=user,
             proposed_traject__groupe_uid=item['proposed_traject__groupe_uid'],
         )
-
-        made_date_filter = {}
         received_date_filter = {}
     else:
-        # Groupes avec au moins une date passée (tous statuts)
         made_qs_filter = dict(user=user, proposed_traject__date__lt=today)
-        made_exclude = {}
-        made_date_field = 'proposed_traject__date'
-        made_group_keys = ['researched_traject__groupe_uid', 'proposed_traject__groupe_uid', 'proposed_traject__user_id']
-        made_header_filter = lambda item: dict(
-            user=user,
-            proposed_traject__date__lt=today,
-            researched_traject__groupe_uid=item['researched_traject__groupe_uid'],
-            proposed_traject__groupe_uid=item['proposed_traject__groupe_uid'],
-            proposed_traject__user_id=item['proposed_traject__user_id'],
-        )
+        made_order = '-proposed_traject__date'
 
         received_qs_filter = dict(proposed_traject__user=user, researched_traject__date__lt=today)
         received_exclude = {}
@@ -2293,58 +2285,46 @@ def my_reservations(request):
             proposed_traject__user=user,
             proposed_traject__groupe_uid=item['proposed_traject__groupe_uid'],
         )
-
-        made_date_filter = {}
         received_date_filter = {}
 
     # =========================
-    # Réservations faites (parent)
+    # Réservations faites (parent) — groupées par (proposed_groupe_uid, yaya)
     # =========================
-    made_base = (
+    made_reservations_qs = (
         Reservation.objects.filter(**made_qs_filter)
         .select_related(
-            'proposed_traject', 'researched_traject',
-            'proposed_traject__traject', 'researched_traject__traject',
-            'proposed_traject__user', 'proposed_traject__user__profile'
+            'proposed_traject', 'proposed_traject__user', 'proposed_traject__user__profile',
+            'proposed_traject__traject',
+            'researched_traject', 'researched_traject__traject',
         )
-        .prefetch_related('researched_traject__children', 'researched_traject__children__chld_languages')
+        .prefetch_related(
+            'researched_traject__children',
+            'researched_traject__children__chld_languages',
+        )
+        .order_by(made_order, 'proposed_traject__departure_time')
     )
-    if made_exclude:
-        made_base = made_base.exclude(**made_exclude)
 
-    made_grouped = (
-        made_base
-        .values(*made_group_keys)
-        .annotate(
-            first_date=Min(made_date_field),
-            last_date=Max(made_date_field),
-            count=Count('id'),
-        )
-        .order_by('-last_date')
-    )
-    if made_date_filter:
-        made_grouped = made_grouped.filter(**made_date_filter)
+    from itertools import groupby as _groupby
+    _key_fn = lambda r: (str(r.proposed_traject.groupe_uid), r.proposed_traject.user_id)
+    _sorted_qs = sorted(made_reservations_qs, key=_key_fn)
 
     made_reservations = []
-    for item in made_grouped:
-        header = (
-            Reservation.objects
-            .filter(**made_header_filter(item))
-            .select_related(
-                'proposed_traject', 'researched_traject',
-                'proposed_traject__traject', 'researched_traject__traject',
-                'proposed_traject__user', 'proposed_traject__user__profile'
-            )
-            .prefetch_related('researched_traject__children', 'researched_traject__children__chld_languages')
-            .first()
-        )
-        if not header:
-            continue
+    for _group_key, _group_iter in _groupby(_sorted_qs, _key_fn):
+        rows_raw = list(_group_iter)
+        first_r = rows_raw[0]
+        pt = first_r.proposed_traject
+        dates = [r.proposed_traject.date for r in rows_raw if r.proposed_traject.date]
         made_reservations.append({
-            "header": header,
-            "first_date": item["first_date"],
-            "last_date": item["last_date"],
-            "count": item["count"],
+            'yaya': pt.user,
+            'proposed_traject': pt,
+            'rows': [
+                {'reservation': r, 'remaining_places': _available_places(r.proposed_traject)}
+                for r in rows_raw
+            ],
+            'first_date': min(dates) if dates else None,
+            'last_date': max(dates) if dates else None,
+            'pending_count': sum(1 for r in rows_raw if r.status == 'pending'),
+            'confirmed_count': sum(1 for r in rows_raw if r.status == 'confirmed'),
         })
 
     # =========================
@@ -2418,6 +2398,7 @@ def my_reservations(request):
         'tab': tab,
         'active_count': active_count,
         'history_count': history_count,
+        'page_title': _("Mes réservations"),
     }
 
     if request.htmx:
@@ -2425,88 +2406,6 @@ def my_reservations(request):
 
     return render(request, 'trajects/reservation/trajets_liste.html', context)
     
-@name_required
-def my_reservations_made_detail(
-    request, researched_groupe_uid, proposed_groupe_uid, matched_user_id):
-    user = request.user
-    is_abonned = Subscription.is_user_abonned(user)
-
-    reservations_qs = (
-        Reservation.objects.filter(
-            user=user,
-            researched_traject__groupe_uid=researched_groupe_uid,
-            proposed_traject__groupe_uid=proposed_groupe_uid,
-            proposed_traject__user_id=matched_user_id,
-        )
-        .select_related(
-            "user",
-            "user__profile",
-            "proposed_traject",
-            "proposed_traject__user",
-            "proposed_traject__user__profile",
-            "researched_traject",
-            "proposed_traject__traject",
-            "researched_traject__traject",
-        )
-        .prefetch_related(
-            "researched_traject__children", "proposed_traject__transport_modes"
-        )
-        .order_by("proposed_traject__date", "proposed_traject__departure_time")
-    )
-
-    header = reservations_qs.first()
-    if not header:
-        messages.error(request, "Réservations introuvables.")
-        return redirect("my_reservations")
-
-    stats = reservations_qs.aggregate(
-        first_date=Min("proposed_traject__date"),
-        last_date=Max("proposed_traject__date"),
-        count=Count("id"),
-    )
-
-    tab = request.GET.get('tab', 'active')
-    if tab not in ('active', 'history'):
-        tab = 'active'
-
-    rows = []
-    for r in reservations_qs:
-        # number_of_places du trajet proposé = places restantes
-        # donc on ne resoustrait surtout pas confirmed_users.count()
-        remaining_places = _available_places(r.proposed_traject)
-        rows.append(
-            {
-                "reservation": r,
-                "proposal": r.proposed_traject,
-                "research": r.researched_traject,
-                "remaining_places": remaining_places,
-            }
-        )
-
-    today = date.today()
-    if tab == 'active':
-        rows = [row for row in rows if row['proposal'].date >= today]
-    else:
-        rows = [row for row in rows if row['proposal'].date < today]
-
-    if rows:
-        dates = [row['proposal'].date for row in rows]
-        stats = {'first_date': min(dates), 'last_date': max(dates), 'count': len(rows)}
-    else:
-        stats = {'first_date': None, 'last_date': None, 'count': 0}
-
-    return render(
-        request,
-        "trajects/reservation/faites_detail.html",
-        {
-            "header": header,
-            "stats": stats,
-            "rows": rows,
-            "is_abonned": is_abonned,
-            "tab": tab,
-        },
-    )
-
 @name_required
 def my_reservations_received_detail(request, proposed_groupe_uid):
     user = request.user
@@ -2565,17 +2464,17 @@ def my_reservations_received_detail(request, proposed_groupe_uid):
 
     all_dates = [row['research'].date for p in parents for row in p['rows']]
 
-    # Heure depuis proposed_traject, fallback sur la première réservation chargée
-    first_proposal = next(
-        (row['proposal'] for p in parents for row in p['rows']),
-        proposed_traject
+    # Heure depuis proposed_traject, fallback sur la première recherche (ResearchedTraject a des heures requises)
+    first_research = next(
+        (row['research'] for p in parents for row in p['rows'] if row['research']),
+        None
     )
     stats = {
         'first_date': min(all_dates) if all_dates else None,
         'last_date': max(all_dates) if all_dates else None,
         'count': len(all_dates),
-        'departure_time': proposed_traject.departure_time or first_proposal.departure_time,
-        'arrival_time': proposed_traject.arrival_time or first_proposal.arrival_time,
+        'departure_time': proposed_traject.departure_time or (first_research.departure_time if first_research else None),
+        'arrival_time': proposed_traject.arrival_time or (first_research.arrival_time if first_research else None),
     }
 
     return render(
@@ -2587,5 +2486,6 @@ def my_reservations_received_detail(request, proposed_groupe_uid):
             "stats": stats,
             "is_abonned": is_abonned,
             "tab": tab,
+            "page_title": _("Mes réservations"),
         },
     )

@@ -99,6 +99,7 @@ def profile_view(request):
         "profile": profile,
         "onboarding_steps": onboarding_steps,
         "onboarding_complete": onboarding_complete,
+        "page_title": _("Mon profil"),
     })
 
 
@@ -241,6 +242,7 @@ def profile_security(request):
     return render(request, "account/profile/profile_security.html", {
         "pending_email": pending,
         "password_errors": password_errors,
+        "page_title": _("Sécurité & connexion"),
     })
 
 
@@ -377,7 +379,7 @@ def redirect_after_email_confirmation(request):
 def profile_children_view(request):
     """Affiche les enfants liés à l’utilisateur connecté."""
     children = request.user.children.all()
-    return render(request, "account/profile/profile_children.html", {"children": children})
+    return render(request, "account/profile/profile_children.html", {"children": children, "page_title": _("Mes enfants")})
 
 
 @login_required
@@ -428,7 +430,7 @@ def delete_child_view(request, child_id):
 @login_required
 def profile_addresses(request):
     addresses = FavoriteAddress.objects.filter(user=request.user)
-    return render(request, "account/profile/profile_addresses.html", {"addresses": addresses})
+    return render(request, "account/profile/profile_addresses.html", {"addresses": addresses, "page_title": _("Mes adresses")})
 
 
 @login_required
