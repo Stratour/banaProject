@@ -7,6 +7,8 @@
 <section class="section profile">
     <div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
 
+    {% comment "" %}
+    
     {% if messages %}
     <ul class="mb-6 space-y-2">
       {% for message in messages %}
@@ -14,7 +16,7 @@
       {% endfor %}
     </ul>
     {% endif %}
-    
+    {% endcomment %}
       {% comment "A revoir plus tard" %}
 
       {# ——— Messages ——— #}

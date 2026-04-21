@@ -228,7 +228,7 @@ def profile_edit(request):
     return render(
         request,
         "account/profile/profile_edit.html",
-        {"form": form, "user_form": user_form},
+        {"form": form, "user_form": user_form, "profile": profile},
     )
 
 
@@ -304,7 +304,7 @@ def email_edit(request):
         return redirect('accounts:profile_security')
     
     if new_email == request.user.email:
-        messages.info(request, _("Cette adresse email est déjà votre adresse actuelle."))
+        messages.warning(request, _("Cette adresse email est déjà votre adresse actuelle."))
         return redirect('accounts:profile_security')
     
     # Vérifier si l'email n'existe pas déjà
@@ -446,7 +446,7 @@ def create_address(request):
             messages.success(request, "Adresse favorite enregistrée.")
             return redirect("accounts:profile_addresses")
 
-        messages.error(request, "Veuillez corriger les erreurs du formulaire.")
+        messages.warning(request, "Veuillez corriger les erreurs du formulaire.")
     else:
         form = FavoriteAddressForm()
 

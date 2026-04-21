@@ -1,34 +1,90 @@
 {% extends "allauth/layouts/base.html" %}
 {% load allauth i18n %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css">
+<style>
+  .ts-wrapper.multi .ts-control { border-color: #007F73; border-radius: 0.75rem; padding: 0.4rem 0.6rem; }
+  .ts-wrapper.focus .ts-control { outline: none; box-shadow: 0 0 0 2px #007F7333; border-color: #007F73; }
+  .ts-wrapper.multi .ts-control .item { background: #007F73; color: white; border-radius: 999px; padding: 2px 10px; font-size: 0.75rem; }
+  .ts-dropdown .option.selected, .ts-dropdown .option:hover { background: #007F7320; color: #007F73; }
+  .ts-dropdown .option.active { background: #007F73; color: white; }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script>
+  new TomSelect('#id_languages', {
+    plugins: ['remove_button'],
+    placeholder: "Rechercher une langue…",
+    maxOptions: null,
+  });
+
+  function previewProfilePic(input) {
+    if (!input.files || !input.files[0]) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const preview = document.getElementById('profile-pic-preview');
+      const placeholder = document.getElementById('profile-pic-placeholder');
+      const btnClear = document.getElementById('btn-clear-pic');
+      preview.src = e.target.result;
+      preview.classList.remove('hidden');
+      placeholder.classList.add('hidden');
+      btnClear.classList.remove('hidden');
+      document.getElementById('profile_picture-clear_id').checked = false;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+
+  function previewBvm(input) {
+    if (!input.files || !input.files[0]) return;
+    const name = input.files[0].name;
+    document.getElementById('bvm-filename').textContent = name;
+    document.getElementById('bvm-filename').classList.remove('hidden');
+    document.getElementById('document_bvm-clear_id').checked = false;
+  }
+
+  function clearBvm() {
+    document.getElementById('document_bvm-clear_id').checked = true;
+    document.getElementById('bvm-current').classList.add('hidden');
+    document.getElementById('bvm-upload').classList.remove('hidden');
+    const fileInput = document.getElementById('id_document_bvm');
+    if (fileInput) fileInput.value = '';
+    document.getElementById('bvm-filename').classList.add('hidden');
+  }
+
+  function clearProfilePic() {
+    document.getElementById('profile_picture-clear_id').checked = true;
+    const preview = document.getElementById('profile-pic-preview');
+    const placeholder = document.getElementById('profile-pic-placeholder');
+    const btnClear = document.getElementById('btn-clear-pic');
+    preview.src = '';
+    preview.classList.add('hidden');
+    placeholder.classList.remove('hidden');
+    btnClear.classList.add('hidden');
+    document.getElementById('id_profile_picture').value = '';
+  }
+</script>
+{% endblock %}
+
 {% block head_title %}{% trans "Modifier mon profil" %}{% endblock head_title %}
 
 {% block content %}
 <div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
 
-  {% if messages %}
-    <ul class="mb-6 space-y-2">
-      {% for message in messages %}
-        <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
+  <article class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-10 overflow-hidden">
 
-  <article class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10 overflow-hidden">
-
-    <header class="flex items-center justify-between gap-4">
-      <div>
-        <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">
-          {% trans "Modifier mon profil" %}
-        </h1>
-        <p class="mt-1 text-sm text-gray-500">
-          {% trans "Mettez à jour vos informations publiques et vos préférences." %}
-        </p>
-      </div>
-      
+    <header class="mb-8">
+      <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">
+        {% trans "Modifier mon profil" %}
+      </h1>
+      <p class="mt-1 text-sm text-gray-500">
+        {% trans "Mettez à jour vos informations publiques et vos préférences." %}
+      </p>
     </header>
 
-    <form method="post" enctype="multipart/form-data" class="mt-10">
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
       {% csrf_token %}
 
       {% if form.non_field_errors %}
@@ -37,96 +93,137 @@
         </div>
       {% endif %}
 
-      
-      <section class="space-y-6">
-        <h2 class="text-sm font-bold uppercase text-brand tracking-wider flex items-center gap-2">
-          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/>
-            <circle cx="9" cy="7" r="4" stroke-width="2"/>
-          </svg>
-          {% trans "Identité" %}
-        </h2>
-
-        <div class="flex flex-col gap-6">
-          <div class="max-w-xl">
-            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Prénom" %}</label>
-            {% if user.profile.ci_is_verified ==  False %}
-            {{ user_form.first_name }}
-            {% else %}
-            {{ user.profile.verified_first_name}}
-            {% endif %}
-          </div>
+      <!-- IDENTITÉ -->
+      <section class="rounded-xl border border-gray-200 overflow-hidden">
+        <div class="flex items-center gap-3 bg-gray-50 border-b border-gray-200 px-6 py-4">
+          <span class="flex items-center justify-center w-8 h-8 rounded-full bg-brand/10 text-brand">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 20v-2a4 4 0 00-4-4H7a4 4 0 00-4 4v2"/>
+              <circle cx="9" cy="7" r="4" stroke-width="2"/>
+            </svg>
+          </span>
+          <h2 class="text-sm font-bold uppercase text-brand tracking-wider">{% trans "Identité" %}</h2>
         </div>
+        <div class="px-6 py-6 space-y-5">
 
-        <div class="flex flex-col gap-6">
-          <div class="max-w-xl">
-            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Nom" %}</label>
-            {% if user.profile.ci_is_verified ==  False %}
-            {{ user_form.last_name }}
-            {% else %}
-            {{ user.profile.verified_last_name}}
-            {% endif %}
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 max-w-2xl">
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">{% trans "Prénom" %}</label>
+              {% if user.profile.ci_is_verified == False %}
+                {{ user_form.first_name }}
+                {% if user_form.first_name.errors %}<p class="mt-1 text-xs text-red-600">{{ user_form.first_name.errors }}</p>{% endif %}
+              {% else %}
+                <p class="mt-1 py-2 px-4 rounded-full border border-gray-200 bg-gray-50 text-gray-700 text-sm">{{ user.profile.verified_first_name }}</p>
+              {% endif %}
+            </div>
+            <div>
+              <label class="block text-sm font-semibold text-gray-700 mb-1">{% trans "Nom" %}</label>
+              {% if user.profile.ci_is_verified == False %}
+                {{ user_form.last_name }}
+                {% if user_form.last_name.errors %}<p class="mt-1 text-xs text-red-600">{{ user_form.last_name.errors }}</p>{% endif %}
+              {% else %}
+                <p class="mt-1 py-2 px-4 rounded-full border border-gray-200 bg-gray-50 text-gray-700 text-sm">{{ user.profile.verified_last_name }}</p>
+              {% endif %}
+            </div>
           </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-3">{% trans "Photo de profil" %}</label>
+            <div class="flex items-center gap-5">
+
+              <!-- Aperçu : placeholder toujours présent, img toujours présente, visibilité gérée en JS -->
+              <div class="relative flex-shrink-0">
+                <div id="profile-pic-placeholder"
+                     class="w-20 h-20 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-300 {% if profile.profile_picture %}hidden{% endif %}">
+                  <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                  </svg>
+                </div>
+                <img id="profile-pic-preview"
+                     src="{% if profile.profile_picture %}{{ profile.profile_picture.url }}{% endif %}"
+                     alt="Photo de profil"
+                     class="w-20 h-20 rounded-full object-cover border-2 border-brand/30 shadow-sm {% if not profile.profile_picture %}hidden{% endif %}">
+              </div>
+
+              <!-- Actions -->
+              <div class="space-y-2">
+                <label class="cursor-pointer inline-flex items-center gap-2 rounded-full border border-brand text-brand px-4 py-2 text-sm font-medium hover:bg-brand/5 transition-colors">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+                  </svg>
+                  {% trans "Choisir une photo" %}
+                  <input type="file" name="profile_picture" accept="image/*" id="id_profile_picture"
+                         class="hidden" onchange="previewProfilePic(this)">
+                </label>
+
+                <input type="checkbox" name="profile_picture-clear" id="profile_picture-clear_id" class="hidden">
+                <button type="button" id="btn-clear-pic"
+                        onclick="document.getElementById('dialog-delete-pic').showModal()"
+                        class="inline-flex items-center gap-1.5 text-sm text-red-500 hover:text-red-700 font-medium transition-colors {% if not profile.profile_picture %}hidden{% endif %}">
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                  </svg>
+                  {% trans "Supprimer la photo" %}
+                </button>
+
+                <p class="text-xs text-gray-400">{% trans "JPG ou PNG." %}</p>
+              </div>
+
+            </div>
+            {% if form.profile_picture.errors %}<p class="mt-2 text-xs text-red-600">{{ form.profile_picture.errors }}</p>{% endif %}
+          </div>
+
         </div>
-
-        <div class="flex flex-col gap-6">
-          <div class="max-w-md">
-            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Photo de profil" %}</label>
-            {{ form.profile_picture }}
-            {% if form.profile_picture.errors %}<p class="mt-1 text-xs text-red-600">{{ form.profile_picture.errors }}</p>{% endif %}
-            <p class="mt-1 text-xs text-gray-500">{% trans "JPG ou PNG." %}</p>
-          </div>
       </section>
 
-      <div class="border-t border-gray-100 my-5"></div>
-
-      
-      <section class="space-y-6">
-        <h2 class="text-sm font-bold uppercase text-brand tracking-wider flex items-center gap-2">
-          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M9 20l-5.447-2.724A2 2 0 013 15.382V6.618a2 2 0 011.105-1.789L9 2l6 3 6-3v12l-6 3-6-3z"/>
-          </svg>
-          {% trans "Localisation" %}
-        </h2>
-
-        <div class="flex flex-col gap-6">
+      <!-- LOCALISATION -->
+      <section class="rounded-xl border border-gray-200 overflow-hidden">
+        <div class="flex items-center gap-3 bg-gray-50 border-b border-gray-200 px-6 py-4">
+          <span class="flex items-center justify-center w-8 h-8 rounded-full bg-brand/10 text-brand">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
+          </span>
+          <h2 class="text-sm font-bold uppercase text-brand tracking-wider">{% trans "Localisation" %}</h2>
+        </div>
+        <div class="px-6 py-6">
           <div class="max-w-xl">
-            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Ville" %}</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">{% trans "Ville" %}</label>
             {{ form.address }}
-            {% if form.address.errors %}<p class="mt-1 text-xs text-red-600">{{ form.address.errors }}</p>
-            {% endif %}
+            {% if form.address.errors %}<p class="mt-1 text-xs text-red-600">{{ form.address.errors }}</p>{% endif %}
           </div>
         </div>
       </section>
 
-      <div class="border-t border-gray-100 my-5"></div>
+      <!-- PRÉFÉRENCES -->
+      <section class="rounded-xl border border-gray-200 overflow-hidden">
+        <div class="flex items-center gap-3 bg-gray-50 border-b border-gray-200 px-6 py-4">
+          <span class="flex items-center justify-center w-8 h-8 rounded-full bg-brand/10 text-brand">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/>
+            </svg>
+          </span>
+          <h2 class="text-sm font-bold uppercase text-brand tracking-wider">{% trans "Préférences" %}</h2>
+        </div>
+        <div class="px-6 py-6 space-y-6">
 
-      
-      <section class="space-y-6">
-        <h2 class="text-sm font-bold uppercase text-brand tracking-wider flex items-center gap-2">
-          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-width="2" d="M4 7h16M4 12h16M4 17h16"/>
-            <circle cx="9" cy="7" r="2" stroke-width="2"/>
-            <circle cx="14" cy="12" r="2" stroke-width="2"/>
-            <circle cx="8" cy="17" r="2" stroke-width="2"/>
-          </svg>
-          {% trans "Préférences" %}
-        </h2>
-
-        <div class="flex flex-col gap-6">
           <div class="max-w-md">
-            <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Langues" %}</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">{% trans "Langues" %}</label>
             {{ form.languages }}
             {% if form.languages.errors %}<p class="mt-1 text-xs text-red-600">{{ form.languages.errors }}</p>{% endif %}
           </div>
 
           <div class="max-w-xl">
-            <label class="block text-sm font-semibold text-gray-900 mb-2">{% trans "Modes de transport" %}</label>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">{% trans "Modes de transport" %}</label>
             <div class="flex flex-wrap gap-2">
               {% for cb in form.transport_modes %}
-                <label class="inline-flex items-center gap-2 px-3 py-1.5 text-sm hover:bg-gray-50 cursor-pointer">
+                <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 text-sm hover:bg-gray-50 cursor-pointer">
                   {{ cb.tag }}
                   <span class="text-gray-700">{{ cb.choice_label }}</span>
                 </label>
@@ -134,65 +231,145 @@
             </div>
             {% if form.transport_modes.errors %}<p class="mt-1 text-xs text-red-600">{{ form.transport_modes.errors }}</p>{% endif %}
           </div>
+
         </div>
       </section>
 
-      <div class="border-t border-gray-100 my-5"></div>
-
-      
-      <section class="space-y-3">
-        <h2 class="text-sm font-bold uppercase text-brand tracking-wider flex items-center gap-2">
-          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M7 7h10M7 11h10M7 15h7"/>
-          </svg>
-          {% trans "Bio" %}
-        </h2>
-        <div class="max-w-xl">
-          {{ form.bio }}
-          {% if form.bio.errors %}<p class="mt-1 text-xs text-red-600">{{ form.bio.errors }}</p>{% endif %}
-          <p class="mt-1 text-xs text-gray-500">
-            {% trans "Présentez-vous en quelques lignes (centres d’intérêt, dispo, expérience…)" %}
-          </p>
+      <!-- BIO -->
+      <section class="rounded-xl border border-gray-200 overflow-hidden">
+        <div class="flex items-center gap-3 bg-gray-50 border-b border-gray-200 px-6 py-4">
+          <span class="flex items-center justify-center w-8 h-8 rounded-full bg-brand/10 text-brand">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M7 7h10M7 11h10M7 15h7"/>
+            </svg>
+          </span>
+          <h2 class="text-sm font-bold uppercase text-brand tracking-wider">{% trans "Bio" %}</h2>
+        </div>
+        <div class="px-6 py-6">
+          <div class="max-w-xl">
+            {{ form.bio }}
+            {% if form.bio.errors %}<p class="mt-1 text-xs text-red-600">{{ form.bio.errors }}</p>{% endif %}
+            <p class="mt-1 text-xs text-gray-500">
+              {% trans "Présentez-vous en quelques lignes (centres d'intérêt, dispo, expérience…)" %}
+            </p>
+          </div>
         </div>
       </section>
 
-      <div class="border-t border-gray-100 my-5"></div>
+      <!-- BONNE VIE ET MŒURS -->
+      <section class="rounded-xl border border-gray-200 overflow-hidden">
+        <div class="flex items-center gap-3 bg-gray-50 border-b border-gray-200 px-6 py-4">
+          <span class="flex items-center justify-center w-8 h-8 rounded-full bg-brand/10 text-brand">
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+          </span>
+          <h2 class="text-sm font-bold uppercase text-brand tracking-wider">{% trans "Bonne vie et mœurs" %}</h2>
+        </div>
+        <div class="px-6 py-6 space-y-4">
 
-      
-      <section class="space-y-6 max-w-2xl">
-        <h2 class="text-sm font-bold uppercase text-brand tracking-wider">
-          {% trans "Bonne vie et mœurs" %} 
-        </h2>
-
-        <div class="flex flex-col gap-2">
-          <label class="block text-sm font-semibold text-gray-900">
-            {% trans "Extrait 596.2 — encadrement de mineurs" %} 
+          <label class="block text-sm font-semibold text-gray-700">
+            {% trans "Extrait 596.2 — encadrement de mineurs" %}
           </label>
 
-          {{ form.document_bvm }}
+          <!-- Document actuel -->
+          <div id="bvm-current" class="{% if not profile.document_bvm %}hidden{% endif %} flex items-center gap-3 p-3 rounded-xl border border-gray-200 bg-gray-50 max-w-md">
+            <span class="flex items-center justify-center w-10 h-10 rounded-full bg-brand/10 text-brand flex-shrink-0">
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+            </span>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-medium text-gray-700 truncate">
+                {% if profile.document_bvm %}{{ profile.document_bvm.name|cut:"bvm/" }}{% endif %}
+              </p>
+              {% if profile.document_bvm %}
+                <a href="{{ profile.document_bvm.url }}" target="_blank"
+                   class="text-xs text-brand hover:underline">{% trans "Voir le document" %}</a>
+              {% endif %}
+            </div>
+            <input type="checkbox" name="document_bvm-clear" id="document_bvm-clear_id" class="hidden">
+            <button type="button" onclick="document.getElementById('dialog-delete-bvm').showModal()"
+                    class="flex-shrink-0 inline-flex items-center gap-1 text-xs text-red-500 hover:text-red-700 font-medium transition-colors">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+              </svg>
+              {% trans "Supprimer" %}
+            </button>
+          </div>
+
+          <!-- Uploader un nouveau fichier -->
+          <div id="bvm-upload" class="{% if profile.document_bvm %}hidden{% endif %}">
+            <label class="cursor-pointer inline-flex items-center gap-2 rounded-full border border-brand text-brand px-4 py-2 text-sm font-medium hover:bg-brand/5 transition-colors">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/>
+              </svg>
+              {% trans "Choisir un fichier" %}
+              <input type="file" name="document_bvm" accept=".pdf,image/*" id="id_document_bvm"
+                     class="hidden" onchange="previewBvm(this)">
+            </label>
+            <p id="bvm-filename" class="mt-2 text-xs text-gray-500 hidden"></p>
+          </div>
+
           {% if form.document_bvm.errors %}
-            <p class="mt-1 text-xs text-red-600">{{ form.document_bvm.errors }}</p>
+            <p class="text-xs text-red-600">{{ form.document_bvm.errors }}</p>
           {% endif %}
+          <p class="text-xs text-gray-400">{% trans "Formats acceptés : PDF, JPG, PNG. Ce document reste privé." %}</p>
 
-          {% if profile.document_bvm %}
-            <a href="{{ profile.document_bvm.url }}" target="_blank"
-              class="inline-flex items-center gap-2 text-brand hover:underline">
-              {% trans "Voir le document" %}
-            </a>
-          {% endif %}
-
-          <p class="text-xs text-gray-500">
-            {% trans "Formats acceptés : PDF, JPG, PNG. Ce document reste privé." %}
-          </p>
         </div>
       </section>
 
-      
-      <footer class="mt-8">
+      <!-- DIALOG — supprimer photo -->
+      <dialog id="dialog-delete-pic" class="rounded-2xl p-0 w-full max-w-md backdrop:bg-black/30">
+        <div class="p-6 space-y-5">
+          <header class="space-y-1">
+            <h3 class="text-lg font-semibold text-gray-900">{% trans "Supprimer la photo" %}</h3>
+            <p class="text-sm text-gray-600">{% trans "Êtes-vous sûr de vouloir supprimer votre photo de profil ?" %}</p>
+          </header>
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="button"
+                    onclick="document.getElementById('dialog-delete-pic').close()"
+                    class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+              {% trans "Annuler" %}
+            </button>
+            <button type="button"
+                    onclick="document.getElementById('dialog-delete-pic').close(); clearProfilePic();"
+                    class="inline-flex items-center gap-2 rounded-full bg-red-500 px-4 py-2 text-sm font-bold text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+              {% trans "Confirmer" %}
+            </button>
+          </div>
+        </div>
+      </dialog>
 
+      <!-- DIALOG — supprimer BVM -->
+      <dialog id="dialog-delete-bvm" class="rounded-2xl p-0 w-full max-w-md backdrop:bg-black/30">
+        <div class="p-6 space-y-5">
+          <header class="space-y-1">
+            <h3 class="text-lg font-semibold text-gray-900">{% trans "Supprimer le document" %}</h3>
+            <p class="text-sm text-gray-600">{% trans "Êtes-vous sûr de vouloir supprimer votre extrait de bonne vie et mœurs ?" %}</p>
+          </header>
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button type="button"
+                    onclick="document.getElementById('dialog-delete-bvm').close()"
+                    class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+              {% trans "Annuler" %}
+            </button>
+            <button type="button"
+                    onclick="document.getElementById('dialog-delete-bvm').close(); clearBvm();"
+                    class="inline-flex items-center gap-2 rounded-full bg-red-500 px-4 py-2 text-sm font-bold text-white hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+              {% trans "Confirmer" %}
+            </button>
+          </div>
+        </div>
+      </dialog>
 
-      <footer class="pt-4 flex items-center justify-between">
+      <!-- ACTIONS -->
+      <footer class="pt-2 flex items-center justify-between">
         <a href="{% url 'accounts:profile' %}"
            class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
           {% trans "Annuler" %}
@@ -202,6 +379,7 @@
           {% trans "Enregistrer" %}
         </button>
       </footer>
+
     </form>
   </article>
 </div>

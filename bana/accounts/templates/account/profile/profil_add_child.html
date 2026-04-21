@@ -2,147 +2,157 @@
 {% load static i18n %}
 {% block head_title %}{% trans "Ajouter un enfant" %}{% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css">
+<style>
+  .ts-wrapper.multi .ts-control { border-color: #007F73; border-radius: 0.75rem; padding: 0.4rem 0.6rem; }
+  .ts-wrapper.focus .ts-control { outline: none; box-shadow: 0 0 0 2px #007F7333; border-color: #007F73; }
+  .ts-wrapper.multi .ts-control .item { background: #007F73; color: white; border-radius: 999px; padding: 2px 10px; font-size: 0.75rem; }
+  .ts-dropdown .option.selected, .ts-dropdown .option:hover { background: #007F7320; color: #007F73; }
+  .ts-dropdown .option.active { background: #007F73; color: white; }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script>
+  new TomSelect('#id_chld_languages', {
+    plugins: ['remove_button'],
+    placeholder: "Rechercher une langue…",
+    maxOptions: null,
+  });
+</script>
+{% endblock %}
+
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
-<div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
 
-{% if messages %}
-  <ul class="mb-4 space-y-2">
-    {% for message in messages %}
-    <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
-    {% endfor %}
-  </ul>
-{% endif %}
-
-  <form method="post" novalidate class="space-y-16">
-    {% csrf_token %}
-    {% if next_url %}<input type="hidden" name="next" value="{{ next_url }}">{% endif %}
-
-    <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
-      <!-- Image illustrant le formulaire -->
-      <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/icon/Icon_step_child.svg' %}" alt="Icône Enfant">
-
-      <!-- Formulaire à droite -->
-      <div class="flex-1 space-y-6 w-full">
-
-        <!-- Prénom -->
-        <div>
-          <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_name.id_for_label }}">
-            {% trans "Prénom" %}
-          </label>
-          {{ form.chld_name }}
-          {% if form.chld_name.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.chld_name.errors }}</p>
-          {% endif %}
-        </div>
-
-        <!-- Nom -->
-        <div>
-          <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_surname.id_for_label }}">
-            {% trans "Nom" %}
-          </label>
-          {{ form.chld_surname }}
-          {% if form.chld_surname.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.chld_surname.errors }}</p>
-          {% endif %}
-        </div>
-
-        <!-- Date de naissance -->
-        <div>
-          <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_birthdate.id_for_label }}">
-            {% trans "Date de naissance" %}
-          </label>
-          {{ form.chld_birthdate }}
-          {% if form.chld_birthdate.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.chld_birthdate.errors }}</p>
-          {% endif %}
-        </div>
-
-        <!-- Genre (select) -->
-        <div>
-          <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_gender.id_for_label }}">
-            {% trans "Genre" %}
-          </label>
-          {{ form.chld_gender }}
-          {% if form.chld_gender.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.chld_gender.errors }}</p>
-          {% endif %}
-        </div>
-        
-        <div>
-          <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_languages.id_for_label }}">
-            {% trans "Langue(s) parlée(s)" %}
-          </label>
-          {{ form.chld_languages }}
-          {% if form.chld_languages.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.chld_languages.errors }}</p>
-          {% endif %}
-        </div>
-
-        <!-- Siège enfant (checkbox) -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <label class="inline-flex items-center space-x-2">
-            {{ form.chld_seat }}
-            <span class="text-sm font-medium text-brand uppercase">{% trans "Siège enfant requis" %}</span>
-          </label>
-          {% if form.chld_seat.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.chld_seat.errors }}</p>
-          {% endif %}
-        
-          <!-- Handicap (checkbox) -->
-          <label class="inline-flex items-center space-x-2">
-            {{ form.chld_disability }}
-            <span class="text-sm font-medium text-brand uppercase">{% trans "Porteur d’un handicap" %}</span>
-          </label>
-          {% if form.chld_disability.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.chld_disability.errors }}</p>
-          {% endif %}
-        </div>
-        
-        <!-- Besoins spécifiques -->
-        <div>
-          <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_special_needs.id_for_label }}">
-            {% trans "Besoins spécifiques" %}
-          </label>
-          {{ form.chld_special_needs }}
-          {% if form.chld_special_needs.errors %}
-            <p class="text-red-500 text-sm mt-1">{{ form.chld_special_needs.errors }}</p>
-          {% endif %}
-        </div>
-
-      </div>
-    </div>
-
-    <!-- Boutons -->
-    <div class="flex flex-col sm:flex-row justify-center sm:justify-between items-center gap-4">
-      <a href="{% url 'accounts:profile_child' %}" class="px-6 py-3 bg-gray-200 text-gray-800 font-semibold rounded-full hover:bg-gray-300 transition">
-        ← {% trans "Retour" %}
-      </a>
-      <button type="submit" class="px-6 py-3 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition">
-        {% trans "Ajouter l'enfant" %}
-      </button>
-    </div>
-  </form>
-
-{% comment "" %}
-<!-- Liste des enfants déjà enregistrés -->
-  {% if children %}
-  <div class="pt-12 border-t">
-    <h2 class="text-xl font-semibold text-brand mb-6">{% trans "Enfants déjà enregistrés" %}</h2>
-    <ul class="space-y-4">
-      {% for child in children %}
-        <li class="p-4 border rounded-lg shadow-sm bg-gray-50">
-          <p class="text-sm">
-            <strong>{{ child.chld_surname }} {{ child.chld_name }}</strong>
-            — {{ child.get_chld_gender_display }}
-          </p>
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
-  {% endif %}
-{% endcomment %}
+  <!-- 🔙 Bouton retour -->
+  <a href="{% url 'accounts:profile_child' %}" 
+     class="inline-flex items-center gap-2 mb-6 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand group transition">
+    <svg class="h-4 w-4 transition-transform group-hover:-translate-x-0.5" 
+         viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15 19l-7-7 7-7" />
+    </svg>
+    <span>{% trans "Retour" %}</span>
+  </a>
   
-</div>
+<div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+  <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+
+    <form method="post" novalidate class="space-y-10">
+      {% csrf_token %}
+      {% if next_url %}<input type="hidden" name="next" value="{{ next_url }}">{% endif %}
+
+      <div class="flex flex-col lg:flex-row items-start gap-8 lg:gap-24">
+
+        <!-- Icône -->
+        <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0 shrink-0"
+             src="{% static 'bana/img/icon/Icon_step_child.svg' %}" alt="Icône Enfant">
+
+        <!-- Champs -->
+        <div class="flex-1 space-y-6 w-full">
+
+          <!-- Prénom -->
+          <div>
+            <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_name.id_for_label }}">
+              {% trans "Prénom" %}
+            </label>
+            {{ form.chld_name }}
+            {% if form.chld_name.errors %}
+              <div class="text-red-500 text-sm mt-1 [&_ul]:list-none [&_ul]:m-0 [&_ul]:p-0">{{ form.chld_name.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Nom -->
+          <div>
+            <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_surname.id_for_label }}">
+              {% trans "Nom" %}
+            </label>
+            {{ form.chld_surname }}
+            {% if form.chld_surname.errors %}
+              <div class="text-red-500 text-sm mt-1 [&_ul]:list-none [&_ul]:m-0 [&_ul]:p-0">{{ form.chld_surname.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Date de naissance -->
+          <div>
+            <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_birthdate.id_for_label }}">
+              {% trans "Date de naissance" %}
+            </label>
+            {{ form.chld_birthdate }}
+            {% if form.chld_birthdate.errors %}
+              <div class="text-red-500 text-sm mt-1 [&_ul]:list-none [&_ul]:m-0 [&_ul]:p-0">{{ form.chld_birthdate.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Genre -->
+          <div>
+            <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_gender.id_for_label }}">
+              {% trans "Genre" %}
+            </label>
+            {{ form.chld_gender }}
+            {% if form.chld_gender.errors %}
+              <div class="text-red-500 text-sm mt-1 [&_ul]:list-none [&_ul]:m-0 [&_ul]:p-0">{{ form.chld_gender.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Langues -->
+          <div>
+            <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_languages.id_for_label }}">
+              {% trans "Langue(s) parlée(s)" %}
+            </label>
+            {{ form.chld_languages }}
+            {% if form.chld_languages.errors %}
+              <div class="text-red-500 text-sm mt-1 [&_ul]:list-none [&_ul]:m-0 [&_ul]:p-0">{{ form.chld_languages.errors }}</div>
+            {% endif %}
+          </div>
+
+          <!-- Siège + Handicap -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="inline-flex items-center gap-2 cursor-pointer">
+                {{ form.chld_seat }}
+                <span class="text-sm font-medium text-brand uppercase">{% trans "Siège enfant requis" %}</span>
+              </label>
+              {% if form.chld_seat.errors %}
+                <div class="text-red-500 text-sm mt-1 [&_ul]:list-none [&_ul]:m-0 [&_ul]:p-0">{{ form.chld_seat.errors }}</div>
+              {% endif %}
+            </div>
+            <div>
+              <label class="inline-flex items-center gap-2 cursor-pointer">
+                {{ form.chld_disability }}
+                <span class="text-sm font-medium text-brand uppercase">{% trans "Porteur d'un handicap" %}</span>
+              </label>
+              {% if form.chld_disability.errors %}
+                <div class="text-red-500 text-sm mt-1 [&_ul]:list-none [&_ul]:m-0 [&_ul]:p-0">{{ form.chld_disability.errors }}</div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Besoins spécifiques -->
+          <div>
+            <label class="block text-sm font-bold text-brand uppercase mb-1" for="{{ form.chld_special_needs.id_for_label }}">
+              {% trans "Besoins spécifiques" %}
+            </label>
+            {{ form.chld_special_needs }}
+            {% if form.chld_special_needs.errors %}
+              <div class="text-red-500 text-sm mt-1 [&_ul]:list-none [&_ul]:m-0 [&_ul]:p-0">{{ form.chld_special_needs.errors }}</div>
+            {% endif %}
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Boutons -->
+      <div class="flex flex-col sm:flex-row justify-between items-center gap-4 pt-4 border-t border-gray-100">
+        <button type="submit"
+                class="inline-flex items-center gap-2 rounded-full bg-brand text-white px-6 py-2 text-sm font-semibold hover:bg-brand-dark">
+          {% trans "Ajouter l'enfant" %}
+        </button>
+      </div>
+
+    </form>
+  </div>
 </div>
 {% endblock %}

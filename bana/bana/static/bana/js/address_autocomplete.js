@@ -19,6 +19,7 @@ function setupAutocomplete(inputId, hiddenId, suggestionListId) {
 
     const clearSuggestions = () => {
         suggestionList.innerHTML = "";
+        suggestionList.classList.add("hidden");
     };
 
     const renderFavorites = () => {
@@ -26,6 +27,7 @@ function setupAutocomplete(inputId, hiddenId, suggestionListId) {
 
         if (!favoriteAddresses.length) return;
 
+        suggestionList.classList.remove("hidden");
         favoriteAddresses.forEach(addr => {
             const li = document.createElement("li");
             li.classList.add(
@@ -90,6 +92,7 @@ function setupAutocomplete(inputId, hiddenId, suggestionListId) {
 
         clearSuggestions();
 
+        if ((data.suggestions || []).length > 0) suggestionList.classList.remove("hidden");
         (data.suggestions || []).forEach(s => {
             const li = document.createElement("li");
             li.textContent = s.description || "";

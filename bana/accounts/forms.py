@@ -124,10 +124,9 @@ class ProfileUpdateForm(TailwindFormMixin, forms.ModelForm):
 
     languages = forms.ModelMultipleChoiceField(
         queryset=Languages.objects.all(),
-        # SELECT multiple => no rounded
         widget=forms.SelectMultiple(attrs={
-            'size': 5,
-            'class': 'mt-1 w-full border border-brand px-4 py-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-none'
+            'id': 'id_languages',
+            'class': 'w-full'
         }),
         required=False,
         label="Langues parlées"
@@ -152,8 +151,8 @@ class ChildForm(TailwindFormMixin, forms.ModelForm):
     chld_languages = forms.ModelMultipleChoiceField(
         queryset=Languages.objects.all(),
         widget=forms.SelectMultiple(attrs={
-            'size': 5,
-            'class': 'mt-1 w-full border border-brand px-4 py-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-none'
+            'id': 'id_chld_languages',
+            'class': 'w-full'
         }),
         required=False,
         label="Langues parlées"
@@ -183,10 +182,10 @@ class ChildForm(TailwindFormMixin, forms.ModelForm):
                 'class': 'mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-full'
             }),
             'chld_gender': forms.Select(attrs={
-                'class': 'mt-1 w-full border border-brand px-4 py-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-none'
+                'class': 'mt-1 w-full border border-brand px-4 py-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-full'
             }),
             'chld_special_needs': forms.Textarea(attrs={
-                'class': 'mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-none',
+                'class': 'mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-full',
                 'rows': 3,
                 'placeholder': 'Ex : allergies, accompagnement particulier, informations utiles...'
             }),
@@ -206,7 +205,7 @@ class FavoriteAddressForm(TailwindFormMixin, forms.ModelForm):
         fields = ["label", "address", 'place_id']
         widgets = {
             "label": forms.TextInput(attrs={
-                "class": "form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm",
+                "class": "form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:ring-brand focus:border-brand",
                 "placeholder": _("Ex: Maison / École / Travail"),
                 'autocomplete': 'off'
             }),

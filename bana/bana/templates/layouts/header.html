@@ -1,4 +1,5 @@
-{% load static i18n%}
+{% load static i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 
 <header>
     <nav class="px-6 bg-brand-gradient-br text-white xl:px-24 py-4 flex items-center justify-between">
@@ -21,25 +22,49 @@
 
         <!-- Mobile Menu Button -->
         <div class="md:hidden flex justify-center items-center gap-4">
-            {% comment %}
-            <div class="relative inline-block text-left">
-                <button class="flex items-center text-white font-bold rounded-md focus:outline-none peer">
-                    En
-                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </button>
 
-                <div
-                    class="absolute left-0 w-32 bg-white border border-gray-300 rounded-md shadow-lg hidden peer-focus:block">
-                    <ul class="py-1">
-                        <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Français</a></li>
-                        <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Nederlands</a></li>
-                    </ul>
+            {% if user.is_authenticated %}
+            <!-- Avatar dropdown mobile -->
+            <div class="relative">
+                <button id="appAvatarBtnMobile"
+                        class="flex items-center rounded-full p-1 hover:bg-white/20 focus:outline-none"
+                        onclick="toggleAppAvatarMobile()" aria-label="Menu utilisateur">
+                    <div class="h-9 w-9 rounded-full bg-brand-50 ring-2 ring-white/30 overflow-hidden flex items-center justify-center flex-shrink-0">
+                        {% if request.user.profile.profile_picture %}
+                            <img src="{{ request.user.profile.profile_picture.url }}" alt="Avatar" class="h-full w-full object-cover">
+                        {% else %}
+                            <span class="text-sm font-bold text-brand">
+                                {% if user.profile.ci_is_verified %}
+                                    {{ request.user.profile.verified_first_name.0 }}.{{ request.user.profile.verified_last_name.0 }}
+                                {% else %}
+                                    {{ request.user.first_name.0 }}.{{ request.user.last_name.0 }}
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                    </div>
+                </button>
+                <div id="appAvatarDropdownMobile"
+                     class="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-xl shadow-lg hidden z-50 overflow-hidden">
+                    <a href="{% url 'accounts:profile' %}"
+                       class="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                        <svg class="h-4 w-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="8" r="4"/><path d="M6 20a6 6 0 0112 0" stroke-linecap="round"/>
+                        </svg>
+                        {% trans "Mon profil" %}
+                    </a>
+                    <div class="border-t border-gray-100"></div>
+                    <button type="button"
+                            onclick="document.getElementById('logout-modal').showModal(); closeAppAvatarMobile();"
+                            class="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        {% trans "Déconnexion" %}
+                    </button>
                 </div>
             </div>
-            {% endcomment %}
+            {% endif %}
+
             <button id="menu-toggle" class="focus:outline-none">
                 <svg class="w-8 h-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -72,33 +97,7 @@
                     class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
                     Admin</a>
                 {% endif %}
-                {% if user.is_authenticated %}
-                <a href="{% url 'accounts:profile' %}"
-                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
-                    {% trans "Profil" %} 
-                </a>
 
-                <button type="button"
-                        onclick="document.getElementById('logout-modal').showModal()"
-                        class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200">
-                    {% trans "Déconnexion" %} 
-                </button>
-
-                {% else %}
-                <a href="{% url 'account_signup' %}"
-                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
-                    {% trans "Inscription" %} 
-                </a>
-
-                <a href="{% url 'account_login' %}"
-                    class="relative text-brand-50 px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-50 hover:no-underline before:absolute before:inset-0 before:rounded-full before:border-2 before:border-brand-50">
-                    {% trans "Connexion" %} 
-                </a>
-                {% endif %}
-
-
-
-                
                 <div class="relative inline-block text-left z-10">
                     <button
                         id="languageButton"
@@ -121,7 +120,7 @@
                 
                     <div
                         id="languageDropdown"
-                        class="absolute left-0 mt-2 w-32 bg-white border border-lime-300 rounded-md shadow-lg hidden">
+                        class="absolute left-0 mt-2 w-32 bg-white border border-brand-50 rounded-md shadow-lg hidden">
                         <ul class="py-1">
                             {% get_available_languages as LANGUAGES %}
                             {% for lang_code, lang_name in LANGUAGES %}
@@ -144,6 +143,62 @@
                         </ul>
                     </div>
                 </div>
+                
+                {% if user.is_authenticated %}
+                <!-- Avatar dropdown desktop -->
+                <div class="relative">
+                    <button id="appAvatarBtnDesktop"
+                            class="flex items-center gap-1.5 rounded-full p-1 hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                            onclick="toggleAppAvatar()" aria-label="Menu utilisateur">
+                        <div class="h-9 w-9 rounded-full bg-brand-50 ring-2 ring-[#E9F5F1] overflow-hidden flex items-center justify-center flex-shrink-0">
+                            {% if request.user.profile.profile_picture %}
+                                <img src="{{ request.user.profile.profile_picture.url }}" alt="Avatar" class="h-full w-full object-cover">
+                            {% else %}
+                                <span class="text-sm font-bold text-brand">
+                                    {% if user.profile.ci_is_verified %}
+                                        {{ request.user.profile.verified_first_name.0 }}.{{ request.user.profile.verified_last_name.0 }}
+                                    {% else %}
+                                        {{ request.user.first_name.0 }}.{{ request.user.last_name.0 }}
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+                        </div>
+                        <svg class="w-4 h-4 text-white/70 transition-transform duration-200" id="appAvatarArrow" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                    <div id="appAvatarDropdown"
+                         class="absolute right-0 mt-2 w-44 bg-white border border-gray-200 rounded-xl shadow-lg hidden z-50 overflow-hidden">
+                        <a href="{% url 'accounts:profile' %}"
+                           class="flex items-center gap-2 px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 transition-colors">
+                            <svg class="h-4 w-4 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="8" r="4"/><path d="M6 20a6 6 0 0112 0" stroke-linecap="round"/>
+                            </svg>
+                            {% trans "Mon profil" %}
+                        </a>
+                        <div class="border-t border-gray-100"></div>
+                        <button type="button"
+                                onclick="document.getElementById('logout-modal').showModal(); closeAppAvatar();"
+                                class="w-full flex items-center gap-2 px-4 py-3 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            {% trans "Déconnexion" %}
+                        </button>
+                    </div>
+                </div>
+
+                {% else %}
+                <a href="{% url 'account_signup' %}"
+                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-200 hover:no-underline">
+                    {% trans "Inscription" %} 
+                </a>
+
+                <a href="{% url 'account_login' %}"
+                    class="relative text-brand-50 px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-50 hover:no-underline before:absolute before:inset-0 before:rounded-full before:border-2 before:border-brand-50">
+                    {% trans "Connexion" %} 
+                </a>
+                {% endif %}
                 
             </div>
         </div>
@@ -188,6 +243,7 @@
         </div>
     </div>
 
+  {% comment "" %}
   {% if messages %}
     <ul class="mb-6 space-y-2">
       {% for message in messages %}
@@ -195,6 +251,7 @@
       {% endfor %}
     </ul>
   {% endif %}
+  {% endcomment %}
 {% comment "Arevoir plus tard" %}
 
 
@@ -328,10 +385,51 @@ document.addEventListener('click', function(event) {
     const button = document.getElementById('languageButton');
     const dropdown = document.getElementById('languageDropdown');
     const arrow = document.getElementById('languageArrow');
-    
+
     if (!button.contains(event.target) && !dropdown.contains(event.target)) {
         dropdown.classList.add('hidden');
         arrow.style.transform = 'rotate(0deg)';
+    }
+});
+
+/* ── Dropdown avatar desktop ── */
+function toggleAppAvatar() {
+    const dropdown = document.getElementById('appAvatarDropdown');
+    const arrow = document.getElementById('appAvatarArrow');
+    const isHidden = dropdown.classList.contains('hidden');
+    dropdown.classList.toggle('hidden', !isHidden);
+    if (arrow) arrow.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+function closeAppAvatar() {
+    const dropdown = document.getElementById('appAvatarDropdown');
+    const arrow = document.getElementById('appAvatarArrow');
+    dropdown && dropdown.classList.add('hidden');
+    if (arrow) arrow.style.transform = 'rotate(0deg)';
+}
+document.addEventListener('click', function(e) {
+    const btn = document.getElementById('appAvatarBtnDesktop');
+    const dropdown = document.getElementById('appAvatarDropdown');
+    const arrow = document.getElementById('appAvatarArrow');
+    if (btn && !btn.contains(e.target) && dropdown && !dropdown.contains(e.target)) {
+        dropdown.classList.add('hidden');
+        if (arrow) arrow.style.transform = 'rotate(0deg)';
+    }
+});
+
+/* ── Dropdown avatar mobile ── */
+function toggleAppAvatarMobile() {
+    const dropdown = document.getElementById('appAvatarDropdownMobile');
+    const isHidden = dropdown.classList.contains('hidden');
+    dropdown.classList.toggle('hidden', !isHidden);
+}
+function closeAppAvatarMobile() {
+    document.getElementById('appAvatarDropdownMobile').classList.add('hidden');
+}
+document.addEventListener('click', function(e) {
+    const btn = document.getElementById('appAvatarBtnMobile');
+    const dropdown = document.getElementById('appAvatarDropdownMobile');
+    if (btn && !btn.contains(e.target) && dropdown && !dropdown.contains(e.target)) {
+        dropdown.classList.add('hidden');
     }
 });
 </script>

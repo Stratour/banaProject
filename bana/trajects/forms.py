@@ -142,7 +142,9 @@ class TrajectForm(forms.ModelForm):
 class ProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     transport_modes = forms.ModelMultipleChoiceField(
         queryset=TransportMode.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(attrs={
+            'class': 'form-checkbox h-5 w-5 text-brand'
+        }),
         label=_("Moyens de transport"),
         required=True,
         error_messages={
@@ -294,7 +296,9 @@ class SimpleProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
 
     transport_modes = forms.ModelMultipleChoiceField(
         queryset=TransportMode.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(attrs={
+            'class': 'form-checkbox h-5 w-5 text-brand'
+        }),
         label=_("Moyens de transport"),
         required=True,
         error_messages={
@@ -421,7 +425,9 @@ class SimpleProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
 class ResearchedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     transport_modes = forms.ModelMultipleChoiceField(
         queryset=TransportMode.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(attrs={
+            'class': 'form-checkbox h-5 w-5 text-brand'
+        }),
         label=_("Moyens de transport"),
         required=True,
         error_messages={
@@ -431,7 +437,9 @@ class ResearchedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
 
     children = forms.ModelMultipleChoiceField(
         queryset=Child.objects.none(),
-        widget=forms.CheckboxSelectMultiple,
+        widget=forms.CheckboxSelectMultiple(attrs={
+            'class': 'form-checkbox h-5 w-5 text-brand'
+        }),
         required=True,
         label=_("Choix du ou des enfants"),
         error_messages={

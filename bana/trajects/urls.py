@@ -7,7 +7,7 @@ urlpatterns = [
     #path('proposed_traject/<int:researchesTraject_id>', views.proposed_traject_views, name='proposed_traject'),
     
     ###### Parents #####
-    path('recherches/nouvelles-recherches', views.researched_traject, name='researched_traject'),
+    path('recherches/nouvelles-recherches/', views.researched_traject, name='researched_traject'),
     path('recherches/mes-recherches/', views.my_researched_trajects, name='my_researched_trajects'),
     path('recherches/mes-recherches/<uuid:groupe_uid>/', views.my_researched_groupe_detail, name='my_researched_groupe_detail'),
     path('recherches/mes-recherches/delete/<uuid:groupe_uid>/', views.delete_researched_groupe, name='delete_researched_groupe'),

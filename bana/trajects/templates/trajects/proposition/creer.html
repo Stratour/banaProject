@@ -8,19 +8,9 @@
 <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
   <!-- max-w-5xl mx-auto px-4 py-10 -->
   
-  {% comment "A voir avec header" %}
   <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
     {% trans "Proposer un trajet" %}
   </h1>
-  {% endcomment %}
-  
-  {% if messages %}
-  <ul class="mb-4 space-y-2">
-    {% for message in messages %}
-    <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
   
   {% include "trajects/partials/tabs_proposition.html" %}
   
@@ -71,7 +61,8 @@
         <p class="mt-1 text-xs text-red-600">{{ error }}</p>
       {% endfor %}
 
-      <ul id="start-suggestion-list" class="bg-white shadow-md mt-1 max-h-48 overflow-auto"></ul>
+      <ul id="start-suggestion-list" 
+      class="hidden bg-white border border-gray-300 shadow-md mt-1 max-h-48 overflow-auto"></ul>
     </div>
 
     <div class="w-full sm:w-[110px]">
@@ -102,7 +93,7 @@
         <p class="mt-1 text-xs text-red-600">{{ error }}</p>
       {% endfor %}
 
-      <ul id="end-suggestion-list" class="bg-white shadow-md mt-1 max-h-48 overflow-auto"></ul>
+      <ul id="end-suggestion-list" class="hidden bg-white border border-gray-300 shadow-md mt-1 max-h-48 overflow-auto"></ul>
     </div>
 
     <div class="w-full sm:w-[110px]">
@@ -212,7 +203,7 @@
 
       <div class="flex flex-wrap gap-2">
         {% for cb in proposed_form.transport_modes %}
-          <label class="inline-flex items-center gap-2 px-3 py-2 text-sm rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer transition">
+          <label class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 text-sm hover:bg-gray-50 cursor-pointer">
             {{ cb.tag }}
             <span class="text-gray-700">{{ cb.choice_label }}</span>
           </label>

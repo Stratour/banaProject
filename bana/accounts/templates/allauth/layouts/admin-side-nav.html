@@ -33,12 +33,15 @@
 {% url 'subscription' as subscription_url %}
 {% url 'accounts:profile_security' as profile_security_url %}
 
+{% comment "" %}
 <!-- Logo -->
 <div class="p-6 flex justify-center">
   <a href="{% url 'home' %}">
     <img class="w-20 h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Logo Bana">
   </a>
 </div>
+{% endcomment %}
+
 
 <!-- Navigation -->
 <nav class="flex-1 p-4 space-y-6 text-sm font-medium text-gray-800 ">

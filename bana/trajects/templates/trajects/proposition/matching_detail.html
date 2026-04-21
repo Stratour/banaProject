@@ -6,21 +6,9 @@
 {% block content %}
 <div class="bg-white shadow-lg rounded-xl p-16 space-y-10">
   
-  {% comment "" %}
   <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
     {% trans "Mes matchings" %}
   </h1>
-  {% endcomment %}
-
-  {% if messages %}
-  <ul class="mb-6">
-    {% for message in messages %}
-    <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">
-      {{ message }}
-    </li>
-    {% endfor %}
-  </ul>
-  {% endif %}
   
   <!-- Onglets navigation -->
   {% include "trajects/partials/tabs_proposition.html" %}

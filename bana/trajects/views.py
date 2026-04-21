@@ -687,7 +687,7 @@ def researched_traject(request):
             )
             return redirect("my_researched_trajects")
 
-        messages.error(request, _("Veuillez corriger les erreurs dans le formulaire."))
+        messages.warning(request, _("Veuillez corriger les erreurs dans le formulaire."))
 
         return render(
             request,
@@ -1963,10 +1963,10 @@ def modify_traject(request, id, type):
 
         if form.is_valid():
             form.save()
-            messages.success(request, 'Traject updated successfully!')
+            messages.success(request, 'Trajet mis à jour avec succès.')
             return redirect('profile')
         else:
-            messages.error(request, 'There were errors in your form. Please fix them and try again.')
+            messages.warning(request, 'Veuillez corriger les erreurs dans le formulaire.')
             print(form.errors)  # Debugging des erreurs
 
     else:
@@ -2040,7 +2040,7 @@ def manage_reservation(request, reservation_id, action):
     if action == "accept":
         # Évite de reconfirmer une réservation déjà confirmée
         if reservation.status == "confirmed":
-            messages.info(request, "Cette réservation est déjà confirmée.")
+            messages.warning(request, "Cette réservation est déjà confirmée.")
             return redirect(next_url or "my_reservations")
 
         # Évite de confirmer une réservation déjà annulée
@@ -2109,7 +2109,7 @@ def manage_reservation(request, reservation_id, action):
     elif action == "reject":
         # Si déjà annulée, inutile de refaire l'action
         if reservation.status == "canceled":
-            messages.info(request, "Cette réservation est déjà annulée.")
+            messages.warning(request, "Cette réservation est déjà annulée.")
             return redirect(next_url or "my_reservations")
 
         # Si déjà confirmée, on évite de la refuser ici sans logique métier claire
@@ -2202,7 +2202,7 @@ def propose_help(request, researched_id):
 
     session_key = f"help_notified_{request.user.id}_{researched_id}"
     if request.session.get(session_key, False):
-        messages.info(request, "Vous avez déjà signalé votre disponibilité pour ce trajet.")
+        messages.warning(request, "Vous avez déjà signalé votre disponibilité pour ce trajet.")
         return redirect(next_url or 'my_matchings_proposed')
     request.session[session_key] = True
 
