@@ -12,7 +12,6 @@
                     <text>
                         <textPath id="circleText" href="#circlePath" startOffset="50%" text-anchor="middle"
                             style="fill: #84cc16; font-weight: bold; font-size: 0.75rem;">
-                            {% trans "ACCOMPAGNER • PARTAGER • GRANDIR • " %}
                         </textPath>
                     </text>
                 </svg>
@@ -87,8 +86,12 @@
         
     </div>
     
-    <div class="p-5 text-center text-sm">
+    <div class="p-5 flex flex-col align-center text-center text-sm">
         <p>&copy; bana.mobi 2026</p>
+        <p>Powered by DIGIT-UP Agency</p>
+        <a class="flex justify-center" href="https://www.digit-up.be" target="_blank">
+            <img class="w-24" src="{% static 'bana/img/logo/Logo_digit_up.svg' %}" alt="Digit-Up">
+        </a>
     </div>
 </footer>
 

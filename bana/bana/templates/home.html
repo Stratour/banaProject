@@ -30,8 +30,7 @@
             </p>
 
             <a href="{% url 'account_signup' %}"
-                class="flex items-center justify-center gap-2 w-60 md:w-48 px-6 py-3 font-semibold text-black hover:text-white bg-brand-50 hover:bg-brand-200 rounded-full"
-                aria-label="Create an account">
+                class="animate-on-scroll data-delay=250 inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-black font-semibold hover:bg-brand-200 hover:text-white transition">
                 Créer mon compte
             </a>
 
@@ -47,17 +46,27 @@
         <div
             class="animate-on-scroll data-delay=150 w-full md:max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center text-center md:[text-align:left!important]">
 
-            <img src="{% static 'bana/img/icon/Icon_path_steps.svg' %}" class="rounded-2xl w-full" />
+            {% get_current_language as LANGUAGE_CODE %}
+
+            {% if LANGUAGE_CODE == 'fr' %}
+            <img src="{% static 'bana/img/icon/Icon_path_steps_fr.svg' %}" class="rounded-2xl w-full" />
+            {% elif LANGUAGE_CODE == 'en' %}
+            <img src="{% static 'bana/img/icon/Icon_path_steps_en.svg' %}" class="rounded-2xl w-full" />
+            {% elif LANGUAGE_CODE == 'nl' %}
+            <img src="{% static 'bana/img/icon/Icon_path_steps_nl.svg' %}" class="rounded-2xl w-full" />
+            {% endif %}
 
             <div class="flex flex-col gap-4">
                 <h2 class="text-xl md:text-2xl font-bold">
                     Une plateforme qui permet aux parents de trouver une personne de confiance.
                 </h2>
 
-                <p class="text-gray-600 text-sm md:text-base">
+                <p class="text-gray-600 text-lg">
                     Grâce à notre plateforme de mise en relation, les parents trouvent une personne de confiance appelée
                     Yaya, pour accompagner leurs enfants sur les trajets entre la maison, l’école et les activités
                     extrascolaires.
+                </p>
+                <p class="text-gray-600 text-lg">
                     Avec Bana, vos enfants se déplacent à pied, à vélo, en transport en commun ou en covoiturage, en
                     toute sécurité, grâce à notre communauté de confiance
                 </p>
@@ -75,7 +84,7 @@
             <div class="animate-on-scroll data-delay=150 flex flex-col justify-between items-center mb-4 ">
                 <img class="w-10 h-10 mb-2" src="{% static benefit.img_src %}" alt="{{ benefit.title }} feature icon">
                 <h3 class="text-lg font-bold">{{ benefit.title }}</h3>
-                <p class="text-sm">{{ benefit.highlight }}
+                <p class="text-base">{{ benefit.highlight }}
                     {{ benefit.description }}</p>
             </div>
             {% endfor %}
@@ -111,13 +120,13 @@
                         Un service basé sur l’entraide locale
                     </h3>
 
-                    <p class="animate-on-scroll data-delay=200">
+                    <p class="animate-on-scroll data-delay=200 text-lg">
                         Les Yaya sont des personnes de confiance qui souhaitent
                         <span class="text-brand-50 font-semibold">aider les familles</span>
                         de leur quartier tout en effectuant leurs trajets habituels.
                     </p>
 
-                    <p class="animate-on-scroll data-delay=250">
+                    <p class="animate-on-scroll data-delay=250 text-lg">
                         Ils rendent possible une
                         <span class="text-brand-50 font-semibold">
                             organisation plus simple et plus sereine pour les parents
@@ -125,7 +134,7 @@
                         tout en permettant aux enfants de se déplacer en sécurité.
                     </p>
 
-                    <p class="animate-on-scroll data-delay=300">
+                    <p class="animate-on-scroll data-delay=300 text-lg">
                         <span class="text-brand-50 font-semibold">Chaque trajet est défrayé</span>
                         par le parent au Yaya en reconnaissance du service et du temps
                         consacré à l’accompagnement.
@@ -146,9 +155,25 @@
 
             <!-- Image -->
             <div
-                class="animate-on-scroll animate-left w-full md:w-1/2 md:absolute md:-top-12 lg:-top-40 md:left-0 z-20">
-                <img src="{% static 'bana/img/page/home_card.jpg' %}" alt="group of friends"
-                    class="w-full rounded-2xl shadow-md object-cover" />
+                class="animate-on-scroll animate-left bg-white text-left w-full md:w-1/2 md:absolute md:-top-12 lg:-top-40 md:left-0 z-20 rounded-2xl shadow-md">
+                <div class="flex">
+                    <div class="w-[40%]">
+                        <img src="{% static 'bana/img/page/home_card_trust.jpg' %}" alt="Woman in car"
+                            class="w-full h-full object-cover object-left rounded-l-2xl">
+                    </div>
+                    <div class="w-[80%] flex flex-col items-start px-8 py-12">
+                        <h4 class="text-2xl font-bold">Nyota D.</h4>
+                        <h6 class="text-sm text-zinc-400">Parent | Chaumont-Gistoux</h6>
+                        <img class="h-4 mt-2 mb-4" src="{% static 'bana/img/icon/Icon_stars.svg' %}" alt="Star icons">
+                        <h5 class="text-teal-700 text-sm font-bold">Maman de deux enfants (2010, 2023), avec une
+                            formation en marketing et une expérience en ressources humaines, en achats et en gestion de
+                            projet.</h5>
+                        <p class="text-zinc-400 text-sm font-semibold mt-8">Passionnée par le bien-être familial, je
+                            jongle entre ma vie de maman d’un adolescent et d’un bébé, en conciliant entraînements de
+                            basket, biberons et réunions. J’accorde de l’importance à un mode de vie durable et je rêve
+                            d’un monde où être parent est plus facile et où les enfants grandissent sereinement.</p>
+                    </div>
+                </div>
             </div>
 
             <!-- Card -->
@@ -162,11 +187,11 @@
                         Confiance
                     </h2>
 
-                    <h3 class="animate-on-scroll" data-delay="0" text-3xl font-extrabold">
+                    <h3 class="animate-on-scroll data-delay=0 md:text-3xl font-extrabold">
                         Les Yaya : des accompagnateurs de confiance pour vos enfants
                     </h3>
 
-                    <p class="animate-on-scroll" data-delay="50">
+                    <p class="animate-on-scroll data-delay=50 text-lg">
                         Le mot “Yaya” signifie grand frère ou grande sœur : symbolisant la
                         <span class="text-brand-50 font-semibold">sagesse et responsabilité</span>.
                         Chez Bana, les Yaya accompagnent les enfants lors de leurs trajets
@@ -176,7 +201,7 @@
                     </p>
 
                     <p
-                        class="text-brand-50 font-semibold animate-on-scroll data-delay=100 text-brand-50 font-semibold mb-4">
+                        class="text-brand-50 font-semibold animate-on-scroll data-delay=100 text-brand-50 font-semibold mb-4 text-lg">
                         Votre enfant n’est jamais seul.
                     </p>
 
@@ -214,7 +239,7 @@
                     <!-- CTA -->
                     <div class="flex justify-center md:justify-start">
                         <a href="{% url 'account_signup' %}"
-                            class="flex items-center justify-center gap-2 w-60 md:w-48 px-6 py-3 font-semibold text-black bg-brand-50 hover:bg-brand-200 hover:text-white rounded-full transition">
+                            class="animate-on-scroll data-delay=250 inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-black font-semibold hover:bg-brand-200 hover:text-white transition">
                             Créer mon compte
                         </a>
                     </div>
@@ -249,7 +274,7 @@
                     ou d’un lieu d’activité pendant la journée ? Des familles ont besoin de vous !
                 </p>
 
-                <a href="{% url 'account_signup' %}"
+                <a href="{% url 'yaya' %}"
                     class="flex items-center justify-center gap-2 w-60 md:w-48 px-6 py-3 font-semibold text-black hover:text-white bg-brand-50 hover:bg-brand-200 rounded-full"
                     aria-label="Create an account">
                     Devenir Yaya
@@ -281,7 +306,7 @@
                             ou d’un lieu d’activité pendant la journée ? Des familles ont besoin de vous !
                         </p>
 
-                        <a href="#"
+                        <a href="{% url 'yaya' %}"
                             class="animate-on-scroll data-delay=250 inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-black font-semibold hover:bg-brand-200 hover:text-white transition">
                             Devenir Yaya
                         </a>

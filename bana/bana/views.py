@@ -60,6 +60,78 @@ def home(request):
         {"home_benefits": home_benefits, "home_roles": home_roles}
     )
 
+# --- Yaya page ---------------------------------------------------------------------------
+def yaya(request):
+    yaya_benefits = [
+        {
+            'img_src': 'bana/img/icon/Icon_clock.svg',
+            'title': _('Flexible'),
+            'description': _('Engagement uniquement selon votre disponibilité')
+        },
+        {
+            'img_src': 'bana/img/icon/Icon_currency.svg',
+            'title': _('Défraiement'),
+            'description': _('Recevez jusqu’à 176€/mois pour vos trajets quotidiens')
+        },
+        {
+            'img_src': 'bana/img/icon/Icon_earth.svg',
+            'title': _('Sans voiture obligatoire'),
+            'description': _('Tous les moyens de transport sont utilisés')
+        },
+        {
+            'img_src': 'bana/img/icon/Icon_hearth.svg',
+            'title': _('Communautaire'),
+            'description': _('Créer du lien social dans votre quartier')
+        }
+    ]
+
+    work_profiles = [
+        {
+            'img_src': 'bana/img/other/Sandy.png',
+            'name': 'Sandy D.',
+            'age': '38 ans',
+            'short_bio': 'Maman de Justin et Bastien, 5 et 7 ans',
+            'full_description': 'Avant, je choisissais leurs activités en fonction de mes disponibilités. Aujourd’hui, je peux leur ouvrir la porte à un monde de possibilités : il n’y a plus de limites !'
+        },
+        {
+            'img_src': 'bana/img/other/Thi.png',
+            'name': 'Thi M.',
+            'age': '38 ans',
+            'short_bio': 'Maman de 2 garçons, 5 et 9 ans',
+            'full_description': 'Bana me permet d’aider et de dépanner d’autres parents. J’apprécie particulièrement le concept collaboratif et communautaire de cette application.'
+        },
+        {
+            'img_src': 'bana/img/other/Andre.png',
+            'name': 'André K.',
+            'age': '41 ans',
+            'short_bio': 'Papa de 3 enfants, 1, 5 et 8 ans',
+            'full_description': 'Comme beaucoup de parents, j’étais assez réticent à confier mes enfants à d’autres. J’ai donc contacté Bana pour discuter de la confiance et de la sécurité : j’ai été très vite rassuré !'
+        },
+         {
+            'img_src': 'bana/img/other/Alex.png',
+            'name': 'Alex M.',
+            'age': '33 ans',
+            'short_bio': 'Papa de Maé, 6 ans',
+            'full_description': 'En tant qu’éducateur spécialisé, j’ai des horaires coupés qui me laissent peu de flexibilité. Avec cette application, j’ai trouvé une solution pour ma fille à moindre coût. Tout le monde y gagne, moi le premier !'
+        },
+        {
+            'img_src': 'bana/img/other/Shilo.png',
+            'name': 'Shilo B.',
+            'age': '10 ans',
+            'short_bio': 'élève de 5ᵉ primaire',
+            'full_description': 'Ce que j’adore avec Bana, c’est l’idée que je peux passer plus de temps avec mes amis car on va ensemble aux activités, c’est trop cool !'
+        },
+        {
+            'img_src': 'bana/img/other/Ludo.png',
+            'name': 'Ludo B.',
+            'age': '42 ans',
+            'short_bio': 'papa de 2 garçons, 18 et 10 ans',
+            'full_description': 'J’y ai rencontré des parents très sérieux et flexibles. Nous partageons beaucoup de choses avec des amis qui vont au-delà des trajets de nos enfants.'
+        }
+    ]
+
+    return render(request,'yaya.html', {"work_profiles": work_profiles, "yaya_benefits": yaya_benefits})
+
 # --- Conact page ---------------------------------------------------------------------------
 def contact(request):
     return render(request, 'contact.html')
