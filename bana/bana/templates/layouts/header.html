@@ -74,19 +74,36 @@
         </div>
 
         <!-- Navigation Links -->
+        {% with url_name=request.resolver_match.url_name %}
         <div id="nav-links" class="hidden md:flex items-center space-x-6 font-bold">
-            <a href="{% url 'home' %}">
-                <img class="w-7 h-7" src="{% static 'bana/img/icon/Icon_home.svg' %}" alt="Icon hut">
+
+            <a href="{% url 'home' %}"
+               class="inline-block pb-0.5 {% if url_name == 'home' %}border-b-2 border-brand-50{% endif %}">
+                <img class="w-7 h-7" src="{% static 'bana/img/icon/Icon_home.svg' %}" alt="Accueil">
             </a>
 
-            <a href="{% url 'work' %}" class="hover:text-white hover:no-underline">{% trans "Comment ça marche ?" %} </a>
-            {% comment "" %}
-            <a href="{% url 'parent' %}" class="hover:text-white hover:no-underline">Search or share</a>
-            {% endcomment %}
-            <a href="{% url 'about' %}" class="hover:text-white hover:no-underline">{% trans "À propos" %} </a>
+            <a href="{% url 'yaya' %}"
+               class="relative transition-colors duration-150 {% if url_name == 'yaya' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
+                {% trans "Devenir Yaya" %}
+            </a>
 
-            <a href="{% url 'contact' %}" class="hover:text-white hover:no-underline">{% trans "Contact" %} </a>
+            <a href="{% url 'work' %}"
+               class="relative transition-colors duration-150 {% if url_name == 'work' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
+                {% trans "Comment ça marche ?" %}
+            </a>
+
+            <a href="{% url 'about' %}"
+               class="relative transition-colors duration-150 {% if url_name == 'about' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
+                {% trans "À propos" %}
+            </a>
+
+            <a href="{% url 'contact' %}"
+               class="relative transition-colors duration-150 {% if url_name == 'contact' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
+                {% trans "Contact" %}
+            </a>
+
         </div>
+        {% endwith %}
 
         <!-- Authentication Buttons -->
         <div class="hidden md:flex flex-row gap-8 items-center">
@@ -207,11 +224,13 @@
 
     <!-- Mobile Dropdown Menu -->
     <div id="mobile-menu" class="hidden bg-brand border-t border-brand-50 text-white px-6 py-4 md:hidden">
+        {% with url_name=request.resolver_match.url_name %}
         <div class="flex flex-col space-y-4 font-bold">
-            <a href="{% url 'home' %}" class="text-center hover:text-white hover:no-underline">{% trans "Accueil" %} </a>
-            <a href="{% url 'work' %}" class="text-center hover:text-white hover:no-underline">{% trans "Comment ça marche ?" %}</a>
-            <a href="{% url 'about' %}" class="text-center hover:text-white hover:no-underline">{% trans "À propos" %}</a>
-            <a href="{% url 'contact' %}" class="text-center hover:text-white hover:no-underline">{% trans "Contact" %}</a>
+            <a href="{% url 'home' %}" class="text-center transition-colors {% if url_name == 'home' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "Accueil" %}</a>
+            <a href="{% url 'yaya' %}" class="text-center transition-colors {% if url_name == 'yaya' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "Devenir Yaya" %}</a>
+            <a href="{% url 'work' %}" class="text-center transition-colors {% if url_name == 'work' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "Comment ça marche ?" %}</a>
+            <a href="{% url 'about' %}" class="text-center transition-colors {% if url_name == 'about' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "À propos" %}</a>
+            <a href="{% url 'contact' %}" class="text-center transition-colors {% if url_name == 'contact' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "Contact" %}</a>
 
 
 
@@ -241,6 +260,7 @@
                 {% endif %}
             </div>
         </div>
+        {% endwith %}
     </div>
 
   {% comment "" %}

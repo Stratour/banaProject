@@ -32,7 +32,9 @@
         <!-- Bana Community Links -->
         <div class="flex-1">
             <ul class="space-y-1">
+                
                 <li><a href="{% url 'home' %}" class="font-light hover:text-brand-50">{% trans "Accueil" %}</a></li>
+                <li><a href="{% url 'yaya' %}" class="font-light hover:text-brand-50">{% trans "Devenir yaya" %}</a></li>
                 <li><a href="{% url 'work' %}" class="font-light hover:text-brand-50">{% trans "Comment ça marche ?" %}</a></li>
                 <li><a href="{% url 'about' %}" class="font-light hover:text-brand-50">{% trans "À propos" %}</a></li>
                 <li><a href="{% url 'contact' %}" class="font-light hover:text-brand-50">{% trans "Contact" %}</a></li>
@@ -87,11 +89,12 @@
     </div>
     
     <div class="p-5 flex flex-col align-center text-center text-sm">
-        <p>&copy; bana.mobi 2026</p>
-        <p>Powered by DIGIT-UP Agency</p>
+        <p>&copy; bana.mobi 2026
+        Powered by DIGIT-UP Agency
         <a class="flex justify-center" href="https://www.digit-up.be" target="_blank">
             <img class="w-24" src="{% static 'bana/img/logo/Logo_digit_up.svg' %}" alt="Digit-Up">
         </a>
+    </p>
     </div>
 </footer>
 
