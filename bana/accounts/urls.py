@@ -23,15 +23,14 @@ urlpatterns = [
     path('profil/public/', views.profile_public, name='profile_public'),
     path('profil/info/', views.profile_info, name='profile_info'),
     
-    path('profil/security/', views.profile_security, name='profile_security'),
-    path('profil/security/password/', CustomPasswordChangeView.as_view(), name='account_change_password'),
-    path('profil/security/deactivate/', views.deactivate_account, name='deactivate_account'),
+    path('profil/securité&connexion/', views.profile_security, name='profile_security'),
+    path('profil/securité&connexion/password/', CustomPasswordChangeView.as_view(), name='account_change_password'),
+    path('profil/securité&connexion/deactivate/', views.deactivate_account, name='deactivate_account'),
     
     path('email/display/', views.email_display, name='email_display'),
     path('email/edit/', views.email_edit, name='email_edit'), 
     path('email/change/confirm/<str:key>/', views.email_change_confirm, name='email_change_confirm'),
     path('email/confirm-redirect/', views.redirect_after_email_confirmation, name='email_confirm_redirect'),
 
-    
 
 ]

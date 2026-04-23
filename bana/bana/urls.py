@@ -32,10 +32,10 @@ urlpatterns += i18n_patterns(
     # Pages globales
     path('', views.home, name='home'),
     path('contact/', views.contact, name='contact'),
-    path('about/', views.about, name='about'),
-    path('work/', views.work, name='work'),
+    path('a-propos/', views.about, name='about'),
+    path('comment-ca-marche/', views.work, name='work'),
     path('parent/', views.parent, name='parent'),
-    path('yaya/', views.yaya, name='yaya'),
+    path('devenir-yaya/', views.yaya, name='yaya'),
 
     # Admin Interfaces
     path('bana_admin/', include('bana_admin.urls')),
