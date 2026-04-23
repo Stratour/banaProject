@@ -18,14 +18,20 @@ git config --global --add safe.directory "$PROD_DIR"
 git -C "$PROD_DIR" pull origin main
 echo ""
 
-# 2. Dépendances Python
-echo "[2/5] Dépendances Python..."
+# 2. Synchronisation .env
+echo "[2/6] Synchronisation .env..."
+cp "$DEV_DIR/bana/.env" "$PROD_DIR/bana/.env"
+echo "  OK"
+echo ""
+
+# 3. Dépendances Python
+echo "[3/6] Dépendances Python..."
 $PIP install -r "$PROD_DIR/requirements.txt" -q
 echo "  OK"
 echo ""
 
-# 3. CSS Tailwind (non versionné, copié depuis dev)
-echo "[3/5] CSS Tailwind..."
+# 4. CSS Tailwind (non versionné, copié depuis dev)
+echo "[4/6] CSS Tailwind..."
 if [ -d "$DEV_DIR/bana/theme/static/css" ]; then
     cp -r "$DEV_DIR/bana/theme/static/css" "$PROD_DIR/bana/theme/static/"
     echo "  OK (copié depuis dev)"
@@ -36,14 +42,14 @@ else
 fi
 echo ""
 
-# 4. Migrations
-echo "[4/5] Migrations..."
+# 5. Migrations
+echo "[5/6] Migrations..."
 cd "$PROD_DIR/bana"
 $PYTHON manage.py migrate --noinput
 echo ""
 
-# 5. Collectstatic
-echo "[5/5] Collectstatic..."
+# 6. Collectstatic
+echo "[6/6] Collectstatic..."
 $PYTHON manage.py collectstatic --noinput 2>&1 | tail -2
 echo ""
 

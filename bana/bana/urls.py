@@ -9,7 +9,6 @@ from accounts import views as account_views
 
 # URLs sans préfixe de langue (utilitaires)
 urlpatterns = [
-    path("__reload__/", include("django_browser_reload.urls")),
     path('admin/', admin.site.urls),
 
     # PWA
@@ -58,4 +57,5 @@ urlpatterns += i18n_patterns(
 
 # Servir les fichiers médias en développement
 if settings.DEBUG:
+    urlpatterns += [path("__reload__/", include("django_browser_reload.urls"))]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

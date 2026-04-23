@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'bana-v4';
+const CACHE_VERSION = 'bana-v5';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
 
@@ -16,6 +16,15 @@ const PRECACHE_ASSETS = [
   '/offline/',
 ];
 
+const VITRINE_URLS = [
+  '/fr/',
+  '/fr/devenir-yaya/',
+  '/fr/comment-ca-marche/',
+  '/fr/parent/',
+  '/fr/contact/',
+  '/fr/a-propos/',
+];
+
 const APP_PREFIXES = [
   '/fr/accounts/', '/fr/trajets/', '/fr/chat/', '/fr/profil/',
   '/fr/bana_admin/', '/fr/bug_tracker/',
@@ -29,11 +38,13 @@ function isAppUrl(pathname) {
 }
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(STATIC_CACHE)
-      .then(cache => cache.addAll(PRECACHE_ASSETS))
-      .then(() => self.skipWaiting())
-  );
+  event.waitUntil((async () => {
+    const staticCache = await caches.open(STATIC_CACHE);
+    await staticCache.addAll(PRECACHE_ASSETS);
+    const pageCache = await caches.open(PAGE_CACHE);
+    await Promise.allSettled(VITRINE_URLS.map(url => pageCache.add(url)));
+    await self.skipWaiting();
+  })());
 });
 
 self.addEventListener('activate', event => {
@@ -82,7 +93,10 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     fetch(request)
       .then(res => {
-        if (res.ok) caches.open(PAGE_CACHE).then(c => c.put(request, res.clone()));
+        if (res.ok) {
+          const clone = res.clone();
+          caches.open(PAGE_CACHE).then(c => c.put(request, clone));
+        }
         return res;
       })
       .catch(() => caches.match(request).then(cached => cached || caches.match('/offline/')))
