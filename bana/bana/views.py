@@ -1,7 +1,8 @@
+import os
 from django.shortcuts import render, redirect
 from django.utils import translation
 from bana import settings
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.utils.translation import gettext_lazy as _
 
 # --- Home page ---------------------------------------------------------------------------
@@ -212,6 +213,65 @@ def parent(request):
     ]
     return render(request, 'parent.html', {"features_search": features_search, "features_share": features_share})
 
+# --- PWA ---------------------------------------------------------------------------
+def manifest(request):
+    data = {
+        "name": "Bana.mobi",
+        "short_name": "Bana",
+        "description": "Plateforme de mobilité partagée pour les trajets des enfants",
+        "start_url": "/fr/",
+        "display": "standalone",
+        "background_color": "#ffffff",
+        "theme_color": "#007F73",
+        "lang": "fr",
+        "orientation": "portrait-primary",
+        "icons": [
+            {
+                "src": "/static/bana/img/icon/icon-192.png",
+                "sizes": "192x192",
+                "type": "image/png",
+                "purpose": "any"
+            },
+            {
+                "src": "/static/bana/img/icon/icon-512.png",
+                "sizes": "512x512",
+                "type": "image/png",
+                "purpose": "any"
+            },
+            {
+                "src": "/static/bana/img/icon/icon-192-maskable.png",
+                "sizes": "192x192",
+                "type": "image/png",
+                "purpose": "maskable"
+            },
+            {
+                "src": "/static/bana/img/icon/icon-512-maskable.png",
+                "sizes": "512x512",
+                "type": "image/png",
+                "purpose": "maskable"
+            }
+        ],
+        "id": "/fr/",
+        "categories": ["social", "travel", "kids"]
+    }
+    return JsonResponse(data, content_type="application/manifest+json")
+
+
+def service_worker(request):
+    sw_path = os.path.join(os.path.dirname(__file__), 'static', 'bana', 'js', 'sw.js')
+    with open(sw_path, 'r') as f:
+        content = f.read()
+    response = HttpResponse(content, content_type="application/javascript")
+    response['Service-Worker-Allowed'] = '/'
+    response['Cache-Control'] = 'no-cache'
+    return response
+
+
+def offline(request):
+    return render(request, 'offline.html')
+
+
+# --- Language switch ---------------------------------------------------------------------------
 def switch_language(request, language):
     """
     Vue pour changer de langue et rediriger vers la même page

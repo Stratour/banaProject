@@ -78,8 +78,13 @@
         <div id="nav-links" class="hidden md:flex items-center space-x-6 font-bold">
 
             <a href="{% url 'home' %}"
-               class="inline-block pb-0.5 {% if url_name == 'home' %}border-b-2 border-brand-50{% endif %}">
-                <img class="w-7 h-7" src="{% static 'bana/img/icon/Icon_home.svg' %}" alt="Accueil">
+               class="inline-block pb-0.5 group {% if url_name == 'home' %}border-b-2 border-brand-50{% endif %}">
+                {% if url_name == 'home' %}
+                    <img class="w-7 h-7" src="{% static 'bana/img/icon/Icon_home_active.svg' %}" alt="Accueil">
+                {% else %}
+                    <img class="w-7 h-7 group-hover:hidden" src="{% static 'bana/img/icon/Icon_home.svg' %}" alt="Accueil">
+                    <img class="w-7 h-7 hidden group-hover:block" src="{% static 'bana/img/icon/Icon_home_active.svg' %}" alt="Accueil">
+                {% endif %}
             </a>
 
             <a href="{% url 'yaya' %}"

@@ -11,13 +11,18 @@ from accounts import views as account_views
 urlpatterns = [
     path("__reload__/", include("django_browser_reload.urls")),
     path('admin/', admin.site.urls),
-    
+
+    # PWA
+    path('manifest.json', views.manifest, name='manifest'),
+    path('sw.js', views.service_worker, name='service_worker'),
+    path('offline/', views.offline, name='offline'),
+
     # 🚨 Webhook Stripe déclaré en dehors de i18n_patterns
     path("webhook/stripe/", stripe_webhook, name="stripe_webhook"),
-    
+
     # Vue pour changer de langue
     path('switch-language/<str:language>/', views.switch_language, name='switch_language'),
-    
+
     # URL Django pour changement de langue (optionnel, en plus)
     path('i18n/', include('django.conf.urls.i18n')),
 ]

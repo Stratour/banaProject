@@ -1,0 +1,19 @@
+{% load static %}
+{% extends "layouts/base.html" %}
+
+{% block title %}Hors-ligne — Bana.mobi{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
+  <img src="{% static 'bana/img/logo/Bana_logo_dark_green.svg' %}"
+       alt="Bana.mobi" class="w-32 mb-8">
+  <h1 class="text-2xl font-bold text-[#007F73] mb-4">Vous êtes hors-ligne</h1>
+  <p class="text-gray-600 mb-8">
+    Vérifiez votre connexion internet et réessayez.
+  </p>
+  <button onclick="window.location.reload()"
+          class="px-6 py-3 bg-[#007F73] text-white rounded-lg hover:opacity-90 transition-opacity">
+    Réessayer
+  </button>
+</div>
+{% endblock %}
