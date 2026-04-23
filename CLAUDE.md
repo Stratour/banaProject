@@ -191,13 +191,29 @@ Les vues réservées aux administrateurs utilisent `SuperuserRequiredMixin(Login
 - Utiliser `@transaction.atomic` sur les vues de suppression qui cascadent sur plusieurs modèles (voir les vues `delete_*_groupe` dans `trajects/views.py`).
 - Les agrégations conditionnelles utilisent `Count('id', filter=Q(status='pending'))` — ne pas faire de `.filter()` séparés qui casseraient le groupement.
 
-### Réservations — architecture vue yaya
+### Réservations — architecture
 
-La vue `my_reservations` (`trajects/views.py`) groupe les réservations reçues par `proposed_groupe_uid` uniquement (1 carte par trajet, tous parents confondus). Les annotations ORM incluent `requester_count`, `pending_count`, `full_dates_count`, `available_dates_count`.
+**Côté Parent (`my_reservations`)** — réservations effectuées groupées par `(proposed_groupe_uid, yaya_id)` via `itertools.groupby` en Python (pas en ORM). Chaque groupe expose `yaya`, `proposed_traject`, `rows`, `first_date`, `last_date`, `pending_count`. Le template affiche un accordéon : header Yaya + sous-tableau des dates. Pas de page de détail séparée côté parent.
+
+**Côté Yaya (`my_reservations`)** — réservations reçues groupées par `proposed_groupe_uid` via annotations ORM (`requester_count`, `pending_count`, `full_dates_count`, `available_dates_count`). 1 carte par trajet, tous parents confondus.
 
 La vue détail `my_reservations_received_detail(request, proposed_groupe_uid)` regroupe ensuite les réservations par parent (`parents_dict` keyed by `user_id`), chaque parent ayant une liste de `rows` avec `reservation`, `research`, `remaining_places`.
 
 Le template `recues_detail.html` affiche les dates de chaque parent dans un `<table>` compact (pas des `<article>`) pour éviter les pages interminables sur les trajets récurrents.
+
+**Champs horaires** — `ProposedTraject.departure_time` / `arrival_time` sont `null=True, blank=True`. `ResearchedTraject.departure_time` / `arrival_time` sont requis (jamais nuls). Toujours prévoir un fallback vers `ResearchedTraject` pour l'affichage des heures.
+
+### Piège Django templates — `{% with %}`
+
+`{% with a=x b=a.foo %}` évalue **toutes** les expressions RHS dans le contexte *avant* application. Donc `a` dans `b=a.foo` est l'ancien `a` du contexte, pas le nouveau. Toujours imbriquer pour les dépendances en chaîne :
+
+```html
+{% with a=x %}
+{% with b=a.foo %}
+  ...
+{% endwith %}
+{% endwith %}
+```
 
 ### URLs
 
@@ -206,3 +222,64 @@ Les URLs localisées sont enveloppées dans `i18n_patterns()` avec `prefix_defau
 ### Frontend
 
 JavaScript vanilla uniquement — pas de React/Vue. Fichiers JS dans `bana/static/bana/js/`. Modules réutilisables : `modal.js`, `toast.js`, `carousel.js`, `address_autocomplete.js`. Couleur de marque Tailwind : `#007F73` (définie dans `theme/static_src/tailwind.config.js`).
+
+### Layout — deux base.html distincts
+
+Le projet a deux layouts séparés :
+
+| Layout | Fichier | Utilisé par |
+|---|---|---|
+| Vitrine (publique) | `bana/bana/templates/layouts/base.html` | Pages non connectées |
+| App (connectée) | `bana/accounts/templates/allauth/layouts/base.html` | Toutes les vues `@login_required` |
+
+Le layout app inclut : sidebar (`admin-side-nav.html`), footer vitrine (`layouts/footer.html`). Le header est le header vitrine (`layouts/header.html`) positionné en pleine largeur au-dessus de la sidebar. Ne jamais mélanger les deux.
+
+### Header app — design de référence (`admin-header.html`)
+
+`bana/accounts/templates/allauth/layouts/admin-header.html` est le header app **de référence** (non inclus actuellement dans `base.html` mais à réutiliser si on revient à un header séparé de la vitrine). Design approuvé à conserver :
+
+**Structure desktop :**
+```
+┌───────────────────────────────────────────────────┐
+│  [page_title]          [🌐 FR▼]  [photo/initiales▼] │  h-24, bg-brand-gradient-br
+└───────────────────────────────────────────────────┘
+```
+
+**Structure mobile :**
+```
+┌───────────────────────────────────┐
+│  [☰]    [Logo Bana]    [🌐] [👤] │  burger + logo centré (absolu)
+└───────────────────────────────────┘
+```
+
+Points clés du design :
+- `bg-brand-gradient-br` + `h-24` — hauteur généreuse, dégradé de marque
+- Avatar : photo si disponible, sinon initiales `P.N` (`verified_first_name.0.verified_last_name.0`)
+- Mobile : burger ouvre un `<aside id="admin-drawer">` (fixed, z-[100]) avec overlay (`z-[90]`)
+- Dropdown avatar : "Mon profil" + "Déconnexion" (déclenche `logout-modal`)
+- Sélecteur de langue préfixé `app` (voir section JS ci-dessous)
+
+### `page_title` — titre dynamique dans le header app
+
+Toutes les vues connectées doivent passer `page_title` dans le contexte. Il est affiché dans `admin-header.html` via `{{ page_title|default:"Mon compte" }}`.
+
+Convention de nommage : **"Section - Sous-section"**
+
+| Section | Sous-sections |
+|---|---|
+| Proposer un trajet | Nouveau trajet / Mes trajets / Mes matchings |
+| Proposer un trajet rayon | Nouveau trajet / Mes trajets / Mes matchings |
+| Rechercher un trajet | Nouveau trajet / Mes trajets / Mes matchings |
+| Mes réservations | _(pas de sous-section)_ |
+
+Les titres dans les templates (`<h1>`, `<h2>`) qui dupliquent le `page_title` du header sont commentés avec `{# A voir avec le title du header #}`.
+
+### Piège Python — `_` comme variable de boucle
+
+`trajects/views.py` importe `gettext_lazy as _`. Ne **jamais** utiliser `_` comme variable muette dans une fonction de ce fichier (ex: `for _, val in ...`) — Python le traite comme variable locale et masque l'import, provoquant un `UnboundLocalError`. Utiliser `_key`, `_unused`, etc. à la place.
+
+### JS — nommage dans le header app
+
+Les fonctions JS du header app (`admin-header.html`) utilisent le préfixe `app` pour éviter les conflits avec le header vitrine qui peut coexister sur la même page (footer partagé) : `toggleAppLanguage()`, `switchAppLanguage()`, `toggleAppAvatar()`, `closeAppAvatar()`. IDs HTML : `appLanguageButton`, `appLanguageDropdown`, `appAvatarBtn`, etc.
+
+La déconnexion dans le header app réutilise la `<dialog id="logout-modal">` déjà présente dans `layouts/footer.html` — ne pas en créer une nouvelle.
