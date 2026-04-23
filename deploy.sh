@@ -18,10 +18,14 @@ git config --global --add safe.directory "$PROD_DIR"
 git -C "$PROD_DIR" pull origin main
 echo ""
 
-# 2. Synchronisation .env
-echo "[2/6] Synchronisation .env..."
-cp "$DEV_DIR/bana/.env" "$PROD_DIR/bana/.env"
-echo "  OK"
+# 2. Vérification .env prod
+echo "[2/6] Vérification .env prod..."
+if [ ! -f "$PROD_DIR/bana/.env" ]; then
+    echo "  ERREUR : $PROD_DIR/bana/.env manquant."
+    echo "  Crée-le manuellement avec DEBUG=False et les credentials prod."
+    exit 1
+fi
+echo "  OK (non écrasé)"
 echo ""
 
 # 3. Dépendances Python
