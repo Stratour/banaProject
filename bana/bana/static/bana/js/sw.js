@@ -58,7 +58,9 @@ self.addEventListener('fetch', event => {
   if (url.pathname.startsWith('/static/')) {
     event.respondWith(
       caches.match(request).then(cached => cached || fetch(request).then(res => {
-        caches.open(STATIC_CACHE).then(c => c.put(request, res.clone()));
+        if (res.ok && res.status !== 206) {
+          caches.open(STATIC_CACHE).then(c => c.put(request, res.clone()));
+        }
         return res;
       }))
     );
