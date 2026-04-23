@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'bana-v5';
+const CACHE_VERSION = 'bana-v6';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
 
@@ -70,7 +70,8 @@ self.addEventListener('fetch', event => {
     event.respondWith(
       caches.match(request).then(cached => cached || fetch(request).then(res => {
         if (res.ok && res.status !== 206) {
-          caches.open(STATIC_CACHE).then(c => c.put(request, res.clone()));
+          const clone = res.clone();
+          caches.open(STATIC_CACHE).then(c => c.put(request, clone));
         }
         return res;
       }))
