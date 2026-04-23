@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'bana-v2';
+const CACHE_VERSION = 'bana-v3';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
 
@@ -89,10 +89,10 @@ self.addEventListener('fetch', event => {
 
   if (!request.headers.get('Accept')?.includes('text/html')) return;
 
-  // Pages app — network only, fallback offline
+  // Pages app — network only (bypass HTTP cache), fallback offline
   if (isAppUrl(url.pathname)) {
     event.respondWith(
-      fetch(request).catch(() => caches.match('/offline/'))
+      fetch(request, { cache: 'no-store' }).catch(() => caches.match('/offline/'))
     );
     return;
   }
