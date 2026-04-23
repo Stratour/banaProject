@@ -2,6 +2,10 @@
 {% load static i18n%}
 {% block title %}{% trans "Accueil" %}{% endblock %}
 
+{% block extra_head %}
+<link rel="preload" href="{% static 'bana/img/page/home.jpg' %}" as="image" fetchpriority="high">
+{% endblock %}
+
 {% block content %}
 
 <div class="w-full">
@@ -49,11 +53,11 @@
             {% get_current_language as LANGUAGE_CODE %}
 
             {% if LANGUAGE_CODE == 'fr' %}
-            <img src="{% static 'bana/img/icon/Icon_path_steps_fr.svg' %}" class="rounded-2xl w-full" />
+            <img src="{% static 'bana/img/icon/Icon_path_steps_fr.svg' %}" class="rounded-2xl w-full" alt="Étapes du trajet Bana" />
             {% elif LANGUAGE_CODE == 'en' %}
-            <img src="{% static 'bana/img/icon/Icon_path_steps_en.svg' %}" class="rounded-2xl w-full" />
+            <img src="{% static 'bana/img/icon/Icon_path_steps_en.svg' %}" class="rounded-2xl w-full" alt="Bana journey steps" />
             {% elif LANGUAGE_CODE == 'nl' %}
-            <img src="{% static 'bana/img/icon/Icon_path_steps_nl.svg' %}" class="rounded-2xl w-full" />
+            <img src="{% static 'bana/img/icon/Icon_path_steps_nl.svg' %}" class="rounded-2xl w-full" alt="Bana ritstappen" />
             {% endif %}
 
             <div class="flex flex-col gap-4">
@@ -102,8 +106,8 @@
             <!-- Image -->
             <div
                 class="w-full md:w-1/2 md:absolute md:-top-12 lg:-top-16 md:right-0 z-20 animate-on-scroll animate-right">
-                <img src="{% static 'bana/img/page/home_entraide.jpg' %}" alt="group of friends"
-                    class="w-full rounded-2xl shadow-md object-cover" />
+                <img src="{% static 'bana/img/page/home_entraide.webp' %}" alt="group of friends"
+                    class="w-full rounded-2xl shadow-md object-cover" width="1344" height="756" />
             </div>
 
             <!-- Text block -->
@@ -158,12 +162,12 @@
                 class="animate-on-scroll animate-left bg-white text-left w-full md:w-1/2 md:absolute md:-top-12 lg:-top-40 md:left-0 z-20 rounded-2xl shadow-md">
                 <div class="flex">
                     <div class="w-[40%]">
-                        <img src="{% static 'bana/img/page/home_card_trust.jpg' %}" alt="Woman in car"
-                            class="w-full h-full object-cover object-left rounded-l-2xl">
+                        <img src="{% static 'bana/img/page/home_card_trust.webp' %}" alt="Woman in car"
+                            class="w-full h-full object-cover object-left rounded-l-2xl" width="1152" height="768">
                     </div>
                     <div class="w-[80%] flex flex-col items-start px-8 py-12">
                         <h4 class="text-2xl font-bold">Nyota D.</h4>
-                        <h6 class="text-sm text-zinc-400">Parent | Chaumont-Gistoux</h6>
+                        <p class="text-sm text-zinc-400">Parent | Chaumont-Gistoux</p>
                         <img class="h-4 mt-2 mb-4" src="{% static 'bana/img/icon/Icon_stars.svg' %}" alt="Star icons">
                         <h5 class="text-teal-700 text-sm font-bold">Maman de deux enfants (2010, 2023), avec une
                             formation en marketing et une expérience en ressources humaines, en achats et en gestion de
@@ -211,12 +215,12 @@
                         <!-- Col 1 -->
                         <div class="flex flex-col gap-6 md:gap-4">
                             <div class="flex flex-col md:flex-row items-center md:items-start gap-3 md:gap-4">
-                                <img class="w-8 md:w-10" src="{% static 'bana/img/icon/Icon_id.svg' %}" />
+                                <img class="w-8 md:w-10" src="{% static 'bana/img/icon/Icon_id.svg' %}" alt="" aria-hidden="true" />
                                 <p>Carte d’identité vérifiée</p>
                             </div>
 
                             <div class="flex flex-col md:flex-row items-center md:items-start gap-3 md:gap-4">
-                                <img class="w-8 md:w-10" src="{% static 'bana/img/icon/Icon_modal.svg' %}" />
+                                <img class="w-8 md:w-10" src="{% static 'bana/img/icon/Icon_modal.svg' %}" alt="" aria-hidden="true" />
                                 <p>Extrait de casier judiciaire (modèle 596-2)</p>
                             </div>
                         </div>
@@ -224,12 +228,12 @@
                         <!-- Col 2 -->
                         <div class="flex flex-col gap-6 md:gap-4">
                             <div class="flex flex-col md:flex-row items-center md:items-start gap-3 md:gap-4">
-                                <img class="w-8 md:w-10" src="{% static 'bana/img/icon/Icon_meet.svg' %}" />
+                                <img class="w-8 md:w-10" src="{% static 'bana/img/icon/Icon_meet.svg' %}" alt="" aria-hidden="true" />
                                 <p>Rencontre organisée avant le premier trajet</p>
                             </div>
 
                             <div class="flex flex-col md:flex-row items-center md:items-start gap-3 md:gap-4">
-                                <img class="w-8 md:w-10" src="{% static 'bana/img/icon/Icon_star.svg' %}" />
+                                <img class="w-8 md:w-10" src="{% static 'bana/img/icon/Icon_star.svg' %}" alt="" aria-hidden="true" />
                                 <p>Système d’avis et d’évaluations</p>
                             </div>
                         </div>
@@ -259,8 +263,8 @@
         <div class="md:hidden max-w-[1200px] mx-auto px-4 flex flex-col gap-6">
 
             <!-- Image -->
-            <img src="{% static 'bana/img/page/home_yaya.jpg' %}"
-                class="w-full h-[300px] object-cover rounded-2xl shadow-xl" />
+            <img src="{% static 'bana/img/page/home_yaya.webp' %}"
+                class="w-full h-[300px] object-cover rounded-2xl shadow-xl" alt="Yaya accompagnant un enfant" width="864" height="864" />
 
             <!-- Texte -->
             <div class="bg-brand-gradient-bl text-white rounded-2xl px-6 py-8 text-center flex flex-col gap-4">
@@ -321,8 +325,8 @@
             <div
                 class="absolute left-[calc(50%-600px)] lg:left-[calc(50%-700px)] top-1/2 -translate-y-1/2 z-10 w-[300px] lg:w-[600px]">
 
-                <img src="{% static 'bana/img/page/home_yaya.jpg' %}"
-                    class="animate-on-scroll data-delay=150 w-full h-[520px] lg:h-[600px] object-cover rounded-2xl shadow-2xl" />
+                <img src="{% static 'bana/img/page/home_yaya.webp' %}"
+                    class="animate-on-scroll data-delay=150 w-full h-[520px] lg:h-[600px] object-cover rounded-2xl shadow-2xl" alt="Yaya accompagnant un enfant" width="864" height="864" />
 
             </div>
 
@@ -337,14 +341,14 @@
         </h2>
 
         <div class="animate-on-scroll data-delay=550 flex flex-wrap justify-center gap-6 opacity-80">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_lacapitale.svg' %}">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_lalibre.svg' %}">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_lavenir.svg' %}">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_maisonslash.svg' %}">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_rtbf.svg' %}">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_sudinfo.svg' %}">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_telesambre.svg' %}">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_vivacite.svg' %}">
+            <img class="h-8" src="{% static 'bana/img/icon/logo_lacapitale.svg' %}" alt="La Capitale">
+            <img class="h-8" src="{% static 'bana/img/icon/logo_lalibre.svg' %}" alt="La Libre">
+            <img class="h-8" src="{% static 'bana/img/icon/logo_lavenir.svg' %}" alt="L'Avenir">
+            <img class="h-8" src="{% static 'bana/img/icon/logo_maisonslash.svg' %}" alt="MaisonSlash">
+            <img class="h-8" src="{% static 'bana/img/icon/logo_rtbf.svg' %}" alt="RTBF">
+            <img class="h-8" src="{% static 'bana/img/icon/logo_sudinfo.svg' %}" alt="Sud Info">
+            <img class="h-8" src="{% static 'bana/img/icon/logo_telesambre.svg' %}" alt="Télé Sambre">
+            <img class="h-8" src="{% static 'bana/img/icon/logo_vivacite.svg' %}" alt="Vivacité">
         </div>
     </section>
 
