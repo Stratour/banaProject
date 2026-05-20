@@ -3,297 +3,343 @@
 
 {% block title %}À propos{% endblock %}
 
+{% block extra_head %}
+<link rel="preload" href="{% static 'bana/img/page/home.jpg' %}" as="image" fetchpriority="high">
+<link rel="stylesheet" href="{% static 'bana/css/home.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="min-h-screen flex flex-col items-center">
-    <div class="flex flex-col-reverse md:flex-row items-center w-full h-[90vh] md:h-screen my-8 md:my-0"
-        style="background-image: url('{% static 'bana/img/background/Background_Bana.jpg' %}'); background-size: cover; background-position: center;">
 
-        <!-- Left Content -->
-        <div class="flex flex-col items-center text-center md:text-left px-8 pb-4 md:mb-4 md:w-1/2 md:px-16 xl:px-32">
-            <h1 class="mt-4 text-4xl md:text-5xl font-bold">L'équipe</h1>
-            <h2 class="mt-2 mb-4 text-lg font-semibold text-brand">Des parents comme vous
+<!-- ===== 1. HERO ===== -->
+<section class="relative flex flex-col items-center justify-center min-h-screen text-center px-4 md:px-8 lg:px-16"
+    style="background-image: url('{% static 'bana/img/page/about/Mobilité_ multimodale_enfants_Belgique.png' %}'); background-size: cover; background-position: center;">
+
+    <div class="absolute inset-0 bg-black/15"></div>
+
+    <div class="animate-on-scroll relative z-10 max-w-3xl flex flex-col items-center gap-6 text-white -translate-y-8 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)]" data-delay="200">
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
+            Il faut tout un village<br>pour élever un enfant
+        </h1>
+        <p class="text-base md:text-lg font-medium text-white/90 max-w-2xl">
+            Chez Bana, nous développons une nouvelle culture de la mobilité scolaire en Belgique,
+            en favorisant une mobilité plus <span class="text-brand-50 font-semibold">responsable</span>,
+            plus <span class="text-brand-50 font-semibold">communautaire</span>
+            et plus <span class="text-brand-50 font-semibold">douce</span>.
+        </p>
+        <a href="{% url 'account_signup' %}"
+            class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-brand-300 font-semibold hover:bg-brand-200 hover:text-white transition [text-shadow:none]">
+            Rejoindre la communauté
+        </a>
+    </div>
+</section>
+
+<!-- ===== 2. LE DÉFI DES FAMILLES ===== -->
+<section class="px-4 md:px-8 py-16 bg-white">
+    <div class="animate-on-scroll w-full md:max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center text-center md:text-left" data-delay="150">
+
+        <!-- Gauche : citation -->
+        <div class="flex flex-col items-center md:items-start justify-center gap-4 py-8">
+            <p class="text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug text-center md:text-left">
+                "Il est nécessaire de permettre à davantage de familles de s'en sortir au quotidien sans la voiture"
+            </p>
+            <span class="text-sm font-medium text-[#007F73] tracking-widest uppercase mt-2">— La Ligue des Familles</span>
+        </div>
+
+        <!-- Droite : titre + contenu -->
+        <div class="flex flex-col gap-3 text-center md:text-left">
+            <h2 class="text-xl md:text-2xl font-bold">
+                Les trajets des enfants : un défi quotidien pour les familles
             </h2>
-            <div class="mt-6 flex flex-col xl:flex-row gap-4 items-center">
-                <a href="/contact" class="w-60 md:w-48 px-6 py-3 font-semibold text-white bg-brand rounded-full"
-                    aria-label="Join our team">Contact</a>
-            </div>
-        </div>
-
-        <!-- Right Content -->
-        <div class="relative w-full md:w-1/2 h-full overflow-hidden">
-            <!-- Right Side Background (Hidden on small screens) -->
-            <div
-                class="absolute top-0 right-[-20%] hidden md:flex w-full h-full items-center justify-center bh-brand-50 rounded-l-full overflow-hidden">
-                <img src="{% static 'bana/img/background/Bana_background_lime.png' %}" alt="Background"
-                    class="absolute w-full h-full object-cover">
-            </div>
-
-            <!-- Circular Image Container (Responsive Size) -->
-            <div
-                class="absolute left-1/2 md:left-0 top-1/2 w-80 h-80 max-w-full max-h-full transform -translate-x-1/2 md:translate-x-0 -translate-y-1/2 rounded-full overflow-hidden">
-                <img src="{% static 'bana/img/page/Bana_team_bruno_nascimento.jpg' %}" alt="Mother with her child"
-                    class="w-full h-full object-cover">
-            </div>
-        </div>
-    </div>
-
-    <!-- Benefits Section -->
-    <div class="bg-brand md:h-[12rem] w-full flex flex-col md:flex-row relative overflow-hidden">
-
-        <div class="hidden xl:block h-full">
-            <img class="h-full w-full object-cover" src="{% static 'bana/img/other/Bana_circle_right.png' %}"
-                alt="Circle with logo Bana">
-        </div>
-
-        <div class="h-[1/2] block md:hidden">
-            <img class="object-cover" src="{% static 'bana/img/other/Bana_circle_bottom.png' %}"
-                alt="Circle with logo Bana">
-        </div>
-
-        <!-- Right Section -->
-        <div
-            class="h-auto w-full flex-1 flex flex-col md:flex-row items-center justify-between md:py-6 md:px-20 text-white">
-
-            <!-- Benefit Items -->
-            <div class="flex flex-col items-center mt-12 mb-4 md:!mt-0 md:!mb-0 md:items-start text-left">
-                <h3 class="text-xl text-center md:text-left font-bold text-brand-100 mb-2">
-                    Il faut tout un village pour élever un enfant
-                </h3>
-                <div class="flex flex-col p-8 md:!p-0 justify-around text-base text-white text-center md:!text-left">
-                    <p class="mb-4 md:!mb-0">
-                        Ce <span class="text-brand-100">proverbe africain,</span> qui prône la parentalité
-                        communautaire, a inspiré le concept de Bana.
-                    </p>
-
-                    <p class="mb-4 md:!mb-0">
-                        Imaginée par une maman, la plateforme Bana repose sur un  <span class="text-brand-100">système
-                            participatif :</span> soit en argent, soit en temps.
-                    </p>
-
-                    <p class="mb-4 md:!mb-0">
-                        D’un côté, des parents qui ont besoin d’aide pour les trajets de leurs enfants, et de l’autre,
-                        des parents qui peuvent soutenir d’autres familles.
-                    </p>
-
-                    <p>
-                        Utiliser Bana, c’est comme demander un coup de main à un ami… qui nous comprend !
-                    </p>
+            <p>
+                École, crèche, activités, horaires décalés… Ces déplacements représentent près d'un <strong class="font-semibold">tiers du trafic aux heures de pointe</strong> et génèrent une charge mentale considérable — surtout pour les familles monoparentales, les parents actifs et les travailleurs à horaires variables.
+            </p>
+            <div class="grid grid-cols-2 gap-x-6 text-sm text-left mt-1">
+                <div>
+                    <p class="font-semibold mb-2">Pendant ce temps :</p>
+                    <ul class="space-y-1 list-disc list-inside text-gray-600">
+                        <li>les rues autour des écoles saturent,</li>
+                        <li>les trajets deviennent stressants,</li>
+                        <li>les enfants perdent en autonomie.</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-semibold mb-2">Et pourtant :</p>
+                    <ul class="space-y-1 list-disc list-inside text-gray-600">
+                        <li>des alternatives durables existent,</li>
+                        <li>les familles veulent changer,</li>
+                        <li>les trajets restent le principal frein.</li>
+                    </ul>
                 </div>
             </div>
         </div>
+
     </div>
+</section>
 
-    <div class="carousel-container flex items-center justify-center w-full h-1/2 p-4 overflow-hidden">
-        <div class="relative flex items-center w-full md:w-3/4">
-            <!-- Left Button -->
-            <button
-                class="prev absolute left-2 md:left-0 z-10 flex items-center justify-center w-8 h-8 md:w-16 md:h-16 p-4 text-white bg-brand rounded-full shadow-lg transform -translate-x-1/2"
-                onclick="plusDivs(-1)">
-                ❮
-            </button>
+<!-- ===== 3. NOS PRIX ===== -->
+<section class="w-full py-16 md:py-24 px-4 md:px-8 lg:px-16 bg-white">
+    <div class="max-w-7xl mx-auto">
 
-            <!-- Slides Container -->
-            <div class="relative w-full overflow-hidden">
-                <div id="carousel1"
-                    class="carousel flex w-full transition-transform duration-500 ease-in-out pointer-events-none">
-                    <div
-                        class="mySlides flex flex-col justify-center items-center w-full p-8 text-center flex-shrink-0 gap-24 xl:flex-row xl:!text-left pointer-events-auto">
-                        <img src="{% static 'bana/img/other/Nyota.png' %}"
-                            class="object-cover w-40 h-40 rounded-full md:w-96 md:h-96 md:ml-16" alt="Profile">
-                        <div class="mx-4 max-w-lg">
-                            <h2 class="text-2xl font-bold text-brand">Nyota Delecourt</h2>
-                            <p class="text-sm font-semibold text-brand">
-                                Maman de deux enfants (2010, 2023) avec une formation en marketing et une expérience en
-                                RH,
-                                achats,
-                                et gestion de projets.
-                            </p><br>
-                            <p class="text-sm text-gray-700">
-                                Passionnée par le bien-être familial. Je jongle entre la vie de maman d’un adolescent et
-                                d’un bébé,
-                                entre les entraînements de basket, les biberons et les réunions.
-                                <br><br>
-                                J’accorde de l’importance à un mode de vie durable et je rêve d’un monde où la
-                                parentalité est plus simple
-                                et où les enfants grandissent sereinement.
-                            </p>
-                        </div>
+        <!-- En-tête avec filet doré -->
+        <div class="text-center mb-12 animate-on-scroll" data-delay="100">
+            <div class="flex items-center justify-center gap-4 mb-4">
+                <div class="h-px flex-1 max-w-[80px]" style="background: linear-gradient(to right, transparent, #F59E0B)"></div>
+                <span class="text-xs font-bold tracking-[0.2em] uppercase" style="color:#F59E0B">Reconnaissances</span>
+                <div class="h-px flex-1 max-w-[80px]" style="background: linear-gradient(to left, transparent, #F59E0B)"></div>
+            </div>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-brand">3 prix, une seule mission.</h2>
+            <p class="text-gray-500 mt-2 text-sm max-w-md mx-auto">Des institutions qui reconnaissent notre impact sur la mobilité et la communauté</p>
+        </div>
+
+        <!-- Ligne 1 : Prix 1 (large photo) + Prix 3 (photo carrée) -->
+        <div class="grid md:grid-cols-5 gap-5 mb-5">
+
+            <!-- Prix 1 — Galimmo -->
+            <div class="md:col-span-3 relative rounded-3xl overflow-hidden min-h-[340px] animate-on-scroll group" data-delay="200">
+                <img src="{% static 'bana/img/page/about/Bana_prix_1.png' %}"
+                    alt="Trophées Bana — Prix Galimmo"
+                    class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, transparent 100%)"></div>
+                <div class="absolute top-5 left-5 flex items-center gap-2 rounded-full px-3 py-1.5 text-[14px] font-bold text-white" style="background-color:#F59E0B">
+                    🏆 Galimmo Belgique
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 p-6">
+                    <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#F59E0B">Coup de cœur du jury</p>
+                    <h3 class="text-xl md:text-2xl font-extrabold text-white leading-tight">Prix de l'Engagement<br>Durable</h3>
+                </div>
+            </div>
+
+            <!-- Prix 3 — SPW Mobilité -->
+            <div class="md:col-span-2 relative rounded-3xl overflow-hidden min-h-[280px] animate-on-scroll group" data-delay="300">
+                <img src="{% static 'bana/img/page/about/Semaine_mobilité_2026.jpg' %}"
+                    alt="Semaine de la Mobilité — SPW Wallonie"
+                    class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, transparent 100%)"></div>
+                <div class="absolute top-5 left-5 flex items-center gap-2 rounded-full px-3 py-1.5 font-bold text-[14px] text-white" style="background-color:#F59E0B">
+                    🏆 SPW Mobilité
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 p-6">
+                    <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#F59E0B">Semaine de la Mobilité</p>
+                    <h3 class="text-lg md:text-xl font-extrabold text-white leading-tight mb-3">Prix Coup de cœur</h3>
+                    <a href="https://mobilite.wallonie.be/home/agenda/semaine-de-mobilite.html"
+                        target="_blank" rel="noopener"
+                        class="inline-flex items-center gap-1 text-xs font-semibold transition hover:opacity-80" style="color:#F59E0B">
+                        En savoir plus →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ligne 2 : Prix 2 — Piéton Award (pleine largeur, horizontal) -->
+        <div class="rounded-3xl overflow-hidden animate-on-scroll bg-gradient-50" data-delay="400">
+            <div class="grid md:grid-cols-2">
+
+                <!-- Vidéo -->
+                <div class="relative bg-black">
+                    <video class="w-full h-full object-cover max-h-[280px] md:max-h-none" controls playsinline>
+                        <source src="{% static 'bana/img/page/about/Prix_award_2024.mp4' %}" type="video/mp4">
+                    </video>
+                </div>
+
+                <!-- Texte -->
+                <div class="p-8 flex flex-col justify-center gap-4">
+                    <div class="inline-flex items-center gap-2 w-fit rounded-full px-3 py-1.5 text-[14px] text-white font-bold" style="background-color:#F59E0B">
+                        🚶 Piéton Award 2024
                     </div>
+                    <h3 class="text-xl md:text-2xl font-extrabold text-white leading-tight">La Wallonie récompense<br>Bana Buddies</h3>
+                    <p class="text-white text-sm leading-relaxed">
+                        Organisé par <span class="text-white font-semibold">Tous à Pied</span> avec le soutien de la <span class="text-white font-semibold">Wallonie</span>, ce prix valorise les initiatives favorisant la marche à pied et la mobilité active autour des écoles.
+                    </p>
+                    <a href="https://mobilite.wallonie.be/home/je-suis/une-administration/services-et-solutions/pieton-awards.html"
+                        target="_blank" rel="noopener"
+                        class="inline-flex items-center gap-1 font-bold transition hover:opacity-80 w-fit" style="color:#F59E0B">
+                        Voir le prix Piéton Award →
+                    </a>
+                </div>
+            </div>
+        </div>
 
-                    <div
-                        class="mySlides flex flex-col justify-center items-center w-full p-8 text-center flex-shrink-0 gap-24 xl:flex-row xl:!text-left pointer-events-auto">
-                        <img src="{% static 'bana/img/other/Bernard.png' %}"
-                            class="object-cover w-40 h-40 rounded-full md:w-96 md:h-96 md:ml-16" alt="Profile">
-                        <div class="mx-4 max-w-lg">
-                            <h2 class="text-2xl font-bold text-brand">Bernard Lambeau</h2>
-                            <p class="text-sm font-semibold text-brand">
-                                Père de 3 enfants, profil IT, expérience dans le développement de plateformes pour la
-                                mobilité.
-                                Engagé et sensible aux questions environnementales.
-                            </p><br>
-                            <p class="text-sm text-gray-700">
-                                Mon objectif est de tout savoir sur la mobilité en Belgique ou, plus réalistement,
-                                d’y contribuer à son amélioration.
-                                <br><br>
-                                Je m’intéresse particulièrement à la mobilité en zones rurales.
-                            </p>
-                        </div>
+    </div>
+</section>
 
+<!-- ===== 3. NOTRE IMPACT ===== -->
+<section class="bg-brand-gradient-bl w-full py-16 md:py-24 px-4 md:px-8 lg:px-16 text-white">
+    <div class="max-w-5xl mx-auto">
+
+        <!-- Intro -->
+        <div class="text-center mb-16">
+            <h2 class="text-2xl md:text-4xl font-extrabold mb-5">Notre impact</h2>
+            <p class="text-white/75 max-w-xl mx-auto leading-relaxed text-base md:text-lg">
+                Chaque trajet partagé, c'est moins de voitures devant l'école,
+                plus de liens entre voisins — et des enfants qui grandissent en confiance.
+            </p>
+        </div>
+
+        <!-- 6 impacts -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
+            {% for impact in impacts %}
+            <div class="flex items-center gap-4 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
+                <span class="text-3xl flex-shrink-0">{{ impact.emoji }}</span>
+                <p class="font-semibold text-sm md:text-base">{{ impact.text }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- ODD -->
+        <div class="border-t border-white/15 pt-12">
+            <div class="text-center mb-10">
+                <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-white/50 mb-3">Alignement international</p>
+                <h3 class="text-xl md:text-2xl font-extrabold mb-3">En phase avec les ODD de l'ONU</h3>
+                <p class="text-white/75 text-sm max-w-lg mx-auto leading-relaxed">
+                    De la santé à la mobilité inclusive, en passant par l'égalité et l'éducation —
+                    Bana s'aligne sur <strong class="text-white font-bold">7 Objectifs de Développement Durable</strong>.
+                </p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-6">
+                {% for odd in odd_badges %}
+                <div class="flex flex-col items-center gap-2 w-24 text-center">
+                    <img src="https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-{{ odd.number }}.jpg"
+                        alt="ODD {{ odd.number }} — {{ odd.name }}"
+                        title="{{ odd.name }}"
+                        class="w-20 h-20 rounded-2xl object-cover shadow-lg">
+                    <p class="text-white/80 text-xs leading-tight font-medium">{{ odd.name }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== 4. L'ÉQUIPE ===== -->
+<section class="w-full py-16 md:py-24 px-4 md:px-8 lg:px-16 bg-white">
+    <div class="max-w-5xl mx-auto">
+
+        <!-- Titre -->
+        <div class="text-center mb-16 animate-on-scroll" data-delay="100">
+            <h2 class="text-2xl md:text-4xl font-extrabold text-gray-900 mb-2">L'équipe</h2>
+            <p class="text-gray-500 text-sm mb-7">Une équipe engagée pour transformer la mobilité scolaire</p>
+        </div>
+
+        <!-- Grille membres -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto mt-20">
+            {% for member in team_members %}
+            <div class="relative group animate-on-scroll" data-delay="{{ forloop.counter }}00">
+                <!-- Photo qui dépasse au-dessus -->
+                <div class="absolute -top-12 left-1/2 -translate-x-1/2 z-10 w-24 h-24 rounded-2xl overflow-hidden shadow-md ring-4 ring-gray-100 group-hover:ring-white/30 transition-all duration-300">
+                    <img src="{% static member.img_src %}" alt="{{ member.name }}"
+                        class="w-full h-full object-cover object-top">
+                </div>
+                <!-- Card -->
+                <div class="bg-white group-hover:bg-brand border border-gray-100 group-hover:border-brand rounded-2xl pt-16 pb-6 px-5 text-center flex flex-col shadow-sm group-hover:shadow-lg transition-all duration-300">
+                    <h3 class="font-bold text-gray-900 group-hover:text-white text-base mb-1 transition-colors duration-300">{{ member.name }}</h3>
+                    {% if member.role %}
+                    <span class="text-xs font-semibold text-brand bg-brand/10 group-hover:text-white group-hover:bg-white/20 px-3 py-1 rounded-full mb-3 self-center transition-colors duration-300">{{ member.role }}</span>
+                    {% endif %}
+                    {% if member.description %}
+                    <p class="text-sm text-gray-500 group-hover:text-white/75 leading-relaxed mb-4 flex-1 transition-colors duration-300">{{ member.description }}</p>
+                    {% endif %}
+                    <!-- Réseaux sociaux -->
+                    {% if member.linkedin or member.instagram %}
+                    <div class="flex justify-center gap-3 mt-auto pt-3 border-t border-gray-100 group-hover:border-white/20 transition-colors duration-300">
+                        {% if member.linkedin %}
+                        <a href="{{ member.linkedin }}" target="_blank" rel="noopener"
+                            class="text-brand/50 group-hover:text-white/70 transition-colors duration-300" aria-label="LinkedIn">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                        {% endif %}
+                        {% if member.instagram %}
+                        <a href="{{ member.instagram }}" target="_blank" rel="noopener"
+                            class="text-brand/50 group-hover:text-white/70 transition-colors duration-300" aria-label="Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+                            </svg>
+                        </a>
+                        {% endif %}
                     </div>
+                    {% endif %}
                 </div>
             </div>
+            {% endfor %}
+        </div>
 
-            <!-- Right Button -->
-            <button
-                class="next absolute right-2 md:right-0 z-10 flex items-center justify-center w-8 h-8 md:w-16 md:h-16 p-4 text-white bg-brand rounded-full shadow-lg transform translate-x-1/2"
-                onclick="plusDivs(1)">
-                ❯
-            </button>
+    </div>
+</section>
+
+
+<!-- ===== 6. CHARTE & RÈGLEMENT CTA ===== -->
+<section class="bg-brand-gradient-bl w-full py-12 px-4 md:px-8 lg:px-16 bg-gray-50 text-center border-t border-gray-100">
+    <div class="max-w-2xl mx-auto">
+        <h2 class="text-xl font-bold text-brand-50 mb-2">Nos engagements</h3>
+        <p class="text-white text-sm mb-6">
+            Découvrez nos règles de vie et nos engagements envers la communauté Bana.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="#"
+                class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand text-white font-semibold hover:bg-brand-300 transition">
+                Carte de bonne conduite
+            </a>
+            <a href="#"
+                class="inline-flex items-center justify-center px-6 py-3 rounded-full border-2 border-brand text-brand font-semibold hover:bg-brand hover:text-white transition">
+                Règlement
+            </a>
         </div>
     </div>
+</section>
 
-    <div class="w-full flex flex-col items-center p-8 bg-cover bg-center"
-        style="background-image: url('{% static 'bana/img/background/Bana_background_dark_green.png' %}');">
+<!-- ===== 7. ILS PARLENT DE NOUS ===== -->
+    <section class="py-16 bg-gray-50">
+        <h2 class="animate-on-scroll text-3xl md:text-5xl font-extrabold text-brand text-center mb-14">
+            Ils nous soutiennent
+        </h2>
 
-        <div class="text-xl text-center font-bold ">
-            <h3 class="text-brand-50 md:text-2xl">
-                Notre histoire
-            </h3>
+        <div class="marquee-wrapper max-w-5xl mx-auto">
+            <div class="marquee-track py-2" aria-label="Presse">
 
-            <h4 class="text-white mt-2">
-                C’est l’histoire d’une maman qui pensait pouvoir tout gérer...<br>
-                <span class="text-brand-100">Spoiler : elle s’était trompée !</span>
-            </h4>
-        </div>
-    </div>
+                <a href="https://www.materne.be/pages/pocket" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_materne.png' %}" alt="Materne"></a>
+                <a href="https://alvityl.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_alvityl.png' %}" alt="Alvityl"></a>
+                <a href="https://www.materne.be/pages/pocket" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_coverseal.png' %}" alt="Coverseal"></a>
+                <a href="https://www.digit-up.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_digit_up.svg' %}" alt="Digit-Up"></a>
+                <a href="https://startit-x.com/en/accelerate/start-it-kbc" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_startit@kbc.png' %}" alt="Start it @KBC"></a>
+                <a href="https://capinnove.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_capinnove.png' %}" alt="Cap Innove"></a>
 
-    <div class="flex justify-center w-full py-12">
-        <div class="w-full flex flex-col md:flex-row gap-4 md:w-[80%] xl:w-1/2">
+                <a href="https://www.materne.be/pages/pocket" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_materne.png' %}" alt="Materne"></a>
+                <a href="https://alvityl.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_alvityl.png' %}" alt="Alvityl"></a>
+                <a href="https://www.materne.be/pages/pocket" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_coverseal.png' %}" alt="Coverseal"></a>
+                <a href="https://www.digit-up.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_digit_up.svg' %}" alt="Digit-Up"></a>
+                <a href="https://startit-x.com/en/accelerate/start-it-kbc" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_startit@kbc.png' %}" alt="Start it @KBC"></a>
+                <a href="https://capinnove.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_capinnove.png' %}" alt="Cap Innove"></a>
 
-            <div class="w-full flex flex-col text-center md:w-1/2">
-                <div class="h-auto">
-                    <img src="{% static 'bana/img/other/Organic_shape_img.png' %}" alt="Bana Logo"
-                        class="w-full h-auto">
-                </div>
-                <div class="h-auto px-12 py-16"
-                    style="background-repeat: no-repeat; background-size: 100% 100%; background-image: url('{% static 'bana/img/other/Organic_shape_lime.png' %}');">
-                    <p>
-                        À l’époque, j’étais toujours pressée, stressée à l’idée d’arriver en retard au bureau.
-                        En quittant la maison, je devais déposer mon fils à l’école, traverser le centre-ville,
-                        puis prendre l’autoroute pour aller travailler. Seulement 35 km à parcourir, mais de porte à
-                        porte,
-                        aux heures de pointe, cela me prenait 1 heure.
-                    </p>
 
-                    <p>
-                        Chaque matin, je réveillais mon aîné (qui n’avait alors que 6 ans) en lui disant
-                        « Allez, dépêche-toi, on va être en retard. »
-                        Et le soir, c’était la même chose : en arrivant à la garderie, en l’emmenant à son activité,
-                        pour faire les devoirs, pour aller à la douche…
-                        Je ne cessais de lui demander de se dépêcher. Et je ne me rendais pas vraiment compte de la
-                        pression
-                        que je lui mettais…
-                    </p>
-                </div>
-            </div>
+                {% comment "" %}
+                <!-- Série 1 -->
+                <a href="https://www.sudinfo.be/id703073/article/2023-08-28/un-partenariat-pour-un-ramassage-scolaire-pratique-et-sur-en-cette-rentree-2023" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_sudinfo.png' %}" alt="SudInfo"></a>
+                <a href="https://www.sudinfo.be/id703073/article/2023-08-28/un-partenariat-pour-un-ramassage-scolaire-pratique-et-sur-en-cette-rentree-2023" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lacapitale.png' %}" alt="La Capitale"></a>                
+                <a href="https://www.lalibre.be/regions/brabant/2021/09/24/nivelles-bana-une-plateforme-en-ligne-qui-fait-cooperer-les-parents-NSAM4WB5QFBYXJSFKUFOEPOM6A/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lalibre.svg' %}" alt="La Libre"></a>
+                <a href="https://www.lavenir.net/regions/charleroi/2024/09/02/bana-community-debarque-a-charleroi-une-nouvelle-alternative-pour-assurer-les-trajets-scolaires-des-enfants-3B4WGQJ56BCKFNARSQR3E43UL4/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lavenir.svg' %}" alt="L'Avenir"></a>
+                <a href="https://maisonslash.be/fr/inspire/parent-preneur/le-parentpreneur-nyota-a-invente-un-concept-incroyable-bana-community-pour-partager-le-trajet-des-enfants" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300 logo-sq"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_maison_slash.png' %}" alt="MaisonSlash"></a>
+                <a href="https://www.rtbf.be/article/a-charleroi-bana-community-vient-donner-un-coup-de-pouce-aux-parents-dans-la-gestion-des-trajets-scolaires-11438554" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_rtbf.svg' %}" alt="RTBF"></a>
+                <a href="https://www.telesambre.be/info/societe/bana-community-sinstalle-charleroi-une-nouvelle-solution-pour-les-trajets-scolaires/66975" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_telesambre.svg' %}" alt="Télé Sambre"></a>
+                <a href="https://auvio.rtbf.be/media/charleroi-matin-charleroi-matin-3249330" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_vivacite.svg' %}" alt="Vivacité"></a>
+                <a href="https://www.dhnet.be/regions/charleroi/2024/09/02/bana-community-debarque-a-charleroi-une-nouvelle-alternative-pour-assurer-les-trajets-scolaires-des-enfants-ZUBVCMZHQVEWNA3I75EDIZQBLY/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_dh.svg' %}" alt="DH"></a>
 
-            <!-- Bloc de contenu dupliqué -->
-            <div class="w-full flex flex-col text-center md:w-1/2">
+                <!-- Série 2 — dupliquée pour boucle parfaite -->
+                <a href="https://www.sudinfo.be/id703073/article/2023-08-28/un-partenariat-pour-un-ramassage-scolaire-pratique-et-sur-en-cette-rentree-2023" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_sudinfo.png' %}" alt="SudInfo"></a>
+                <a href="https://www.sudinfo.be/id703073/article/2023-08-28/un-partenariat-pour-un-ramassage-scolaire-pratique-et-sur-en-cette-rentree-2023" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lacapitale.png' %}" alt="La Capitale"></a>
+                <a href="https://www.lalibre.be/regions/brabant/2021/09/24/nivelles-bana-une-plateforme-en-ligne-qui-fait-cooperer-les-parents-NSAM4WB5QFBYXJSFKUFOEPOM6A/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lalibre.svg' %}" alt=""></a>
+                <a href="https://www.lavenir.net/regions/charleroi/2024/09/02/bana-community-debarque-a-charleroi-une-nouvelle-alternative-pour-assurer-les-trajets-scolaires-des-enfants-3B4WGQJ56BCKFNARSQR3E43UL4/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lavenir.svg' %}" alt=""></a>
+                <a href="https://maisonslash.be/fr/inspire/parent-preneur/le-parentpreneur-nyota-a-invente-un-concept-incroyable-bana-community-pour-partager-le-trajet-des-enfants" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300 logo-sq" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_maison_slash.png' %}" alt=""></a>
+                <a href="https://www.rtbf.be/article/a-charleroi-bana-community-vient-donner-un-coup-de-pouce-aux-parents-dans-la-gestion-des-trajets-scolaires-11438554" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_rtbf.svg' %}" alt=""></a>
+                <a href="https://www.telesambre.be/info/societe/bana-community-sinstalle-charleroi-une-nouvelle-solution-pour-les-trajets-scolaires/66975" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_telesambre.svg' %}" alt=""></a>
+                <a href="https://auvio.rtbf.be/media/charleroi-matin-charleroi-matin-3249330" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_vivacite.svg' %}" alt=""></a>
+                <a href="https://www.dhnet.be/regions/charleroi/2024/09/02/bana-community-debarque-a-charleroi-une-nouvelle-alternative-pour-assurer-les-trajets-scolaires-des-enfants-ZUBVCMZHQVEWNA3I75EDIZQBLY/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_dh.svg' %}" alt=""></a>
+                {% endcomment %}
 
-                <div class="h-auto px-12 py-16 "
-                    style="background-repeat: no-repeat; background-size: 100% 100%; background-image: url('{% static 'bana/img/other/Organic_shape_dark_green.png' %}');">
-                    <p>
-                        Jusqu’au jour où, un matin comme les autres, je vais le réveiller pour qu’il se prépare
-                        pour l’école. Là, il entrouvre à peine ses petits yeux fatigués et, d’une voix encore endormie,
-                        me demande : « On est en retard ? »
-                    </p>
 
-                    <p>
-                        La claque ! Mon cœur s’est brisé. Je me suis sentie comme la pire des mamans…
-                        Ce matin-là, je me suis allongée à côté de lui, je l’ai serré dans mes bras et je l’ai câliné
-                        longtemps avant de partir à l’école. C’était un vrai bon moment. Un moment de qualité
-                        comme on aimerait en avoir chaque jour.
-                    </p>
-
-                    <p>
-                        Et oui, ce matin-là, j’ai fini par être en retard !
-                        Mais cela en valait la peine, car c’est ce jour-là que tout a changé…
-                    </p>
-                </div>
-
-                <div class="h-auto px-12 py-16"
-                    style="background-repeat: no-repeat; background-size: 100% 100%; background-image: url('{% static 'bana/img/other/Organic_shape_light_green.png' %}');">
-                    <p>
-                        L’histoire de Bana est née de la volonté de faire la différence : faciliter la vie des parents
-                        et créer un environnement épanouissant et serein pour les enfants.
-                    </p>
-
-                    <p>
-                        Bana — qui signifie « enfants » en lingala — est une communauté engagée qui partage les mêmes
-                        valeurs,
-                        encourage l’entraide entre parents et promeut le bien-être des enfants.
-                    </p>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<div class="carousel-container flex flex-col items-center justify-center w-full h-1/2 py-24 px-4 overflow-hidden bg-cover bg-center"
-    style="background-image: url('{% static 'bana/img/background/Bana_background_dark_green.png' %}');">
-    <div class="text-xl text-center font-bold">
-        <h3 class="text-brand-50 md:text-2xl mb-24">Ils parlent de nous !</h3>
-    </div>
-
-    <div class="relative flex items-center w-full md:w-3/4">
-        <!-- Left Button -->
-        <button
-            class="prev absolute left-2 md:left-0 z-10 flex items-center justify-center w-8 h-8 md:w-16 md:h-16 p-4 text-brand bg-brand-100 rounded-full shadow-lg transform -translate-x-1/2"
-            onclick="plusDivs(-1)">
-            ❮
-        </button>
-
-        <!-- Slides Container -->
-        <div class="relative w-full overflow-hidden">
-            <div id="carousel2" class="carousel flex flex-nowrap w-full transition-transform duration-500 ease-in-out">
-                <div
-                    class="mySlides flex flex-col md:flex-row items-center justify-center w-full flex-shrink-0 gap-8 px-16">
-                    <img src="{% static 'bana/img/logo/Logo_La_Libre.svg' %}"
-                        class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                    <img src="{% static 'bana/img/logo/Logo_Lavenir.svg' %}"
-                        class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                    <img src="{% static 'bana/img/logo/Logo_Rtbf_Auvio.svg' %}"
-                        class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                </div>
-
-                <div
-                    class="mySlides flex flex-col md:flex-row items-center justify-center w-full flex-shrink-0 gap-8 px-16">
-                    <img src="{% static 'bana/img/logo/Logo_La_Capitale.png' %}"
-                        class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                    <img src="{% static 'bana/img/logo/Logo_Maison_Slash.png' %}"
-                        class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                    <img src="{% static 'bana/img/logo/Logo_Sudinfo.png' %}"
-                        class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                </div>
-
-                <div
-                    class="mySlides flex flex-col md:flex-row items-center justify-center w-full flex-shrink-0 gap-8 px-16">
-                    <img src="{% static 'bana/img/logo/Logo_Telesambre.svg' %}"
-                        class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                    <img src="{% static 'bana/img/logo/Logo_Vivacite.svg' %}"
-                        class="object-cover w-20 h-auto md:w-40 md:h-auto" alt="Profile">
-                </div>
             </div>
         </div>
+    </section>
 
-        <!-- Right Button -->
-        <button
-            class="next absolute right-2 md:right-0 z-10 flex items-center justify-center w-8 h-8 md:w-16 md:h-16 p-4 text-brand bg-brand-100 rounded-full shadow-lg transform translate-x-1/2"
-            onclick="plusDivs(1)">
-            ❯
-        </button>
-    </div>
-</div>
-</div>
 {% endblock %}

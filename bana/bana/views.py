@@ -12,25 +12,25 @@ def home(request):
             'img_src': 'bana/img/icon/Icon_clock.svg',
             'title': _('Gain de temps'),
             'highlight': _('Flexibilité'),
-            'description': _('dans votre agenda')
+            'description': _('Flexibilité dans votre agenda')
         },
         {
             'img_src': 'bana/img/icon/Icon_currency.svg',
             'title': _('Économique'),
             'highlight': _('Économiser'),
-            'description': _('sur l’essence')
+            'description': _('Économiser sur le carburant')
         },
         {
             'img_src': 'bana/img/icon/Icon_earth.svg',
             'title': _('Écologique'),
             'highlight': _('Utiliser'),
-            'description': _('des moyens de transport alternatifs')
+            'description': _('Utiliser des moyens de transport alternatifs')
         },
         {
             'img_src': 'bana/img/icon/Icon_hearth.svg',
             'title': _('Communauté'),
             'highlight': _('Créer du lien social'),
-            'description': _('en partageant des moments')
+            'description': _('Créer du lien social')
         }
     ]
 
@@ -139,61 +139,219 @@ def contact(request):
 
 # --- About page ---------------------------------------------------------------------------
 def about(request):
-    return render(request, 'about.html')
+    impacts = [
+        {'emoji': '🌍', 'text': 'Moins de trafic autour des écoles'},
+        {'emoji': '🤝', 'text': "Plus d'entraide communautaire"},
+        {'emoji': '🧠', 'text': 'Moins de charge mentale'},
+        {'emoji': '🚀', 'text': 'Autonomie progressive des enfants'},
+        {'emoji': '🔒', 'text': 'Plus de sécurité sur la route'},
+        {'emoji': '🌱', 'text': 'Un impact environnemental concret'},
+    ]
+    odd_badges = [
+        {'number': '03', 'name': 'Bonne santé et bien-être'},
+        {'number': '04', 'name': 'Éducation de qualité'},
+        {'number': '05', 'name': 'Égalité entre les sexes'},
+        {'number': '08', 'name': 'Travail décent et croissance économique'},
+        {'number': '10', 'name': 'Inégalités réduites'},
+        {'number': '11', 'name': 'Villes et communautés durables'},
+        {'number': '12', 'name': 'Consommation et production responsables'},
+    ]
+    team_members = [
+        {
+            'img_src': 'bana/img/page/about/Nyota.png',
+            'name': 'Nyota Delecourt',
+            'role': 'Co-fondatrice',
+            'description': 'Description',
+            'linkedin': '#',
+            'instagram': '',
+        },
+        {
+            'img_src': 'bana/img/page/about/Luca.png',
+            'name': 'Luca C.',
+            'role': 'Développeur IT',
+            'description': 'Description',
+            'linkedin': '#',
+            'instagram': '',
+        },
+        {
+            'img_src': 'bana/img/page/about/Raph.png',
+            'name': 'Raphaël J.',
+            'role': 'Développeur IT',
+            'description': 'Description',
+            'linkedin': '#',
+            'instagram': '',
+        },
+    ]
+    return render(request, 'about.html', {
+        'impacts': impacts,
+        'odd_badges': odd_badges,
+        'team_members': team_members,
+    })
+
+# --- Tarifs page ---------------------------------------------------------------------------
+def tarifs(request):
+    parent_packs = [
+        {
+            'name': 'Formule Essentiel',
+            'price': '99',
+            'highlight': False,
+            'features': [
+                "Accès aux matchings pour trouver un Yaya fiable",
+                "Vérification identités + extrait de casier judiciaire modèle 2",
+                "Rencontre préalable",
+            ],
+        },
+        {
+            'name': 'Formule Confort',
+            'price': '149',
+            'highlight': True,
+            'features': [
+                "Pack Essentiel inclus",
+                "Badge identification enfant",
+                "Support prioritaire pour vos questions",
+                "Mise à disposition d'un réhausseur auto ou siège enfant si nécessaire",
+                "Conseils personnalisés pour organiser vos trajets",
+                "Petites attentions pour le confort de l'enfant (protection météo, parapluie…)",
+            ],
+        },
+        {
+            'name': 'Formule Ambassadeur',
+            'price': '199',
+            'highlight': False,
+            'features': [
+                "Pack Confort inclus",
+                "Assurance enfant incluse (valeur 30€/an)",
+                "Priorité sur les matchings",
+                "Badge identification enfant premium",
+                "Suivi personnalisé des trajets et alertes parents",
+                "Services exclusifs : activités bonus, invitation aux événements communauté",
+            ],
+        },
+    ]
+    defraiement_table = [
+        {'duration': 'Moins de 10 minutes', 'amount': '3€'},
+        {'duration': '10 à 20 minutes', 'amount': '4€ à 5€'},
+        {'duration': '20 à 30 minutes', 'amount': '5€ à 7€'},
+    ]
+    return render(request, 'tarifs.html', {
+        'parent_packs': parent_packs,
+        'defraiement_table': defraiement_table,
+    })
 
 # --- Work page ---------------------------------------------------------------------------
 def work(request):
     work_steps = [
-        {'img_src': 'bana/img/icon/Icon_profile.svg', 'title': '1. Créez votre profil', 'highlight': 'Rejoignez une communauté', 'description': 'de parents de l’école ou des activités de votre enfant.'},
-        {'img_src': 'bana/img/icon/Icon_place.svg', 'title': '2. Indiquez vos trajets', 'highlight': 'Partagez vos demandes de trajets', 'description': 'ou répondez aux alertes, et Bana vous met en relation.'},
-        {'img_src': 'bana/img/icon/Icon_message.svg', 'title': '3. Composez votre tribu', 'highlight': 'Trouvez des parents aux trajets similaires,', 'description': 'choisissez leurs profils et construisez votre tribu de confiance.'}
+        {'img_src': 'bana/img/icon/Icon_profile.svg', 'title': '1. Créez votre compte', 'description': "Parents et Yaya s'inscrivent gratuitement en 3 min"},
+        {'img_src': 'bana/img/icon/Icon_place.svg',   'title': '2. Ajoutez vos trajets', 'description': 'Renseignez vos trajets habituels et vos modes de transport'},
+        {'img_src': 'bana/img/icon/Icon_search_active.svg',  'title': '3. Découvrez vos matchings', 'description': "Passez à l'abonnement pour contacter votre Yaya"},
+        {'img_src': 'bana/img/icon/Icon_meet.svg',    'title': '4. Organisez la rencontre', 'description': "Une rencontre est prévue entre parent, enfant et Yaya avant le 1er trajet"},
     ]
 
-    work_roles = [
-        {'img_src': 'bana/img/other/Bana_Parent.png', 'alt_text': 'Parent Icon', 'link_text': 'I am a parent', 'link_url': '#'},
-        {'img_src': 'bana/img/other/Bana_Mentor.png', 'alt_text': 'Mentor Icon', 'link_text': 'I am a mentor', 'link_url': '#'},
-        {'img_src': 'bana/img/other/Bana_Community.png', 'alt_text': 'Community Icon', 'link_text': 'I am a community member', 'link_url': '#'}
+    work_detail_steps = [
+        {
+            'number': '01',
+            'title': 'Créez votre compte gratuitement',
+            'description': "Parents et Yaya s'inscrivent gratuitement sur la plateforme en 3 min et complètent leur profil avec leur photo.",
+            'highlight': None,
+        },
+        {
+            'number': '02',
+            'title': 'Ajoutez vos trajets',
+            'description': "Indiquez les <strong>trajets que vous recherchez ou que vous proposez</strong> et choisissez vos modes de transport :",
+            'highlight': "À pied, en vélo, avec un transport en commun ou en covoiturage.",
+        },
+        {
+            'number': '03',
+            'title': 'Découvrez vos matchings',
+            'description': "Lorsque des trajets compatibles sont trouvés, <strong>les profils des Yayas correspondants apparaissent dans vos résultats</strong>.",
+            'highlight': "Pour les contacter et organiser le premier trajet, passez à l'abonnement.",
+            'cta': {'text': 'Voir les tarifs', 'url': '#'},
+        },
+        {
+            'number': '04',
+            'title': 'Rencontrez-vous avant le premier trajet',
+            'description': "Une rencontre entre le parent, l'enfant et le Yaya est <strong>organisée avant tout premier trajet</strong> — pour vérifier le parcours et instaurer la confiance.",
+            'highlight': "Cette rencontre est <strong>obligatoire</strong>.",
+        },
+    ]
+
+    work_journey_steps = [
+        {
+            'icon_src': 'bana/img/icon/Icon_child.svg',
+            'title': 'Prise en charge',
+            'short_description': "Le Yaya récupère l'enfant auprès d'un adulte responsable et prévient le parent du départ.",
+            'description': "Le Yaya récupère l'enfant à la maison ou auprès d'un adulte (parent, enseignant, éducateur…). Le parent reçoit un <strong>message confirmant la prise en charge</strong> et le départ de l'enfant.",
+        },
+        {
+            'icon_src': 'bana/img/icon/Icon_security.svg',
+            'title': 'Accompagnement sécurisé',
+            'short_description': "L'enfant voyage en sécurité jusqu'à destination, quel que soit le mode de transport.",
+            'description': "Le Yaya accompagne l'enfant du départ jusqu'à la destination. Quel que soit le moyen de transport utilisé, <strong>le Yaya assure la sécurité de l'enfant pendant tout le trajet</strong>.",
+        },
+        {
+            'icon_src': 'bana/img/icon/Icon_check.svg',
+            'title': 'Arrivée et confirmation',
+            'short_description': "L'enfant est confié à un adulte à l'arrivée — le parent reçoit une confirmation.",
+            'description': "L'enfant est confié à un adulte responsable à l'arrivée selon les directives du parent. Le parent reçoit un <strong>message confirmant l'arrivée de l'enfant</strong>.",
+        },
+        {
+            'icon_src': 'bana/img/icon/Icon_cash.svg',
+            'title': 'Défraiement',
+            'short_description': "Le parent verse directement au Yaya le défraiement convenu pour le trajet.",
+            'description': "Le parent verse directement au Yaya une <strong>compensation financière pour le trajet</strong>, convenue librement entre eux selon la distance et la fréquence (réglée journalièrement ou hebdomadairement).",
+        },
     ]
 
     work_profiles = [
         {
             'img_src': 'bana/img/other/Sandy.png',
             'name': 'Sandy D.',
-            'short_bio': '38 ans, maman de Justin et Bastien, 5 et 7 ans',
-            'full_description': 'Avant, je choisissais leurs activités en fonction de mes disponibilités. Aujourd’hui, je peux leur ouvrir la porte à un monde de possibilités : il n’y a plus de limites !'
+            'age': '38 ans',
+            'short_bio': 'Maman de Justin et Bastien, 5 et 7 ans',
+            'full_description': "Avant, je choisissais leurs activités en fonction de mes disponibilités. Aujourd'hui, je peux leur ouvrir la porte à un monde de possibilités : il n'y a plus de limites !",
         },
         {
             'img_src': 'bana/img/other/Thi.png',
             'name': 'Thi M.',
-            'short_bio': '38 ans, maman de 2 garçons, 5 et 9 ans',
-            'full_description': 'Bana me permet d’aider et de dépanner d’autres parents. J’apprécie particulièrement le concept collaboratif et communautaire de cette application.'
+            'age': '38 ans',
+            'short_bio': 'Maman de 2 garçons, 5 et 9 ans',
+            'full_description': "Bana me permet d'aider et de dépanner d'autres parents. J'apprécie particulièrement le concept collaboratif et communautaire de cette application.",
         },
         {
             'img_src': 'bana/img/other/Andre.png',
             'name': 'André K.',
-            'short_bio': '41 ans, papa de 3 enfants, 1, 5 et 8 ans',
-            'full_description': 'Comme beaucoup de parents, j’étais assez réticent à confier mes enfants à d’autres. J’ai donc contacté Bana pour discuter de la confiance et de la sécurité : j’ai été très vite rassuré !'
+            'age': '41 ans',
+            'short_bio': 'Papa de 3 enfants, 1, 5 et 8 ans',
+            'full_description': "Comme beaucoup de parents, j'étais assez réticent à confier mes enfants à d'autres. J'ai donc contacté Bana pour discuter de la confiance et de la sécurité : j'ai été très vite rassuré !",
         },
-         {
+        {
             'img_src': 'bana/img/other/Alex.png',
             'name': 'Alex M.',
-            'short_bio': '33 ans, papa de Maé, 6 ans',
-            'full_description': 'En tant qu’éducateur spécialisé, j’ai des horaires coupés qui me laissent peu de flexibilité. Avec cette application, j’ai trouvé une solution pour ma fille à moindre coût. Tout le monde y gagne, moi le premier !'
+            'age': '33 ans',
+            'short_bio': 'Papa de Maé, 6 ans',
+            'full_description': "En tant qu'éducateur spécialisé, j'ai des horaires coupés qui me laissent peu de flexibilité. Avec cette application, j'ai trouvé une solution pour ma fille à moindre coût. Tout le monde y gagne, moi le premier !",
         },
         {
             'img_src': 'bana/img/other/Shilo.png',
             'name': 'Shilo B.',
-            'short_bio': '10 ans, élève de 5ᵉ primaire',
-            'full_description': 'Ce que j’adore avec Bana, c’est l’idée que je peux passer plus de temps avec mes amis car on va ensemble aux activités, c’est trop cool !'
+            'age': '10 ans',
+            'short_bio': "Élève de 5ᵉ primaire",
+            'full_description': "Ce que j'adore avec Bana, c'est l'idée que je peux passer plus de temps avec mes amis car on va ensemble aux activités, c'est trop cool !",
         },
         {
             'img_src': 'bana/img/other/Ludo.png',
             'name': 'Ludo B.',
-            'short_bio': '42 ans, papa de 2 garçons, 18 et 10 ans',
-            'full_description': 'J’y ai rencontré des parents très sérieux et flexibles. Nous partageons beaucoup de choses avec des amis qui vont au-delà des trajets de nos enfants.'
-        }
+            'age': '42 ans',
+            'short_bio': 'Papa de 2 garçons, 18 et 10 ans',
+            'full_description': "J'y ai rencontré des parents très sérieux et flexibles. Nous partageons beaucoup de choses avec des amis qui vont au-delà des trajets de nos enfants.",
+        },
     ]
-    return render(request, 'work.html', {"work_steps": work_steps, "work_roles": work_roles, "work_profiles": work_profiles})
+    return render(request, 'work.html', {
+        "work_steps": work_steps,
+        "work_detail_steps": work_detail_steps,
+        "work_journey_steps": work_journey_steps,
+        "work_profiles": work_profiles,
+    })
 
 
 # --- Parent page ---------------------------------------------------------------------------

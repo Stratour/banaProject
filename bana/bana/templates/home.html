@@ -4,75 +4,92 @@
 
 {% block extra_head %}
 <link rel="preload" href="{% static 'bana/img/page/home.jpg' %}" as="image" fetchpriority="high">
+<link rel="stylesheet" href="{% static 'bana/css/home.css' %}">
 {% endblock %}
 
 {% block content %}
 
-<div class="w-full">
-
-    <!-- HERO -->
-    <section
-        class="relative flex items-center justify-center min-h-screen md:min-h-screen text-center px-4 md:px-8 lg:px-16"
-        style="background-image: url('{% static 'bana/img/page/home.jpg' %}'); background-size: cover; background-position: center;">
+    <!-- HERO (original) !-->
+    <section class="relative flex items-center justify-center min-h-screen md:min-h-screen text-center px-4 md:px-8 lg:px-16"
+        style="background-image: url({% static 'bana/img/page/home/Transport_scolaire_Belgique.png' %}); background-size: cover; background-position: center;">
 
         <div class="absolute inset-0 bg-black/15"></div>
 
-        <div class="relative z-10 max-w-3xl flex flex-col items-center gap-6 text-white">
+        <div class="animate-on-scroll relative z-10 max-w-3xl flex flex-col items-center gap-6 text-white -translate-y-16 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)]" data-delay="250">
             <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
                 La solution pour les trajets des enfants en Belgique
             </h1>
-
-            <p class="text-base md:text-lg">
-                Bana facilite et sécurise les <span class="text-brand-50 font-semibold">trajets
-                    maison-école-activités</span> grâce à une communauté de parents et d’accompagnateurs vérifiés.
+            
+            {% comment "" %}
+            <p class="text-base md:text-lg font-semibold">
+                Bana facilite et sécurise les <span class="text-brand-50">trajets
+                    maison-école-activités</span>
+                    <br>
+                    grâce à une communauté de parents et d'accompagnateurs vérifiés.
             </p>
 
-            <p class="text-base md:text-lg">
-                <span class="text-brand-50 font-semibold">À pied, à vélo, en transport en commun ou en
+            <p class="text-base md:text-lg font-semibold">
+                <span class="text-brand-50">À pied, en transport en commun, à vélo ou en
                     covoiturage</span><br>selon
                 vos besoins et ceux de vos enfants.
             </p>
+            {% endcomment %}
+            
+            <p class="text-base md:text-lg font-semibold">
+            Bana facilite et sécurise les <span class="text-brand-50">trajets maison-école-activités</span> 
+            <br>
+            grâce à une communauté de parents et d’accompagnateurs vérifiés.
+            </p>
+            <p class="text-base md:text-lg font-semibold">
+            <span class="text-brand-50">À pied, en transport en commun, à vélo ou en covoiturage</span>
+            <br>
+            selon vos besoins et ceux de vos enfants.
+            </p>
+            
 
             <a href="{% url 'account_signup' %}"
-                class="animate-on-scroll data-delay=250 inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-black font-semibold hover:bg-brand-200 hover:text-white transition">
+                class=" inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-brand-300 font-semibold hover:bg-brand-200 hover:text-white transition [text-shadow:none]">
                 Créer mon compte
             </a>
 
+            <div class="flex flex-wrap justify-center gap-x-6 gap-y-1 text-sm text-white/80 font-medium">
+                <span>✓ Sans engagement</span>
+                <span>✓ Vérification d'identité</span>
+                <span>✓ Communauté locale</span>
+            </div>
+
+            {% comment "" %}
             <p>
                 Inscription gratuite - Sans engagement
             </p>
+            {% endcomment %}
         </div>
     </section>
-
-
+    
     <!-- PRESENTATION -->
     <section class="px-4 md:px-8 py-16 bg-gray-50">
-        <div
-            class="animate-on-scroll data-delay=150 w-full md:max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center text-center md:[text-align:left!important]">
+        <div class="animate-on-scroll w-full md:max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center text-center md:text-left" data-delay="150">
 
-            {% get_current_language as LANGUAGE_CODE %}
+            <div class="flex flex-col items-center md:items-start justify-center gap-4 py-8">
+                <p class="text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug text-center md:text-left -mt-6">
+                    "Il faut tout un village <br> pour élever un enfant"
+                </p>
+                <span class="text-sm font-medium text-[#007F73] tracking-widest uppercase mt-2">— Proverbe africain</span>
+            </div>
 
-            {% if LANGUAGE_CODE == 'fr' %}
-            <img src="{% static 'bana/img/icon/Icon_path_steps_fr.svg' %}" class="rounded-2xl w-full" alt="Étapes du trajet Bana" />
-            {% elif LANGUAGE_CODE == 'en' %}
-            <img src="{% static 'bana/img/icon/Icon_path_steps_en.svg' %}" class="rounded-2xl w-full" alt="Bana journey steps" />
-            {% elif LANGUAGE_CODE == 'nl' %}
-            <img src="{% static 'bana/img/icon/Icon_path_steps_nl.svg' %}" class="rounded-2xl w-full" alt="Bana ritstappen" />
-            {% endif %}
-
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4 text-center md:text-left">
                 <h2 class="text-xl md:text-2xl font-bold">
                     Une plateforme qui permet aux parents de trouver une personne de confiance.
                 </h2>
 
-                <p class="text-gray-600 text-lg">
+                <p class="md:text-lg">
                     Grâce à notre plateforme de mise en relation, les parents trouvent une personne de confiance appelée
-                    Yaya, pour accompagner leurs enfants sur les trajets entre la maison, l’école et les activités
+                    Yaya, pour accompagner leurs enfants sur les trajets entre la maison, l'école et les activités
                     extrascolaires.
                 </p>
-                <p class="text-gray-600 text-lg">
+                <p class="md:text-lg">
                     Avec Bana, vos enfants se déplacent à pied, à vélo, en transport en commun ou en covoiturage, en
-                    toute sécurité, grâce à notre communauté de confiance
+                    toute sécurité, grâce à notre communauté de confiance.
                 </p>
             </div>
         </div>
@@ -80,16 +97,14 @@
 
 
     <!-- BENEFICES -->
-    <section class="bg-brand-gradient-bl text-white py-10 px-4 md:px-8 lg:px-16">
-        <div class="w-full md:w-3/5 mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-sm">
-
+    <section class="bg-brand-gradient-bl text-white py-8 px-4 md:px-8 lg:px-16">
+        <div class="w-full md:w-3/4 mx-auto grid grid-cols-4 gap-x-2 sm:gap-x-6 md:gap-x-12 text-center">
 
             {% for benefit in home_benefits %}
-            <div class="animate-on-scroll data-delay=150 flex flex-col justify-between items-center mb-4 ">
-                <img class="w-10 h-10 mb-2" src="{% static benefit.img_src %}" alt="{{ benefit.title }} feature icon">
-                <h3 class="text-lg font-bold">{{ benefit.title }}</h3>
-                <p class="text-base">{{ benefit.highlight }}
-                    {{ benefit.description }}</p>
+            <div class="animate-on-scroll flex flex-col items-center py-4 gap-2 md:gap-3">
+                <img class="w-8 h-8 md:w-12 md:h-12" src="{% static benefit.img_src %}" alt="{{ benefit.title }} feature icon">
+                <h3 class="text-xs sm:text-sm md:text-lg font-bold leading-tight">{{ benefit.title }}</h3>
+                <p class="hidden sm:block text-xs md:text-lg">{{ benefit.description }}</p>
             </div>
             {% endfor %}
 
@@ -98,50 +113,45 @@
 
 
     <!-- ENTRAIDE -->
-    <section
-        class="flex justify-center px-4 md:px-8 lg:px-16 py-8 md:py-32 bg-gray-50 text-center md:[text-align:left!important]">
+    <section class="flex justify-center px-4 md:px-8 lg:px-16 py-8 sm:py-16 md:py-32 bg-gray-50">
 
-        <div class="relative w-full max-w-[1200px] xl:max-w-[1400px] mx-auto md:min-h-[520px]">
+        <div class="relative w-full max-w-[1200px] xl:max-w-[1400px] mx-auto md:min-h-[560px]">
 
             <!-- Image -->
-            <div
-                class="w-full md:w-1/2 md:absolute md:-top-12 lg:-top-16 md:right-0 z-20 animate-on-scroll animate-right">
-                <img src="{% static 'bana/img/page/home_entraide.webp' %}" alt="group of friends"
-                    class="w-full rounded-2xl shadow-md object-cover" width="1344" height="756" />
+            <div class="relative w-4/5 sm:w-3/4 mx-auto -mb-16 md:mb-0 md:w-1/2 md:absolute md:-top-12 lg:-top-16 md:right-0 z-20 animate-on-scroll animate-right">
+                <img src="{% static 'bana/img/page/home/Déplacements_scolaires_Belgique.png' %}" alt="group of friends"
+                    class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover" width="1344" height="756" />
             </div>
 
             <!-- Text block -->
             <div class="w-full md:w-[60%] lg:w-[55%] md:absolute md:bottom-0 md:left-0 z-10 flex">
 
-                <div
-                    class="animate-on-scroll data-delay=50 bg-brand-gradient-br text-white px-6 md:px-10 py-10 md:py-14 md:pr-24 lg:pr-40 xl:pr-40 rounded-2xl flex flex-col gap-4 w-full">
+                <div class="animate-on-scroll bg-brand-gradient-br text-white md:font-semibold px-6 md:px-10 pt-20 pb-10 md:py-14 md:pr-24 lg:pr-40 xl:pr-40 rounded-2xl flex flex-col gap-4 w-full md:min-h-[450px] md:justify-center" data-delay="50">
 
-                    <h2 class="animate-on-scroll data-delay=100 text-3xl md:text-5xl font-extrabold text-brand-50">
+                    <h2 class="animate-on-scroll text-4xl md:text-5xl font-extrabold text-brand-50 text-center md:text-left" data-delay="100">
                         Entraide
                     </h2>
 
-                    <h3 class="animate-on-scroll data-delay=150 text-xl md:text-3xl font-extrabold">
-                        Un service basé sur l’entraide locale
+                    <h3 class="animate-on-scroll text-xl md:text-3xl font-extrabold text-center md:text-left" data-delay="150">
+                        Un service basé sur l'entraide locale
                     </h3>
 
-                    <p class="animate-on-scroll data-delay=200 text-lg">
+                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="200">
                         Les Yaya sont des personnes de confiance qui souhaitent
                         <span class="text-brand-50 font-semibold">aider les familles</span>
                         de leur quartier tout en effectuant leurs trajets habituels.
                     </p>
 
-                    <p class="animate-on-scroll data-delay=250 text-lg">
+                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="250">
                         Ils rendent possible une
-                        <span class="text-brand-50 font-semibold">
-                            organisation plus simple et plus sereine pour les parents
-                        </span>,
+                        <span class="text-brand-50 font-semibold">organisation plus simple et plus sereine pour les parents</span>,
                         tout en permettant aux enfants de se déplacer en sécurité.
                     </p>
 
-                    <p class="animate-on-scroll data-delay=300 text-lg">
+                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="300">
                         <span class="text-brand-50 font-semibold">Chaque trajet est défrayé</span>
                         par le parent au Yaya en reconnaissance du service et du temps
-                        consacré à l’accompagnement.
+                        consacré à l'accompagnement sur le trajet.
                     </p>
 
                 </div>
@@ -152,104 +162,106 @@
 
 
     <!-- CONFIANCE -->
-    <section
-        class="flex justify-center px-4 md:px-8 lg:px-16 py-16 md:py-32 bg-gray-50 text-center md:[text-align:left!important]">
+    <section class="flex justify-center px-4 md:px-8 lg:px-16 py-8 sm:py-16 md:py-32 bg-gray-50">
 
-        <div class="relative w-full max-w-[1200px] xl:max-w-[1400px] mx-auto md:min-h-[520px]">
+        <div class="relative w-full max-w-[1200px] xl:max-w-[1400px] mx-auto md:min-h-[560px]">
 
-            <!-- Image -->
-            <div
-                class="animate-on-scroll animate-left bg-white text-left w-full md:w-1/2 md:absolute md:-top-12 lg:-top-40 md:left-0 z-20 rounded-2xl shadow-md">
-                <div class="flex">
-                    <div class="w-[40%]">
-                        <img src="{% static 'bana/img/page/home_card_trust.webp' %}" alt="Woman in car"
-                            class="w-full h-full object-cover object-left rounded-l-2xl" width="1152" height="768">
-                    </div>
-                    <div class="w-[80%] flex flex-col items-start px-8 py-12">
-                        <h4 class="text-2xl font-bold">Nyota D.</h4>
-                        <p class="text-sm text-zinc-400">Parent | Chaumont-Gistoux</p>
-                        <img class="h-4 mt-2 mb-4" src="{% static 'bana/img/icon/Icon_stars.svg' %}" alt="Star icons">
-                        <h5 class="text-teal-700 text-sm font-bold">Maman de deux enfants (2010, 2023), avec une
-                            formation en marketing et une expérience en ressources humaines, en achats et en gestion de
-                            projet.</h5>
-                        <p class="text-zinc-400 text-sm font-semibold mt-8">Passionnée par le bien-être familial, je
-                            jongle entre ma vie de maman d’un adolescent et d’un bébé, en conciliant entraînements de
-                            basket, biberons et réunions. J’accorde de l’importance à un mode de vie durable et je rêve
-                            d’un monde où être parent est plus facile et où les enfants grandissent sereinement.</p>
+            <!-- Card profil -->
+            <div class="relative animate-on-scroll animate-left w-4/5 sm:w-3/4 mx-auto -mb-16 md:mb-0 md:w-1/2 md:absolute md:-top-12 lg:-top-24 md:left-0 z-20 rounded-2xl shadow-md overflow-hidden">
+
+                <!-- MOBILE : photo pleine + overlay -->
+                <div class="md:hidden relative">
+                    <img src="{% static 'bana/img/page/home/Service_taxi_enfants_Belgique.png' %}" alt="Photo de profil Nyota D."
+                        class="w-full object-contain">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 right-0 px-4 pb-4 text-white">
+                        <h4 class="text-base font-bold leading-tight">Sofia B.</h4>
+                        <p class="text-xs text-white/70 mb-2">Yaya | Bruxelles</p>
+                        <img class="h-3 mb-2" src="{% static 'bana/img/icon/Icon_stars.svg' %}" alt="Star icons">
+                        <span class="inline-flex items-center gap-1 bg-brand-300 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                            ✓ Yaya vérifié
+                        </span>
                     </div>
                 </div>
+
+                <!-- DESKTOP : photo gauche + infos droite -->
+                <div class="hidden md:flex h-full bg-white text-left">
+
+                    <div class="relative w-[30%] shrink-0">
+                        <img src="{% static 'bana/img/page/home/Service_taxi_enfants_Belgique.png' %}" alt="Photo de profil Nyota D."
+                            class="w-full h-full object-cover object-top">
+                        <div class="absolute bottom-3 left-0 right-0 flex justify-center">
+                            <span class="inline-flex items-center gap-1 bg-brand-300 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
+                                ✓ Yaya vérifié
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="flex-1 min-w-0 flex flex-col px-5 py-6">
+                        <h4 class="text-lg font-bold leading-tight">Sofia B.</h4>
+                        <p class="text-sm text-zinc-400">Yaya | Bruxelles</p>
+                        <img class="h-3.5 mt-1 mb-4 self-start" src="{% static 'bana/img/icon/Icon_stars.svg' %}" alt="Star icons">
+                        <hr class="border-gray-200 mb-4">
+                        <div class="grid grid-cols-2 gap-x-3 gap-y-4">
+                            <div class="flex flex-col items-center text-center gap-1">
+                                <svg class="w-7 h-7 text-brand" aria-hidden="true" width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19.8 0H2.2C0.979 0 0.011 0.988889 0.011 2.22222L0 15.5556C0 16.7889 0.979 17.7778 2.2 17.7778H7.7V15.5556H2.2V8.88889H22V2.22222C22 0.988889 21.021 0 19.8 0ZM19.8 4.44444H2.2V2.22222H19.8V4.44444ZM14.223 16.8556L11.11 13.7111L9.559 15.2778L14.223 20L22 12.1444L20.449 10.5778L14.223 16.8556Z" fill="currentColor"/></svg>
+                                <p class="text-xs leading-tight font-semibold">Carte d'identité vérifiée</p>
+                            </div>
+                            <div class="flex flex-col items-center text-center gap-1">
+                                <svg class="w-7 h-7 text-brand" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 12H7C7 7.03 11.03 3 16 3V5C12.13 5 9 8.13 9 12ZM16 9V7C13.24 7 11 9.24 11 12H13C13 10.34 14.34 9 16 9ZM5 2C5 0.89 4.11 0 3 0C1.89 0 1 0.89 1 2C1 3.11 1.89 4 3 4C4.11 4 5 3.11 5 2ZM9.45 2.5H7.45C7.21 3.92 5.99 5 4.5 5H1.5C0.67 5 0 5.67 0 6.5V9H6V6.74C7.86 6.15 9.25 4.51 9.45 2.5ZM17 15C18.11 15 19 14.11 19 13C19 11.89 18.11 11 17 11C15.89 11 15 11.89 15 13C15 14.11 15.89 15 17 15ZM18.5 16H15.5C14.01 16 12.79 14.92 12.55 13.5H10.55C10.75 15.51 12.14 17.15 14 17.74V20H20V17.5C20 16.67 19.33 16 18.5 16Z" fill="currentColor"/></svg>
+                                <p class="text-xs leading-tight font-semibold">Rencontre avant le premier trajet</p>
+                            </div>
+                            <div class="flex flex-col items-center text-center gap-1">
+                                <svg class="w-7 h-7 text-brand" aria-hidden="true" width="27" height="20" viewBox="0 0 27 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23.625 5.55556V4.44444L20.25 6.66667L16.875 4.44444V5.55556L20.25 7.77778L23.625 5.55556ZM24.75 0H2.25C1.0125 0 0 1 0 2.22222V17.7778C0 19 1.0125 20 2.25 20H24.75C25.9875 20 26.9888 19 26.9888 17.7778L27 2.22222C27 1 25.9875 0 24.75 0ZM9 3.33333C10.8675 3.33333 12.375 4.82222 12.375 6.66667C12.375 8.51111 10.8675 10 9 10C7.1325 10 5.625 8.51111 5.625 6.66667C5.625 4.82222 7.1325 3.33333 9 3.33333ZM15.75 16.6667H2.25V15.5556C2.25 13.3333 6.75 12.1111 9 12.1111C11.25 12.1111 15.75 13.3333 15.75 15.5556V16.6667ZM24.75 10H15.75V3.33333H24.75V10Z" fill="currentColor"/></svg>
+                                <p class="text-xs leading-tight font-semibold">Extrait de casier judiciaire</p>
+                            </div>
+                            <div class="flex flex-col items-center text-center gap-1">
+                                <svg class="w-7 h-7 text-brand" aria-hidden="true" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 7.62105L13.4505 6.96842L10.5 0L7.5495 6.97895L0 7.62105L5.733 12.6L4.011 20L10.5 16.0737L16.989 20L15.2775 12.6L21 7.62105ZM10.5 14.1053V4.31579L12.2955 8.56842L16.8945 8.96842L13.4085 12L14.4585 16.5053L10.5 14.1053Z" fill="currentColor"/></svg>
+                                <p class="text-xs leading-tight font-semibold">Système d'avis et d'évaluations réciproques</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
 
-            <!-- Card -->
-            <div
-                class="animate-on-scroll data-delay=150 w-full md:w-[60%] lg:w-[55%] md:absolute md:bottom-0 md:right-0 z-10 flex">
+            <!-- Card texte -->
+            <div class="w-full md:w-[60%] lg:w-[55%] md:absolute md:bottom-0 md:right-0 z-10 flex">
+                <div class="bg-brand-gradient-tl text-white md:font-semibold px-6 md:px-10 pt-20 pb-10 md:py-14 md:pl-24 lg:pl-40 xl:pl-40 md:pr-12 rounded-2xl flex flex-col gap-4 w-full md:min-h-[450px] md:justify-center">
 
-                <div
-                    class="bg-brand-gradient-tl text-white px-6 md:px-10 py-10 md:py-14 md:pl-24 lg:pl-40 xl:pl-40 md:pr-12 rounded-2xl flex flex-col gap-4 w-full">
-
-                    <h2 class="text-3xl md:text-5xl font-extrabold text-brand-50">
+                    <h2 class="text-4xl md:text-5xl font-extrabold text-brand-50 text-center md:text-left">
                         Confiance
                     </h2>
 
-                    <h3 class="animate-on-scroll data-delay=0 md:text-3xl font-extrabold">
+                    <h3 class="animate-on-scroll text-xl md:text-3xl font-extrabold text-center md:text-left" data-delay="0">
                         Les Yaya : des accompagnateurs de confiance pour vos enfants
                     </h3>
 
-                    <p class="animate-on-scroll data-delay=50 text-lg">
-                        Le mot “Yaya” signifie grand frère ou grande sœur : symbolisant la
+                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="50">
+                        Le mot "Yaya" signifie grand frère ou grande sœur : symbolisant la
                         <span class="text-brand-50 font-semibold">sagesse et responsabilité</span>.
-                        Chez Bana, les Yaya accompagnent les enfants lors de leurs trajets
-                        quotidiens. Chaque trajet est organisé
+                        Chez Bana, les Yaya accompagnent les enfants lors de leurs trajets quotidiens.
+                    </p>
+                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="50">
+                        Chaque trajet est organisé
                         <span class="text-brand-50 font-semibold">porte-à-porte :</span>
-                        le Yaya récupère l’enfant auprès d’un adulte et le confie à un adulte à l’arrivée.
+                        le Yaya récupère l'enfant auprès d'un adulte et le confie à un adulte à l'arrivée.
                     </p>
 
-                    <p
-                        class="text-brand-50 font-semibold animate-on-scroll data-delay=100 text-brand-50 font-semibold mb-4 text-lg">
-                        Votre enfant n’est jamais seul.
+                    <p class="animate-on-scroll text-center md:text-left text-brand-50 font-semibold text-lg" data-delay="100">
+                        Votre enfant n'est jamais seul.
                     </p>
-
-                    <!-- Features -->
-                    <div class="animate-on-scroll data-delay=150 flex flex-col md:flex-row gap-6 md:gap-8">
-
-                        <!-- Col 1 -->
-                        <div class="flex flex-col gap-6 md:gap-4">
-                            <div class="flex flex-col md:flex-row items-center md:items-start gap-3 md:gap-4">
-                                <img class="w-8 md:w-10" src="{% static 'bana/img/icon/Icon_id.svg' %}" alt="" aria-hidden="true" />
-                                <p>Carte d’identité vérifiée</p>
-                            </div>
-
-                            <div class="flex flex-col md:flex-row items-center md:items-start gap-3 md:gap-4">
-                                <img class="w-8 md:w-10" src="{% static 'bana/img/icon/Icon_modal.svg' %}" alt="" aria-hidden="true" />
-                                <p>Extrait de casier judiciaire (modèle 596-2)</p>
-                            </div>
-                        </div>
-
-                        <!-- Col 2 -->
-                        <div class="flex flex-col gap-6 md:gap-4">
-                            <div class="flex flex-col md:flex-row items-center md:items-start gap-3 md:gap-4">
-                                <img class="w-8 md:w-10" src="{% static 'bana/img/icon/Icon_meet.svg' %}" alt="" aria-hidden="true" />
-                                <p>Rencontre organisée avant le premier trajet</p>
-                            </div>
-
-                            <div class="flex flex-col md:flex-row items-center md:items-start gap-3 md:gap-4">
-                                <img class="w-8 md:w-10" src="{% static 'bana/img/icon/Icon_star.svg' %}" alt="" aria-hidden="true" />
-                                <p>Système d’avis et d’évaluations</p>
-                            </div>
-                        </div>
-
-                    </div>
 
                     <!-- CTA -->
                     <div class="flex justify-center md:justify-start">
                         <a href="{% url 'account_signup' %}"
-                            class="animate-on-scroll data-delay=250 inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-black font-semibold hover:bg-brand-200 hover:text-white transition">
+                            class="animate-on-scroll inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-brand font-semibold hover:bg-brand-200 hover:text-white transition" data-delay="250">
                             Créer mon compte
                         </a>
                     </div>
 
                 </div>
-
             </div>
 
         </div>
@@ -260,31 +272,25 @@
     <section class="bg-gray-50 py-16 md:py-24 overflow-hidden relative">
 
         <!-- MOBILE -->
-        <div class="md:hidden max-w-[1200px] mx-auto px-4 flex flex-col gap-6">
-
-            <!-- Image -->
-            <img src="{% static 'bana/img/page/home_yaya.webp' %}"
-                class="w-full h-[300px] object-cover rounded-2xl shadow-xl" alt="Yaya accompagnant un enfant" width="864" height="864" />
-
-            <!-- Texte -->
-            <div class="bg-brand-gradient-bl text-white rounded-2xl px-6 py-8 text-center flex flex-col gap-4">
+        <div class="md:hidden relative rounded-2xl overflow-hidden shadow-xl mx-4">
+            <img src="{% static 'bana/img/page/home/home_card_3.png' %}"
+                class="absolute inset-0 w-full h-full object-cover" alt="Yaya accompagnant un enfant" width="864" height="864" />
+            <div class="absolute inset-0 bg-brand-300/50"></div>
+            <div class="relative z-10 text-white px-6 py-12 text-center flex flex-col items-center gap-4">
                 <h2 class="text-xl font-bold">
-                    Parent, étudiant, professeur,<br>
+                    Coach,étudiant, parent, professeur,<br>
                     éducateur, infirmière... ?
                 </h2>
-
-                <p class="text-sm opacity-90">
-                    Vous êtes parent, étudiant, professeur, éducateur, infirmière, et vous passez près d’une école
-                    ou d’un lieu d’activité pendant la journée ? Des familles ont besoin de vous !
+                <p class="text-lg">
+                    Vous passez près d'une école
+                    ou d'un lieu d'activité pendant la journée ? Des familles ont besoin de vous !
                 </p>
-
                 <a href="{% url 'yaya' %}"
-                    class="flex items-center justify-center gap-2 w-60 md:w-48 px-6 py-3 font-semibold text-black hover:text-white bg-brand-50 hover:bg-brand-200 rounded-full"
-                    aria-label="Create an account">
+                    class="flex items-center justify-center px-6 py-3 font-semibold text-brand bg-brand-50 hover:bg-brand-200 hover:text-white rounded-full"
+                    aria-label="Devenir Yaya">
                     Devenir Yaya
                 </a>
             </div>
-
         </div>
 
         <!-- DESKTOP -->
@@ -299,19 +305,20 @@
                     <!-- TEXTE À DROITE -->
                     <div class=" w-1/2 ml-auto text-white z-20">
 
-                        <h2 class="animate-on-scroll data-delay=50 text-2xl lg:text-3xl font-bold mb-4">
-                            Parent, étudiant, professeur,<br>
+                        <h2 class="animate-on-scroll text-2xl lg:text-3xl font-bold mb-4" data-delay="50">
+                            Coach, étudiant, parent, professeur,<br>
                             éducateur, infirmière... ?
                         </h2>
 
-                        <p class="animate-on-scroll data-delay=150 opacity-90 mb-6">
-                            Vous êtes parent, étudiant, professeur, éducateur, infirmière, et vous passez près d’une
+                        <p class="animate-on-scroll font-semibold md:text-lg mb-6" data-delay="150">
+                            Vous passez près d'une
                             école
-                            ou d’un lieu d’activité pendant la journée ? Des familles ont besoin de vous !
+                            ou d'un lieu d'activité pendant la journée ? <br>
+                            Des familles ont besoin de vous !
                         </p>
 
                         <a href="{% url 'yaya' %}"
-                            class="animate-on-scroll data-delay=250 inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-black font-semibold hover:bg-brand-200 hover:text-white transition">
+                            class="animate-on-scroll inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-brand font-semibold hover:bg-brand-200 hover:text-white transition" data-delay="250">
                             Devenir Yaya
                         </a>
 
@@ -323,10 +330,10 @@
 
             <!-- IMAGE QUI DÉPASSE -->
             <div
-                class="absolute left-[calc(50%-600px)] lg:left-[calc(50%-700px)] top-1/2 -translate-y-1/2 z-10 w-[300px] lg:w-[600px]">
+                class="absolute left-[calc(50%-380px)] lg:left-[calc(50%-700px)] top-1/2 -translate-y-1/2 z-10 w-[300px] lg:w-[600px]">
 
-                <img src="{% static 'bana/img/page/home_yaya.webp' %}"
-                    class="animate-on-scroll data-delay=150 w-full h-[520px] lg:h-[600px] object-cover rounded-2xl shadow-2xl" alt="Yaya accompagnant un enfant" width="864" height="864" />
+                <img src="{% static 'bana/img/page/home/home_card_3.png' %}"
+                    class="animate-on-scroll w-full h-[520px] lg:h-[600px] object-cover rounded-2xl shadow-2xl" data-delay="150" alt="Yaya accompagnant un enfant" width="864" height="864" />
 
             </div>
 
@@ -335,30 +342,37 @@
     </section>
 
     <!-- LOGOS -->
-    <section class="px-4 md:px-8 lg:px-16 py-32 text-center bg-gray-50">
-        <h2 class="animate-on-scroll data-delay=50 text-3xl md:text-5xl font-extrabold mb-10">
+    <section class="py-16 bg-gray-50">
+        <h2 class="animate-on-scroll text-3xl md:text-5xl font-extrabold text-brand text-center mb-14">
             Ils parlent de nous
         </h2>
 
-        <div class="animate-on-scroll data-delay=550 flex flex-wrap justify-center gap-6 opacity-80">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_lacapitale.svg' %}" alt="La Capitale">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_lalibre.svg' %}" alt="La Libre">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_lavenir.svg' %}" alt="L'Avenir">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_maisonslash.svg' %}" alt="MaisonSlash">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_rtbf.svg' %}" alt="RTBF">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_sudinfo.svg' %}" alt="Sud Info">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_telesambre.svg' %}" alt="Télé Sambre">
-            <img class="h-8" src="{% static 'bana/img/icon/logo_vivacite.svg' %}" alt="Vivacité">
+        <div class="marquee-wrapper max-w-5xl mx-auto">
+            <div class="marquee-track py-2" aria-label="Presse">
+
+                <!-- Série 1 -->
+                <a href="https://www.sudinfo.be/id703073/article/2023-08-28/un-partenariat-pour-un-ramassage-scolaire-pratique-et-sur-en-cette-rentree-2023" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_sudinfo.png' %}" alt="SudInfo"></a>
+                <a href="https://www.sudinfo.be/id703073/article/2023-08-28/un-partenariat-pour-un-ramassage-scolaire-pratique-et-sur-en-cette-rentree-2023" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lacapitale.png' %}" alt="La Capitale"></a>                <a href="https://www.lalibre.be/regions/brabant/2021/09/24/nivelles-bana-une-plateforme-en-ligne-qui-fait-cooperer-les-parents-NSAM4WB5QFBYXJSFKUFOEPOM6A/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lalibre.svg' %}" alt="La Libre"></a>
+                <a href="https://www.lavenir.net/regions/charleroi/2024/09/02/bana-community-debarque-a-charleroi-une-nouvelle-alternative-pour-assurer-les-trajets-scolaires-des-enfants-3B4WGQJ56BCKFNARSQR3E43UL4/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lavenir.svg' %}" alt="L'Avenir"></a>
+                <a href="https://maisonslash.be/fr/inspire/parent-preneur/le-parentpreneur-nyota-a-invente-un-concept-incroyable-bana-community-pour-partager-le-trajet-des-enfants" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300 logo-sq"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_maison_slash.png' %}" alt="MaisonSlash"></a>
+                <a href="https://www.rtbf.be/article/a-charleroi-bana-community-vient-donner-un-coup-de-pouce-aux-parents-dans-la-gestion-des-trajets-scolaires-11438554" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_rtbf.svg' %}" alt="RTBF"></a>
+                <a href="https://www.telesambre.be/info/societe/bana-community-sinstalle-charleroi-une-nouvelle-solution-pour-les-trajets-scolaires/66975" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_telesambre.svg' %}" alt="Télé Sambre"></a>
+                <a href="https://auvio.rtbf.be/media/charleroi-matin-charleroi-matin-3249330" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_vivacite.svg' %}" alt="Vivacité"></a>
+                <a href="https://www.dhnet.be/regions/charleroi/2024/09/02/bana-community-debarque-a-charleroi-une-nouvelle-alternative-pour-assurer-les-trajets-scolaires-des-enfants-ZUBVCMZHQVEWNA3I75EDIZQBLY/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_dh.svg' %}" alt="DH"></a>
+
+                <!-- Série 2 — dupliquée pour boucle parfaite -->
+                <a href="https://www.sudinfo.be/id703073/article/2023-08-28/un-partenariat-pour-un-ramassage-scolaire-pratique-et-sur-en-cette-rentree-2023" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_sudinfo.png' %}" alt="SudInfo"></a>
+                <a href="https://www.sudinfo.be/id703073/article/2023-08-28/un-partenariat-pour-un-ramassage-scolaire-pratique-et-sur-en-cette-rentree-2023" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lacapitale.png' %}" alt="La Capitale"></a>
+                <a href="https://www.lalibre.be/regions/brabant/2021/09/24/nivelles-bana-une-plateforme-en-ligne-qui-fait-cooperer-les-parents-NSAM4WB5QFBYXJSFKUFOEPOM6A/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lalibre.svg' %}" alt=""></a>
+                <a href="https://www.lavenir.net/regions/charleroi/2024/09/02/bana-community-debarque-a-charleroi-une-nouvelle-alternative-pour-assurer-les-trajets-scolaires-des-enfants-3B4WGQJ56BCKFNARSQR3E43UL4/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lavenir.svg' %}" alt=""></a>
+                <a href="https://maisonslash.be/fr/inspire/parent-preneur/le-parentpreneur-nyota-a-invente-un-concept-incroyable-bana-community-pour-partager-le-trajet-des-enfants" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300 logo-sq" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_maison_slash.png' %}" alt=""></a>
+                <a href="https://www.rtbf.be/article/a-charleroi-bana-community-vient-donner-un-coup-de-pouce-aux-parents-dans-la-gestion-des-trajets-scolaires-11438554" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_rtbf.svg' %}" alt=""></a>
+                <a href="https://www.telesambre.be/info/societe/bana-community-sinstalle-charleroi-une-nouvelle-solution-pour-les-trajets-scolaires/66975" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_telesambre.svg' %}" alt=""></a>
+                <a href="https://auvio.rtbf.be/media/charleroi-matin-charleroi-matin-3249330" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_vivacite.svg' %}" alt=""></a>
+                <a href="https://www.dhnet.be/regions/charleroi/2024/09/02/bana-community-debarque-a-charleroi-une-nouvelle-alternative-pour-assurer-les-trajets-scolaires-des-enfants-ZUBVCMZHQVEWNA3I75EDIZQBLY/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_dh.svg' %}" alt=""></a>
+
+            </div>
         </div>
     </section>
-
-</div>
-{% comment "" %}
-<script>
-    document.getElementById("submitButton").addEventListener("click", function () {
-        document.getElementById("searchForm").submit();
-    });
-</script>
-{% endcomment %}
 
 {% endblock %}

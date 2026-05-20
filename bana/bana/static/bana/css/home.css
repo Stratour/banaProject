@@ -1,0 +1,45 @@
+/* ── Marquee logos ───────────────────────────────────────────── */
+.marquee-wrapper { position: relative; overflow: hidden; }
+.marquee-wrapper::before,
+.marquee-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    width: 8rem;
+    z-index: 10;
+    pointer-events: none;
+}
+.marquee-wrapper::before { left: 0;  background: linear-gradient(to right, #f9fafb, transparent); }
+.marquee-wrapper::after  { right: 0; background: linear-gradient(to left,  #f9fafb, transparent); }
+
+.marquee-track {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    width: max-content;
+    animation: marquee 28s linear infinite;
+}
+.marquee-wrapper:hover .marquee-track { animation-play-state: paused; }
+
+.marquee-track a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.marquee-track img {
+    height: 3.5rem !important;
+    width: auto !important;
+    max-width: 10rem !important;
+    object-fit: contain;
+}
+
+.marquee-track .logo-sq img {
+    height: 5rem !important;
+    max-width: 5rem !important;
+}
+
+@keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+}

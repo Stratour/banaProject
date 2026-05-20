@@ -87,25 +87,32 @@
                 {% endif %}
             </a>
 
-            <a href="{% url 'yaya' %}"
-               class="relative transition-colors duration-150 {% if url_name == 'yaya' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
-                {% trans "Devenir Yaya" %}
-            </a>
-
             <a href="{% url 'work' %}"
                class="relative transition-colors duration-150 {% if url_name == 'work' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
                 {% trans "Comment ça marche ?" %}
             </a>
+            
+            <a href="{% url 'yaya' %}"
+               class="relative transition-colors duration-150 {% if url_name == 'yaya' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
+                {% trans "Devenir Yaya" %}
+            </a>
+            
+            <a href="{% url 'tarifs' %}"
+               class="relative transition-colors duration-150 {% if url_name == 'tarifs' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
+                {% trans "Tarifs" %}
+            </a>
 
             <a href="{% url 'about' %}"
                class="relative transition-colors duration-150 {% if url_name == 'about' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
-                {% trans "À propos" %}
+                {% trans "Mission" %}
             </a>
 
+            {% comment "" %}
             <a href="{% url 'contact' %}"
                class="relative transition-colors duration-150 {% if url_name == 'contact' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
                 {% trans "Contact" %}
             </a>
+            {% endcomment %}
 
         </div>
         {% endwith %}
@@ -212,14 +219,15 @@
 
                 {% else %}
                 <a href="{% url 'account_signup' %}"
-                    class="bg-brand-50 text-gray-900 px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand hover:no-underline">
+                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand hover:no-underline">
                     {% trans "Inscription" %} 
                 </a>
 
                 <a href="{% url 'account_login' %}"
-                    class="relative text-brand-50 px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand-50 hover:no-underline before:absolute before:inset-0 before:rounded-full before:border-2 before:border-brand-50">
+                    class="data-delay=250 relative text-brand-50 px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:bg-brand-50 hover:text-brand transition before:absolute before:inset-0 before:rounded-full before:border-2 before:border-brand-50">
                     {% trans "Connexion" %} 
                 </a>
+
                 {% endif %}
                 
             </div>
@@ -234,9 +242,11 @@
             <a href="{% url 'home' %}" class="text-center transition-colors {% if url_name == 'home' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "Accueil" %}</a>
             <a href="{% url 'yaya' %}" class="text-center transition-colors {% if url_name == 'yaya' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "Devenir Yaya" %}</a>
             <a href="{% url 'work' %}" class="text-center transition-colors {% if url_name == 'work' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "Comment ça marche ?" %}</a>
+            <a href="{% url 'tarifs' %}" class="text-center transition-colors {% if url_name == 'tarifs' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "Tarifs" %}</a>
             <a href="{% url 'about' %}" class="text-center transition-colors {% if url_name == 'about' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "À propos" %}</a>
+            {% comment "" %}
             <a href="{% url 'contact' %}" class="text-center transition-colors {% if url_name == 'contact' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "Contact" %}</a>
-
+            {% endcomment %}
 
 
 

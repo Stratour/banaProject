@@ -6,19 +6,7 @@
 
         <!-- Logo & Description -->
         <div class="flex flex-row items-center md:items-start lg:w-1/4">
-            <div class="relative flex-shrink-0 w-28 h-28">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="w-full h-full">
-                    <path id="circlePath" d="M 10, 50 a 40,40 0 1,1 80,0 40,40 0 1,1 -80,0" fill="none" />
-                    <text>
-                        <textPath id="circleText" href="#circlePath" startOffset="50%" text-anchor="middle"
-                            style="fill: #84cc16; font-weight: bold; font-size: 0.75rem;">
-                        </textPath>
-                    </text>
-                </svg>
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <img src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Bana Logo" class="w-14 h-14">
-                </div>
-            </div>
+            <img src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Bana Logo" class="w-14 h-14 flex-shrink-0">
 
             <p class="text-sm font-medium ml-4">
                 {% blocktrans trimmed %}
@@ -31,14 +19,20 @@
 
         <!-- Bana Community Links -->
         <div class="flex-1">
+            <h3 class="text-brand-50 font-bold text-lg mb-2">{% trans "Navigation" %}</h3>
+            {% with url_name=request.resolver_match.url_name %}
             <ul class="space-y-1">
-                
-                <li><a href="{% url 'home' %}" class="font-light hover:text-brand-50">{% trans "Accueil" %}</a></li>
-                <li><a href="{% url 'yaya' %}" class="font-light hover:text-brand-50">{% trans "Devenir yaya" %}</a></li>
-                <li><a href="{% url 'work' %}" class="font-light hover:text-brand-50">{% trans "Comment ça marche ?" %}</a></li>
-                <li><a href="{% url 'about' %}" class="font-light hover:text-brand-50">{% trans "À propos" %}</a></li>
-                <li><a href="{% url 'contact' %}" class="font-light hover:text-brand-50">{% trans "Contact" %}</a></li>
+                <li><a href="{% url 'home' %}" class="font-light hover:text-brand-50 {% if url_name == 'home' %}text-brand-50{% endif %}">{% trans "Accueil" %}</a></li>
+                <li><a href="{% url 'yaya' %}" class="font-light hover:text-brand-50 {% if url_name == 'yaya' %}text-brand-50{% endif %}">{% trans "Devenir yaya" %}</a></li>
+                <li><a href="{% url 'work' %}" class="font-light hover:text-brand-50 {% if url_name == 'work' %}text-brand-50{% endif %}">{% trans "Comment ça marche ?" %}</a></li>
+                <li><a href="{% url 'tarifs' %}" class="font-light hover:text-brand-50 {% if url_name == 'tarifs' %}text-brand-50{% endif %}">{% trans "Tarifs" %}</a></li>
+                <li><a href="{% url 'about' %}" class="font-light hover:text-brand-50 {% if url_name == 'about' %}text-brand-50{% endif %}">{% trans "À propos" %}</a></li>
+                {% comment "" %}
+                <li><a href="{% url 'contact' %}" class="font-light hover:text-brand-50 {% if url_name == 'contact' %}text-brand-50{% endif %}">{% trans "Contact" %}</a></li>
+                {% endcomment %}
             </ul>
+            {% endwith %}
+                
         </div>
 
         <!-- Contact Info -->
@@ -75,11 +69,14 @@
             <div class="mt-4">
                 <h4 class="font-semibold">{% trans "Rejoignez-nous sur les réseaux sociaux!" %}</h4>
                 <div class="flex space-x-4 mt-2">
-                    <a href="https://www.facebook.com/BanaCommunity/" target="_blank">
+                    <a href="https://www.facebook.com/BanaCommunity/" target="_blank" class="transition-opacity hover:opacity-75">
                         <img class="w-8 h-8" src="{% static 'bana/img/icon/icon_fb.svg' %}" alt="Facebook">
                     </a>
-                    <a href="https://www.instagram.com/bana_tribus/" target="_blank">
+                    <a href="https://www.instagram.com/bana_tribus/" target="_blank" class="transition-opacity hover:opacity-75">
                         <img class="w-8 h-8" src="{% static 'bana/img/icon/icon_insta.svg' %}" alt="Instagram">
+                    </a>
+                    <a href="https://www.linkedin.com/company/banamobi/posts/?feedView=all" target="_blank" class="transition-opacity hover:opacity-75">
+                        <img class="w-8 h-8" src="{% static 'bana/img/icon/icon_linkedin.svg' %}" alt="LinkedIn">
                     </a>
                 </div>
             </div>
@@ -88,17 +85,23 @@
         
     </div>
     
-    <div class="p-5 flex flex-col align-center text-center text-sm">
-        <p>&copy; bana.mobi 2026
-        Powered by DIGIT-UP Agency
-        <a class="flex justify-center" href="https://www.digit-up.be" target="_blank">
-            <img class="w-24" src="{% static 'bana/img/logo/Logo_digit_up.svg' %}" alt="Digit-Up">
+    <div class="p-5 flex flex-col items-center text-center text-sm">
+        <p>&copy; bana.mobi {% now "Y" %}
+        Powered by DIGIT-UP Agency</p>
+        <a class="flex justify-center mt-1" href="https://www.digit-up.be" target="_blank">
+            <img class="w-24 footer-digit-up-logo" src="{% static 'bana/img/logo/logo_digit_up.svg' %}" alt="Digit-Up">
         </a>
-    </p>
+        <div class="flex items-center gap-4 mt-4 text-xs font-light">
+            <span class="hover:text-brand-50 cursor-pointer">{% trans "Confidentialité" %}</span>
+            <span class="text-gray-400">|</span>
+            <span class="hover:text-brand-50 cursor-pointer">{% trans "Mentions légales" %}</span>
+            <span class="text-gray-400">|</span>
+            <span class="hover:text-brand-50 cursor-pointer">{% trans "Cookies" %}</span>
+        </div>
     </div>
 </footer>
 
-{# Ajoute cette modal à la fin de ton template #}
+{% if user.is_authenticated %}
 <dialog id="logout-modal" class="rounded-xl p-0 w-full max-w-md">
     <form method="post" action="{% url 'accounts:logout' %}" class="p-6 space-y-5">
         {% csrf_token %}
@@ -121,16 +124,4 @@
         </div>
     </form>
 </dialog>
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const textPath = document.getElementById('circleText');
-
-        // récupère la longueur réelle du chemin
-        const pathLength = document.getElementById('circlePath').getTotalLength();
-
-        // applique la longueur du chemin au texte
-        textPath.setAttribute("textLength", pathLength);
-        textPath.setAttribute("lengthAdjust", "spacingAndGlyphs");
-    });
-</script>
+{% endif %}

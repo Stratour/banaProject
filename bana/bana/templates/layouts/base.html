@@ -24,7 +24,7 @@
 <body class="min-h-screen flex flex-col bg-gray-50">
     {% include 'layouts/header.html' %}
 
-    <main class="flex-grow relative">
+    <main class="flex-grow relative overflow-x-hidden">
 
         {% if messages %}
         <div class="fixed top-28 right-6 z-[9999] flex flex-col gap-2 w-72 pointer-events-none">
@@ -70,6 +70,7 @@
     <script src="{% static 'bana/js/toast.js' %}"></script>
     <script src="{% static 'bana/js/animate.js' %}"></script>
     <script src="{% static 'bana/js/slide.js' %}"></script>
+    {% block extra_js %}{% endblock %}
     <script>
       if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {

@@ -4,3 +4,7 @@
     background-position: top;
     background-repeat: no-repeat;
 }
+
+.footer-digit-up-logo {
+    filter: brightness(0) invert(1);
+}

@@ -23,3 +23,41 @@
 /* .animate-on-scroll {
   will-change: transform, opacity;
 } */
+
+/* hover lift — cards */
+.step-card {
+  position: relative;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+.step-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.14);
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: -1;
+}
+
+.step-card:hover {
+  transform: translateY(-10px) !important;
+}
+
+.step-card:hover::after {
+  opacity: 1;
+}
+
+/* FAQ accordion — ouverture/fermeture fluide */
+.faq-body {
+  display: grid;
+  grid-template-rows: 0fr;
+  overflow: hidden;
+  transition: grid-template-rows 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.faq-body > div {
+  min-height: 0;
+}
