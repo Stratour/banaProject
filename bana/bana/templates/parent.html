@@ -1,6 +1,10 @@
 {% extends './layouts/base.html' %}
+{% load i18n %}
 
-{% block title %}Parent{% endblock %}
+{% block title %}{% trans "Parent" %}{% endblock %}
+{% block meta_description %}{% trans "Parents : Bana vous met en relation avec des Yayas de confiance pour les trajets de vos enfants. Gagnez du temps, économisez et créez du lien social dans votre quartier." %}{% endblock %}
+{% block og_title %}{% trans "Bana pour les Parents — Trajets enfants sereins" %}{% endblock %}
+{% block og_description %}{% trans "Confiez les trajets de vos enfants à des Yayas vérifiés. Gain de temps, économies sur le carburant, et tranquillité d'esprit au quotidien." %}{% endblock %}
 
 {% block content %}
 {% load static %}
@@ -76,7 +80,7 @@
     <div class="flex flex-col gap-y-12 md:flex-row text-center items-center justify-around w-full my-12">
         <div class="flex flex-col gap-y-14 px-8 md:!px-0 w-full xl:w-1/4">
             <div class="flex flex-col items-center">
-                <img src="{% static 'bana/img/page/Bana_parent_search_your_drive.jpg' %}"
+                <img src="{% static 'bana/img/page/parent/Bana_parent_search_your_drive.jpg' %}"
                     class="shadow-lg object-cover w-40 h-40 rounded-full md:w-96 md:h-96" alt="Profile">
                 <h2 class="text-2xl md:text-3xl font-bold text-brand">Search your drive</h2>
                 <h5 class="text-sm md:text-base font-bold text-brand-200 mb-4">
@@ -117,7 +121,7 @@
 
         <div class="flex flex-col gap-y-14 px-8 md:!px-0 w-full xl:w-1/4">
             <div class="flex flex-col items-center">
-                <img src="{% static 'bana/img/page/Bana_parent_share_your_drive.jpg' %}"
+                <img src="{% static 'bana/img/page/parent/Bana_parent_share_your_drive.jpg' %}"
                     class="shadow-lg object-cover w-40 h-40 rounded-full md:w-96 md:h-96" alt="Profile">
                 <h2 class="text-2xl md:text-3xl font-bold text-brand">Share your drive</h2>
                 <h5 class="text-sm md:text-base font-bold text-brand-200 mb-4">

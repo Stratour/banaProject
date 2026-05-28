@@ -1,13 +1,23 @@
 {% extends './layouts/base.html' %}
 {% load static i18n%}
 {% block title %}{% trans "Devenir Yaya" %}{% endblock %}
+{% block meta_description %}{% trans "Devenez Yaya et accompagnez les enfants de votre quartier. Jusqu'à 176€/mois, flexible, sans voiture obligatoire. Tous moyens de transport acceptés." %}{% endblock %}
+{% block og_title %}{% trans "Devenir Yaya — Accompagnez les enfants en Belgique" %}{% endblock %}
+{% block og_description %}{% trans "Rejoignez la communauté Bana en tant que Yaya. Engagement selon vos disponibilités, défraiement jusqu'à 176€/mois, lien social garanti." %}{% endblock %}
+
+{% block extra_head %}
+<link rel="preload" as="image" href="{% static 'bana/img/page/yaya/accompagnateur-enfants-trajets-scolaires.png' %}">
+{% endblock %}
 
 {% block content %}
 
     <!-- HERO -->
-    <section
-        class="relative flex items-center justify-center min-h-screen md:min-h-screen text-center px-4 md:px-8 lg:px-16"
-        style="background-image: url({% static 'bana/img/page/yaya/Accompagnateur_enfants_trajets_scolaires.png' %}); background-size: cover; background-position: center;">
+    <section class="relative flex items-center justify-center min-h-screen md:min-h-screen text-center px-4 md:px-8 lg:px-16 bg-gray-900">
+
+        <img src="{% static 'bana/img/page/yaya/accompagnateur-enfants-trajets-scolaires.png' %}"
+             class="absolute inset-0 w-full h-full object-cover object-center"
+             fetchpriority="high" loading="eager"
+             width="1536" height="1024" alt="">
 
         <div class="absolute inset-0 bg-black/15"></div>
 
@@ -48,11 +58,11 @@
             {% comment %}
             {% get_current_language as LANGUAGE_CODE %}
             {% if LANGUAGE_CODE == "fr" %}
-            <img src="{% static 'bana/img/icon/Icon_path_steps_fr.svg' %}" class="rounded-2xl w-full max-h-[480px] object-contain" />
+            <img src="{% static 'bana/img/icon/Icon_path_steps_fr.svg' %}" class="rounded-2xl w-full max-h-[480px] object-contain" alt="Étapes pour devenir Yaya" />
             {% elif LANGUAGE_CODE == "en" %}
-            <img src="{% static 'bana/img/icon/Icon_path_steps_en.svg' %}" class="rounded-2xl w-full max-h-[480px] object-contain" />
+            <img src="{% static 'bana/img/icon/Icon_path_steps_en.svg' %}" class="rounded-2xl w-full max-h-[480px] object-contain" alt="Steps to become a Yaya" />
             {% elif LANGUAGE_CODE == "nl" %}
-            <img src="{% static 'bana/img/icon/Icon_path_steps_nl.svg' %}" class="rounded-2xl w-full max-h-[480px] object-contain" />
+            <img src="{% static 'bana/img/icon/Icon_path_steps_nl.svg' %}" class="rounded-2xl w-full max-h-[480px] object-contain" alt="Stappen om Yaya te worden" />
             {% endif %}
             {% endcomment %}
 
@@ -82,8 +92,8 @@
                 </p>
 
                 <p class="text-lg">
-                    <strong>Pour devenir Yaya, vous n’avez pas nécessairement besoin de voiture.
-                        Les trajets peuvent se faire à pied, en transport en commun, à vélo ou en covoiturage.</strong>
+                    Pour devenir Yaya, vous n’avez pas nécessairement besoin de voiture.
+                    <strong>Les trajets peuvent se faire à pied, en transport en commun, à vélo ou en covoiturage.</strong>
                 </p>
             </div>
         </div>
@@ -95,7 +105,7 @@
 
             {% for benefit in yaya_benefits %}
             <div class="animate-on-scroll flex flex-col items-center py-4 md:py-10 gap-2 md:gap-3">
-                <img class="w-8 h-8 md:w-12 md:h-12" src="{% static benefit.img_src %}" alt="{{ benefit.title }} feature icon">
+                <img class="w-10 h-10 md:w-16 md:h-16" src="{% static benefit.img_src %}" alt="{{ benefit.title }}" width="40" height="40" loading="lazy">
                 <h3 class="text-xs sm:text-sm md:text-lg font-bold leading-tight">{{ benefit.title }}</h3>
                 <p class="hidden sm:block text-xs md:text-lg">{{ benefit.description }}</p>
             </div>
@@ -112,8 +122,9 @@
 
             <!-- Image -->
             <div class="relative w-4/5 sm:w-3/4 mx-auto -mb-16 md:mb-0 md:w-1/2 md:absolute md:-top-12 lg:-top-16 md:right-0 z-20 animate-on-scroll animate-right">
-                <img src="{% static 'bana/img/page/yaya/devenir_yaya_card_1.2.png' %}" alt="group of friends"
-                    class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover" />
+                <img src="{% static 'bana/img/page/yaya/devenir-yaya-belgique.png' %}" alt="Devenir Yaya en Belgique"
+                    class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover"
+                    width="1800" height="945" loading="lazy">
             </div>
 
             <!-- Text block -->
@@ -160,8 +171,9 @@
 
             <!-- Image -->
             <div class="relative animate-on-scroll animate-left w-4/5 sm:w-3/4 mx-auto -mb-16 md:mb-0 md:w-1/2 md:absolute md:-top-12 lg:-top-24 md:left-0 z-20">
-                <img src="{% static 'bana/img/page/yaya/Job_étudiant_transport_scolaire_Belgique.png' %}" alt="group of friends"
-                    class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover" />
+                <img src="{% static 'bana/img/page/yaya/job-etudiant-transport-scolaire-belgique.png' %}" alt="Job étudiant transport scolaire Belgique"
+                    class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover"
+                    width="1800" height="945" loading="lazy">
             </div>
 
             <!-- Card -->
@@ -318,7 +330,7 @@
                     <div class="flex justify-center md:justify-start pt-4">
                         <a href="{% url 'account_signup' %}"
                             class="animate-on-scroll inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-brand font-semibold hover:bg-brand-200 hover:text-white transition" data-delay="250"
-                            aria-label="Create an account">
+                            aria-label="Devenir Yaya">
                             Devenir yaya
                         </a>
                     </div>
@@ -366,13 +378,13 @@
 
                     <!-- Avatar -->
                     <img src="{% static profile.img_src %}" class="w-20 h-20 rounded-full object-cover shadow-md"
-                        alt="Profile">
+                        alt="{{ profile.name }}" width="80" height="80" loading="lazy">
 
                     <!-- Infos -->
                     <div class="flex flex-col items-center gap-1">
-                        <h2 class="text-lg font-bold text-teal-700">
+                        <p class="text-lg font-bold text-teal-700">
                             {{ profile.name }}
-                        </h2>
+                        </p>
                         <p class="text-sm text-gray-600">
                             {{ profile.age }}<br>
                             {{ profile.short_bio }}

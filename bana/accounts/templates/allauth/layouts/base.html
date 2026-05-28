@@ -16,8 +16,8 @@
     <meta name="apple-mobile-web-app-title" content="Bana.mobi">
     <link rel="apple-touch-icon" href="{% static 'bana/img/icon/icon-192.png' %}">
     {% tailwind_css %}
-    <link rel="stylesheet" href="{% static 'bana/css/toast.css' %}">
-    <link rel="stylesheet" href="{% static 'bana/css/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'bana/css/components/toast.css' %}">
+    <link rel="stylesheet" href="{% static 'bana/css/components/footer.css' %}">
     {% block extra_head %}{% endblock %}
 </head>
 
@@ -259,9 +259,9 @@
     {% include 'allauth/layouts/admin-footer-mobile.html' %}
     {% endcomment %}
 
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <script src="{% static 'bana/js/top-mobile-menu.js' %}"></script>
-    <script defer src="{% static 'bana/js/toast.js' %}"></script>
+    <script src="{% static 'bana/js/vendor/htmx.min.js' %}" defer></script>
+    <script src="{% static 'bana/js/layout/header.js' %}"></script>
+    <script defer src="{% static 'bana/js/core/toast.js' %}"></script>
     {% block extra_js %}{% endblock %}
     <script>
       if ('serviceWorker' in navigator) {

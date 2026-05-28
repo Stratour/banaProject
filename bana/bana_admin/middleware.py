@@ -1,3 +1,4 @@
+import ipaddress
 from .models import SiteVisit
 
 EXCLUDED_PREFIXES = ('/static/', '/media/', '/__reload__/')
@@ -65,5 +66,10 @@ class SiteVisitMiddleware:
     def _get_client_ip(request):
         x_forwarded = request.META.get('HTTP_X_FORWARDED_FOR')
         if x_forwarded:
-            return x_forwarded.split(',')[0].strip()
+            ip = x_forwarded.split(',')[0].strip()
+            try:
+                ipaddress.ip_address(ip)
+                return ip
+            except ValueError:
+                pass
         return request.META.get('REMOTE_ADDR', '0.0.0.0')

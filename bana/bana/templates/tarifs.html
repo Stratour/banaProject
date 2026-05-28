@@ -1,14 +1,25 @@
 {% extends './layouts/base.html' %}
 {% load static i18n %}
-{% block title %}Tarifs{% endblock %}
+{% block title %}{% trans "Tarifs" %}{% endblock %}
+{% block meta_description %}{% trans "Formules Bana à 99€, 149€ ou 199€/an. Inscription gratuite, paiement uniquement en cas de matching. Sans engagement, sans commission sur les trajets." %}{% endblock %}
+{% block og_title %}{% trans "Tarifs Bana — 3 formules adaptées à vos besoins" %}{% endblock %}
+{% block og_description %}{% trans "Essentiel, Confort ou Ambassadeur : choisissez la formule qui vous correspond. Vérification d'identité incluse, badges enfants, support prioritaire." %}{% endblock %}
+
+{% block extra_head %}
+<link rel="preload" as="image" href="{% static 'bana/img/page/tarifs/tarifs-transport-scolaire-belgique.jpg' %}">
+{% endblock %}
 
 {% block content %}
 
     <!-- ═══════════════════════════════════════════════ -->
     <!-- SECTION 1 — HERO                               -->
     <!-- ═══════════════════════════════════════════════ -->
-    <section class="relative flex items-center justify-center min-h-screen text-center px-4 md:px-8 lg:px-16"
-        style="background-image: url({% static 'bana/img/page/Bana_work_vonecia_carswell.jpg' %}); background-size: cover; background-position: center;">
+    <section class="relative flex items-center justify-center min-h-screen text-center px-4 md:px-8 lg:px-16 bg-gray-900">
+
+        <img src="{% static 'bana/img/page/tarifs/tarifs-transport-scolaire-belgique.jpg' %}"
+             class="absolute inset-0 w-full h-full object-cover object-center"
+             fetchpriority="high" loading="eager"
+             width="1920" height="1280" alt="">
 
         <div class="absolute inset-0 bg-black/50"></div>
 
@@ -18,11 +29,27 @@
                 Un modèle simple et équitable
             </h1>
 
+            <p class="text-base md:text-lg font-medium text-white/90 max-w-2xl">
+                La confiance, ça se mérite.
+            
+                
+
+               
+                 <span class="text-brand-50 font-semibold"></span>
+                 <span class="text-brand-50 font-semibold"></span>
+            </p>
+
+            <p class="text-base md:text-lg font-medium text-white/90 max-w-2xl">
+                Chez Bana, l'inscription est gratuite.
+                <br>
+                Vous passez à l'abonnement uniquement lorsqu'une <span class="text-brand-50 font-semibold">mise en relation compatible</span> vous est proposée.
+            </p>
+
             <a href="{% url 'account_signup' %}"
                 class="inline-flex items-center justify-center px-8 py-3 rounded-full bg-brand-50 text-brand font-semibold hover:bg-brand-300 hover:text-white [text-shadow:none] transition">
-                Créer mon compte gratuitement
+                Rejoindre gratuitement
             </a>
-            <p class="text-sm ">Inscription gratuite &bull; 3 minutes &bull; Sans engagement</p>
+            <p class="text-sm ">Inscription gratuite &bull; Sans engagement</p>
         </div>
     </section>
 
@@ -41,21 +68,27 @@
 
             <div class="flex flex-col gap-4">
                 <h2 class="text-xl md:text-2xl font-bold">
-                    Un modèle simple et équitable
+                    Rejoindre Bana est gratuit
                 </h2>
 
                 <p class="text-lg">
-                    L'inscription sur Bana est <strong>gratuite</strong> pour indiquer ses trajets.
+                    Créez votre profil et indiquez vos trajets librement, sans engagement.
                 </p>
 
-                <p class="text-lg">
-                    L'abonnement permet d'accéder aux matchings et d'entrer en contact
-                avec les membres de la communauté.
-                </p>
+                <h2 class="text-xl md:text-2xl font-bold">
+                    Vous vous abonnez uniquement lorsqu’un matching est disponible
+                </h2>
 
                 <p class="text-lg">
-                     Chaque trajet est ensuite défrayé directement par le parent au Yaya,
-                en reconnaissance du service rendu et du temps consacré à l'accompagnement.
+                    Chez Bana, vous payez uniquement lorsque la plateforme vous permet réellement d’entrer en contact avec des membres partageant des trajets compatibles avec vos besoins.
+                </p>
+
+                <h2 class="text-xl md:text-2xl font-bold">
+                    Les trajets sont ensuite défrayés
+                </h2>
+
+                <p class="text-lg">
+                Chaque défraiement reconnaît le temps, l’attention et l’accompagnement apportés aux enfants lors des trajets.
                 </p>
             </div>
         </div>
@@ -65,23 +98,13 @@
     <section class="bg-brand-gradient-bl text-white py-6 px-4 md:px-8 lg:px-16">
         <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
 
-            <div class="animate-on-scroll flex flex-col items-center gap-2 py-4" data-delay="100">
-                <img src="{% static 'bana/img/icon/Icon_profile.svg' %}" alt="" class="w-10 h-10">
-                <p class="text-brand-50 font-bold text-lg">Inscription gratuite</p>
-                <p class="text-white text-sm">Parents et Yaya s'inscrivent gratuitement</p>
+            {% for item in tarifs_highlights %}
+            <div class="animate-on-scroll flex flex-col items-center gap-2 py-4" data-delay="{{ forloop.counter }}00">
+                <img src="{% static item.img_src %}" alt="" aria-hidden="true" class="w-16 h-16" width="64" height="64">
+                <p class="font-bold text-lg">{{ item.title }}</p>
+                <p class="text-white text-sm">{{ item.description }}</p>
             </div>
-
-            <div class="animate-on-scroll flex flex-col items-center gap-2 py-4" data-delay="200">
-                <img src="{% static 'bana/img/icon/Icon_search_active.svg' %}" alt="" class="w-10 h-10">
-                <p class="text-brand-50 font-bold text-lg">Abonnement payant</p>
-                <p class="text-white text-sm">Abonnement nécessaire pour découvrir les matchings</p>
-            </div>
-
-            <div class="animate-on-scroll flex flex-col items-center gap-2 py-4" data-delay="300">
-                <img src="{% static 'bana/img/icon/Icon_cash.svg' %}" alt="" class="w-10 h-10">
-                <p class="text-brand-50 font-bold text-lg">Trajets défrayés</p>
-                <p class="text-white text-sm">Petite compensation pour chaque trajet effectué</p>
-            </div>
+            {% endfor %}
 
         </div>
     </section>
@@ -104,13 +127,14 @@
     <!-- SECTION 2 — FORMULES PARENT                    -->
     <!-- ═══════════════════════════════════════════════ -->
     <section class="bg-white py-16 px-4 md:px-8 lg:px-16">
-        <div class="max-w-6xl mx-auto">
+        <div class="max-w-7xl mx-auto">
 
             <div class="animate-on-scroll text-center mb-12" data-delay="100">
                 <h2 class="text-2xl md:text-4xl font-extrabold text-gray-900 mb-4">Formules Parent</h2>
                 <p class="text-gray-600 md:text-lg max-w-2xl mx-auto">
-                    Pour Bana, la <strong>sécurité des enfants n'a pas de prix</strong>.<br>
-                    C'est pourquoi la <strong>vérification des profils</strong> des Yaya reste la base de tous les packs — incluse pour chaque abonnement.
+                    Pour Bana, la <strong>sécurité des enfants n'a pas de prix</strong>.
+                    <br>
+                    C'est pourquoi la <strong>vérification des profils</strong> des Yaya reste la base de <strong>tous les packs</strong>.
                 </p>
             </div>
 
@@ -131,6 +155,12 @@
                             {{ pack.name }}
                         </h3>
 
+                        {% if pack.tagline %}
+                        <p class="text-sm italic {% if pack.highlight %}text-white/80{% else %}text-gray-500{% endif %} -mt-2">
+                            {{ pack.tagline }}
+                        </p>
+                        {% endif %}
+
                         <div class="flex items-end gap-1">
                             <span class="text-4xl font-extrabold {% if pack.highlight %}text-brand-50{% else %}text-brand{% endif %}">
                                 {{ pack.price }}€
@@ -138,10 +168,25 @@
                             <span class="text-sm {% if pack.highlight %}text-white/70{% else %}text-gray-500{% endif %} mb-1">/an</span>
                         </div>
 
+                        {% if pack.included or pack.extra_child %}
+                        <div class="flex flex-col gap-1 pb-3 border-b {% if pack.highlight %}border-white/20{% else %}border-gray-100{% endif %}">
+                            {% if pack.included %}
+                            <p class="text-sm font-semibold {% if pack.highlight %}text-white{% else %}text-gray-800{% endif %}">
+                                {{ pack.included }}
+                            </p>
+                            {% endif %}
+                            {% if pack.extra_child %}
+                            <p class="text-xs {% if pack.highlight %}text-white/80{% else %}text-gray-500{% endif %}">
+                                {{ pack.extra_child }}
+                            </p>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+
                         <ul class="flex-1 flex flex-col gap-3 mt-2">
                             {% for feature in pack.features %}
                             <li class="flex items-start gap-2 text-sm {% if pack.highlight %}text-white/90{% else %}text-gray-700{% endif %}">
-                                <img src="{% static 'bana/img/icon/Icon_check.svg' %}" alt="" class="w-4 h-4 mt-0.5 shrink-0 {% if pack.highlight %}brightness-0 invert{% endif %}">
+                                <img src="{% static 'bana/img/icon/Icon_check.svg' %}" alt="" aria-hidden="true" class="w-4 h-4 mt-0.5 shrink-0 {% if pack.highlight %}brightness-0 invert{% endif %}" width="16" height="16">
                                 <span>{{ feature }}</span>
                             </li>
                             {% endfor %}
@@ -170,8 +215,11 @@
             <div class="flex flex-col gap-4">
                 <h2 class="text-2xl md:text-3xl font-extrabold">Et côté Yaya ?</h2>
                 <p class="text-white/90 md:text-lg">
-                    Devenir Yaya coûte seulement <strong class="text-brand-50">4,90€/an</strong>.<br>
-                    En échange, vous accédez aux matchings et recevez un <strong class="text-brand-50">défraiement direct</strong> des familles pour chaque trajet effectué.
+                    <strong>S'inscrire comme Yaya est gratuit.</strong>
+                    <br>
+                    Pour accéder aux matchings, l'abonnement coûte seulement <strong class="text-brand-50">4,90€/an</strong>.
+                    <br>
+                    Ensuite, recevez  un<strong class="text-brand-50"> défraiement</strong> pour chaque trajet effectué.
                 </p>
                 <a href="{% url 'yaya' %}"
                     class="self-start inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-white transition underline underline-offset-4">
@@ -184,16 +232,16 @@
 
             <ul class="flex flex-col gap-4">
                 <li class="flex items-center gap-4 bg-white/10 rounded-2xl px-5 py-4 transition hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg cursor-default">
-                    <img src="{% static 'bana/img/icon/Icon_profile.svg' %}" alt="" class="w-8 h-8">
+                    <img src="{% static 'bana/img/page/tarifs/formule-unique.svg' %}" alt="" aria-hidden="true" class="w-12 h-12" width="48" height="48">
                     <div>
-                        <p class="font-bold text-brand-50">Abonnement Yaya</p>
+                        <p class="font-bold">Formule unique</p>
                         <p class="text-sm text-white/80">Seulement 4,90€/an pour rejoindre la communauté</p>
                     </div>
                 </li>
                 <li class="flex items-center gap-4 bg-white/10 rounded-2xl px-5 py-4 transition hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg cursor-default">
-                    <img src="{% static 'bana/img/icon/Icon_cash.svg' %}" alt="" class="w-8 h-8">
+                    <img src="{% static 'bana/img/page/tarifs/defraiement-1.svg' %}" alt="" aria-hidden="true" class="w-12 h-12" width="48" height="48">
                     <div>
-                        <p class="font-bold text-brand-50">Défraiement direct</p>
+                        <p class="font-bold">Défraiement dès le premier trajet</p>
                         <p class="text-sm text-white/80">Versé directement par les familles, sans commission Bana</p>
                     </div>
                 </li>
@@ -336,19 +384,21 @@
 
             <div class="space-y-3">
 
+                {% comment "" %}
                 <details class="faq-item group border border-gray-200 rounded-2xl overflow-hidden">
                     <summary class="flex justify-between items-center px-6 py-4 cursor-pointer font-semibold text-gray-900 select-none list-none hover:bg-gray-50 transition-colors">
-                        L'inscription sur Bana est-elle gratuite ?
+                        Pourquoi mettre en place un système de défraiement
                         <svg class="w-5 h-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                         </svg>
                     </summary>
                     <div class="faq-body">
                         <div class="px-6 py-3 text-gray-600 leading-relaxed border-t border-gray-100">
-                            Oui. L'inscription est gratuite pour les parents et les Yaya afin de créer un profil et d'indiquer ses trajets.
+                        Bana facilite les rencontres et l’organisation des trajets, tout en valorisant humainement celles et ceux qui accompagnent les enfants.  
                         </div>
                     </div>
                 </details>
+                {% endcomment %}
 
                 <details class="faq-item group border border-gray-200 rounded-2xl overflow-hidden">
                     <summary class="flex justify-between items-center px-6 py-4 cursor-pointer font-semibold text-gray-900 select-none list-none hover:bg-gray-50 transition-colors">
@@ -374,6 +424,7 @@
                     <div class="faq-body">
                         <div class="px-6 py-3 text-gray-600 leading-relaxed border-t border-gray-100">
                             Non. L'abonnement est annuel mais sans reconduction automatique. À l'échéance, vous choisissez librement de renouveler ou non.
+                        </div>
                     </div>
                 </details>
 
@@ -400,7 +451,7 @@
                     </summary>
                     <div class="faq-body">
                         <div class="px-6 py-3 text-gray-600 leading-relaxed border-t border-gray-100">
-                            SNon. Le paiement se fait directement entre le parent et le Yaya, en dehors de la plateforme (espèces, virement, etc.). Bana facilite uniquement la mise en relation. Bana ne perçoit aucune commission sur les trajets.
+                            Non. Le paiement se fait directement entre le parent et le Yaya, en dehors de la plateforme (espèces, virement, etc.). Bana facilite uniquement la mise en relation. Bana ne perçoit aucune commission sur les trajets.
                         </div>
                     </div>
                 </details>
@@ -408,6 +459,55 @@
             </div>
         </div>
     </section>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "L'inscription sur Bana est-elle gratuite ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Oui. L'inscription est gratuite pour les parents et les Yaya afin de créer un profil et d'indiquer ses trajets."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quand devient-on payant sur Bana ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Vous payez uniquement lorsqu'un matching existe et que vous souhaitez entrer en contact avec les membres de la communauté."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Y a-t-il un engagement annuel ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Non. L'abonnement est annuel mais sans reconduction automatique. À l'échéance, vous choisissez librement de renouveler ou non."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Le prix des trajets est-il fixé par Bana ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Non. Le montant du défraiement est librement convenu entre le parent et le Yaya. Bana fournit une fourchette indicative afin de garantir un équilibre entre accessibilité pour les familles et reconnaissance du temps consacré par les Yaya."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Bana intervient-il dans le paiement ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Non. Le paiement se fait directement entre le parent et le Yaya, en dehors de la plateforme (espèces, virement, etc.). Bana facilite uniquement la mise en relation et ne perçoit aucune commission sur les trajets."
+          }
+        }
+      ]
+    }
+    </script>
 
 
     <!-- ═══════════════════════════════════════════════ -->
@@ -440,5 +540,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'bana/js/faq.js' %}"></script>
+<script src="{% static 'bana/js/pages/faq.js' %}"></script>
 {% endblock %}

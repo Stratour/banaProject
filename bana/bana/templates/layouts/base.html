@@ -1,12 +1,24 @@
 {% load static tailwind_tags %}
 
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="{{ LANGUAGE_CODE|default:'fr' }}">
 <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Le service de mobilité partagée pour les enfants conçu pour les trajets maison-école-activités. Gain de temps. Retrouvez de la flexibilité dans votre agenda ...">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %} | Bana</title>
+    <meta name="description" content="{% block meta_description %}Bana — covoiturage et accompagnement scolaire pour les enfants en Belgique. Trajets maison-école-activités sécurisés avec des Yayas vérifiés.{% endblock %}">
+    {% block meta_robots %}<meta name="robots" content="index,follow">{% endblock %}
+    <link rel="canonical" href="{% block canonical %}https://www.bana.mobi{{ request.path }}{% endblock %}">
+
+    <meta property="og:site_name" content="Bana">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="{{ LANGUAGE_CODE|default:'fr' }}_BE">
+    <meta property="og:url" content="https://www.bana.mobi{{ request.path }}">
+    <meta property="og:title" content="{% block og_title %}Bana — Covoiturage et accompagnement scolaire en Belgique{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Trouvez un Yaya de confiance pour les trajets maison-école-activités de vos enfants. Plateforme belge sécurisée.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}https://www.bana.mobi{% static 'bana/img/icon/icon-512.png' %}{% endblock %}">
+    <meta name="twitter:card" content="summary_large_image">
+
     <link href="{% static 'bana/img/icon/favicon.ico' %}" rel="icon">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#007F73">
@@ -16,8 +28,35 @@
     <meta name="apple-mobile-web-app-title" content="Bana.mobi">
     <link rel="apple-touch-icon" href="{% static 'bana/img/icon/icon-192.png' %}">
     {% tailwind_css %}
-    <link rel="stylesheet" href="{% static 'bana/css/animate.css' %}">
-    <link rel="stylesheet" href="{% static 'bana/css/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'bana/css/components/animate.css' %}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{% static 'bana/css/components/animate.css' %}"></noscript>
+    <link rel="stylesheet" href="{% static 'bana/css/components/footer.css' %}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{% static 'bana/css/components/footer.css' %}"></noscript>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Bana",
+      "alternateName": "Bana.mobi",
+      "url": "https://www.bana.mobi",
+      "logo": "https://www.bana.mobi{% static 'bana/img/icon/icon-512.png' %}",
+      "description": "Plateforme belge de mobilité partagée et d'accompagnement scolaire pour les enfants.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressCountry": "BE"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Bana",
+      "url": "https://www.bana.mobi",
+      "inLanguage": ["fr-BE", "en", "nl"]
+    }
+    </script>
     {% block extra_head %}{% endblock %}
 </head>
 
@@ -63,13 +102,13 @@
 
     {% include 'layouts/footer.html' %}
 
-    <script src="https://unpkg.com/htmx.org@2.0.3/dist/htmx.min.js" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
-    <script src="{% static 'bana/js/carroussel.js' %}"></script>
-    <script src="{% static 'bana/js/top-mobile-menu.js' %}"></script>
-    <script src="{% static 'bana/js/video.js' %}"></script>
-    <script src="{% static 'bana/js/toast.js' %}"></script>
-    <script src="{% static 'bana/js/animate.js' %}"></script>
-    <script src="{% static 'bana/js/slide.js' %}"></script>
+    <script src="{% static 'bana/js/vendor/htmx.min.js' %}" defer></script>
+    <script src="{% static 'bana/js/components/carousel.js' %}"></script>
+    <script src="{% static 'bana/js/layout/header.js' %}"></script>
+    <script src="{% static 'bana/js/components/video.js' %}"></script>
+    <script src="{% static 'bana/js/core/toast.js' %}"></script>
+    <script src="{% static 'bana/js/components/animate.js' %}"></script>
+    <script src="{% static 'bana/js/components/slide.js' %}"></script>
     {% block extra_js %}{% endblock %}
     <script>
       if ('serviceWorker' in navigator) {

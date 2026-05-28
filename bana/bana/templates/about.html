@@ -1,18 +1,24 @@
 {% extends './layouts/base.html' %}
-{% load static %}
+{% load static i18n %}
 
-{% block title %}À propos{% endblock %}
+{% block title %}{% trans "À propos" %}{% endblock %}
+{% block meta_description %}{% trans "La mission de Bana : moins de trafic autour des écoles, plus d'entraide communautaire, moins de charge mentale pour les parents. Découvrez nos engagements et notre équipe." %}{% endblock %}
+{% block og_title %}{% trans "À propos de Bana — Notre mission" %}{% endblock %}
+{% block og_description %}{% trans "Bana s'engage pour une mobilité plus sereine et plus durable. Découvrez notre vision, nos valeurs et l'équipe derrière la plateforme." %}{% endblock %}
 
 {% block extra_head %}
-<link rel="preload" href="{% static 'bana/img/page/home.jpg' %}" as="image" fetchpriority="high">
-<link rel="stylesheet" href="{% static 'bana/css/home.css' %}">
+<link rel="preload" as="image" href="{% static 'bana/img/page/about/mobilite-multimodale-enfants-belgique.png' %}">
 {% endblock %}
 
 {% block content %}
 
 <!-- ===== 1. HERO ===== -->
-<section class="relative flex flex-col items-center justify-center min-h-screen text-center px-4 md:px-8 lg:px-16"
-    style="background-image: url('{% static 'bana/img/page/about/Mobilité_ multimodale_enfants_Belgique.png' %}'); background-size: cover; background-position: center;">
+<section class="relative flex flex-col items-center justify-center min-h-screen text-center px-4 md:px-8 lg:px-16 bg-gray-900">
+
+    <img src="{% static 'bana/img/page/about/mobilite-multimodale-enfants-belgique.png' %}"
+         class="absolute inset-0 w-full h-full object-cover object-center"
+         fetchpriority="high" loading="eager"
+         width="1672" height="940" alt="">
 
     <div class="absolute inset-0 bg-black/15"></div>
 

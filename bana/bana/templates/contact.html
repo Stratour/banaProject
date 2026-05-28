@@ -1,6 +1,10 @@
 {% extends './layouts/base.html' %}
+{% load i18n %}
 
-{% block title %}Contact{% endblock %}
+{% block title %}{% trans "Contact" %}{% endblock %}
+{% block meta_description %}{% trans "Contactez l'équipe Bana. Questions sur les trajets, l'inscription, le fonctionnement ? Nous vous répondons rapidement." %}{% endblock %}
+{% block og_title %}{% trans "Contact — Bana" %}{% endblock %}
+{% block og_description %}{% trans "Une question, un partenariat, une demande spécifique ? L'équipe Bana est à votre écoute." %}{% endblock %}
 
 {% block content %}
 {% load static %}
@@ -25,7 +29,7 @@
             <!-- Circular Image Container (Responsive Size) -->
             <div
                 class="absolute left-1/2 md:left-0 top-1/2 w-80 h-80 max-w-full max-h-full transform -translate-x-1/2 md:translate-x-0 -translate-y-1/2 rounded-full overflow-hidden">
-                <img src="{% static 'bana/img/page/Bana_contact_paul_hanaoka.jpg' %}" alt="Phone in woman's hand"
+                <img src="{% static 'bana/img/page/contact/Bana_contact_paul_hanaoka.jpg' %}" alt="Phone in woman's hand"
                     class="w-full h-full object-cover">
             </div>
         </div>

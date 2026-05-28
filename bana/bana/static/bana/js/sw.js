@@ -1,13 +1,13 @@
-const CACHE_VERSION = 'bana-v6';
+const CACHE_VERSION = 'bana-v7';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
 
 const PRECACHE_ASSETS = [
-  '/static/bana/css/animate.css',
-  '/static/bana/css/footer.css',
-  '/static/bana/js/toast.js',
-  '/static/bana/js/modal.js',
-  '/static/bana/js/top-mobile-menu.js',
+  '/static/bana/css/components/animate.css',
+  '/static/bana/css/components/footer.css',
+  '/static/bana/css/components/toast.css',
+  '/static/bana/js/core/toast.js',
+  '/static/bana/js/core/modal.js',
   '/static/bana/img/icon/icon-192.png',
   '/static/bana/img/icon/icon-512.png',
   '/static/bana/img/icon/favicon.ico',
@@ -65,16 +65,18 @@ self.addEventListener('fetch', event => {
 
   if (request.method !== 'GET' || url.protocol === 'ws:' || url.protocol === 'wss:') return;
 
-  // Assets statiques — cache-first
+  // Assets statiques — stale-while-revalidate (sert le cache, rafraîchit en arrière-plan)
   if (url.pathname.startsWith('/static/')) {
     event.respondWith(
-      caches.match(request).then(cached => cached || fetch(request).then(res => {
-        if (res.ok && res.status !== 206) {
-          const clone = res.clone();
-          caches.open(STATIC_CACHE).then(c => c.put(request, clone));
-        }
-        return res;
-      }))
+      caches.open(STATIC_CACHE).then(cache =>
+        cache.match(request).then(cached => {
+          const networkFetch = fetch(request).then(res => {
+            if (res.ok && res.status !== 206) cache.put(request, res.clone());
+            return res;
+          });
+          return cached || networkFetch;
+        })
+      )
     );
     return;
   }

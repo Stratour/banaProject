@@ -1,6 +1,7 @@
 from django import forms
 from allauth.account.forms import SignupForm
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from accounts.models import Profile, Languages, Child, Review, FavoriteAddress
 from django.utils.translation import gettext_lazy as _
 
@@ -143,6 +144,16 @@ class ProfileUpdateForm(TailwindFormMixin, forms.ModelForm):
                 'placeholder': "Présente-toi en quelques lignes..."
             }),
         }
+
+    def clean_document_bvm(self):
+        file = self.cleaned_data.get('document_bvm')
+        if file and hasattr(file, 'content_type'):
+            allowed = ['image/jpeg', 'image/png', 'application/pdf']
+            if file.content_type not in allowed:
+                raise ValidationError(_("Seuls les formats PDF, JPG et PNG sont acceptés pour le certificat BVM."))
+            if file.size > 5 * 1024 * 1024:
+                raise ValidationError(_("Le fichier est trop volumineux (max 5 Mo)."))
+        return file
 
 
 # ---------- Child ----------

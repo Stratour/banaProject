@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
+from django.utils.http import url_has_allowed_host_and_scheme
 from allauth.account.adapter import get_adapter
 from allauth.account.models import EmailAddress, EmailConfirmation
 from django.utils.translation import gettext as _
@@ -389,6 +390,8 @@ def add_child_view(request):
     Supporte un paramètre `next` pour rediriger après l'ajout.
     """
     next_url = request.GET.get("next") or request.POST.get("next") or ""
+    if next_url and not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        next_url = ""
 
     if request.method == "POST":
         form = ChildForm(request.POST)

@@ -1,17 +1,27 @@
 {% extends './layouts/base.html' %}
 {% load static i18n%}
 {% block title %}{% trans "Accueil" %}{% endblock %}
+{% block meta_description %}{% trans "Bana — covoiturage et accompagnement scolaire pour les enfants en Belgique. Trajets maison-école-activités sécurisés avec des Yayas vérifiés. Inscription gratuite." %}{% endblock %}
+{% block og_title %}{% trans "Bana — Covoiturage scolaire pour enfants en Belgique" %}{% endblock %}
+{% block og_description %}{% trans "Trouvez un Yaya de confiance pour les trajets maison-école-activités de vos enfants. Plateforme belge sécurisée, communautaire et flexible." %}{% endblock %}
 
 {% block extra_head %}
-<link rel="preload" href="{% static 'bana/img/page/home.jpg' %}" as="image" fetchpriority="high">
-<link rel="stylesheet" href="{% static 'bana/css/home.css' %}">
+<link rel="stylesheet" href="{% static 'bana/css/pages/home.css' %}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{% static 'bana/css/pages/home.css' %}"></noscript>
 {% endblock %}
 
 {% block content %}
 
-    <!-- HERO (original) !-->
-    <section class="relative flex items-center justify-center min-h-screen md:min-h-screen text-center px-4 md:px-8 lg:px-16"
-        style="background-image: url({% static 'bana/img/page/home/Transport_scolaire_Belgique.png' %}); background-size: cover; background-position: center;">
+    <!-- HERO -->
+    <section class="relative flex items-center justify-center min-h-screen md:min-h-screen text-center px-4 md:px-8 lg:px-16 overflow-hidden">
+
+        <picture>
+            <source srcset="{% static 'bana/img/page/home/transport-scolaire-belgique.webp' %}" type="image/webp">
+            <img src="{% static 'bana/img/page/home/transport-scolaire-belgique.png' %}"
+                 class="absolute inset-0 w-full h-full object-cover object-center"
+                 fetchpriority="high" loading="eager"
+                 width="1672" height="941" alt="">
+        </picture>
 
         <div class="absolute inset-0 bg-black/15"></div>
 
@@ -102,7 +112,7 @@
 
             {% for benefit in home_benefits %}
             <div class="animate-on-scroll flex flex-col items-center py-4 gap-2 md:gap-3">
-                <img class="w-8 h-8 md:w-12 md:h-12" src="{% static benefit.img_src %}" alt="{{ benefit.title }} feature icon">
+                <img class="w-12 h-12 md:w-16 md:h-16" src="{% static benefit.img_src %}" alt="{{ benefit.title }} feature icon">
                 <h3 class="text-xs sm:text-sm md:text-lg font-bold leading-tight">{{ benefit.title }}</h3>
                 <p class="hidden sm:block text-xs md:text-lg">{{ benefit.description }}</p>
             </div>
@@ -119,8 +129,11 @@
 
             <!-- Image -->
             <div class="relative w-4/5 sm:w-3/4 mx-auto -mb-16 md:mb-0 md:w-1/2 md:absolute md:-top-12 lg:-top-16 md:right-0 z-20 animate-on-scroll animate-right">
-                <img src="{% static 'bana/img/page/home/Déplacements_scolaires_Belgique.png' %}" alt="group of friends"
-                    class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover" width="1344" height="756" />
+                <picture>
+                    <source srcset="{% static 'bana/img/page/home/deplacements-scolaires-belgique.webp' %}" type="image/webp">
+                    <img src="{% static 'bana/img/page/home/deplacements-scolaires-belgique.png' %}" alt="Déplacements scolaires en Belgique"
+                        class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover" width="1672" height="941" loading="lazy" />
+                </picture>
             </div>
 
             <!-- Text block -->
@@ -171,13 +184,16 @@
 
                 <!-- MOBILE : photo pleine + overlay -->
                 <div class="md:hidden relative">
-                    <img src="{% static 'bana/img/page/home/Service_taxi_enfants_Belgique.png' %}" alt="Photo de profil Nyota D."
-                        class="w-full object-contain">
+                    <picture>
+                        <source srcset="{% static 'bana/img/page/home/service-taxi-enfants-belgique.webp' %}" type="image/webp">
+                        <img src="{% static 'bana/img/page/home/service-taxi-enfants-belgique.png' %}" alt="Photo de profil Sofia B."
+                            class="w-full object-contain" width="1370" height="1148" loading="lazy">
+                    </picture>
                     <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
                     <div class="absolute bottom-0 left-0 right-0 px-4 pb-4 text-white">
                         <h4 class="text-base font-bold leading-tight">Sofia B.</h4>
                         <p class="text-xs text-white/70 mb-2">Yaya | Bruxelles</p>
-                        <img class="h-3 mb-2" src="{% static 'bana/img/icon/Icon_stars.svg' %}" alt="Star icons">
+                        <img class="block h-4 w-20 object-fill mb-2" src="{% static 'bana/img/page/home/evaluations-etoiles.svg' %}" alt="Évaluation 5 étoiles" width="80" height="16">
                         <span class="inline-flex items-center gap-1 bg-brand-300 text-white text-xs font-semibold px-3 py-1 rounded-full">
                             ✓ Yaya vérifié
                         </span>
@@ -188,8 +204,11 @@
                 <div class="hidden md:flex h-full bg-white text-left">
 
                     <div class="relative w-[30%] shrink-0">
-                        <img src="{% static 'bana/img/page/home/Service_taxi_enfants_Belgique.png' %}" alt="Photo de profil Nyota D."
-                            class="w-full h-full object-cover object-top">
+                        <picture>
+                            <source srcset="{% static 'bana/img/page/home/service-taxi-enfants-belgique.webp' %}" type="image/webp">
+                            <img src="{% static 'bana/img/page/home/service-taxi-enfants-belgique.png' %}" alt="Photo de profil Sofia B."
+                                class="w-full h-full object-cover object-top" width="1370" height="1148" loading="lazy">
+                        </picture>
                         <div class="absolute bottom-3 left-0 right-0 flex justify-center">
                             <span class="inline-flex items-center gap-1 bg-brand-300 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
                                 ✓ Yaya vérifié
@@ -200,23 +219,23 @@
                     <div class="flex-1 min-w-0 flex flex-col px-5 py-6">
                         <h4 class="text-lg font-bold leading-tight">Sofia B.</h4>
                         <p class="text-sm text-zinc-400">Yaya | Bruxelles</p>
-                        <img class="h-3.5 mt-1 mb-4 self-start" src="{% static 'bana/img/icon/Icon_stars.svg' %}" alt="Star icons">
+                        <img class="block h-6 w-32 object-fill self-start mb-3" src="{% static 'bana/img/page/home/evaluations-etoiles.svg' %}" alt="Évaluation 5 étoiles" width="128" height="24">
                         <hr class="border-gray-200 mb-4">
                         <div class="grid grid-cols-2 gap-x-3 gap-y-4">
                             <div class="flex flex-col items-center text-center gap-1">
-                                <svg class="w-7 h-7 text-brand" aria-hidden="true" width="22" height="20" viewBox="0 0 22 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19.8 0H2.2C0.979 0 0.011 0.988889 0.011 2.22222L0 15.5556C0 16.7889 0.979 17.7778 2.2 17.7778H7.7V15.5556H2.2V8.88889H22V2.22222C22 0.988889 21.021 0 19.8 0ZM19.8 4.44444H2.2V2.22222H19.8V4.44444ZM14.223 16.8556L11.11 13.7111L9.559 15.2778L14.223 20L22 12.1444L20.449 10.5778L14.223 16.8556Z" fill="currentColor"/></svg>
+                                <img class="w-12 h-12" src="{% static 'bana/img/page/home/identite-verifiee.svg' %}" alt="" aria-hidden="true" width="40" height="40">
                                 <p class="text-xs leading-tight font-semibold">Carte d'identité vérifiée</p>
                             </div>
                             <div class="flex flex-col items-center text-center gap-1">
-                                <svg class="w-7 h-7 text-brand" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 12H7C7 7.03 11.03 3 16 3V5C12.13 5 9 8.13 9 12ZM16 9V7C13.24 7 11 9.24 11 12H13C13 10.34 14.34 9 16 9ZM5 2C5 0.89 4.11 0 3 0C1.89 0 1 0.89 1 2C1 3.11 1.89 4 3 4C4.11 4 5 3.11 5 2ZM9.45 2.5H7.45C7.21 3.92 5.99 5 4.5 5H1.5C0.67 5 0 5.67 0 6.5V9H6V6.74C7.86 6.15 9.25 4.51 9.45 2.5ZM17 15C18.11 15 19 14.11 19 13C19 11.89 18.11 11 17 11C15.89 11 15 11.89 15 13C15 14.11 15.89 15 17 15ZM18.5 16H15.5C14.01 16 12.79 14.92 12.55 13.5H10.55C10.75 15.51 12.14 17.15 14 17.74V20H20V17.5C20 16.67 19.33 16 18.5 16Z" fill="currentColor"/></svg>
+                                <img class="w-12 h-12" src="{% static 'bana/img/page/home/rencontre-avant-trajet.svg' %}" alt="" aria-hidden="true" width="40" height="40">
                                 <p class="text-xs leading-tight font-semibold">Rencontre avant le premier trajet</p>
                             </div>
                             <div class="flex flex-col items-center text-center gap-1">
-                                <svg class="w-7 h-7 text-brand" aria-hidden="true" width="27" height="20" viewBox="0 0 27 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M23.625 5.55556V4.44444L20.25 6.66667L16.875 4.44444V5.55556L20.25 7.77778L23.625 5.55556ZM24.75 0H2.25C1.0125 0 0 1 0 2.22222V17.7778C0 19 1.0125 20 2.25 20H24.75C25.9875 20 26.9888 19 26.9888 17.7778L27 2.22222C27 1 25.9875 0 24.75 0ZM9 3.33333C10.8675 3.33333 12.375 4.82222 12.375 6.66667C12.375 8.51111 10.8675 10 9 10C7.1325 10 5.625 8.51111 5.625 6.66667C5.625 4.82222 7.1325 3.33333 9 3.33333ZM15.75 16.6667H2.25V15.5556C2.25 13.3333 6.75 12.1111 9 12.1111C11.25 12.1111 15.75 13.3333 15.75 15.5556V16.6667ZM24.75 10H15.75V3.33333H24.75V10Z" fill="currentColor"/></svg>
+                                <img class="w-12 h-12" src="{% static 'bana/img/page/home/extrait-judiciaire.svg' %}" alt="" aria-hidden="true" width="40" height="40">
                                 <p class="text-xs leading-tight font-semibold">Extrait de casier judiciaire</p>
                             </div>
                             <div class="flex flex-col items-center text-center gap-1">
-                                <svg class="w-7 h-7 text-brand" aria-hidden="true" width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 7.62105L13.4505 6.96842L10.5 0L7.5495 6.97895L0 7.62105L5.733 12.6L4.011 20L10.5 16.0737L16.989 20L15.2775 12.6L21 7.62105ZM10.5 14.1053V4.31579L12.2955 8.56842L16.8945 8.96842L13.4085 12L14.4585 16.5053L10.5 14.1053Z" fill="currentColor"/></svg>
+                                <img class="w-12 h-12" src="{% static 'bana/img/page/home/avis-et-evaluations.svg' %}" alt="" aria-hidden="true" width="40" height="40">
                                 <p class="text-xs leading-tight font-semibold">Système d'avis et d'évaluations réciproques</p>
                             </div>
                         </div>
@@ -273,8 +292,11 @@
 
         <!-- MOBILE -->
         <div class="md:hidden relative rounded-2xl overflow-hidden shadow-xl mx-4">
-            <img src="{% static 'bana/img/page/home/home_card_3.png' %}"
-                class="absolute inset-0 w-full h-full object-cover" alt="Yaya accompagnant un enfant" width="864" height="864" />
+            <picture>
+                <source srcset="{% static 'bana/img/page/home/yaya-accompagnement-enfant-belgique.webp' %}" type="image/webp">
+                <img src="{% static 'bana/img/page/home/yaya-accompagnement-enfant-belgique.png' %}"
+                    class="absolute inset-0 w-full h-full object-cover" alt="Yaya accompagnant un enfant" width="3027" height="3072" loading="lazy" />
+            </picture>
             <div class="absolute inset-0 bg-brand-300/50"></div>
             <div class="relative z-10 text-white px-6 py-12 text-center flex flex-col items-center gap-4">
                 <h2 class="text-xl font-bold">
@@ -332,8 +354,11 @@
             <div
                 class="absolute left-[calc(50%-380px)] lg:left-[calc(50%-700px)] top-1/2 -translate-y-1/2 z-10 w-[300px] lg:w-[600px]">
 
-                <img src="{% static 'bana/img/page/home/home_card_3.png' %}"
-                    class="animate-on-scroll w-full h-[520px] lg:h-[600px] object-cover rounded-2xl shadow-2xl" data-delay="150" alt="Yaya accompagnant un enfant" width="864" height="864" />
+                <picture>
+                    <source srcset="{% static 'bana/img/page/home/yaya-accompagnement-enfant-belgique.webp' %}" type="image/webp">
+                    <img src="{% static 'bana/img/page/home/yaya-accompagnement-enfant-belgique.png' %}"
+                        class="animate-on-scroll w-full h-[520px] lg:h-[600px] object-cover rounded-2xl shadow-2xl" data-delay="150" alt="Yaya accompagnant un enfant" width="3027" height="3072" loading="lazy" />
+                </picture>
 
             </div>
 

@@ -1,6 +1,8 @@
 # forms.py
 from django import forms
+from django.conf import settings
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from .models import Bug, BugComment, BugAttachment, Component, Version, Environment
 
 class BugForm(forms.ModelForm):
@@ -79,6 +81,19 @@ class BugAttachmentForm(forms.ModelForm):
                 'accept': '.png,.jpg,.jpeg,.gif,.pdf,.txt,.log,.zip'
             })
         }
+
+    def clean_file(self):
+        file = self.cleaned_data.get('file')
+        if file and hasattr(file, 'content_type'):
+            allowed = getattr(settings, 'ALLOWED_ATTACHMENT_TYPES', [
+                'image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'text/plain',
+            ])
+            max_size = getattr(settings, 'MAX_ATTACHMENT_SIZE', 5 * 1024 * 1024)
+            if file.content_type not in allowed:
+                raise ValidationError("Type de fichier non autorisé.")
+            if file.size > max_size:
+                raise ValidationError(f"Fichier trop volumineux (max {max_size // (1024 * 1024)} Mo).")
+        return file
 
 class BugFilterForm(forms.Form):
     STATUS_CHOICES = [('', 'Tous les statuts')] + Bug.STATUS_CHOICES

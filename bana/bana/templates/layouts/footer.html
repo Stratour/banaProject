@@ -22,11 +22,11 @@
             <h3 class="text-brand-50 font-bold text-lg mb-2">{% trans "Navigation" %}</h3>
             {% with url_name=request.resolver_match.url_name %}
             <ul class="space-y-1">
-                <li><a href="{% url 'home' %}" class="font-light hover:text-brand-50 {% if url_name == 'home' %}text-brand-50{% endif %}">{% trans "Accueil" %}</a></li>
-                <li><a href="{% url 'yaya' %}" class="font-light hover:text-brand-50 {% if url_name == 'yaya' %}text-brand-50{% endif %}">{% trans "Devenir yaya" %}</a></li>
-                <li><a href="{% url 'work' %}" class="font-light hover:text-brand-50 {% if url_name == 'work' %}text-brand-50{% endif %}">{% trans "Comment ça marche ?" %}</a></li>
-                <li><a href="{% url 'tarifs' %}" class="font-light hover:text-brand-50 {% if url_name == 'tarifs' %}text-brand-50{% endif %}">{% trans "Tarifs" %}</a></li>
-                <li><a href="{% url 'about' %}" class="font-light hover:text-brand-50 {% if url_name == 'about' %}text-brand-50{% endif %}">{% trans "À propos" %}</a></li>
+                <li><a href="{% url 'home' %}" class="hover:text-brand-50 hover:font-semibold {% if url_name == 'home' %}text-brand-50 font-semibold{% endif %}">{% trans "Accueil" %}</a></li>
+                <li><a href="{% url 'work' %}" class="hover:text-brand-50 hover:font-semibold {% if url_name == 'work' %}text-brand-50 font-semibold{% endif %}">{% trans "Comment ça marche ?" %}</a></li>
+                <li><a href="{% url 'yaya' %}" class="hover:text-brand-50 hover:font-semibold {% if url_name == 'yaya' %}text-brand-50 font-semibold{% endif %}">{% trans "Devenir yaya" %}</a></li>
+                <li><a href="{% url 'tarifs' %}" class="hover:text-brand-50 hover:font-semibold {% if url_name == 'tarifs' %}text-brand-50 font-semibold{% endif %}">{% trans "Tarifs" %}</a></li>
+                <li><a href="{% url 'about' %}" class="hover:text-brand-50 hover:font-semibold {% if url_name == 'about' %}text-brand-50 font-semibold{% endif %}">{% trans "Notre mission" %}</a></li>
                 {% comment "" %}
                 <li><a href="{% url 'contact' %}" class="font-light hover:text-brand-50 {% if url_name == 'contact' %}text-brand-50{% endif %}">{% trans "Contact" %}</a></li>
                 {% endcomment %}
@@ -89,7 +89,7 @@
         <p>&copy; bana.mobi {% now "Y" %}
         Powered by DIGIT-UP Agency</p>
         <a class="flex justify-center mt-1" href="https://www.digit-up.be" target="_blank">
-            <img class="w-24 footer-digit-up-logo" src="{% static 'bana/img/logo/logo_digit_up.svg' %}" alt="Digit-Up">
+            <img class="w-24 footer-digit-up-logo" src="{% static 'bana/img/logo/logo_digit_up.svg' %}" alt="Digit-Up" width="391" height="126">
         </a>
         <div class="flex items-center gap-4 mt-4 text-xs font-light">
             <span class="hover:text-brand-50 cursor-pointer">{% trans "Confidentialité" %}</span>

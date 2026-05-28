@@ -1,11 +1,17 @@
 from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include
 from django.conf.urls.i18n import i18n_patterns
 from stripe_sub.views import stripe_webhook
 from . import views
+from .sitemaps import StaticViewSitemap
 from accounts import views as account_views
+
+sitemaps = {
+    'static': StaticViewSitemap,
+}
 
 # URLs sans préfixe de langue (utilitaires)
 urlpatterns = [
@@ -15,6 +21,10 @@ urlpatterns = [
     path('manifest.json', views.manifest, name='manifest'),
     path('sw.js', views.service_worker, name='service_worker'),
     path('offline/', views.offline, name='offline'),
+
+    # SEO
+    path('robots.txt', views.robots_txt, name='robots_txt'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 
     # 🚨 Webhook Stripe déclaré en dehors de i18n_patterns
     path("webhook/stripe/", stripe_webhook, name="stripe_webhook"),

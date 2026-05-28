@@ -2,6 +2,8 @@
 # Create your views here.
 from django.views.generic import ListView, View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse_lazy
 from django.contrib import messages
@@ -15,14 +17,20 @@ from django.core.paginator import Paginator
 from .utils import get_site_stats
 
 
+@login_required
 def admin_view(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     context = {}
     profiles = Profile.objects.all()
     context.update({'profiles': profiles})
     return render(request, 'bana_admin/admin_view.html', context)
 
 
+@login_required
 def site_stats_view(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     now = timezone.now()
     period = request.GET.get("period", "global")
 
@@ -97,17 +105,19 @@ def site_stats_view(request):
     return render(request, "bana_admin/site_stats.html", context)
 
 
+@login_required
 def validate_members(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     context = {}
     profiles = Profile.objects.all()
     context.update({'profiles': profiles})
     return render(request, 'bana_admin/validate_members.html', context)
 
+@login_required
 def verify_bvm_prfl(request, profile_id):
-    """
-    Vue pour modifier le statut 'bvm_is_verified' d'un profil.
-    Accessible via une requête POST.
-    """
+    if not request.user.is_superuser:
+        raise PermissionDenied
     if request.method == 'POST':
         profile = get_object_or_404(Profile, id=profile_id)
 
@@ -125,12 +135,10 @@ def verify_bvm_prfl(request, profile_id):
     
 
 
-def verify_profile_prfl(request, profile_id): #, profile_id
-    """
-    Nouvelle vue pour gérer la vérification du profil
-    Vue pour modifier le statut 'prfl_is_verified' d'un profil.
-    Accessible via une requête POST.
-    """
+@login_required
+def verify_profile_prfl(request, profile_id):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     if request.method == 'POST':
         profile = get_object_or_404(Profile, id=profile_id)
 

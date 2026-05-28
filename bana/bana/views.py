@@ -1,6 +1,7 @@
 import os
 from django.shortcuts import render, redirect
 from django.utils import translation
+from django.utils.http import url_has_allowed_host_and_scheme
 from bana import settings
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.utils.translation import gettext_lazy as _
@@ -9,25 +10,25 @@ from django.utils.translation import gettext_lazy as _
 def home(request):
     home_benefits = [
         {
-            'img_src': 'bana/img/icon/Icon_clock.svg',
+            'img_src': 'bana/img/page/home/flexibilite-agenda.svg',
             'title': _('Gain de temps'),
             'highlight': _('Flexibilité'),
             'description': _('Flexibilité dans votre agenda')
         },
         {
-            'img_src': 'bana/img/icon/Icon_currency.svg',
+            'img_src': 'bana/img/page/home/economie-carburant.svg',
             'title': _('Économique'),
             'highlight': _('Économiser'),
             'description': _('Économiser sur le carburant')
         },
         {
-            'img_src': 'bana/img/icon/Icon_earth.svg',
+            'img_src': 'bana/img/page/home/ecologie.svg',
             'title': _('Écologique'),
             'highlight': _('Utiliser'),
             'description': _('Utiliser des moyens de transport alternatifs')
         },
         {
-            'img_src': 'bana/img/icon/Icon_hearth.svg',
+            'img_src': 'bana/img/page/home/communaute.svg',
             'title': _('Communauté'),
             'highlight': _('Créer du lien social'),
             'description': _('Créer du lien social')
@@ -61,184 +62,7 @@ def home(request):
         {"home_benefits": home_benefits, "home_roles": home_roles}
     )
 
-# --- Yaya page ---------------------------------------------------------------------------
-def yaya(request):
-    yaya_benefits = [
-        {
-            'img_src': 'bana/img/icon/Icon_clock.svg',
-            'title': _('Flexible'),
-            'description': _('Engagement uniquement selon votre disponibilité')
-        },
-        {
-            'img_src': 'bana/img/icon/Icon_currency.svg',
-            'title': _('Défraiement'),
-            'description': _('Recevez jusqu’à 176€/mois pour vos trajets quotidiens')
-        },
-        {
-            'img_src': 'bana/img/icon/Icon_earth.svg',
-            'title': _('Sans voiture obligatoire'),
-            'description': _('Tous les moyens de transport sont utilisés')
-        },
-        {
-            'img_src': 'bana/img/icon/Icon_hearth.svg',
-            'title': _('Communautaire'),
-            'description': _('Créer du lien social dans votre quartier')
-        }
-    ]
-
-    work_profiles = [
-        {
-            'img_src': 'bana/img/other/Sandy.png',
-            'name': 'Sandy D.',
-            'age': '38 ans',
-            'short_bio': 'Maman de Justin et Bastien, 5 et 7 ans',
-            'full_description': 'Avant, je choisissais leurs activités en fonction de mes disponibilités. Aujourd’hui, je peux leur ouvrir la porte à un monde de possibilités : il n’y a plus de limites !'
-        },
-        {
-            'img_src': 'bana/img/other/Thi.png',
-            'name': 'Thi M.',
-            'age': '38 ans',
-            'short_bio': 'Maman de 2 garçons, 5 et 9 ans',
-            'full_description': 'Bana me permet d’aider et de dépanner d’autres parents. J’apprécie particulièrement le concept collaboratif et communautaire de cette application.'
-        },
-        {
-            'img_src': 'bana/img/other/Andre.png',
-            'name': 'André K.',
-            'age': '41 ans',
-            'short_bio': 'Papa de 3 enfants, 1, 5 et 8 ans',
-            'full_description': 'Comme beaucoup de parents, j’étais assez réticent à confier mes enfants à d’autres. J’ai donc contacté Bana pour discuter de la confiance et de la sécurité : j’ai été très vite rassuré !'
-        },
-         {
-            'img_src': 'bana/img/other/Alex.png',
-            'name': 'Alex M.',
-            'age': '33 ans',
-            'short_bio': 'Papa de Maé, 6 ans',
-            'full_description': 'En tant qu’éducateur spécialisé, j’ai des horaires coupés qui me laissent peu de flexibilité. Avec cette application, j’ai trouvé une solution pour ma fille à moindre coût. Tout le monde y gagne, moi le premier !'
-        },
-        {
-            'img_src': 'bana/img/other/Shilo.png',
-            'name': 'Shilo B.',
-            'age': '10 ans',
-            'short_bio': 'élève de 5ᵉ primaire',
-            'full_description': 'Ce que j’adore avec Bana, c’est l’idée que je peux passer plus de temps avec mes amis car on va ensemble aux activités, c’est trop cool !'
-        },
-        {
-            'img_src': 'bana/img/other/Ludo.png',
-            'name': 'Ludo B.',
-            'age': '42 ans',
-            'short_bio': 'papa de 2 garçons, 18 et 10 ans',
-            'full_description': 'J’y ai rencontré des parents très sérieux et flexibles. Nous partageons beaucoup de choses avec des amis qui vont au-delà des trajets de nos enfants.'
-        }
-    ]
-
-    return render(request,'yaya.html', {"work_profiles": work_profiles, "yaya_benefits": yaya_benefits})
-
-# --- Conact page ---------------------------------------------------------------------------
-def contact(request):
-    return render(request, 'contact.html')
-
-# --- About page ---------------------------------------------------------------------------
-def about(request):
-    impacts = [
-        {'emoji': '🌍', 'text': 'Moins de trafic autour des écoles'},
-        {'emoji': '🤝', 'text': "Plus d'entraide communautaire"},
-        {'emoji': '🧠', 'text': 'Moins de charge mentale'},
-        {'emoji': '🚀', 'text': 'Autonomie progressive des enfants'},
-        {'emoji': '🔒', 'text': 'Plus de sécurité sur la route'},
-        {'emoji': '🌱', 'text': 'Un impact environnemental concret'},
-    ]
-    odd_badges = [
-        {'number': '03', 'name': 'Bonne santé et bien-être'},
-        {'number': '04', 'name': 'Éducation de qualité'},
-        {'number': '05', 'name': 'Égalité entre les sexes'},
-        {'number': '08', 'name': 'Travail décent et croissance économique'},
-        {'number': '10', 'name': 'Inégalités réduites'},
-        {'number': '11', 'name': 'Villes et communautés durables'},
-        {'number': '12', 'name': 'Consommation et production responsables'},
-    ]
-    team_members = [
-        {
-            'img_src': 'bana/img/page/about/Nyota.png',
-            'name': 'Nyota Delecourt',
-            'role': 'Co-fondatrice',
-            'description': 'Description',
-            'linkedin': '#',
-            'instagram': '',
-        },
-        {
-            'img_src': 'bana/img/page/about/Luca.png',
-            'name': 'Luca C.',
-            'role': 'Développeur IT',
-            'description': 'Description',
-            'linkedin': '#',
-            'instagram': '',
-        },
-        {
-            'img_src': 'bana/img/page/about/Raph.png',
-            'name': 'Raphaël J.',
-            'role': 'Développeur IT',
-            'description': 'Description',
-            'linkedin': '#',
-            'instagram': '',
-        },
-    ]
-    return render(request, 'about.html', {
-        'impacts': impacts,
-        'odd_badges': odd_badges,
-        'team_members': team_members,
-    })
-
-# --- Tarifs page ---------------------------------------------------------------------------
-def tarifs(request):
-    parent_packs = [
-        {
-            'name': 'Formule Essentiel',
-            'price': '99',
-            'highlight': False,
-            'features': [
-                "Accès aux matchings pour trouver un Yaya fiable",
-                "Vérification identités + extrait de casier judiciaire modèle 2",
-                "Rencontre préalable",
-            ],
-        },
-        {
-            'name': 'Formule Confort',
-            'price': '149',
-            'highlight': True,
-            'features': [
-                "Pack Essentiel inclus",
-                "Badge identification enfant",
-                "Support prioritaire pour vos questions",
-                "Mise à disposition d'un réhausseur auto ou siège enfant si nécessaire",
-                "Conseils personnalisés pour organiser vos trajets",
-                "Petites attentions pour le confort de l'enfant (protection météo, parapluie…)",
-            ],
-        },
-        {
-            'name': 'Formule Ambassadeur',
-            'price': '199',
-            'highlight': False,
-            'features': [
-                "Pack Confort inclus",
-                "Assurance enfant incluse (valeur 30€/an)",
-                "Priorité sur les matchings",
-                "Badge identification enfant premium",
-                "Suivi personnalisé des trajets et alertes parents",
-                "Services exclusifs : activités bonus, invitation aux événements communauté",
-            ],
-        },
-    ]
-    defraiement_table = [
-        {'duration': 'Moins de 10 minutes', 'amount': '3€'},
-        {'duration': '10 à 20 minutes', 'amount': '4€ à 5€'},
-        {'duration': '20 à 30 minutes', 'amount': '5€ à 7€'},
-    ]
-    return render(request, 'tarifs.html', {
-        'parent_packs': parent_packs,
-        'defraiement_table': defraiement_table,
-    })
-
-# --- Work page ---------------------------------------------------------------------------
+# --- Comment ça marche page ---------------------------------------------------------------------------
 def work(request):
     work_steps = [
         {'img_src': 'bana/img/icon/Icon_profile.svg', 'title': '1. Créez votre compte', 'description': "Parents et Yaya s'inscrivent gratuitement en 3 min"},
@@ -277,25 +101,25 @@ def work(request):
 
     work_journey_steps = [
         {
-            'icon_src': 'bana/img/icon/Icon_child.svg',
+            'icon_src': 'bana/img/page/work/prise-en-charge-3.svg',
             'title': 'Prise en charge',
             'short_description': "Le Yaya récupère l'enfant auprès d'un adulte responsable et prévient le parent du départ.",
             'description': "Le Yaya récupère l'enfant à la maison ou auprès d'un adulte (parent, enseignant, éducateur…). Le parent reçoit un <strong>message confirmant la prise en charge</strong> et le départ de l'enfant.",
         },
         {
-            'icon_src': 'bana/img/icon/Icon_security.svg',
+            'icon_src': 'bana/img/page/work/accompagnement-securise-1.svg',
             'title': 'Accompagnement sécurisé',
             'short_description': "L'enfant voyage en sécurité jusqu'à destination, quel que soit le mode de transport.",
             'description': "Le Yaya accompagne l'enfant du départ jusqu'à la destination. Quel que soit le moyen de transport utilisé, <strong>le Yaya assure la sécurité de l'enfant pendant tout le trajet</strong>.",
         },
         {
-            'icon_src': 'bana/img/icon/Icon_check.svg',
+            'icon_src': 'bana/img/page/work/arrivee-et-confirmation-1.svg',
             'title': 'Arrivée et confirmation',
             'short_description': "L'enfant est confié à un adulte à l'arrivée — le parent reçoit une confirmation.",
             'description': "L'enfant est confié à un adulte responsable à l'arrivée selon les directives du parent. Le parent reçoit un <strong>message confirmant l'arrivée de l'enfant</strong>.",
         },
         {
-            'icon_src': 'bana/img/icon/Icon_cash.svg',
+            'icon_src': 'bana/img/page/work/defraiement-2.svg',
             'title': 'Défraiement',
             'short_description': "Le parent verse directement au Yaya le défraiement convenu pour le trajet.",
             'description': "Le parent verse directement au Yaya une <strong>compensation financière pour le trajet</strong>, convenue librement entre eux selon la distance et la fréquence (réglée journalièrement ou hebdomadairement).",
@@ -353,6 +177,209 @@ def work(request):
         "work_profiles": work_profiles,
     })
 
+# --- Yaya page ---------------------------------------------------------------------------
+def yaya(request):
+    yaya_benefits = [
+        {
+            'img_src': 'bana/img/page/yaya/flexibilite.svg',
+            'title': _('Flexible'),
+            'description': _('Engagement uniquement selon votre disponibilité')
+        },
+        {
+            'img_src': 'bana/img/page/yaya/defraiement-2b.svg',
+            'title': _('Défraiement'),
+            'description': _('Recevez jusqu’à 176€/mois pour vos trajets quotidiens')
+        },
+        {
+            'img_src': 'bana/img/page/yaya/sans-voiture-obligatoire.svg',
+            'title': _('Sans voiture obligatoire'),
+            'description': _('Tous les moyens de transport sont utilisés')
+        },
+        {
+            'img_src': 'bana/img/page/yaya/communautaire.svg',
+            'title': _('Communautaire'),
+            'description': _('Créer du lien social dans votre quartier')
+        }
+    ]
+
+    work_profiles = [
+        {
+            'img_src': 'bana/img/other/Sandy.png',
+            'name': 'Sandy D.',
+            'age': '38 ans',
+            'short_bio': 'Maman de Justin et Bastien, 5 et 7 ans',
+            'full_description': 'Avant, je choisissais leurs activités en fonction de mes disponibilités. Aujourd’hui, je peux leur ouvrir la porte à un monde de possibilités : il n’y a plus de limites !'
+        },
+        {
+            'img_src': 'bana/img/other/Thi.png',
+            'name': 'Thi M.',
+            'age': '38 ans',
+            'short_bio': 'Maman de 2 garçons, 5 et 9 ans',
+            'full_description': 'Bana me permet d’aider et de dépanner d’autres parents. J’apprécie particulièrement le concept collaboratif et communautaire de cette application.'
+        },
+        {
+            'img_src': 'bana/img/other/Andre.png',
+            'name': 'André K.',
+            'age': '41 ans',
+            'short_bio': 'Papa de 3 enfants, 1, 5 et 8 ans',
+            'full_description': 'Comme beaucoup de parents, j’étais assez réticent à confier mes enfants à d’autres. J’ai donc contacté Bana pour discuter de la confiance et de la sécurité : j’ai été très vite rassuré !'
+        },
+         {
+            'img_src': 'bana/img/other/Alex.png',
+            'name': 'Alex M.',
+            'age': '33 ans',
+            'short_bio': 'Papa de Maé, 6 ans',
+            'full_description': 'En tant qu’éducateur spécialisé, j’ai des horaires coupés qui me laissent peu de flexibilité. Avec cette application, j’ai trouvé une solution pour ma fille à moindre coût. Tout le monde y gagne, moi le premier !'
+        },
+        {
+            'img_src': 'bana/img/other/Shilo.png',
+            'name': 'Shilo B.',
+            'age': '10 ans',
+            'short_bio': 'élève de 5ᵉ primaire',
+            'full_description': 'Ce que j’adore avec Bana, c’est l’idée que je peux passer plus de temps avec mes amis car on va ensemble aux activités, c’est trop cool !'
+        },
+        {
+            'img_src': 'bana/img/other/Ludo.png',
+            'name': 'Ludo B.',
+            'age': '42 ans',
+            'short_bio': 'papa de 2 garçons, 18 et 10 ans',
+            'full_description': 'J’y ai rencontré des parents très sérieux et flexibles. Nous partageons beaucoup de choses avec des amis qui vont au-delà des trajets de nos enfants.'
+        }
+    ]
+
+    return render(request,'yaya.html', {"work_profiles": work_profiles, "yaya_benefits": yaya_benefits})
+
+# --- Tarifs page ---------------------------------------------------------------------------
+def tarifs(request):
+    parent_packs = [
+        {
+            'name': 'Formule Essentiel',
+            'tagline': 'Simplifier les trajets du quotidien',
+            'price': '99',
+            'included': '1 enfant inclus',
+            'extra_child': '+30€/an par enfant supplémentaire',
+            'highlight': False,
+            'features': [
+                "Vérification identité parent",
+                "Profils vérifiés Yaya (carte d'identité + extrait de casier judiciaire)",
+                "Accès matching",
+                "Notifications nouveaux matchings",
+                "Réservation des trajets",
+            ],
+        },
+        {
+            'name': 'Formule Confort',
+            'tagline': 'Réduire la charge mentale',
+            'price': '149',
+            'included': '1 enfant inclus',
+            'extra_child': '+40€/an par enfant supplémentaire',
+            'highlight': True,
+            'features': [
+                "Pack Essentiel inclus +",
+                "Calendrier",
+                "Rappels automatiques",
+                "Historique des trajets",
+                "Notifications intelligentes",
+                "Accessoire sécurité routière",
+            ],
+        },
+        {
+            'name': 'Formule Premium',
+            'tagline': "Faciliter l'organisation familiale",
+            'price': '199',
+            'included': '1 enfant inclus',
+            'extra_child': '+50€/an par enfant supplémentaire',
+            'highlight': False,
+            'features': [
+                "Pack Confort inclus +",
+                "Badge identification enfant personnalisé",
+                "Calendrier familial partagé",
+                "Accès multi-utilisateurs",
+                "Assurance enfant incluse",
+            ],
+        },
+    ]
+    defraiement_table = [
+        {'duration': 'Moins de 10 minutes', 'amount': '3€'},
+        {'duration': '10 à 20 minutes', 'amount': '4€ à 5€'},
+        {'duration': '20 à 30 minutes', 'amount': '5€ à 7€'},
+    ]
+    tarifs_highlights = [
+        {
+            'img_src': 'bana/img/page/tarifs/inscription-gratuite.svg',
+            'title': _('Inscription gratuite'),
+            'description': _("Parents et Yaya s'inscrivent gratuitement"),
+        },
+        {
+            'img_src': 'bana/img/page/tarifs/abonnement-payant.svg',
+            'title': _('Abonnement payant'),
+            'description': _("Abonnement nécessaire pour découvrir les matchings"),
+        },
+        {
+            'img_src': 'bana/img/page/tarifs/defraiement-1.svg',
+            'title': _('Trajets défrayés'),
+            'description': _("Petite compensation pour chaque trajet effectué"),
+        },
+    ]
+    return render(request, 'tarifs.html', {
+        'parent_packs': parent_packs,
+        'defraiement_table': defraiement_table,
+        'tarifs_highlights': tarifs_highlights,
+    })
+
+# --- Notre mission page ---------------------------------------------------------------------------
+def about(request):
+    impacts = [
+        {'emoji': '🌍', 'text': 'Moins de trafic sur la route'},
+        {'emoji': '🤝', 'text': "Plus d'entraide communautaire"},
+        {'emoji': '🧠', 'text': 'Moins de charge mentale'},
+        {'emoji': '🚀', 'text': 'Autonomie progressive des enfants'},
+        {'emoji': '🔒', 'text': 'Plus de sécurité autour des écoles'},
+        {'emoji': '🌱', 'text': 'Un impact environnemental concret'},
+    ]
+    odd_badges = [
+        {'number': '03', 'name': 'Bonne santé et bien-être'},
+        {'number': '04', 'name': 'Éducation de qualité'},
+        {'number': '05', 'name': 'Égalité entre les sexes'},
+        {'number': '08', 'name': 'Travail décent et croissance économique'},
+        {'number': '10', 'name': 'Inégalités réduites'},
+        {'number': '11', 'name': 'Villes et communautés durables'},
+        {'number': '12', 'name': 'Consommation et production responsables'},
+    ]
+    team_members = [
+        {
+            'img_src': 'bana/img/page/about/Nyota.png',
+            'name': 'Nyota Delecourt',
+            'role': 'Co-fondatrice',
+            'description': 'Description',
+            'linkedin': '#',
+            'instagram': '',
+        },
+        {
+            'img_src': 'bana/img/page/about/Luca.png',
+            'name': 'Luca C.',
+            'role': 'Développeur IT',
+            'description': 'Description',
+            'linkedin': '#',
+            'instagram': '',
+        },
+        {
+            'img_src': 'bana/img/page/about/Raph.png',
+            'name': 'Raphaël J.',
+            'role': 'Développeur IT',
+            'description': 'Description',
+            'linkedin': '#',
+            'instagram': '',
+        },
+    ]
+    return render(request, 'about.html', {
+        'impacts': impacts,
+        'odd_badges': odd_badges,
+        'team_members': team_members,
+    })
+
+
+
 
 # --- Parent page ---------------------------------------------------------------------------
 def parent(request):
@@ -370,6 +397,10 @@ def parent(request):
         {"icon": "Icon_trust.svg", "title": "Trust", "highlight": "Provide safe", "text": ", reliable rides with trusted parents."},
     ]
     return render(request, 'parent.html', {"features_search": features_search, "features_share": features_share})
+
+# --- Conact page ---------------------------------------------------------------------------
+def contact(request):
+    return render(request, 'contact.html')
 
 # --- PWA ---------------------------------------------------------------------------
 def manifest(request):
@@ -429,6 +460,34 @@ def offline(request):
     return render(request, 'offline.html')
 
 
+# --- SEO ---------------------------------------------------------------------------
+def robots_txt(request):
+    lines = [
+        "User-agent: *",
+        "Disallow: /accounts/login/",
+        "Disallow: /accounts/signup/",
+        "Disallow: /accounts/password/",
+        "Disallow: /accounts/email/",
+        "Disallow: /accounts/confirm-email/",
+        "Disallow: /accounts/social/",
+        "Disallow: /accounts/reauthenticate/",
+        "Disallow: /accounts/3rdparty/",
+        "Disallow: /admin/",
+        "Disallow: /bana_admin/",
+        "Disallow: /bug_tracker/",
+        "Disallow: /trajets/",
+        "Disallow: /chat/",
+        "Disallow: /profil/",
+        "Disallow: /webhook/",
+        "Disallow: /switch-language/",
+        "Disallow: /i18n/",
+        "Allow: /",
+        "",
+        "Sitemap: https://www.bana.mobi/sitemap.xml",
+    ]
+    return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
 # --- Language switch ---------------------------------------------------------------------------
 def switch_language(request, language):
     """
@@ -476,4 +535,7 @@ def switch_language(request, language):
         return HttpResponseRedirect(new_url)
     
     # Si la langue n'est pas supportée, rediriger sans changement
-    return redirect(request.META.get('HTTP_REFERER', '/'))
+    fallback = request.META.get('HTTP_REFERER', '/')
+    if not url_has_allowed_host_and_scheme(fallback, allowed_hosts={request.get_host()}):
+        fallback = '/'
+    return redirect(fallback)
