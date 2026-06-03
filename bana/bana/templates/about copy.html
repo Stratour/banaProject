@@ -1,0 +1,321 @@
+{% extends './layouts/base.html' %}
+{% load static i18n %}
+
+{% block title %}{% trans "À propos" %}{% endblock %}
+{% block meta_description %}{% trans "La mission de Bana : moins de trafic autour des écoles, plus d'entraide communautaire, moins de charge mentale pour les parents. Découvrez nos engagements et notre équipe." %}{% endblock %}
+{% block og_title %}{% trans "À propos de Bana — Notre mission" %}{% endblock %}
+{% block og_description %}{% trans "Bana s'engage pour une mobilité plus sereine et plus durable. Découvrez notre vision, nos valeurs et l'équipe derrière la plateforme." %}{% endblock %}
+
+{% block extra_head %}
+<link rel="preload" as="image" href="{% static 'bana/img/page/about/mobilite-multimodale-enfants-belgique.png' %}">
+<link rel="stylesheet" href="{% static 'bana/css/pages/home.css' %}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{% static 'bana/css/pages/home.css' %}"></noscript>
+{% endblock %}
+
+{% block content %}
+
+<!-- ===== 1. HERO ===== -->
+<section class="relative flex flex-col items-center justify-center min-h-screen text-center px-4 md:px-8 lg:px-16 bg-gray-900">
+
+    <img src="{% static 'bana/img/page/about/mobilite-multimodale-enfants-belgique.png' %}"
+         class="absolute inset-0 w-full h-full object-cover object-center"
+         fetchpriority="high" loading="eager"
+         width="1672" height="940" alt="">
+
+    <div class="absolute inset-0 bg-black/15"></div>
+
+    <div class="animate-on-scroll relative z-10 max-w-3xl flex flex-col items-center gap-6 text-white -translate-y-8 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)]" data-delay="200">
+        <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
+            Transformer la mobilité scolaire en Belgique
+        </h1>
+        <p class="text-base md:text-lg font-medium text-white/90 max-w-2xl">
+            Chez Bana, nous développons une nouvelle culture de la mobilité scolaire
+            <br>
+            plus collaborative, plus responsable et adaptée aux besoins des parents d’aujourd’hui.
+            
+        </p>
+        <a href="{% url 'account_signup' %}"
+            class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-brand-300 font-semibold hover:bg-brand-200 hover:text-white transition [text-shadow:none]">
+            Devenir partenaire
+        </a>
+    </div>
+</section>
+
+<!-- ===== 2. LE DÉFI DES FAMILLES ===== -->
+<section class="px-4 md:px-8 py-16 bg-white">
+    <div class="animate-on-scroll w-full md:max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center text-center md:text-left" data-delay="150">
+
+        <!-- Gauche : citation -->
+        <div class="flex flex-col items-center md:items-start justify-center gap-4 py-8">
+            <p class="text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug text-center md:text-left">
+                "Il est nécessaire de permettre à davantage de familles de s'en sortir au quotidien sans la voiture"
+            </p>
+            <span class="text-sm font-medium text-[#007F73] tracking-widest uppercase mt-2">— La Ligue des Familles</span>
+        </div>
+
+        <!-- Droite : titre + contenu -->
+        <div class="flex flex-col gap-3 text-center md:text-left">
+            <h2 class="text-xl md:text-2xl font-bold">
+                Les trajets des enfants sont devenus un défi quotidien pour les familles
+            </h2>
+            <p>
+                Chaque jour, des milliers de parents organisent leur vie autour des trajets des enfants.
+            </p>
+            <p>
+                École, crèche, activités extrascolaires, horaires décalés, embouteillages, manque d’alternatives adaptées à la mobilité familiale…
+            </p>
+            <p>
+                Ces déplacements représentent aujourd’hui près d’un tiers du trafic aux heures de pointe et génèrent une charge mentale et logistique considérable pour les familles.
+            </p>
+            <div class="grid grid-cols-2 gap-x-6 text-sm text-left mt-1">
+                <div>
+                    <p class="font-semibold mb-2">Particulièrement pour :</p>
+                    <ul class="space-y-1 list-disc list-inside text-gray-600">
+                        <li>les parents actifs professionnellement,</li>
+                        <li>les familles monoparentales,</li>
+                        <li>les parents en reconversion ou en formation,</li>
+                        <li>les travailleurs à horaires variables.</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="font-semibold mb-2">Pendant ce temps :</p>
+                    <ul class="space-y-1 list-disc list-inside text-gray-600">
+                        <li>les centres-villes et les rues autour des écoles saturent,</li>
+                        <li>les trajets deviennent plus stressants,</li>
+                        <li>les enfants perdent progressivement en autonomie dans leurs déplacements.</li>
+                    </ul>
+                </div>
+            </div>
+            <p>
+                Et lorsqu’une famille souhaite adopter une mobilité plus durable, les trajets des enfants deviennent souvent le principal frein au changement.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== 3. NOS PRIX ===== -->
+<section class="w-full py-16 md:py-24 px-4 md:px-8 lg:px-16 bg-white">
+    <div class="max-w-7xl mx-auto">
+
+        <!-- En-tête avec filet doré -->
+        <div class="text-center mb-12 animate-on-scroll" data-delay="100">
+            <div class="flex items-center justify-center gap-4 mb-4">
+                <div class="h-px flex-1 max-w-[80px]" style="background: linear-gradient(to right, transparent, #F59E0B)"></div>
+                <span class="text-xs font-bold tracking-[0.2em] uppercase" style="color:#F59E0B">Reconnaissances</span>
+                <div class="h-px flex-1 max-w-[80px]" style="background: linear-gradient(to left, transparent, #F59E0B)"></div>
+            </div>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-brand">3 prix, une seule mission.</h2>
+            <p class="text-gray-500 mt-2 text-sm max-w-md mx-auto">Des institutions qui reconnaissent notre impact sur la mobilité et la communauté</p>
+        </div>
+
+        <!-- Ligne 1 : Prix 1 (large photo) + Prix 3 (photo carrée) -->
+        <div class="grid md:grid-cols-5 gap-5 mb-5">
+
+            <!-- Prix 1 — Galimmo -->
+            <div class="md:col-span-3 relative rounded-3xl overflow-hidden min-h-[340px] animate-on-scroll group" data-delay="200">
+                <img src="{% static 'bana/img/page/about/Bana_prix_1.png' %}"
+                    alt="Trophées Bana — Prix Galimmo"
+                    class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, transparent 100%)"></div>
+                <div class="absolute top-5 left-5 flex items-center gap-2 rounded-full px-3 py-1.5 text-[14px] font-bold text-white" style="background-color:#F59E0B">
+                    🏆 Galimmo Belgique
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 p-6">
+                    <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#F59E0B">Coup de cœur du jury</p>
+                    <h3 class="text-xl md:text-2xl font-extrabold text-white leading-tight">Prix de l'Engagement<br>Durable</h3>
+                </div>
+            </div>
+
+            <!-- Prix 3 — SPW Mobilité -->
+            <div class="md:col-span-2 relative rounded-3xl overflow-hidden min-h-[280px] animate-on-scroll group" data-delay="300">
+                <img src="{% static 'bana/img/page/about/Semaine_mobilité_2026.jpg' %}"
+                    alt="Semaine de la Mobilité — SPW Wallonie"
+                    class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, transparent 100%)"></div>
+                <div class="absolute top-5 left-5 flex items-center gap-2 rounded-full px-3 py-1.5 font-bold text-[14px] text-white" style="background-color:#F59E0B">
+                    🏆 SPW Mobilité
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 p-6">
+                    <p class="text-xs font-bold tracking-widest uppercase mb-2" style="color:#F59E0B">Semaine de la Mobilité</p>
+                    <h3 class="text-lg md:text-xl font-extrabold text-white leading-tight mb-3">Prix Coup de cœur</h3>
+                    <a href="https://mobilite.wallonie.be/home/agenda/semaine-de-mobilite.html"
+                        target="_blank" rel="noopener"
+                        class="inline-flex items-center gap-1 text-xs font-semibold transition hover:opacity-80" style="color:#F59E0B">
+                        En savoir plus →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ligne 2 : Prix 2 — Piéton Award (pleine largeur, horizontal) -->
+        <div class="rounded-3xl overflow-hidden animate-on-scroll bg-gradient-50" data-delay="400">
+            <div class="grid md:grid-cols-2">
+
+                <!-- Vidéo -->
+                <div class="relative bg-black">
+                    <video class="w-full h-full object-cover max-h-[280px] md:max-h-none" controls playsinline>
+                        <source src="{% static 'bana/img/page/about/Prix_award_2024.mp4' %}" type="video/mp4">
+                    </video>
+                </div>
+
+                <!-- Texte -->
+                <div class="p-8 flex flex-col justify-center gap-4">
+                    <div class="inline-flex items-center gap-2 w-fit rounded-full px-3 py-1.5 text-[14px] text-white font-bold" style="background-color:#F59E0B">
+                        🚶 Piéton Award 2024
+                    </div>
+                    <h3 class="text-xl md:text-2xl font-extrabold text-white leading-tight">La Wallonie récompense<br>Bana Buddies</h3>
+                    <p class="text-white text-sm leading-relaxed">
+                        Organisé par <span class="text-white font-semibold">Tous à Pied</span> avec le soutien de la <span class="text-white font-semibold">Wallonie</span>, ce prix valorise les initiatives favorisant la marche à pied et la mobilité active autour des écoles.
+                    </p>
+                    <a href="https://mobilite.wallonie.be/home/je-suis/une-administration/services-et-solutions/pieton-awards.html"
+                        target="_blank" rel="noopener"
+                        class="inline-flex items-center gap-1 font-bold transition hover:opacity-80 w-fit" style="color:#F59E0B">
+                        Voir le prix Piéton Award →
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== 3. NOTRE IMPACT ===== -->
+<section class="bg-brand-gradient-bl w-full py-16 md:py-24 px-4 md:px-8 lg:px-16 text-white">
+    <div class="max-w-5xl mx-auto">
+
+        <!-- Intro -->
+        <div class="text-center mb-16">
+            <h2 class="text-2xl md:text-4xl font-extrabold mb-5">Notre impact</h2>
+            <p class="text-white/75 max-w-xl mx-auto leading-relaxed text-base md:text-lg">
+                Chaque trajet partagé, c'est moins de voitures devant l'école,
+                plus de liens entre voisins — et des enfants qui grandissent en confiance.
+            </p>
+        </div>
+
+        <!-- 6 impacts -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
+            {% for impact in impacts %}
+            <div class="flex items-center gap-4 p-4 bg-white/10 rounded-xl backdrop-blur-sm">
+                <span class="text-3xl flex-shrink-0">{{ impact.emoji }}</span>
+                <p class="font-semibold text-sm md:text-base">{{ impact.text }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- ODD -->
+        <div class="border-t border-white/15 pt-12">
+            <div class="text-center mb-10">
+                <p class="text-[10px] font-bold tracking-[0.2em] uppercase text-white/50 mb-3">Alignement international</p>
+                <h3 class="text-xl md:text-2xl font-extrabold mb-3">En phase avec les ODD de l'ONU</h3>
+                <p class="text-white/75 text-sm max-w-lg mx-auto leading-relaxed">
+                    De la santé à la mobilité inclusive, en passant par l'égalité et l'éducation —
+                    Bana s'aligne sur <strong class="text-white font-bold">7 Objectifs de Développement Durable</strong>.
+                </p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-6">
+                {% for odd in odd_badges %}
+                <div class="flex flex-col items-center gap-2 w-24 text-center">
+                    <img src="https://sdgs.un.org/sites/default/files/goals/E_SDG_Icons-{{ odd.number }}.jpg"
+                        alt="ODD {{ odd.number }} — {{ odd.name }}"
+                        title="{{ odd.name }}"
+                        class="w-20 h-20 rounded-2xl object-cover shadow-lg">
+                    <p class="text-white/80 text-xs leading-tight font-medium">{{ odd.name }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== 4. L'ÉQUIPE ===== -->
+<section class="w-full py-16 md:py-24 px-4 md:px-8 lg:px-16 bg-white">
+    <div class="max-w-5xl mx-auto">
+
+        <!-- Titre -->
+        <div class="text-center mb-16 animate-on-scroll" data-delay="100">
+            <h2 class="text-2xl md:text-4xl font-extrabold text-gray-900 mb-2">L'équipe</h2>
+            <p class="text-gray-500 text-sm mb-7">Une équipe engagée pour transformer la mobilité scolaire</p>
+        </div>
+
+        <!-- Grille membres -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto mt-20">
+            {% for member in team_members %}
+            <div class="relative group animate-on-scroll" data-delay="{{ forloop.counter }}00">
+                <!-- Photo qui dépasse au-dessus -->
+                <div class="absolute -top-12 left-1/2 -translate-x-1/2 z-10 w-24 h-24 rounded-2xl overflow-hidden shadow-md ring-4 ring-gray-100 group-hover:ring-white/30 transition-all duration-300">
+                    <img src="{% static member.img_src %}" alt="{{ member.name }}"
+                        class="w-full h-full object-cover object-top">
+                </div>
+                <!-- Card -->
+                <div class="bg-white group-hover:bg-brand border border-gray-100 group-hover:border-brand rounded-2xl pt-16 pb-6 px-5 text-center flex flex-col shadow-sm group-hover:shadow-lg transition-all duration-300">
+                    <h3 class="font-bold text-gray-900 group-hover:text-white text-base mb-1 transition-colors duration-300">{{ member.name }}</h3>
+                    {% if member.role %}
+                    <span class="text-xs font-semibold text-brand bg-brand/10 group-hover:text-white group-hover:bg-white/20 px-3 py-1 rounded-full mb-3 self-center transition-colors duration-300">{{ member.role }}</span>
+                    {% endif %}
+                    {% if member.description %}
+                    <p class="text-sm text-gray-500 group-hover:text-white/75 leading-relaxed mb-4 flex-1 transition-colors duration-300">{{ member.description }}</p>
+                    {% endif %}
+                    <!-- Réseaux sociaux -->
+                    {% if member.linkedin or member.instagram %}
+                    <div class="flex justify-center gap-3 mt-auto pt-3 border-t border-gray-100 group-hover:border-white/20 transition-colors duration-300">
+                        {% if member.linkedin %}
+                        <a href="{{ member.linkedin }}" target="_blank" rel="noopener"
+                            class="text-brand/50 group-hover:text-white/70 transition-colors duration-300" aria-label="LinkedIn">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                            </svg>
+                        </a>
+                        {% endif %}
+                        {% if member.instagram %}
+                        <a href="{{ member.instagram }}" target="_blank" rel="noopener"
+                            class="text-brand/50 group-hover:text-white/70 transition-colors duration-300" aria-label="Instagram">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/>
+                            </svg>
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-16 animate-on-scroll" data-delay="100">
+            <p class="text-gray-500 text-sm">  Bana rassemble des profils complémentaires issus de l’entrepreneuriat, de la mobilité, du digital et de l’innovation sociale.  </p>
+        </div>
+    </div>
+</section>
+
+
+<!-- ===== 7. ILS PARLENT DE NOUS ===== -->
+    <section class="py-16 bg-gray-50">
+        <h2 class="animate-on-scroll text-3xl md:text-5xl font-extrabold text-brand text-center mb-14">
+            Ils nous soutiennent
+        </h2>
+
+        <div class="marquee-wrapper max-w-5xl mx-auto">
+            <div class="marquee-track py-2" aria-label="Presse">
+
+                <a href="https://www.materne.be/pages/pocket" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_materne.png' %}" alt="Materne"></a>
+                <a href="https://alvityl.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_alvityl.png' %}" alt="Alvityl"></a>
+                <a href="https://www.materne.be/pages/pocket" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_coverseal.png' %}" alt="Coverseal"></a>
+                <a href="https://www.digit-up.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_digit_up.svg' %}" alt="Digit-Up"></a>
+                <a href="https://startit-x.com/en/accelerate/start-it-kbc" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_startit@kbc.png' %}" alt="Start it @KBC"></a>
+                <a href="https://capinnove.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_capinnove.png' %}" alt="Cap Innove"></a>
+
+                <a href="https://www.materne.be/pages/pocket" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_materne.png' %}" alt="Materne"></a>
+                <a href="https://alvityl.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_alvityl.png' %}" alt="Alvityl"></a>
+                <a href="https://www.materne.be/pages/pocket" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_coverseal.png' %}" alt="Coverseal"></a>
+                <a href="https://www.digit-up.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_digit_up.svg' %}" alt="Digit-Up"></a>
+                <a href="https://startit-x.com/en/accelerate/start-it-kbc" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_startit@kbc.png' %}" alt="Start it @KBC"></a>
+                <a href="https://capinnove.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_capinnove.png' %}" alt="Cap Innove"></a>
+
+
+            </div>
+        </div>
+    </section>
+
+{% endblock %}

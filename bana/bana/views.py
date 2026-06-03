@@ -19,7 +19,7 @@ def home(request):
             'img_src': 'bana/img/page/home/economie-carburant.svg',
             'title': _('Économique'),
             'highlight': _('Économiser'),
-            'description': _('Économiser sur le carburant')
+            'description': _('Économiser sur <br>le carburant')
         },
         {
             'img_src': 'bana/img/page/home/ecologie.svg',
@@ -31,7 +31,7 @@ def home(request):
             'img_src': 'bana/img/page/home/communaute.svg',
             'title': _('Communauté'),
             'highlight': _('Créer du lien social'),
-            'description': _('Créer du lien social')
+            'description': _('Créer du lien social <br> dans votre quartier')
         }
     ]
 
@@ -73,26 +73,26 @@ def work(request):
 
     work_detail_steps = [
         {
-            'number': '01',
+            'number': '1',
             'title': 'Créez votre compte gratuitement',
             'description': "Parents et Yaya s'inscrivent gratuitement sur la plateforme en 3 min et complètent leur profil avec leur photo.",
             'highlight': None,
         },
         {
-            'number': '02',
+            'number': '2',
             'title': 'Ajoutez vos trajets',
             'description': "Indiquez les <strong>trajets que vous recherchez ou que vous proposez</strong> et choisissez vos modes de transport :",
             'highlight': "À pied, en vélo, avec un transport en commun ou en covoiturage.",
         },
         {
-            'number': '03',
+            'number': '3',
             'title': 'Découvrez vos matchings',
             'description': "Lorsque des trajets compatibles sont trouvés, <strong>les profils des Yayas correspondants apparaissent dans vos résultats</strong>.",
             'highlight': "Pour les contacter et organiser le premier trajet, passez à l'abonnement.",
             'cta': {'text': 'Voir les tarifs', 'url': '#'},
         },
         {
-            'number': '04',
+            'number': '4',
             'title': 'Rencontrez-vous avant le premier trajet',
             'description': "Une rencontre entre le parent, l'enfant et le Yaya est <strong>organisée avant tout premier trajet</strong> — pour vérifier le parcours et instaurer la confiance.",
             'highlight': "Cette rencontre est <strong>obligatoire</strong>.",
@@ -260,8 +260,7 @@ def tarifs(request):
             'extra_child': '+30€/an par enfant supplémentaire',
             'highlight': False,
             'features': [
-                "Vérification identité parent",
-                "Profils vérifiés Yaya (carte d'identité + extrait de casier judiciaire)",
+                "Profils vérifiés (carte d'identité + extrait de casier judiciaire)",
                 "Accès matching",
                 "Notifications nouveaux matchings",
                 "Réservation des trajets",
@@ -308,17 +307,17 @@ def tarifs(request):
         {
             'img_src': 'bana/img/page/tarifs/inscription-gratuite.svg',
             'title': _('Inscription gratuite'),
-            'description': _("Parents et Yaya s'inscrivent gratuitement"),
+            'description': _("Parents et Yaya <br> s'inscrivent gratuitement"),
         },
         {
             'img_src': 'bana/img/page/tarifs/abonnement-payant.svg',
             'title': _('Abonnement payant'),
-            'description': _("Abonnement nécessaire pour découvrir les matchings"),
+            'description': _("Nécessaire pour découvrir <br> les matchings"),
         },
         {
             'img_src': 'bana/img/page/tarifs/defraiement-1.svg',
             'title': _('Trajets défrayés'),
-            'description': _("Petite compensation pour chaque trajet effectué"),
+            'description': _("Petite compensation <br> pour chaque trajet effectué"),
         },
     ]
     return render(request, 'tarifs.html', {
@@ -330,12 +329,12 @@ def tarifs(request):
 # --- Notre mission page ---------------------------------------------------------------------------
 def about(request):
     impacts = [
-        {'emoji': '🌍', 'text': 'Moins de trafic sur la route'},
-        {'emoji': '🤝', 'text': "Plus d'entraide communautaire"},
-        {'emoji': '🧠', 'text': 'Moins de charge mentale'},
-        {'emoji': '🚀', 'text': 'Autonomie progressive des enfants'},
-        {'emoji': '🔒', 'text': 'Plus de sécurité autour des écoles'},
-        {'emoji': '🌱', 'text': 'Un impact environnemental concret'},
+        {'emoji': '🚗', 'icon': 'bana/img/page/about/trafic_1.svg',      'text': 'Moins de trafic sur la route'},
+        {'emoji': '🧒', 'icon': 'bana/img/page/about/autonomie.svg',      'text': "Autonomie progressive des enfants"},
+        {'emoji': '🧠', 'icon': 'bana/img/page/about/mental.svg',         'text': 'Moins de charge mentale'},
+        {'emoji': '🤝', 'icon': 'bana/img/page/about/communautaire.svg',  'text': "Plus d'entraide communautaire"},
+        {'emoji': '🌱', 'icon': 'bana/img/page/about/environnement.svg',  'text': 'Impact environnemental concret'},
+        {'emoji': '🔒', 'icon': 'bana/img/page/about/securite.svg',       'text': 'Plus de sécurité autour des écoles'},
     ]
     odd_badges = [
         {'number': '03', 'name': 'Bonne santé et bien-être'},
@@ -345,13 +344,64 @@ def about(request):
         {'number': '10', 'name': 'Inégalités réduites'},
         {'number': '11', 'name': 'Villes et communautés durables'},
         {'number': '12', 'name': 'Consommation et production responsables'},
+        {'number': '13', 'name': 'Action climatique'},
+        {'number': '17', 'name': 'Partenariats pour les objectifs'},
+    ]
+    stats = [
+        {'value': '250+', 'label': 'Trajets effectués'},
+        {'value': '5', 'label': 'Villes actives'},
+        {'value': '3', 'label': 'Prix reçus'},
+    ]
+    partners = [
+        {
+            'logo': 'bana/img/logo/logo_materne.png',
+            'name': 'Materne',
+            'url': 'https://www.materne.be/pages/pocket',
+            'type': 'Mécénat matériel',
+            'description': 'Lots de compotes distribués lors de nos événements communautaires.',
+        },
+        {
+            'logo': 'bana/img/logo/logo_alvityl.png',
+            'name': 'Alvityl',
+            'url': 'https://alvityl.be/',
+            'type': 'Mécénat matériel',
+            'description': 'Lots de vitamines offerts aux membres de la communauté Bana.',
+        },
+        {
+            'logo': 'bana/img/logo/logo_coverseal.png',
+            'name': 'Coverseal',
+            'url': 'https://coverseal.com/',
+            'type': 'Mécénat de compétences',
+            'description': 'Expertise technique et accompagnement au service de Bana.',
+        },
+        {
+            'logo': 'bana/img/logo/logo_digit_up.svg',
+            'name': 'Digit Up Agency',
+            'url': 'https://www.digit-up.be/',
+            'type': 'Partenaire digital',
+            'description': 'Développement web et accompagnement digital de la plateforme.',
+        },
+        {
+            'logo': 'bana/img/logo/logo_startit@kbc.png',
+            'name': 'Start it @KBC',
+            'url': 'https://startit-x.com/en/accelerate/start-it-kbc',
+            'type': 'Accélérateur',
+            'description': "Programme d'accélération startup pour développer l'impact de Bana.",
+        },
+        {
+            'logo': 'bana/img/logo/logo_capinnove.png',
+            'name': 'Cap Innove',
+            'url': 'https://capinnove.be/',
+            'type': 'Incubateur',
+            'description': "Incubation et accompagnement à l'innovation sociale et entrepreneuriale.",
+        },
     ]
     team_members = [
         {
             'img_src': 'bana/img/page/about/Nyota.png',
             'name': 'Nyota Delecourt',
-            'role': 'Co-fondatrice',
-            'description': 'Description',
+            'role': 'Fondatrice',
+            'description': 'Entrepreneuriat social et mobilité, Nyota porte la vision communautaire de Bana.',
             'linkedin': '#',
             'instagram': '',
         },
@@ -359,7 +409,7 @@ def about(request):
             'img_src': 'bana/img/page/about/Luca.png',
             'name': 'Luca C.',
             'role': 'Développeur IT',
-            'description': 'Description',
+            'description': 'Architecture et développement de la plateforme, du backend aux interfaces.',
             'linkedin': '#',
             'instagram': '',
         },
@@ -367,7 +417,7 @@ def about(request):
             'img_src': 'bana/img/page/about/Raph.png',
             'name': 'Raphaël J.',
             'role': 'Développeur IT',
-            'description': 'Description',
+            'description': 'Innovation digitale et intégration des fonctionnalités clés de la plateforme.',
             'linkedin': '#',
             'instagram': '',
         },
@@ -375,6 +425,8 @@ def about(request):
     return render(request, 'about.html', {
         'impacts': impacts,
         'odd_badges': odd_badges,
+        'stats': stats,
+        'partners': partners,
         'team_members': team_members,
     })
 

@@ -13,7 +13,7 @@
 {% block content %}
 
     <!-- HERO -->
-    <section class="relative flex items-center justify-center min-h-screen md:min-h-screen text-center px-4 md:px-8 lg:px-16 overflow-hidden">
+    <section class="relative flex flex-col items-center min-h-screen text-center px-4 md:px-8 lg:px-16 overflow-hidden">
 
         <picture>
             <source srcset="{% static 'bana/img/page/home/transport-scolaire-belgique.webp' %}" type="image/webp">
@@ -25,40 +25,24 @@
 
         <div class="absolute inset-0 bg-black/15"></div>
 
-        <div class="animate-on-scroll relative z-10 max-w-3xl flex flex-col items-center gap-6 text-white -translate-y-16 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)]" data-delay="250">
+        <!-- Haut : titre + première accroche -->
+        <div class="animate-on-scroll relative z-10 max-w-4xl flex flex-col items-center gap-6 text-white mt-20 md:mt-56 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)]" data-delay="250">
             <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
                 La solution pour les trajets des enfants en Belgique
             </h1>
-            
-            {% comment "" %}
-            <p class="text-base md:text-lg font-semibold">
-                Bana facilite et sécurise les <span class="text-brand-50">trajets
-                    maison-école-activités</span>
-                    <br>
-                    grâce à une communauté de parents et d'accompagnateurs vérifiés.
+            <p class="text-base md:text-xl font-semibold">
+                Bana facilite et sécurise les <span class="text-brand-50">trajets maison-école-activités</span>
+                <br>
+                grâce à une communauté de parents et d'accompagnateurs vérifiés.
             </p>
-
-            <p class="text-base md:text-lg font-semibold">
-                <span class="text-brand-50">À pied, en transport en commun, à vélo ou en
-                    covoiturage</span><br>selon
-                vos besoins et ceux de vos enfants.
+            <p class="text-base md:text-xl font-semibold">
+                <span class="text-brand-50">À pied, en transport en commun, à vélo ou en covoiturage</span>
+                <br>
+                selon vos besoins et ceux de vos enfants.
             </p>
-            {% endcomment %}
-            
-            <p class="text-base md:text-lg font-semibold">
-            Bana facilite et sécurise les <span class="text-brand-50">trajets maison-école-activités</span> 
-            <br>
-            grâce à une communauté de parents et d’accompagnateurs vérifiés.
-            </p>
-            <p class="text-base md:text-lg font-semibold">
-            <span class="text-brand-50">À pied, en transport en commun, à vélo ou en covoiturage</span>
-            <br>
-            selon vos besoins et ceux de vos enfants.
-            </p>
-            
 
             <a href="{% url 'account_signup' %}"
-                class=" inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-brand-300 font-semibold hover:bg-brand-200 hover:text-white transition [text-shadow:none]">
+                class="inline-flex items-center justify-center mt-16 px-6 py-3 rounded-full bg-brand-50 text-brand-300 font-semibold hover:bg-brand-200 hover:text-white transition [text-shadow:none]">
                 Créer mon compte
             </a>
 
@@ -67,13 +51,8 @@
                 <span>✓ Vérification d'identité</span>
                 <span>✓ Communauté locale</span>
             </div>
-
-            {% comment "" %}
-            <p>
-                Inscription gratuite - Sans engagement
-            </p>
-            {% endcomment %}
         </div>
+
     </section>
     
     <!-- PRESENTATION -->
@@ -89,16 +68,16 @@
 
             <div class="flex flex-col gap-4 text-center md:text-left">
                 <h2 class="text-xl md:text-2xl font-bold">
-                    Une plateforme qui permet aux parents de trouver une personne de confiance.
+                    Une plateforme qui permet aux parents de trouver une personne de confiance
                 </h2>
 
                 <p class="md:text-lg">
                     Grâce à notre plateforme de mise en relation, les parents trouvent une personne de confiance appelée
-                    Yaya, pour accompagner leurs enfants sur les trajets entre la maison, l'école et les activités
-                    extrascolaires.
+                    Yaya, <strong> pour accompagner leurs enfants sur les trajets entre la maison, l'école et les activités
+                    extrascolaires.</strong>
                 </p>
                 <p class="md:text-lg">
-                    Avec Bana, vos enfants se déplacent à pied, à vélo, en transport en commun ou en covoiturage, en
+                    Avec Bana, vos enfants se déplacent à pied, en transport en commun, à vélo ou en covoiturage, en
                     toute sécurité, grâce à notre communauté de confiance.
                 </p>
             </div>
@@ -114,7 +93,7 @@
             <div class="animate-on-scroll flex flex-col items-center py-4 gap-2 md:gap-3">
                 <img class="w-12 h-12 md:w-16 md:h-16" src="{% static benefit.img_src %}" alt="{{ benefit.title }} feature icon">
                 <h3 class="text-xs sm:text-sm md:text-lg font-bold leading-tight">{{ benefit.title }}</h3>
-                <p class="hidden sm:block text-xs md:text-lg">{{ benefit.description }}</p>
+                <p class="hidden sm:block text-xs md:text-lg">{{ benefit.description|safe }}</p>
             </div>
             {% endfor %}
 
@@ -210,7 +189,7 @@
                                 class="w-full h-full object-cover object-top" width="1370" height="1148" loading="lazy">
                         </picture>
                         <div class="absolute bottom-3 left-0 right-0 flex justify-center">
-                            <span class="inline-flex items-center gap-1 bg-brand-300 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
+                            <span class="inline-flex items-center gap-1 bg-brand-50 text-brand-300 text-xs font-semibold px-3 py-1 rounded-full shadow">
                                 ✓ Yaya vérifié
                             </span>
                         </div>

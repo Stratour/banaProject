@@ -95,26 +95,26 @@
     <!-- ═══════════════════════════════════════════════ -->
     <!-- HERO -->
     <!-- ═══════════════════════════════════════════════ -->
-    <section class="relative flex items-center justify-center min-h-screen text-center px-4 md:px-8 lg:px-16 bg-gray-900">
+    <section class="relative flex flex-col items-center min-h-screen text-center px-4 md:px-8 lg:px-16 bg-gray-900">
 
         <img src="{% static 'bana/img/page/work/transport-scolaire-enseignement-specialise.png' %}"
              class="absolute inset-0 w-full h-full object-cover object-center"
              fetchpriority="high" loading="eager"
              width="1672" height="941" alt="">
 
-        <div class="absolute inset-0 bg-black/20"></div>
+        <div class="absolute inset-0 bg-black/15"></div>
 
-        <div class="animate-on-scroll relative z-10 max-w-5xl flex flex-col items-center gap-6 text-white -translate-y-16 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)]" data-delay="250">
+        <div class="animate-on-scroll relative z-10 max-w-5xl flex flex-col items-center gap-6 text-white mt-20 md:mt-56 -translate-y-16 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)]" data-delay="250">
             <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
                 Le même trajet, au même moment <br>
                 Bana crée le lien
             </h1>
-            <p class="text-base md:text-lg font-semibold text-white/85">
+            <p class="text-base md:text-xl font-semibold text-white/85">
                 Bana met en <span class="text-brand-50">relation les parents et les Yayas</span> qui font déjà le même chemin                 
             </p>
         
             <a href="{% url 'account_signup' %}"
-                class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-brand-300 font-semibold hover:bg-brand-200 hover:text-white transition [text-shadow:none]">
+                class="inline-flex items-center justify-center mt-36 px-6 py-3 rounded-full bg-brand-50 text-brand-300 font-semibold hover:bg-brand-200 hover:text-white transition [text-shadow:none]">
                 Créer mon compte gratuitement
             </a>
             <a href="{% url 'yaya' %}"

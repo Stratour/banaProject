@@ -5,10 +5,10 @@
     <div class="max-w-6xl mx-auto px-6 pt-36 md:pt-20 flex flex-col gap-8 md:flex-row md:justify-between">
 
         <!-- Logo & Description -->
-        <div class="flex flex-row items-center md:items-start lg:w-1/4">
+        <div class="flex flex-col items-center lg:w-1/4">
             <img src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Bana Logo" class="w-14 h-14 flex-shrink-0">
 
-            <p class="text-sm font-medium ml-4">
+            <p class="text-sm font-medium mt-3">
                 {% blocktrans trimmed %}
                 Plateforme de <span class="text-brand-50 font-bold">mobilité partagée</span>
                 <br>
@@ -17,9 +17,9 @@
             </p>
         </div>
 
-        <!-- Bana Community Links -->
-        <div class="flex-1">
-            <h3 class="text-brand-50 font-bold text-lg mb-2">{% trans "Navigation" %}</h3>
+        <!-- Bana Links -->
+        <div class="flex-none mr-12">
+            <h3 class="text-brand-50 font-bold text-lg mb-2 ">{% trans "Navigation" %}</h3>
             {% with url_name=request.resolver_match.url_name %}
             <ul class="space-y-1">
                 <li><a href="{% url 'home' %}" class="hover:text-brand-50 hover:font-semibold {% if url_name == 'home' %}text-brand-50 font-semibold{% endif %}">{% trans "Accueil" %}</a></li>
@@ -33,6 +33,18 @@
             </ul>
             {% endwith %}
                 
+        </div>
+
+        <!-- charte Links -->
+        <div class="flex-none mr-12">
+            <h3 class="text-brand-50 font-bold text-lg mb-2">{% trans "Règlement" %}</h3>
+            <ul class="space-y-1">
+                <li><a href="{% static 'bana/doc/charte-de-bonne-conduite-yaya-mai-2026.pdf' %}" target="_blank" class="hover:text-brand-50 hover:font-semibold">{% trans "Charte Yaya" %}</a></li>
+                <li><a href="{% static 'bana/doc/reglement-bana-yaya.pdf' %}" target="_blank" class="hover:text-brand-50 hover:font-semibold">{% trans "Règlement Yaya" %}</a></li>
+                <li><a href="{% static 'bana/doc/charte-de-bonne-conduite-parents-mai-2026.pdf' %}" target="_blank" class="hover:text-brand-50 hover:font-semibold">{% trans "Charte Parent" %}</a></li>
+                <li><a href="{% static 'bana/doc/reglement-bana-parents.pdf' %}" target="_blank" class="hover:text-brand-50 hover:font-semibold">{% trans "Règlement Parent" %}</a></li>
+
+            </ul>                
         </div>
 
         <!-- Contact Info -->
@@ -92,14 +104,23 @@
             <img class="w-24 footer-digit-up-logo" src="{% static 'bana/img/logo/logo_digit_up.svg' %}" alt="Digit-Up" width="391" height="126">
         </a>
         <div class="flex items-center gap-4 mt-4 text-xs font-light">
-            <span class="hover:text-brand-50 cursor-pointer">{% trans "Confidentialité" %}</span>
+            <a href="{% static 'bana/doc/politique-de-confidentialite-bana.pdf' %}" target="_blank"><span class="hover:text-brand-50 cursor-pointer">{% trans "Confidentialité" %}</span></a>
             <span class="text-gray-400">|</span>
-            <span class="hover:text-brand-50 cursor-pointer">{% trans "Mentions légales" %}</span>
+            <a href="{% static 'bana/doc/mentions-legales-bana.pdf' %}" target="_blank"><span class="hover:text-brand-50 cursor-pointer">{% trans "Mentions légales" %}</span></a>
             <span class="text-gray-400">|</span>
-            <span class="hover:text-brand-50 cursor-pointer">{% trans "Cookies" %}</span>
+            <a href="{% static 'bana/doc/politique-de-cookies-bana.pdf' %}" target="_blank"><span class="hover:text-brand-50 cursor-pointer">{% trans "Cookies" %}</span></a>
         </div>
     </div>
 </footer>
+
+<button id="scroll-to-top-btn"
+  aria-label="Remonter en haut de la page"
+  onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+  class="fixed bottom-8 right-4 md:right-10 z-[60] w-12 h-12 rounded-full shadow-lg bg-brand text-brand-50 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300">
+  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M5 15l7-7 7 7"/>
+  </svg>
+</button>
 
 {% if user.is_authenticated %}
 <dialog id="logout-modal" class="rounded-xl p-0 w-full max-w-md">

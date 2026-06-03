@@ -6,7 +6,7 @@
 {% block og_description %}{% trans "Essentiel, Confort ou Ambassadeur : choisissez la formule qui vous correspond. Vérification d'identité incluse, badges enfants, support prioritaire." %}{% endblock %}
 
 {% block extra_head %}
-<link rel="preload" as="image" href="{% static 'bana/img/page/tarifs/tarifs-transport-scolaire-belgique.jpg' %}">
+<link rel="preload" as="image" href="{% static 'bana/img/page/tarifs/tarifs-transport-scolaire-belgique.png' %}">
 {% endblock %}
 
 {% block content %}
@@ -14,39 +14,33 @@
     <!-- ═══════════════════════════════════════════════ -->
     <!-- SECTION 1 — HERO                               -->
     <!-- ═══════════════════════════════════════════════ -->
-    <section class="relative flex items-center justify-center min-h-screen text-center px-4 md:px-8 lg:px-16 bg-gray-900">
+    <section class="relative flex flex-col items-center min-h-screen text-center px-4 md:px-8 lg:px-16 bg-gray-900">
 
-        <img src="{% static 'bana/img/page/tarifs/tarifs-transport-scolaire-belgique.jpg' %}"
+        <img src="{% static 'bana/img/page/tarifs/tarifs-transport-scolaire-belgique.png' %}"
              class="absolute inset-0 w-full h-full object-cover object-center"
              fetchpriority="high" loading="eager"
              width="1920" height="1280" alt="">
 
-        <div class="absolute inset-0 bg-black/50"></div>
+        <div class="absolute inset-0 bg-black/15"></div>
 
-        <div class="animate-on-scroll relative z-10 max-w-3xl flex flex-col items-center gap-6 text-white -translate-y-16 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)]" data-delay="250">
+        <div class="animate-on-scroll relative z-10 max-w-3xl flex flex-col items-center gap-6 text-white mt-56 -translate-y-16 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)]" data-delay="250">
 
             <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
                 Un modèle simple et équitable
             </h1>
 
-            <p class="text-base md:text-lg font-medium text-white/90 max-w-2xl">
+            <p class="text-base md:text-xl font-semibold">
                 La confiance, ça se mérite.
-            
-                
-
-               
-                 <span class="text-brand-50 font-semibold"></span>
-                 <span class="text-brand-50 font-semibold"></span>
             </p>
 
-            <p class="text-base md:text-lg font-medium text-white/90 max-w-2xl">
+            <p class="text-base md:text-xl font-semibold">
                 Chez Bana, l'inscription est gratuite.
                 <br>
                 Vous passez à l'abonnement uniquement lorsqu'une <span class="text-brand-50 font-semibold">mise en relation compatible</span> vous est proposée.
             </p>
 
             <a href="{% url 'account_signup' %}"
-                class="inline-flex items-center justify-center px-8 py-3 rounded-full bg-brand-50 text-brand font-semibold hover:bg-brand-300 hover:text-white [text-shadow:none] transition">
+                class="inline-flex items-center justify-center mt-20 px-8 py-3 rounded-full bg-brand-50 text-brand font-semibold hover:bg-brand-300 hover:text-white [text-shadow:none] transition">
                 Rejoindre gratuitement
             </a>
             <p class="text-sm ">Inscription gratuite &bull; Sans engagement</p>
@@ -88,7 +82,7 @@
                 </h2>
 
                 <p class="text-lg">
-                Chaque défraiement reconnaît le temps, l’attention et l’accompagnement apportés aux enfants lors des trajets.
+                Chaque défraiement versé aux Yaya reconnaît le temps, l’attention et l’accompagnement apportés aux enfants lors des trajets.
                 </p>
             </div>
         </div>
@@ -101,8 +95,8 @@
             {% for item in tarifs_highlights %}
             <div class="animate-on-scroll flex flex-col items-center gap-2 py-4" data-delay="{{ forloop.counter }}00">
                 <img src="{% static item.img_src %}" alt="" aria-hidden="true" class="w-16 h-16" width="64" height="64">
-                <p class="font-bold text-lg">{{ item.title }}</p>
-                <p class="text-white text-sm">{{ item.description }}</p>
+                <h3 class="text-xs sm:text-sm md:text-lg font-bold leading-tight">{{ item.title }}</h3>
+                <p class="hidden sm:block text-xs md:text-lg">{{ item.description|safe }}</p>
             </div>
             {% endfor %}
 
@@ -134,7 +128,7 @@
                 <p class="text-gray-600 md:text-lg max-w-2xl mx-auto">
                     Pour Bana, la <strong>sécurité des enfants n'a pas de prix</strong>.
                     <br>
-                    C'est pourquoi la <strong>vérification des profils</strong> des Yaya reste la base de <strong>tous les packs</strong>.
+                    C'est pourquoi la <strong>vérification des profils</strong> reste la base de <strong>tous les packs</strong>.
                 </p>
             </div>
 
@@ -185,7 +179,7 @@
 
                         <ul class="flex-1 flex flex-col gap-3 mt-2">
                             {% for feature in pack.features %}
-                            <li class="flex items-start gap-2 text-sm {% if pack.highlight %}text-white/90{% else %}text-gray-700{% endif %}">
+                            <li class="flex items-start gap-2 text-sm font-semibold {% if pack.highlight %}text-white/90{% else %}text-gray-700{% endif %}">
                                 <img src="{% static 'bana/img/icon/Icon_check.svg' %}" alt="" aria-hidden="true" class="w-4 h-4 mt-0.5 shrink-0 {% if pack.highlight %}brightness-0 invert{% endif %}" width="16" height="16">
                                 <span>{{ feature }}</span>
                             </li>
@@ -290,10 +284,10 @@
                     </div>
 
                     <!-- Notice importante (simplifiée) -->
-                    <div class="bg-amber-50 border-l-4 border-amber-400 rounded-r-xl p-4">
-                        <p class="text-sm font-semibold text-amber-800 mb-1">Important</p>
-                        <p class="text-sm text-amber-700">
-                            Le défraiement est librement convenu entre parent et Yaya — Bana fournit uniquement des <strong>repères indicatifs</strong> et n'intervient pas dans le paiement.
+                    <div class="bg-gray-50 border-l-4 border-brand-50 rounded-r-xl p-4">
+                        <p class="text-sm font-bold text-brand mb-1">Important</p>
+                        <p class="text-sm text-brand">
+                            Le défraiement est librement convenu entre parent et Yaya. <br> Bana fournit uniquement des <strong>repères indicatifs</strong> et n'intervient pas dans le paiement.
                         </p>
                     </div>
                 </div>

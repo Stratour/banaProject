@@ -1,13 +1,13 @@
 {% load static i18n %}
 {% get_current_language as LANGUAGE_CODE %}
 
-<header>
+<header id="site-header" class="sticky top-0 z-50">
     <nav class="px-6 bg-brand-gradient-br text-white xl:px-24 py-4 flex items-center justify-between">
-        <!-- Logo and Branding -->
-        <div class="flex items-center space-x-3">
 
+        <!-- ===== 1. Logo et branding ===== -->
+        <div class="flex items-center space-x-3">
             <a href="{% url 'home' %}">
-                <img class="w-20 h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Logo Bana">
+                <img class="w-12 h-12 md:w-20 md:h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Logo Bana">
             </a>
             <p class="hidden xl:block text-sm w-65">
                 {% blocktrans trimmed %}
@@ -16,15 +16,13 @@
                 pour les <span class="text-brand-50 font-bold"> trajets des enfants</span>
                 {% endblocktrans %}
             </p>
-
-
         </div>
 
-        <!-- Mobile Menu Button -->
+        <!-- ===== 2. Actions mobile ===== -->
         <div class="md:hidden flex justify-center items-center gap-4">
 
             {% if user.is_authenticated %}
-            <!-- Avatar dropdown mobile -->
+            <!-- 2.1 Avatar mobile -->
             <div class="relative">
                 <button id="appAvatarBtnMobile"
                         class="flex items-center rounded-full p-1 hover:bg-white/20 focus:outline-none"
@@ -65,15 +63,18 @@
             </div>
             {% endif %}
 
-            <button id="menu-toggle" class="focus:outline-none">
-                <svg class="w-8 h-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
+            <!-- 2.2 Bouton burger (zone de tap 44px) -->
+            <button id="menu-toggle" class="focus:outline-none relative w-11 h-11" aria-label="Menu de navigation">
+                <svg id="icon-open" class="w-8 h-8 text-white absolute top-1.5 left-1.5 transition-all duration-300 ease-in-out" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+                <svg id="icon-close" class="w-8 h-8 text-white absolute top-1.5 left-1.5 transition-all duration-300 ease-in-out" style="opacity:0;transform:rotate(90deg) scale(0.75)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
 
-        <!-- Navigation Links -->
+        <!-- ===== 3. Navigation desktop ===== -->
         {% with url_name=request.resolver_match.url_name %}
         <div id="nav-links" class="hidden md:flex items-center space-x-6 font-bold">
 
@@ -91,12 +92,12 @@
                class="relative transition-colors duration-150 {% if url_name == 'work' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
                 {% trans "Comment ça marche ?" %}
             </a>
-            
+
             <a href="{% url 'yaya' %}"
                class="relative transition-colors duration-150 {% if url_name == 'yaya' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
                 {% trans "Devenir Yaya" %}
             </a>
-            
+
             <a href="{% url 'tarifs' %}"
                class="relative transition-colors duration-150 {% if url_name == 'tarifs' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
                 {% trans "Tarifs" %}
@@ -117,53 +118,53 @@
         </div>
         {% endwith %}
 
-        <!-- Authentication Buttons -->
+        <!-- ===== 4. Authentification desktop ===== -->
         <div class="hidden md:flex flex-row gap-8 items-center">
             <div id="auth-buttons" class="md:flex items-center space-x-4">
 
                 {% if user.is_staff %}
                 <a href="{% url 'bana_admin:admin_view' %}"
                     class="bg-brand-50 text-gray-900 px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand hover:no-underline">
-                    Admin</a>
+                    Admin
+                </a>
                 {% endif %}
 
+                <!-- 4.1 Sélecteur de langue -->
                 <div class="relative inline-block text-left z-10">
                     <button
                         id="languageButton"
-                        class="flex items-center pl-4 py-2 font-bold text-white rounded-full focus:outline-none"
+                        class="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 transition-colors px-3 py-1.5 rounded-full text-white text-sm font-semibold focus:outline-none"
                         onclick="toggleLanguageDropdown()">
 
-                        {% get_current_language as LANGUAGE_CODE %}
-                        {% if LANGUAGE_CODE == 'fr' %}
-                            FR
-                        {% elif LANGUAGE_CODE == 'en' %}
-                            EN
-                        {% elif LANGUAGE_CODE == 'nl' %}
-                            NL
+                        <svg class="w-4 h-4 opacity-80" fill="none" stroke="currentColor" stroke-width="1.75" viewBox="0 0 24 24">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M2 12h20" stroke-linecap="round"/>
+                        </svg>
+
+                        {% if LANGUAGE_CODE == 'fr' %}FR
+                        {% elif LANGUAGE_CODE == 'en' %}EN
+                        {% elif LANGUAGE_CODE == 'nl' %}NL
                         {% endif %}
 
-                        <svg class="w-4 h-4 ml-1 transition-transform duration-200" id="languageArrow" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
-                            <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+                        <svg class="w-3.5 h-3.5 opacity-70 transition-transform duration-200" id="languageArrow" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                     </button>
-                
-                    <div
-                        id="languageDropdown"
-                        class="absolute left-0 mt-2 w-32 bg-white border border-brand-50 rounded-md shadow-lg hidden">
-                        <ul class="py-1">
+
+                    <div id="languageDropdown"
+                         class="absolute left-0 mt-2 w-44 bg-brand border border-white/15 rounded-xl shadow-2xl hidden overflow-hidden">
+                        <ul class="py-1.5">
                             {% get_available_languages as LANGUAGES %}
                             {% for lang_code, lang_name in LANGUAGES %}
                                 {% if lang_code != LANGUAGE_CODE %}
                                     <li>
-                                        <a href="#" 
-                                           onclick="switchLanguage('{{ lang_code }}')" 
-                                           class="block px-4 py-2 text-gray-700 hover:bg-lime-100 transition-colors">
-                                            {% if lang_code == 'fr' %}
-                                                {% trans "Français" %} 
-                                            {% elif lang_code == 'en' %}
-                                                {% trans "Anglais" %} 
-                                            {% elif lang_code == 'nl' %}
-                                                {% trans "Néerlandais" %}
+                                        <a href="#"
+                                           onclick="switchLanguage('{{ lang_code }}')"
+                                           class="block px-4 py-2.5 text-sm font-medium text-white/75 hover:text-white hover:bg-white/10 transition-colors">
+                                            {% if lang_code == 'fr' %}{% trans "Français" %}
+                                            {% elif lang_code == 'en' %}{% trans "Anglais" %}
+                                            {% elif lang_code == 'nl' %}{% trans "Néerlandais" %}
                                             {% endif %}
                                         </a>
                                     </li>
@@ -172,9 +173,9 @@
                         </ul>
                     </div>
                 </div>
-                
+
                 {% if user.is_authenticated %}
-                <!-- Avatar dropdown desktop -->
+                <!-- 4.2 Avatar desktop -->
                 <div class="relative">
                     <button id="appAvatarBtnDesktop"
                             class="flex items-center gap-1.5 rounded-full p-1 hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
@@ -220,61 +221,100 @@
                 {% else %}
                 <a href="{% url 'account_signup' %}"
                     class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand hover:no-underline">
-                    {% trans "Inscription" %} 
+                    {% trans "Inscription" %}
                 </a>
-
                 <a href="{% url 'account_login' %}"
                     class="data-delay=250 relative text-brand-50 px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:bg-brand-50 hover:text-brand transition before:absolute before:inset-0 before:rounded-full before:border-2 before:border-brand-50">
-                    {% trans "Connexion" %} 
+                    {% trans "Connexion" %}
                 </a>
-
                 {% endif %}
-                
+
             </div>
         </div>
 
     </nav>
 
-    <!-- Mobile Dropdown Menu -->
-    <div id="mobile-menu" class="hidden bg-brand border-t border-brand-50 text-white px-6 py-4 md:hidden">
+    <!-- ===== 5. Menu mobile (drawer) ===== -->
+    <div id="mobile-menu" class="absolute top-full left-0 right-0 bg-brand text-white md:hidden opacity-0 -translate-y-2 pointer-events-none transition-all duration-300 ease-out max-h-[calc(100vh-5rem)] overflow-y-auto">
         {% with url_name=request.resolver_match.url_name %}
-        <div class="flex flex-col space-y-4 font-bold">
-            <a href="{% url 'home' %}" class="text-center transition-colors {% if url_name == 'home' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "Accueil" %}</a>
-            <a href="{% url 'yaya' %}" class="text-center transition-colors {% if url_name == 'yaya' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "Devenir Yaya" %}</a>
-            <a href="{% url 'work' %}" class="text-center transition-colors {% if url_name == 'work' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "Comment ça marche ?" %}</a>
-            <a href="{% url 'tarifs' %}" class="text-center transition-colors {% if url_name == 'tarifs' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "Tarifs" %}</a>
-            <a href="{% url 'about' %}" class="text-center transition-colors {% if url_name == 'about' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "À propos" %}</a>
-            {% comment "" %}
-            <a href="{% url 'contact' %}" class="text-center transition-colors {% if url_name == 'contact' %}text-brand-50{% else %}hover:text-brand-50{% endif %}">{% trans "Contact" %}</a>
-            {% endcomment %}
 
+        <!-- 5.1 Liens de navigation -->
+        <nav class="px-4 pt-5 pb-3 flex flex-col gap-1">
+            <a href="{% url 'home' %}"
+               class="flex items-center justify-between px-4 py-3 rounded-xl font-semibold transition-colors {% if url_name == 'home' %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/10 hover:text-white{% endif %}">
+                {% trans "Accueil" %}
+                {% if url_name == 'home' %}<span class="w-1.5 h-1.5 rounded-full bg-brand-50 flex-shrink-0"></span>{% endif %}
+            </a>
+            <a href="{% url 'work' %}"
+               class="flex items-center justify-between px-4 py-3 rounded-xl font-semibold transition-colors {% if url_name == 'work' %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/10 hover:text-white{% endif %}">
+                {% trans "Comment ça marche ?" %}
+                {% if url_name == 'work' %}<span class="w-1.5 h-1.5 rounded-full bg-brand-50 flex-shrink-0"></span>{% endif %}
+            </a>
+            <a href="{% url 'yaya' %}"
+               class="flex items-center justify-between px-4 py-3 rounded-xl font-semibold transition-colors {% if url_name == 'yaya' %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/10 hover:text-white{% endif %}">
+                {% trans "Devenir Yaya" %}
+                {% if url_name == 'yaya' %}<span class="w-1.5 h-1.5 rounded-full bg-brand-50 flex-shrink-0"></span>{% endif %}
+            </a>
+            <a href="{% url 'tarifs' %}"
+               class="flex items-center justify-between px-4 py-3 rounded-xl font-semibold transition-colors {% if url_name == 'tarifs' %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/10 hover:text-white{% endif %}">
+                {% trans "Tarifs" %}
+                {% if url_name == 'tarifs' %}<span class="w-1.5 h-1.5 rounded-full bg-brand-50 flex-shrink-0"></span>{% endif %}
+            </a>
+            <a href="{% url 'about' %}"
+               class="flex items-center justify-between px-4 py-3 rounded-xl font-semibold transition-colors {% if url_name == 'about' %}bg-white/15 text-white{% else %}text-white/70 hover:bg-white/10 hover:text-white{% endif %}">
+                {% trans "Notre mission" %}
+                {% if url_name == 'about' %}<span class="w-1.5 h-1.5 rounded-full bg-brand-50 flex-shrink-0"></span>{% endif %}
+            </a>
+        </nav>
 
+        <div class="mx-4 border-t border-white/10"></div>
 
-            <div class="flex flex-col items-center gap-4 md:flex-row justify-center p-6">
-                {% if user.is_authenticated %}
-                <a href="{% url 'accounts:profile' %}"
-                    class="bg-brand-50 text-gray-900 px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand hover:no-underline">
-                    {% trans "Profil" %}
-                </a>
-                
-                <button type="button"
-                        onclick="document.getElementById('logout-modal').showModal()"
-                        class="bg-brand-50 text-gray-900 px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand hover:no-underline">
-                    {% trans "Déconnexion" %}
-                </button>
-
-                {% else %}
-                <a href="{% url 'account_signup' %}"
-                    class="bg-brand-50 text-gray-900 px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand hover:no-underline">
-                    {% trans "Inscription" %}
-                </a>
-                <a href="{% url 'account_login' %}"
-                    class="bg-brand-50 text-gray-900 px-4 py-2 rounded-full font-bold w-40 text-center hover:text-brand hover:no-underline">
-                    {% trans "Connexion" %}
-                </a>
-                {% endif %}
+        <!-- 5.2 Sélecteur de langue -->
+        <div class="px-4 py-4">
+            <p class="text-xs text-white/40 uppercase tracking-widest mb-3 font-medium px-1">{% trans "Langue" %}</p>
+            <div class="flex gap-2">
+                {% get_available_languages as LANGUAGES %}
+                {% for lang_code, lang_name in LANGUAGES %}
+                    {% if lang_code == LANGUAGE_CODE %}
+                        <span class="px-4 py-1.5 rounded-full bg-white/15 text-white text-sm font-bold ring-1 ring-white/25">
+                            {{ lang_code|upper }}
+                        </span>
+                    {% else %}
+                        <a href="#" onclick="switchLanguage('{{ lang_code }}')"
+                           class="px-4 py-1.5 rounded-full text-white/45 hover:text-white hover:bg-white/10 text-sm font-semibold transition-colors">
+                            {{ lang_code|upper }}
+                        </a>
+                    {% endif %}
+                {% endfor %}
             </div>
         </div>
+
+        <div class="mx-4 border-t border-white/10"></div>
+
+        <!-- 5.3 Boutons d'action -->
+        <div class="px-4 py-5 flex flex-col gap-3">
+            {% if user.is_authenticated %}
+            <a href="{% url 'accounts:profile' %}"
+               class="w-full text-center bg-brand-50 text-brand px-4 py-3 rounded-full font-bold hover:opacity-90 transition-opacity">
+                {% trans "Mon profil" %}
+            </a>
+            <button type="button"
+                    onclick="document.getElementById('logout-modal').showModal()"
+                    class="w-full text-center border border-white/25 text-white/80 px-4 py-3 rounded-full font-semibold hover:bg-white/10 hover:text-white transition-colors">
+                {% trans "Déconnexion" %}
+            </button>
+            {% else %}
+            <a href="{% url 'account_signup' %}"
+               class="w-full text-center bg-brand-50 text-brand px-4 py-3 rounded-full font-bold hover:opacity-90 transition-opacity">
+                {% trans "Inscription" %}
+            </a>
+            <a href="{% url 'account_login' %}"
+               class="w-full text-center border border-white/25 text-white/80 px-4 py-3 rounded-full font-semibold hover:bg-white/10 hover:text-white transition-colors">
+                {% trans "Connexion" %}
+            </a>
+            {% endif %}
+        </div>
+
         {% endwith %}
     </div>
 
@@ -301,7 +341,7 @@
                 role="{% if 'error' in tags or 'danger' in tags %}alert{% else %}status{% endif %}"
                 aria-live="{% if 'error' in tags or 'danger' in tags %}assertive{% else %}polite{% endif %}" data-toast
                 data-toast-timeout="6000" {# plus longtemps, plus visible #}>
-                {# Barre d’accent à gauche (couleur selon statut) #}
+                {# Barre d'accent à gauche (couleur selon statut) #}
                 <span class="absolute inset-y-0 left-0 w-1.5 rounded-l-2xl
         {% if 'success' in tags %} bg-green-500
         {% elif 'error' in tags or 'danger' in tags %} bg-red-500
@@ -372,7 +412,12 @@
 
 </header>
 
+<!-- ===== 6. Overlay mobile ===== -->
+<div id="mobile-overlay"
+     class="fixed inset-0 z-[45] bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden">
+</div>
 
+<!-- ===== 7. Modal déconnexion ===== -->
 <dialog id="logout-modal" class="rounded-xl p-0 w-full max-w-md">
   <form method="post" action="{% url 'accounts:logout' %}" class="p-6 space-y-5">
     {% csrf_token %}
@@ -382,7 +427,6 @@
         {% trans "Êtes-vous sûr de vouloir vous déconnecter ?" %}
       </p>
     </header>
-
     <div class="flex items-center justify-end gap-3 pt-2">
       <button type="button"
               onclick="document.getElementById('logout-modal').close()"
@@ -397,11 +441,12 @@
   </form>
 </dialog>
 
+<!-- ===== 8. Scripts inline ===== -->
 <script>
+/* Sélecteur de langue desktop */
 function toggleLanguageDropdown() {
     const dropdown = document.getElementById('languageDropdown');
     const arrow = document.getElementById('languageArrow');
-    
     if (dropdown.classList.contains('hidden')) {
         dropdown.classList.remove('hidden');
         arrow.style.transform = 'rotate(180deg)';
@@ -415,19 +460,17 @@ function switchLanguage(language) {
     window.location.href = "{% url 'switch_language' 'PLACEHOLDER' %}".replace('PLACEHOLDER', language);
 }
 
-// Fermer le dropdown si on clique ailleurs
 document.addEventListener('click', function(event) {
     const button = document.getElementById('languageButton');
     const dropdown = document.getElementById('languageDropdown');
     const arrow = document.getElementById('languageArrow');
-
     if (!button.contains(event.target) && !dropdown.contains(event.target)) {
         dropdown.classList.add('hidden');
         arrow.style.transform = 'rotate(0deg)';
     }
 });
 
-/* ── Dropdown avatar desktop ── */
+/* Avatar desktop */
 function toggleAppAvatar() {
     const dropdown = document.getElementById('appAvatarDropdown');
     const arrow = document.getElementById('appAvatarArrow');
@@ -451,14 +494,15 @@ document.addEventListener('click', function(e) {
     }
 });
 
-/* ── Dropdown avatar mobile ── */
+/* Avatar mobile */
 function toggleAppAvatarMobile() {
     const dropdown = document.getElementById('appAvatarDropdownMobile');
     const isHidden = dropdown.classList.contains('hidden');
     dropdown.classList.toggle('hidden', !isHidden);
 }
 function closeAppAvatarMobile() {
-    document.getElementById('appAvatarDropdownMobile').classList.add('hidden');
+    const dropdown = document.getElementById('appAvatarDropdownMobile');
+    if (dropdown) dropdown.classList.add('hidden');
 }
 document.addEventListener('click', function(e) {
     const btn = document.getElementById('appAvatarBtnMobile');
