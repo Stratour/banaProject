@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'bana-v8';
+const CACHE_VERSION = 'bana-v9';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
 
