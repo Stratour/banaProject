@@ -76,7 +76,7 @@
 
         <!-- ===== 3. Navigation desktop ===== -->
         {% with url_name=request.resolver_match.url_name %}
-        <div id="nav-links" class="hidden md:flex items-center space-x-6 font-bold">
+        <div id="nav-links" class="hidden md:flex items-center space-x-8 font-bold">
 
             <a href="{% url 'home' %}"
                class="inline-block pb-0.5 group {% if url_name == 'home' %}border-b-2 border-brand-50{% endif %}">

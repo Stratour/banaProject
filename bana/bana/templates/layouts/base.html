@@ -32,6 +32,8 @@
     <noscript><link rel="stylesheet" href="{% static 'bana/css/components/animate.css' %}"></noscript>
     <link rel="stylesheet" href="{% static 'bana/css/components/footer.css' %}" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="{% static 'bana/css/components/footer.css' %}"></noscript>
+    <link rel="stylesheet" href="{% static 'bana/css/components/cookie-banner.css' %}"  media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{% static 'bana/css/components/cookie-banner.css' %}"></noscript>
 
     <script type="application/ld+json">
     {
@@ -101,6 +103,7 @@
     </main>
 
     {% include 'layouts/footer.html' %}
+    {% include 'layouts/cookie-banner.html' %}
 
     <script src="{% static 'bana/js/vendor/htmx.min.js' %}" defer></script>
     <script src="{% static 'bana/js/components/carousel.js' %}"></script>
@@ -110,6 +113,7 @@
     <script src="{% static 'bana/js/components/animate.js' %}"></script>
     <script src="{% static 'bana/js/components/slide.js' %}"></script>
     <script src="{% static 'bana/js/components/scroll-to-top.js' %}"></script>
+    <script src="{% static 'bana/js/components/cookie-banner.js' %}"></script>
     {% block extra_js %}{% endblock %}
     <script>
       if ('serviceWorker' in navigator) {

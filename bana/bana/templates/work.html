@@ -93,28 +93,32 @@
 
 
     <!-- ═══════════════════════════════════════════════ -->
-    <!-- HERO -->
+    <!-- 1. HERO -->
     <!-- ═══════════════════════════════════════════════ -->
     <section class="relative flex flex-col items-center min-h-screen text-center px-4 md:px-8 lg:px-16 bg-gray-900">
 
         <img src="{% static 'bana/img/page/work/transport-scolaire-enseignement-specialise.png' %}"
-             class="absolute inset-0 w-full h-full object-cover object-center"
+             class="absolute inset-0 w-full h-full object-cover object-top"
              fetchpriority="high" loading="eager"
              width="1672" height="941" alt="">
 
         <div class="absolute inset-0 bg-black/15"></div>
 
-        <div class="animate-on-scroll relative z-10 max-w-5xl flex flex-col items-center gap-6 text-white mt-20 md:mt-56 -translate-y-16 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)]" data-delay="250">
+        <div class="animate-on-scroll relative z-10 max-w-5xl flex flex-col items-center gap-6 text-white mt-8 sm:mt-16 md:mt-56 [text-shadow:0_2px_8px_rgba(0,0,0,0.7)]" data-delay="250">
             <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
                 Le même trajet, au même moment <br>
                 Bana crée le lien
             </h1>
             <p class="text-base md:text-xl font-semibold text-white/85">
-                Bana met en <span class="text-brand-50">relation les parents et les Yayas</span> qui font déjà le même chemin                 
+                Bana met en <span class="text-brand-50">relation les parents avec des personnes de confiance</span> <br>
+                qui font déjà le même chemin
+                <br>
+                à pied, à vélo, en transport en commun ou en covoiturage.
+
             </p>
-        
+
             <a href="{% url 'account_signup' %}"
-                class="inline-flex items-center justify-center mt-36 px-6 py-3 rounded-full bg-brand-50 text-brand-300 font-semibold hover:bg-brand-200 hover:text-white transition [text-shadow:none]">
+                class="inline-flex items-center justify-center mt-8 sm:mt-16 md:mt-36 px-6 py-3 rounded-full bg-brand-50 text-brand-300 font-semibold hover:bg-brand-200 hover:text-white transition [text-shadow:none]">
                 Créer mon compte gratuitement
             </a>
             <a href="{% url 'yaya' %}"
@@ -127,7 +131,58 @@
         </div>
     </section>
 
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- 2. PRÉSENTTAION -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section class="px-4 md:px-8 py-16 bg-white">
+        <div
+            class="animate-on-scroll w-full md:max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center text-center md:text-left" data-delay="150">
 
+            <div class="flex flex-col gap-4">
+                <h2 class="text-xl md:text-2xl font-bold">
+                    Les trajets du quotidien sont un défi pour beaucoup de familles
+                </h2>
+
+                <p class="text-lg">
+                    Entre l'école, le travail, les activités extrascolaires et les imprévus, les trajets deviennent vite une charge mentale pour les parents.
+                    Il faut organiser, anticiper, modifier, courir… et accepter qu'on ne peut pas toujours être partout à la fois.
+                </p>
+
+                <p class="text-lg">
+                    Et si vous trouviez de l'aide en rencontrant quelqu'un qui fait déjà le même trajet que vous ?
+                </p>
+
+                <p class="text-lg">
+                    Bana met en relation des familles et des personnes de confiance, appelées Yaya, qui partagent le même trajet, au même moment.
+                </p>
+            </div>
+
+            <div class="flex flex-col items-center gap-3 text-center">
+                <p class="text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug">
+                    "Élever un enfant, c'est lui apprendre <br> à se passer de nous"
+                </p>
+                <span class="text-sm font-medium text-[#007F73] tracking-widest uppercase mt-2">— Ernest Legouvé</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- 3. BENEFITS -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section class="bg-brand-gradient-bl text-white py-8 px-4 md:px-8 lg:px-16">
+        <div class="w-full md:w-3/4 mx-auto grid grid-cols-4 gap-x-2 sm:gap-x-6 md:gap-x-12 text-center">
+
+            {% for benefit in work_benefits %}
+            <div class="animate-on-scroll flex flex-col items-center py-4 gap-2 md:gap-3">
+                <img class="w-12 h-12 md:w-16 md:h-16" src="{% static benefit.img_src %}" alt="{{ benefit.title }} feature icon">
+                <h3 class="text-xs sm:text-sm md:text-lg font-bold leading-tight">{{ benefit.title }}</h3>
+                <p class="hidden sm:block text-xs md:text-lg">{{ benefit.description|safe }}</p>
+            </div>
+            {% endfor %}
+
+        </div>
+    </section>
+    {% comment "" %}
     <!-- ═══════════════════════════════════════════════ -->
     <!-- VIDÉO (centré, élargi) -->
     <!-- ═══════════════════════════════════════════════ -->
@@ -144,7 +199,7 @@
             <p class="animate-on-scroll text-gray-400 text-sm mb-10" data-delay="150">
                 De l'inscription au premier trajet accompagné — l'expérience complète en un coup d'œil.
             </p>
-            {% endcomment %}
+            
 
             <div class="animate-on-scroll relative w-full max-w-4xl mx-auto" data-delay="150">
                 <img src="{% static 'bana/img/other/tablet.png' %}" alt=""
@@ -167,39 +222,28 @@
 
         </div>
     </section>
-
+    {% endcomment %}
+    
 
     <!-- ═══════════════════════════════════════════════ -->
-    <!-- 4 ÉTAPES DÉTAILLÉES -->
+    <!-- 4. COMMENT COMMENCER — 3 ÉTAPES -->
     <!-- ═══════════════════════════════════════════════ -->
-    <section class="bg-brand-gradient-bl py-16 px-4 md:px-8 lg:px-16">
+    <section class="bg-white py-16 px-4 md:px-8 lg:px-16">
 
-        <h2 class="animate-on-scroll text-2xl md:text-4xl font-extrabold text-white text-center mb-12">
-            Les 4 étapes pour commencer
+        <h2 class="animate-on-scroll text-2xl md:text-4xl font-extrabold text-gray-900 text-center mb-12">
+            Comment commencer ?
         </h2>
 
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 pt-4">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-stretch gap-6 lg:gap-8">
 
             {% for step in work_detail_steps %}
-            <div class="step-card animate-on-scroll relative rounded-2xl bg-white flex flex-col shadow-[inset_4px_4px_6px_rgba(0,0,0,0.04),5px_5px_15px_rgba(0,0,0,0.08)]">
-                <div class="relative m-4 rounded-xl bg-gray-50 overflow-hidden pt-10 px-6 pb-6 flex flex-col gap-4 flex-1">
-                    <span class="absolute top-3 right-4 text-8xl font-black leading-none select-none text-brand-300/25">{{ step.number }}</span>
-                    <div class="relative z-10 flex flex-col gap-3">
-                        <h3 class="text-center font-bold text-brand-300 leading-tight">{{ step.title }}</h3>
-                        <p class="text-sm text-gray-600 leading-relaxed text-center">{{ step.description|safe }}</p>
-                        {% if step.highlight %}
-                        <p class="text-sm font-semibold text-brand text-center">{{ step.highlight|safe }}</p>
-                        {% endif %}
-                        {% if step.cta %}
-                        <div class="flex justify-center mt-1">
-                            <a href="{% url 'tarifs' %}"
-                                class="inline-flex items-center justify-center px-4 py-2 rounded-full bg-brand text-white text-sm font-semibold hover:bg-brand-300 transition">
-                                {{ step.cta.text }}
-                            </a>
-                        </div>
-                        {% endif %}
-                    </div>
-                </div>
+            <div class="animate-on-scroll flex-1 flex flex-col gap-3 bg-white rounded-2xl border-l-4 border-brand shadow-lg hover:bg-brand-50 hover:shadow-[0_8px_30px_rgba(0,127,115,0.2)] hover:-translate-y-1 transition-all duration-200 p-6">
+                <span class="self-start text-white font-bold text-lg px-6 py-2"
+                     style="background:#007F73; clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%);">
+                    0{{ step.number }}
+                </span>
+                <h3 class="font-bold text-gray-900 leading-snug">{{ step.title }}</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">{{ step.description|safe }}</p>
             </div>
             {% endfor %}
 
@@ -207,7 +251,7 @@
 
         <div class="flex justify-center mt-10">
             <a href="{% url 'account_signup' %}"
-                class="animate-on-scroll inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-brand font-semibold hover:bg-brand-200 hover:text-white transition">
+                class="animate-on-scroll inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand text-white font-semibold hover:bg-brand-200 transition">
                 Créer mon compte gratuitement
             </a>
         </div>
@@ -215,33 +259,117 @@
     </section>
 
 
-    <!-- CITATION -->
-    <section class="bg-white py-16 px-4 md:px-8">
-        <div class="animate-on-scroll max-w-3xl mx-auto flex flex-col items-center gap-3 text-center" data-delay="100">
-            <p class="text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug">
-                "Élever un enfant, c'est lui apprendre <br> à se passer de nous"
-            </p>
-            <span class="text-sm font-medium text-[#007F73] tracking-widest uppercase">— Ernest Legouvé</span>
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- 4. CARDS + IMAGES -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- COMMUNAUTÉ-->
+    <section class="flex justify-center px-4 md:px-8 lg:px-16 py-8 sm:py-16 md:py-32 bg-white">
+
+        <div class="relative w-full max-w-[1200px] xl:max-w-[1400px] mx-auto md:min-h-[560px]">
+
+            <!-- Image -->
+            <div class="relative w-4/5 sm:w-3/4 mx-auto -mb-16 md:mb-0 md:w-1/2 md:absolute md:-top-12 lg:-top-16 md:right-0 z-20 animate-on-scroll animate-right">
+                <picture>
+                    <source srcset="{% static 'bana/img/page/work/mobilité-scolaire-belgique.png' %}" type="image/webp">
+                    <img src="{% static 'bana/img/page/home/deplacements-scolaires-belgique.png' %}" alt="Déplacements scolaires en Belgique"
+                        class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover" width="1672" height="941" loading="lazy" />
+                </picture>
+            </div>
+
+            <!-- Text block -->
+            <div class="w-full md:w-[60%] lg:w-[55%] md:absolute md:bottom-0 md:left-0 z-10 flex">
+
+                <div class="animate-on-scroll bg-brand-gradient-br text-white md:font-semibold px-6 md:px-10 pt-20 pb-10 md:py-14 md:pr-24 lg:pr-40 xl:pr-40 rounded-2xl flex flex-col gap-4 w-full md:min-h-[450px] md:justify-center" data-delay="50">
+
+                    <h2 class="animate-on-scroll text-4xl md:text-5xl font-extrabold text-brand-50 text-center md:text-left" data-delay="100">
+                        Communauté 
+                    </h2>
+
+                    <h3 class="animate-on-scroll text-xl md:text-3xl font-extrabold text-center md:text-left" data-delay="150">
+                        Qui sont les Yayas ?  
+                    </h3>
+
+                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="200">
+                        Les Yayas sont des personnes de confiance qui acceptent de partager un trajet qu’elles font déjà : étudiants, parents, enseignants, coachs, éducateurs, professionnels de l’enfance ou personnes engagées dans leur quartier.
+                    </p>
+
+                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="200">
+                        Ce ne sont pas des chauffeurs de taxi. Ce sont des membres d’une communauté locale, <span class="text-brand-50 font-semibold">vérifiés par Bana et choisis librement par les parents.</span>
+                    </p>
+
+                </div>
+            </div>
+
         </div>
     </section>
 
+    <!-- SYSTÈME D'AVIS-->
+    <section class="flex justify-center px-4 md:px-8 lg:px-16 py-8 sm:py-16 md:py-32 bg-white">
+
+        <div class="relative w-full max-w-[1200px] xl:max-w-[1400px] mx-auto md:min-h-[560px]">
+
+            <!-- Image -->
+            <div class="relative w-4/5 sm:w-3/4 mx-auto -mb-16 md:mb-0 md:w-1/2 md:absolute md:-top-12 lg:-top-16 md:left-0 z-20 animate-on-scroll animate-left">
+                <img src="{% static 'bana/img/page/yaya/job-etudiant-transport-scolaire-belgique.png' %}" alt="Job étudiant transport scolaire Belgique"
+                    class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover"
+                    width="1800" height="945" loading="lazy">
+            </div>
+
+            <!-- Text block -->
+            <div class="w-full md:w-[60%] lg:w-[55%] md:absolute md:bottom-0 md:right-0 z-10 flex">
+
+                <div class="animate-on-scroll bg-brand-gradient-tl text-white md:font-semibold px-6 md:px-10 pt-20 pb-10 md:py-14 md:pl-24 lg:pl-40 xl:pl-40 rounded-2xl flex flex-col gap-4 w-full md:min-h-[450px] md:justify-center" data-delay="50">
+
+                    <h2 class="animate-on-scroll text-4xl md:text-5xl font-extrabold text-brand-50 text-center md:text-left" data-delay="100">
+                        Système d'avis
+                    </h2>
+
+                    <h3 class="animate-on-scroll text-xl md:text-3xl font-extrabold text-center md:text-left" data-delay="150">
+                        Des évaluations réciproques
+                    </h3>
+
+                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="200">
+                        Après les trajets, parents et Yaya peuvent laisser une évaluation réciproque.
+                    </p>
+
+                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="200">
+                        Ces avis permettent de valoriser les expériences positives, d’encourager la ponctualité, le respect et la fiabilité, et d’aider chacun à choisir sereinement les personnes avec qui organiser ses trajets.
+                    </p>
+
+                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="250">
+                        Chez Bana, la confiance se construit trajet après trajet. Chaque famille et chaque Yaya reste libre de choisir avec qui avancer.
+                    </p>
+
+                    <!-- CTA -->
+                    <div class="flex justify-center md:justify-start pt-4">
+                        <a href="{% url 'account_signup' %}"
+                            class="animate-on-scroll inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-brand font-semibold hover:bg-brand-200 hover:text-white transition" data-delay="300">
+                            Créer mon compte
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </section>
 
     <!-- ═══════════════════════════════════════════════ -->
-    <!-- LE TRAJET EN PRATIQUE -->
+    <!-- 5. COMMENT SE DÉROULE UN TRAJET -->
     <!-- ═══════════════════════════════════════════════ -->
-    <section class="bg-white py-20 px-4 md:px-8 lg:px-16">
+    <section class="bg-white pb-20 px-4 md:px-8 lg:px-16">
         <div class="max-w-7xl mx-auto">
 
             <h2 class="animate-on-scroll text-2xl md:text-4xl font-extrabold text-brand text-center mb-3" data-delay="50">
-                Le trajet, étape par étape
+                Comment se déroule un trajet
             </h2>
             <p class="animate-on-scroll text-center text-gray-500 mb-16" data-delay="100">
-                De la prise en charge jusqu'à l'arrivée — rien n'est laissé au hasard.
+                De la prise en charge jusqu'à l'arrivée, chaque trajet suit un cadre clair
             </p>
 
             <!-- Timeline desktop -->
             <div class="hidden md:block relative">
-                <div class="absolute top-7 left-[12.5%] right-[12.5%] h-0.5 bg-brand/30"></div>
+                <div class="absolute top-7 left-[14%] right-[14%] h-0.5 bg-brand/30"></div>
                 <div class="flex">
                     {% for step in work_journey_steps %}
                     <div class="animate-on-scroll flex-1 flex flex-col items-center text-center px-4 relative z-10">
@@ -277,10 +405,81 @@
 
         </div>
     </section>
-    
 
     <!-- ═══════════════════════════════════════════════ -->
-    <!-- FAQ ACCORDÉON -->
+    <!-- 6. ET APRÈS LE TRAJET -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section class="bg-brand-gradient-bl py-16 px-4 md:px-8 lg:px-16">
+        <div class="animate-on-scroll max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center text-white" data-delay="150">
+
+            <div class="flex flex-col gap-4">
+                <h2 class="text-2xl md:text-3xl font-extrabold">Et après le trajet ?</h2>
+                <p class="text-white/90 md:text-lg">
+                    {% lorem 1 %}
+                    {% comment "" %}
+                    <strong>S'inscrire comme Yaya est gratuit.</strong>
+                    <br>
+                    Pour accéder aux matchings, l'abonnement coûte seulement <strong class="text-brand-50">4,90€/an</strong>.
+                    <br>
+                    Ensuite, recevez  un<strong class="text-brand-50"> défraiement</strong> pour chaque trajet effectué.{% endcomment %}
+                </p>
+                <a href="{% url 'yaya' %}"
+                    class="self-start inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-white transition underline underline-offset-4">
+                    En savoir plus sur devenir Yaya
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+
+            <ul class="flex flex-col gap-4">
+                <li class="flex items-center gap-4 bg-white/10 rounded-2xl px-5 py-4 transition hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg cursor-default">
+                    <img src="{% static 'bana/img/page/tarifs/defraiement-1.svg' %}" alt="" aria-hidden="true" class="w-12 h-12" width="48" height="48">
+                    <div>
+                        <p class="font-bold">Defraiement</p>
+                        <p class="text-sm text-white/80">Le parent verse directement au Yaya le défraiement convenu pour le trajet.</p>
+                    </div>
+                </li>
+                <li class="flex items-center gap-4 bg-white/10 rounded-2xl px-5 py-4 transition hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg cursor-default">
+                    <img src="{% static 'bana/img/page/tarifs/defraiement-1.svg' %}" alt="" aria-hidden="true" class="w-12 h-12" width="48" height="48">
+                    <div>
+                        <p class="font-bold">Évaluations</p>
+                        <p class="text-sm text-white/80">Versé directement par les familles, sans commission Bana</p>
+                    </div>
+                </li>
+            </ul>
+
+        </div>
+    </section>
+    
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- 7. CTA -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section class="bg-white border-t border-gray-100 py-20 px-4 md:px-8 lg:px-16 text-center">
+        <div class="max-w-2xl mx-auto flex flex-col items-center gap-6">
+
+            <h2 class="animate-on-scroll text-3xl md:text-5xl font-extrabold text-brand-300" data-delay="50">
+                Prêt à simplifier vos trajets ?
+            </h2>
+            <p class="animate-on-scroll text-lg text-gray-500" data-delay="100">
+                Rejoignez des familles qui font confiance à Bana pour les trajets de leurs enfants.
+            </p>
+            <div class="animate-on-scroll flex flex-col sm:flex-row gap-4 justify-center" data-delay="150">
+                <a href="{% url 'account_signup' %}"
+                    class="inline-flex items-center justify-center px-8 py-3 rounded-full bg-brand text-white font-semibold hover:bg-brand-300 transition">
+                    Commencer gratuitement
+                </a>
+                <a href="{% url 'yaya' %}"
+                    class="inline-flex items-center justify-center px-8 py-3 rounded-full border-2 border-brand/30 text-brand font-semibold hover:bg-brand/5 transition">
+                    Devenir Yaya
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- 8. FAQ ACCORDÉON -->
     <!-- ═══════════════════════════════════════════════ -->
     <section class="bg-white py-16 px-4 md:px-8 lg:px-16">
         <div class="max-w-5xl mx-auto">
@@ -292,7 +491,7 @@
             <div class="space-y-3">
 
                 <details class="faq-item group border border-gray-200 rounded-2xl overflow-hidden">
-                    <summary class="flex justify-between items-center px-6 py-4 cursor-pointer font-semibold text-gray-900 select-none list-none hover:bg-gray-50 transition-colors">
+                    <summary class="flex justify-between items-center px-6 py-4 cursor-pointer font-semibold text-gray-900 select-none list-none hover:bg-gray-50 group-open:bg-gray-50 transition-colors">
                         Comment fonctionne le système de matching ?
                         <svg class="w-5 h-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -306,7 +505,7 @@
                 </details>
 
                 <details class="faq-item group border border-gray-200 rounded-2xl overflow-hidden">
-                    <summary class="flex justify-between items-center px-6 py-4 cursor-pointer font-semibold text-gray-900 select-none list-none hover:bg-gray-50 transition-colors">
+                    <summary class="flex justify-between items-center px-6 py-4 cursor-pointer font-semibold text-gray-900 select-none list-none hover:bg-gray-50 group-open:bg-gray-50 transition-colors">
                         Comment entrer en contact avec un matching ?
                         <svg class="w-5 h-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -322,7 +521,7 @@
                 </details>
 
                 <details class="faq-item group border border-gray-200 rounded-2xl overflow-hidden">
-                    <summary class="flex justify-between items-center px-6 py-4 cursor-pointer font-semibold text-gray-900 select-none list-none hover:bg-gray-50 transition-colors">
+                    <summary class="flex justify-between items-center px-6 py-4 cursor-pointer font-semibold text-gray-900 select-none list-none hover:bg-gray-50 group-open:bg-gray-50 transition-colors">
                         Comment se déroule le premier contact ?
                         <svg class="w-5 h-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -337,7 +536,7 @@
                 </details>
 
                 <details class="faq-item group border border-gray-200 rounded-2xl overflow-hidden">
-                    <summary class="flex justify-between items-center px-6 py-4 cursor-pointer font-semibold text-gray-900 select-none list-none hover:bg-gray-50 transition-colors">
+                    <summary class="flex justify-between items-center px-6 py-4 cursor-pointer font-semibold text-gray-900 select-none list-none hover:bg-gray-50 group-open:bg-gray-50 transition-colors">
                         Comment sont vérifiés les Yayas ?
                         <svg class="w-5 h-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -351,7 +550,7 @@
                 </details>
 
                 <details class="faq-item group border border-gray-200 rounded-2xl overflow-hidden">
-                    <summary class="flex justify-between items-center px-6 py-4 cursor-pointer font-semibold text-gray-900 select-none list-none hover:bg-gray-50 transition-colors">
+                    <summary class="flex justify-between items-center px-6 py-4 cursor-pointer font-semibold text-gray-900 select-none list-none hover:bg-gray-50 group-open:bg-gray-50 transition-colors">
                         À quel âge mon enfant peut-il utiliser Bana ?
                         <svg class="w-5 h-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -365,7 +564,7 @@
                 </details>
 
                 <details class="faq-item group border border-gray-200 rounded-2xl overflow-hidden">
-                    <summary class="flex justify-between items-center px-6 py-4 cursor-pointer font-semibold text-gray-900 select-none list-none hover:bg-gray-50 transition-colors">
+                    <summary class="flex justify-between items-center px-6 py-4 cursor-pointer font-semibold text-gray-900 select-none list-none hover:bg-gray-50 group-open:bg-gray-50 transition-colors">
                         Comment fonctionne le système d’avis et d’évaluations ?
                         <svg class="w-5 h-5 shrink-0 text-gray-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -438,33 +637,6 @@
       ]
     }
     </script>
-
-    <!-- ═══════════════════════════════════════════════ -->
-    <!-- CTA FINAL -->
-    <!-- ═══════════════════════════════════════════════ -->
-    <section class="bg-gray-50 border-t border-gray-100 py-20 px-4 md:px-8 lg:px-16 text-center">
-        <div class="max-w-2xl mx-auto flex flex-col items-center gap-6">
-
-            <h2 class="animate-on-scroll text-3xl md:text-5xl font-extrabold text-brand-300" data-delay="50">
-                Prêt à simplifier vos trajets ?
-            </h2>
-            <p class="animate-on-scroll text-lg text-gray-500" data-delay="100">
-                Rejoignez des familles qui font confiance à Bana pour les trajets de leurs enfants.
-            </p>
-            <div class="animate-on-scroll flex flex-col sm:flex-row gap-4 justify-center" data-delay="150">
-                <a href="{% url 'account_signup' %}"
-                    class="inline-flex items-center justify-center px-8 py-3 rounded-full bg-brand text-white font-semibold hover:bg-brand-300 transition">
-                    Commencer gratuitement
-                </a>
-                <a href="{% url 'yaya' %}"
-                    class="inline-flex items-center justify-center px-8 py-3 rounded-full border-2 border-brand/30 text-brand font-semibold hover:bg-brand/5 transition">
-                    Devenir Yaya
-                </a>
-            </div>
-
-        </div>
-    </section>
-
 
 
 {% endblock %}

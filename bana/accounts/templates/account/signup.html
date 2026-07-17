@@ -12,7 +12,7 @@
 <div class="bg-gray-100 md:min-h-screen flex items-center justify-center">
     <div class="flex flex-col items-center justify-center bg-white shadow-md rounded-lg p-8 w-full md:mx-12 lg:w-1/2">
         <h1 class="text-brand text-3xl font-bold text-center">{% trans 'Inscription' %}</h1>
-        <h2 class="text-brand-200 text-1xl font-bold mb-12 text-center">{% trans "Créez un compte pour commencer." %}</h2>
+        <h2 class="text-brand-200 text-lg font-bold mb-12 text-center">{% trans "Créez un compte pour commencer." %}</h2>
 
         {% if not SOCIALACCOUNT_ONLY %}
         {% url 'account_signup' as action_url %}
@@ -20,26 +20,39 @@
             {% csrf_token %}
             <!-- Service Input -->
             <div class="form-group mb-8">
-                <label for="service" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">{% trans "Rôle" %}</label>
-                    <select name="service" id="service" required
-                            class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">{% trans "-- Sélectionnez un rôle --" %}</option>
-                        <option value="Parent">{% trans "Parent - Rechercher et/ou proposer un trajet" %}</option>
-                        <option value="Yaya">{% trans "Yaya - Proposer un trajet" %}</option>
-                    </select>
+                <p class="block mb-3 text-sm font-bold tracking-wide text-brand uppercase">{% trans "Je suis…" %}</p>
+                <div class="grid grid-cols-2 gap-4">
+
+                    <label class="cursor-pointer rounded-xl border-2 border-gray-200 bg-white p-4 flex flex-col items-center gap-2 hover:border-brand transition-colors has-[:checked]:border-brand has-[:checked]:ring-2 has-[:checked]:ring-brand has-[:checked]:bg-brand/5">
+                        <input type="radio" name="service" value="Parent" required class="sr-only">
+                        <span class="text-3xl">👨‍👧</span>
+                        <span class="font-semibold text-gray-800">{% trans "Parent" %}</span>
+                        <span class="text-xs text-center text-gray-500 leading-relaxed">{% trans "Je recherche un accompagnement pour mon enfant" %}</span>
+                    </label>
+
+                    <label class="cursor-pointer rounded-xl border-2 border-gray-200 bg-white p-4 flex flex-col items-center gap-2 hover:border-brand transition-colors has-[:checked]:border-brand has-[:checked]:ring-2 has-[:checked]:ring-brand has-[:checked]:bg-brand/5">
+                        <input type="radio" name="service" value="Yaya" required class="sr-only">
+                        <span class="text-3xl">🚗</span>
+                        <span class="font-semibold text-gray-800">{% trans "Yaya" %}</span>
+                        <span class="text-xs text-center text-gray-500 leading-relaxed">{% trans "Je propose mes services de transport pour enfants" %}</span>
+                    </label>
+
+                </div>
                 {% if form.service.errors %}
-                    <div class="mt-1 space-y-0.5">
-                        {% for error in form.service.errors %}
-                            <p class="text-xs font-medium text-red-500">{{ error }}</p>
-                        {% endfor %}
-                    </div>
+                <div class="mt-2 space-y-0.5">
+                    {% for error in form.service.errors %}
+                        <p class="text-xs font-medium text-red-500">{{ error }}</p>
+                    {% endfor %}
+                </div>
                 {% endif %}
             </div>
 
             <!-- Email Input -->
             <div class="form-group mb-8">
                 <label for="email" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">{% trans 'E-mail' %}</label>
-                <input type="text" name="email" id="email"
+                <input type="email" name="email" id="email"
+                       value="{{ form.email.value|default_if_none:'' }}"
+                       autocomplete="email"
                        class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
 
                 {% if form.email.errors %}
@@ -54,9 +67,25 @@
             <!-- Password Input -->
             <div class="form-group mb-8">
                 <label for="password" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">{% trans 'Mot de passe' %}</label>
-                <input type="password" name="password1" id="password"
-                       class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
+                <div class="relative">
+                    <input type="password" name="password1" id="password"
+                           autocomplete="new-password"
+                           class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 pr-10 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
+                    <button type="button" onclick="togglePassword('password', this)"
+                            class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-brand focus:outline-none"
+                            aria-label="{% trans 'Afficher le mot de passe' %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </button>
+                </div>
 
+                <p class="mt-1 text-xs text-gray-400">{% trans "Au moins 12 caractères, non entièrement numérique." %}</p>
+                <div id="password-strength-bar" class="mt-2 h-1.5 w-full rounded-full bg-gray-200 overflow-hidden hidden">
+                    <div id="password-strength-fill" class="h-full rounded-full transition-all duration-300" style="width:0%"></div>
+                </div>
+                <p id="password-strength-label" class="mt-1 text-xs hidden"></p>
                 {% if form.password1.errors %}
                 <div class="mt-1 space-y-0.5">
                     {% for error in form.password1.errors %}
@@ -70,8 +99,19 @@
             <div class="form-group mb-8">
                 <label for="password_confirm"
                        class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">{% trans 'Confirmer mot de passe' %}</label>
-                <input type="password" name="password2" id="password_confirm"
-                       class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
+                <div class="relative">
+                    <input type="password" name="password2" id="password_confirm"
+                           autocomplete="new-password"
+                           class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 pr-10 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
+                    <button type="button" onclick="togglePassword('password_confirm', this)"
+                            class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-brand focus:outline-none"
+                            aria-label="{% trans 'Afficher le mot de passe' %}">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                    </button>
+                </div>
 
                 {% if form.password2.errors %}
                 <div class="mt-1 space-y-0.5">
@@ -82,9 +122,31 @@
                 {% endif %}
             </div>
 
+            <!-- Terms & Conditions -->
+            <div class="form-group mb-8">
+                <label class="flex items-start gap-3 cursor-pointer">
+                    <input type="checkbox" name="terms_accepted" id="terms_accepted"
+                           class="form-checkbox h-5 w-5 text-brand mt-0.5 shrink-0"/>
+                    <span class="text-sm text-gray-700">
+                        {% trans "J'accepte les" %}
+                        <a href="{% static 'bana/doc/conditions-generales-utilisation.pdf' %}" target="_blank" rel="noopener"
+                           class="text-brand underline hover:text-brand-200">{% trans "conditions générales d'utilisation" %}</a>
+                    </span>
+                </label>
+                {% if form.terms_accepted.errors %}
+                <div class="mt-1 space-y-0.5">
+                    {% for error in form.terms_accepted.errors %}
+                    <p class="text-xs font-medium text-red-500">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
             <!-- Submit Button -->
             <div class="w-full mt-12 flex justify-center items-center">
-                <button type="submit" class="w-60 px-6 py-3 font-semibold text-white bg-brand rounded-full">
+                <button type="submit" id="signup-submit"
+                        data-loading="{% trans 'Inscription en cours…' %}"
+                        class="w-60 px-6 py-3 font-semibold text-white bg-brand rounded-full focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2">
                     {% trans 'Créer mon compte' %}
                 </button>
             </div>
@@ -122,4 +184,7 @@
         
     </div>
 </div>
+{% block extra_js %}
+<script src="{% static 'bana/js/components/password-strength.js' %}"></script>
+{% endblock extra_js %}
 {% endblock content %}

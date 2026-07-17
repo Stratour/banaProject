@@ -64,38 +64,49 @@ def home(request):
 
 # --- Comment ça marche page ---------------------------------------------------------------------------
 def work(request):
-    work_steps = [
-        {'img_src': 'bana/img/icon/Icon_profile.svg', 'title': '1. Créez votre compte', 'description': "Parents et Yaya s'inscrivent gratuitement en 3 min"},
-        {'img_src': 'bana/img/icon/Icon_place.svg',   'title': '2. Ajoutez vos trajets', 'description': 'Renseignez vos trajets habituels et vos modes de transport'},
-        {'img_src': 'bana/img/icon/Icon_search_active.svg',  'title': '3. Découvrez vos matchings', 'description': "Passez à l'abonnement pour contacter votre Yaya"},
-        {'img_src': 'bana/img/icon/Icon_meet.svg',    'title': '4. Organisez la rencontre', 'description': "Une rencontre est prévue entre parent, enfant et Yaya avant le 1er trajet"},
+    
+    work_benefits = [
+        {
+            'img_src': 'bana/img/page/home/identite-verifiee.svg',
+            'title': _("Carte d'identité vérifiée"),
+            'highlight': _(''),
+            'description': _('Vérification via Stripe Identity pour les parents et les Yaya')
+        },
+        {
+            'img_src': 'bana/img/page/home/extrait-judiciaire.svg',
+            'title': _('Extrait de casier judiciaire'),
+            'highlight': _(''),
+            'description': _('Certificat de bonne vie et mœurs modèle 596.2 pour tous les membres')
+        },
+        {
+            'img_src': 'bana/img/page/home/rencontre-avant-trajet.svg',
+            'title': _('Rencontre préalable'),
+            'highlight': _(''),
+            'description': _("Rencontre en personne avec le parent, l'enfant et le Yaya avant le 1er trajet")
+        },
+        {
+            'img_src': 'bana/img/page/home/avis-et-evaluations.svg',
+            'title': _("Système d'avis réciproque"),
+            'highlight': _(''),
+            'description': _("Parents et Yaya sont notés pour un système d'avis équitable")
+        }
     ]
 
     work_detail_steps = [
         {
             'number': '1',
-            'title': 'Créez votre compte gratuitement',
-            'description': "Parents et Yaya s'inscrivent gratuitement sur la plateforme en 3 min et complètent leur profil avec leur photo.",
-            'highlight': None,
+            'title': 'Créez votre profil gratuitement',
+            'description': "Ajoutez votre photo, vos informations et vos trajets.",
         },
         {
             'number': '2',
-            'title': 'Ajoutez vos trajets',
-            'description': "Indiquez les <strong>trajets que vous recherchez ou que vous proposez</strong> et choisissez vos modes de transport :",
-            'highlight': "À pied, en vélo, avec un transport en commun ou en covoiturage.",
+            'title': 'Découvrez les profils compatibles',
+            'description': "Bana identifie automatiquement les parents et les Yaya qui font déjà le même chemin, au même moment.",
         },
         {
             'number': '3',
-            'title': 'Découvrez vos matchings',
-            'description': "Lorsque des trajets compatibles sont trouvés, <strong>les profils des Yayas correspondants apparaissent dans vos résultats</strong>.",
-            'highlight': "Pour les contacter et organiser le premier trajet, passez à l'abonnement.",
-            'cta': {'text': 'Voir les tarifs', 'url': '#'},
-        },
-        {
-            'number': '4',
             'title': 'Rencontrez-vous avant le premier trajet',
-            'description': "Une rencontre entre le parent, l'enfant et le Yaya est <strong>organisée avant tout premier trajet</strong> — pour vérifier le parcours et instaurer la confiance.",
-            'highlight': "Cette rencontre est <strong>obligatoire</strong>.",
+            'description': "Une rencontre préalable permet de vérifier la compatibilité et de créer la confiance.",
         },
     ]
 
@@ -118,12 +129,14 @@ def work(request):
             'short_description': "L'enfant est confié à un adulte à l'arrivée — le parent reçoit une confirmation.",
             'description': "L'enfant est confié à un adulte responsable à l'arrivée selon les directives du parent. Le parent reçoit un <strong>message confirmant l'arrivée de l'enfant</strong>.",
         },
-        {
-            'icon_src': 'bana/img/page/work/defraiement-2.svg',
-            'title': 'Défraiement',
-            'short_description': "Le parent verse directement au Yaya le défraiement convenu pour le trajet.",
-            'description': "Le parent verse directement au Yaya une <strong>compensation financière pour le trajet</strong>, convenue librement entre eux selon la distance et la fréquence (réglée journalièrement ou hebdomadairement).",
-        },
+        
+        #{
+        #    'icon_src': 'bana/img/page/work/defraiement-2.svg',
+        #    'title': 'Défraiement',
+        #    'short_description': "Le parent verse directement au Yaya le défraiement convenu pour le trajet.",
+        #    'description': "Le parent verse directement au Yaya une <strong>compensation financière pour le trajet</strong>, convenue librement entre eux selon la distance et la fréquence (réglée journalièrement ou hebdomadairement).",
+        #},
+
     ]
 
     work_profiles = [
@@ -171,7 +184,7 @@ def work(request):
         },
     ]
     return render(request, 'work.html', {
-        "work_steps": work_steps,
+        "work_benefits": work_benefits,
         "work_detail_steps": work_detail_steps,
         "work_journey_steps": work_journey_steps,
         "work_profiles": work_profiles,
@@ -186,7 +199,7 @@ def yaya(request):
             'description': _('Engagement uniquement selon votre disponibilité')
         },
         {
-            'img_src': 'bana/img/page/yaya/defraiement-2b.svg',
+            'img_src': 'bana/img/page/yaya/defraiement-1.png',
             'title': _('Défraiement'),
             'description': _('Recevez jusqu’à 176€/mois pour vos trajets quotidiens')
         },
@@ -305,7 +318,7 @@ def tarifs(request):
     ]
     tarifs_highlights = [
         {
-            'img_src': 'bana/img/page/tarifs/inscription-gratuite.svg',
+            'img_src': 'bana/img/page/tarifs/inscription.png',
             'title': _('Inscription gratuite'),
             'description': _("Parents et Yaya <br> s'inscrivent gratuitement"),
         },
@@ -329,10 +342,10 @@ def tarifs(request):
 # --- Notre mission page ---------------------------------------------------------------------------
 def about(request):
     impacts = [
-        {'emoji': '🚗', 'icon': 'bana/img/page/about/trafic_1.svg',      'text': 'Moins de trafic sur la route'},
-        {'emoji': '🧒', 'icon': 'bana/img/page/about/autonomie.svg',      'text': "Autonomie progressive des enfants"},
-        {'emoji': '🧠', 'icon': 'bana/img/page/about/mental.svg',         'text': 'Moins de charge mentale'},
-        {'emoji': '🤝', 'icon': 'bana/img/page/about/communautaire.svg',  'text': "Plus d'entraide communautaire"},
+        {'emoji': '🚗', 'icon': 'bana/img/page/about/trafic.png',      'text': 'Moins de trafic sur la route'},
+        {'emoji': '🧒', 'icon': 'bana/img/page/about/autonomie.png',      'text': "Autonomie progressive des enfants"},
+        {'emoji': '🧠', 'icon': 'bana/img/page/about/mental.png',         'text': 'Moins de charge mentale'},
+        {'emoji': '🤝', 'icon': 'bana/img/page/about/communautaire.png',  'text': "Plus d'entraide communautaire"},
         {'emoji': '🌱', 'icon': 'bana/img/page/about/environnement.svg',  'text': 'Impact environnemental concret'},
         {'emoji': '🔒', 'icon': 'bana/img/page/about/securite.svg',       'text': 'Plus de sécurité autour des écoles'},
     ]
@@ -398,27 +411,27 @@ def about(request):
     ]
     team_members = [
         {
-            'img_src': 'bana/img/page/about/Nyota.png',
-            'name': 'Nyota Delecourt',
+            'img_src': 'bana/img/page/about/nyota-profil-bana.png',
+            'name': 'Nyota',
             'role': 'Fondatrice',
             'description': 'Entrepreneuriat social et mobilité, Nyota porte la vision communautaire de Bana.',
-            'linkedin': '#',
+            'linkedin': 'https://www.linkedin.com/in/nyotadelecourt/',
             'instagram': '',
         },
         {
-            'img_src': 'bana/img/page/about/Luca.png',
-            'name': 'Luca C.',
+            'img_src': 'bana/img/page/about/luca-profil-bana.png',
+            'name': 'Luca',
             'role': 'Développeur IT',
             'description': 'Architecture et développement de la plateforme, du backend aux interfaces.',
-            'linkedin': '#',
+            'linkedin': 'https://www.linkedin.com/in/luca-camilleri-487474332',
             'instagram': '',
         },
         {
-            'img_src': 'bana/img/page/about/Raph.png',
-            'name': 'Raphaël J.',
+            'img_src': 'bana/img/page/about/raph-profil-bana.png',
+            'name': 'Raphaël',
             'role': 'Développeur IT',
             'description': 'Innovation digitale et intégration des fonctionnalités clés de la plateforme.',
-            'linkedin': '#',
+            'linkedin': 'https://www.linkedin.com/in/raphaeljonard/',
             'instagram': '',
         },
     ]

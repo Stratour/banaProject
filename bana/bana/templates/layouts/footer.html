@@ -2,13 +2,13 @@
 <footer class="footer-bg bg-gray-50 h-auto text-white relative overflow-hidden py-2 mt-8">
 
     <!-- Main Footer Content -->
-    <div class="max-w-6xl mx-auto px-6 pt-36 md:pt-20 flex flex-col gap-8 md:flex-row md:justify-between">
+    <div class="max-w-6xl mx-auto px-6 pt-10 md:pt-20 flex flex-col gap-8 md:flex-row md:justify-between">
 
         <!-- Logo & Description -->
         <div class="flex flex-col items-center lg:w-1/4">
             <img src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Bana Logo" class="w-14 h-14 flex-shrink-0">
 
-            <p class="text-sm font-medium mt-3">
+            <p class="text-sm text-center font-medium mt-3">
                 {% blocktrans trimmed %}
                 Plateforme de <span class="text-brand-50 font-bold">mobilité partagée</span>
                 <br>
@@ -104,6 +104,8 @@
             <img class="w-24 footer-digit-up-logo" src="{% static 'bana/img/logo/logo_digit_up.svg' %}" alt="Digit-Up" width="391" height="126">
         </a>
         <div class="flex items-center gap-4 mt-4 text-xs font-light">
+            <a href="{% static 'bana/doc/conditions-generales-utilisation.pdf' %}" target="_blank"><span class="hover:text-brand-50 cursor-pointer">{% trans "Conditions générales" %}</span></a>
+            <span class="text-gray-400">|</span>
             <a href="{% static 'bana/doc/politique-de-confidentialite-bana.pdf' %}" target="_blank"><span class="hover:text-brand-50 cursor-pointer">{% trans "Confidentialité" %}</span></a>
             <span class="text-gray-400">|</span>
             <a href="{% static 'bana/doc/mentions-legales-bana.pdf' %}" target="_blank"><span class="hover:text-brand-50 cursor-pointer">{% trans "Mentions légales" %}</span></a>

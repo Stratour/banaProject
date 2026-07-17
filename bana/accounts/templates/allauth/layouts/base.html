@@ -18,6 +18,7 @@
     {% tailwind_css %}
     <link rel="stylesheet" href="{% static 'bana/css/components/toast.css' %}">
     <link rel="stylesheet" href="{% static 'bana/css/components/footer.css' %}">
+    <link rel="stylesheet" href="{% static 'bana/css/components/cookie-banner.css' %}">
     {% block extra_head %}{% endblock %}
 </head>
 
@@ -130,6 +131,7 @@
 
     <!-- Footer pleine largeur -->
     {% include 'layouts/footer.html' %}
+    {% include 'layouts/cookie-banner.html' %}
 
     {% comment "Pas utile pour l'instant" %}
     {% include 'allauth/layouts/admin-footer-mobile.html' %}
@@ -138,6 +140,7 @@
     <script src="{% static 'bana/js/vendor/htmx.min.js' %}" defer></script>
     <script src="{% static 'bana/js/layout/header.js' %}"></script>
     <script defer src="{% static 'bana/js/core/toast.js' %}"></script>
+    <script src="{% static 'bana/js/components/cookie-banner.js' %}"></script>
     <!--<script src="{% static 'bana/js/components/scroll-to-top.js' %}"></script>!-->
     {% block extra_js %}{% endblock %}
     <script>

@@ -85,6 +85,13 @@ class CustomSignupForm(TailwindFormMixin, SignupForm):
         })
     )
 
+    terms_accepted = forms.BooleanField(
+        required=True,
+        label=_("J'accepte les conditions générales d'utilisation"),
+        error_messages={'required': _("Vous devez accepter les conditions générales d'utilisation.")},
+        widget=forms.CheckboxInput(attrs={'class': 'form-checkbox h-5 w-5 text-brand'})
+    )
+
     def save(self, request):
         user = super().save(request)
         user.first_name = self.cleaned_data['first_name']
@@ -99,8 +106,6 @@ class CustomSignupForm(TailwindFormMixin, SignupForm):
         )
         profile.save()
 
-        if self.cleaned_data.get('languages'):
-            profile.languages.set(self.cleaned_data['languages'])
         return user
 
 

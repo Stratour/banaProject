@@ -23,10 +23,17 @@ class InscriptionValidation(models.Model):
 
 
 class SiteVisit(models.Model):
+    DEVICE_CHOICES = [
+        ('mobile', 'Mobile'),
+        ('tablet', 'Tablette'),
+        ('desktop', 'Desktop'),
+        ('unknown', 'Inconnu'),
+    ]
+
     ip_address = models.GenericIPAddressField()
     user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
-    timestamp = models.DateTimeField(auto_now=True)  # dernière visite
-    user_agent = models.CharField(max_length=512, blank=True, default='')
+    timestamp = models.DateTimeField(auto_now=True)
+    device_type = models.CharField(max_length=10, choices=DEVICE_CHOICES, default='unknown')
 
     class Meta:
         unique_together = ('ip_address', 'user')
@@ -34,4 +41,4 @@ class SiteVisit(models.Model):
 
     def __str__(self):
         user_str = self.user.username if self.user else "Anonyme"
-        return f"{user_str} @ {self.ip_address} - Dernière visite : {self.timestamp}"
+        return f"{user_str} @ {self.ip_address} ({self.device_type}) — {self.timestamp}"

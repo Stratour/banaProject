@@ -23,8 +23,8 @@ class InscriptionValidationAdmin(admin.ModelAdmin):
 
 @admin.register(SiteVisit)
 class SiteVisitAdmin(admin.ModelAdmin):
-    list_display = ('timestamp', 'ip_address', 'user')
-    list_filter = ('timestamp', 'user')
+    list_display = ('timestamp', 'ip_address', 'device_type', 'user')
+    list_filter = ('timestamp', 'device_type', 'user')
     ordering = ('-timestamp',)
 
     #change_list_template = "admin/site_visit_changelist.html"
