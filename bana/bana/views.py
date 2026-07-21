@@ -162,13 +162,6 @@ def work(request):
             'full_description': "Comme beaucoup de parents, j'étais assez réticent à confier mes enfants à d'autres. J'ai donc contacté Bana pour discuter de la confiance et de la sécurité : j'ai été très vite rassuré !",
         },
         {
-            'img_src': 'bana/img/other/Alex.png',
-            'name': 'Alex M.',
-            'age': '33 ans',
-            'short_bio': 'Papa de Maé, 6 ans',
-            'full_description': "En tant qu'éducateur spécialisé, j'ai des horaires coupés qui me laissent peu de flexibilité. Avec cette application, j'ai trouvé une solution pour ma fille à moindre coût. Tout le monde y gagne, moi le premier !",
-        },
-        {
             'img_src': 'bana/img/other/Shilo.png',
             'name': 'Shilo B.',
             'age': '10 ans',
@@ -236,13 +229,6 @@ def yaya(request):
             'age': '41 ans',
             'short_bio': 'Papa de 3 enfants, 1, 5 et 8 ans',
             'full_description': 'Comme beaucoup de parents, j’étais assez réticent à confier mes enfants à d’autres. J’ai donc contacté Bana pour discuter de la confiance et de la sécurité : j’ai été très vite rassuré !'
-        },
-         {
-            'img_src': 'bana/img/other/Alex.png',
-            'name': 'Alex M.',
-            'age': '33 ans',
-            'short_bio': 'Papa de Maé, 6 ans',
-            'full_description': 'En tant qu’éducateur spécialisé, j’ai des horaires coupés qui me laissent peu de flexibilité. Avec cette application, j’ai trouvé une solution pour ma fille à moindre coût. Tout le monde y gagne, moi le premier !'
         },
         {
             'img_src': 'bana/img/other/Shilo.png',
