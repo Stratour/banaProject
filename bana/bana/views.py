@@ -397,7 +397,7 @@ def about(request):
     ]
     team_members = [
         {
-            'img_src': 'bana/img/page/about/nyota-profil-bana.png',
+            'img_src': 'bana/img/page/about/nyota-profil-bana.jpg',
             'name': 'Nyota',
             'role': 'Fondatrice',
             'description': 'Entrepreneuriat social et mobilité, Nyota porte la vision communautaire de Bana.',
@@ -405,7 +405,7 @@ def about(request):
             'instagram': '',
         },
         {
-            'img_src': 'bana/img/page/about/luca-profil-bana.png',
+            'img_src': 'bana/img/page/about/luca-profil-bana.jpg',
             'name': 'Luca',
             'role': 'Développeur IT',
             'description': 'Architecture et développement de la plateforme, du backend aux interfaces.',
@@ -413,7 +413,7 @@ def about(request):
             'instagram': '',
         },
         {
-            'img_src': 'bana/img/page/about/raph-profil-bana.png',
+            'img_src': 'bana/img/page/about/raph-profil-bana.jpg',
             'name': 'Raphaël',
             'role': 'Développeur IT',
             'description': 'Innovation digitale et intégration des fonctionnalités clés de la plateforme.',
