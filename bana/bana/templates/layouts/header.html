@@ -129,6 +129,7 @@
                 </a>
                 {% endif %}
 
+                {% comment "LANGUE EN COMMENTAIRE" %}
                 <!-- 4.1 Sélecteur de langue -->
                 <div class="relative inline-block text-left z-10">
                     <button
@@ -173,6 +174,7 @@
                         </ul>
                     </div>
                 </div>
+                {% endcomment %}
 
                 {% if user.is_authenticated %}
                 <!-- 4.2 Avatar desktop -->
@@ -269,6 +271,7 @@
 
         <div class="mx-4 border-t border-white/10"></div>
 
+        {% comment "LANGUES COMMENTAIRE" %}
         <!-- 5.2 Sélecteur de langue -->
         <div class="px-4 py-4">
             <p class="text-xs text-white/40 uppercase tracking-widest mb-3 font-medium px-1">{% trans "Langue" %}</p>
@@ -288,6 +291,7 @@
                 {% endfor %}
             </div>
         </div>
+        {% endcomment %}
 
         <div class="mx-4 border-t border-white/10"></div>
 
