@@ -171,6 +171,17 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'bana/static', BASE_DIR / 'theme/static']
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# Cache-busting : hash de contenu dans le nom de fichier à chaque collectstatic,
+# pour que le cache navigateur "immutable" (nginx) et le SW ne servent jamais du stale.
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "django.contrib.staticfiles.storage.ManifestStaticFilesStorage",
+    },
+}
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 

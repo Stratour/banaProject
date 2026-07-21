@@ -100,7 +100,7 @@
                     <div class="grid grid-cols-2 gap-12 items-center justify-center">
                         {% for feature in features_search %}
                             <div class="flex flex-col items-center justify-center">
-                                <img class="w-10 h-10 mb-2" src="{% static 'bana/img/icon/' %}{{ feature.icon }}" alt="{{ feature.title }} icon">
+                                <img class="w-10 h-10 mb-2" src="{% static 'bana/img/icon/'|add:feature.icon %}" alt="{{ feature.title }} icon">
                                 <h4 class="text-brand text-lg md:text-xl font-semibold">{{ feature.title }}</h4>
                                 <p class="text-brand text-sm md:text-base">
                                     <span class="text-brand-100 font-semibold">{{ feature.highlight }}</span> {{ feature.text }}
@@ -139,7 +139,7 @@
                     <div class="grid grid-cols-2 gap-12 items-center justify-center">
                         {% for feature in features_share %}
                             <div class="flex flex-col items-center justify-center">
-                                <img class="w-10 h-10 mb-2" src="{% static 'bana/img/icon/' %}{{ feature.icon }}" alt="{{ feature.title }} icon">
+                                <img class="w-10 h-10 mb-2" src="{% static 'bana/img/icon/'|add:feature.icon %}" alt="{{ feature.title }} icon">
                                 <h4 class="text-brand text-lg md:text-xl font-semibold">{{ feature.title }}</h4>
                                 <p class="text-brand text-sm md:text-base">
                                     <span class="text-brand-100 font-semibold">{{ feature.highlight }}</span> {{ feature.text }}
