@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-BanaCommunity is a Django 5.1.4 community platform for ridesharing and childcare coordination. It uses PostGIS for geolocation-based matching, Django Channels for real-time chat, and Stripe for payments/identity verification.
+BanaCommunity is a Django 5.2 (LTS) community platform for ridesharing and childcare coordination. It uses PostGIS for geolocation-based matching, Django Channels for real-time chat, and Stripe for payments/identity verification.
 
 ## Commands
 
