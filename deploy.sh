@@ -34,14 +34,19 @@ $PIP install -r "$PROD_DIR/requirements.txt" -q
 echo "  OK"
 echo ""
 
-# 4. CSS Tailwind (non versionné, copié depuis dev)
+# 4. CSS Tailwind (non versionné : reconstruit dans dev, puis copié)
 echo "[4/6] CSS Tailwind..."
+echo "  Build de production..."
+# Sous-shell : ne pas polluer le cwd des etapes suivantes.
+# Sans ce build, on risque de deployer la sortie non minifiee du watcher
+# 'tailwind start', 25% plus lourde et potentiellement incomplete.
+( cd "$DEV_DIR/bana" && $PYTHON manage.py tailwind build )
+
 if [ -d "$DEV_DIR/bana/theme/static/css" ]; then
     cp -r "$DEV_DIR/bana/theme/static/css" "$PROD_DIR/bana/theme/static/"
-    echo "  OK (copié depuis dev)"
+    echo "  OK (build + copié depuis dev)"
 else
-    echo "  ATTENTION : CSS introuvable dans dev ($DEV_DIR/bana/theme/static/css)"
-    echo "  Lance 'python manage.py tailwind build' dans dev avant de déployer."
+    echo "  ERREUR : CSS introuvable après le build ($DEV_DIR/bana/theme/static/css)"
     exit 1
 fi
 echo ""
