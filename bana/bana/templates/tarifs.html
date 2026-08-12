@@ -7,6 +7,7 @@
 
 {% block extra_head %}
 <link rel="preload" as="image" href="{% static 'bana/img/page/tarifs/tarifs-transport-scolaire-belgique.jpg' %}">
+<link rel="stylesheet" href="{% static 'bana/css/components/citation.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -52,7 +53,7 @@
         <div
             class="animate-on-scroll w-full md:max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center text-center md:text-left" data-delay="150">
 
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4 text-justify">
                 <h2 class="text-xl md:text-2xl font-bold">
                     Rejoindre Bana est gratuit
                 </h2>
@@ -78,12 +79,19 @@
                 </p>
             </div>
 
-            <div class="flex flex-col items-center md:items-start justify-center gap-4 py-8">
-                <p class="text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug text-center md:text-left">
-                    "Ce qui compte ne peut pas toujours être compté, <br>
-                et ce qui peut être compté ne compte pas forcément"
-                </p>
-                <span class="text-sm font-medium text-[#007F73] tracking-widest uppercase mt-2">— Albert Einstein</span>
+            <div class="citation-brush citation-brush--long">
+
+                <!-- Fond décoratif (coup de pinceau + guillemets) -->
+                <img src="{% static 'bana/img/background/bg-citation.png' %}" alt="" aria-hidden="true"
+                     loading="lazy" width="1080" height="1080"
+                     class="citation-brush__bg">
+
+                <div class="citation-brush__inner">
+                    <p class="citation-brush__text text-xl md:text-2xl font-bold italic text-[#007F73] leading-snug text-center">
+                        Ce qui compte ne peut pas toujours être compté, et ce qui peut être compté ne compte pas forcément
+                    </p>
+                    <span class="citation-brush__author text-sm text-center font-medium text-[#007F73] tracking-widest uppercase">— Albert Einstein</span>
+                </div>
             </div>
         </div>
     </section>
@@ -506,6 +514,33 @@
         </div>
     </section>
 
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- SECTION 6 — CTA FINAL                          -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section class="bg-gray-50 border-t border-gray-100 py-20 px-4 md:px-8 lg:px-16 text-center">
+        <div class="max-w-7xl mx-auto flex flex-col items-center gap-6">
+
+            <h2 class="animate-on-scroll text-3xl md:text-5xl font-extrabold text-brand-300" data-delay="50">
+                Prêts à partager vos trajets ? 
+            </h2>
+            <p class="animate-on-scroll text-lg text-gray-500" data-delay="100">
+                Rejoignez des familles qui font confiance à Bana pour les trajets des enfants
+            </p>
+            <div class="animate-on-scroll flex flex-col sm:flex-row gap-4 justify-center" data-delay="150">
+                <a href="{% url 'account_signup' %}"
+                    class="inline-flex items-center justify-center px-8 py-3 rounded-full bg-brand text-white font-semibold hover:bg-brand-300 transition">
+                    Créer mon compte gratuitement
+                </a>
+                <a href="{% url 'yaya' %}"
+                    class="inline-flex items-center justify-center px-8 py-3 rounded-full border-2 border-brand/30 text-brand font-semibold hover:bg-brand/5 transition">
+                    Devenir Yaya
+                </a>
+            </div>
+            <p class="text-sm text-gray-600 font-semibold">Inscription gratuite &bull; Sans engagement</p>
+
+        </div>
+    </section>
+
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -554,34 +589,6 @@
       ]
     }
     </script>
-
-
-    <!-- ═══════════════════════════════════════════════ -->
-    <!-- SECTION 6 — CTA FINAL                          -->
-    <!-- ═══════════════════════════════════════════════ -->
-    <section class="bg-gray-50 border-t border-gray-100 py-20 px-4 md:px-8 lg:px-16 text-center">
-        <div class="max-w-2xl mx-auto flex flex-col items-center gap-6">
-
-            <h2 class="animate-on-scroll text-3xl md:text-5xl font-extrabold text-brand-300" data-delay="50">
-                Prêt à trouver votre Yaya ?
-            </h2>
-            <p class="animate-on-scroll text-lg text-gray-500" data-delay="100">
-                Rejoignez des familles qui font confiance à Bana pour les trajets de leurs enfants.
-            </p>
-            <div class="animate-on-scroll flex flex-col sm:flex-row gap-4 justify-center" data-delay="150">
-                <a href="{% url 'account_signup' %}"
-                    class="inline-flex items-center justify-center px-8 py-3 rounded-full bg-brand text-white font-semibold hover:bg-brand-300 transition">
-                    Créer mon compte gratuitement
-                </a>
-                <a href="{% url 'yaya' %}"
-                    class="inline-flex items-center justify-center px-8 py-3 rounded-full border-2 border-brand/30 text-brand font-semibold hover:bg-brand/5 transition">
-                    Devenir Yaya
-                </a>
-            </div>
-            <p class="text-sm text-gray-400">Inscription gratuite &bull; Sans engagement</p>
-
-        </div>
-    </section>
 
 {% endblock %}
 

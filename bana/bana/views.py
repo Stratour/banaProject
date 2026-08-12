@@ -67,25 +67,25 @@ def work(request):
     
     work_benefits = [
         {
-            'img_src': 'bana/img/page/home/identite-verifiee.svg',
+            'img_src': 'bana/img/page/work/carte-identite.png',
             'title': _("Carte d'identité vérifiée"),
             'highlight': _(''),
             'description': _('Vérification via Stripe Identity pour les parents et les Yaya')
         },
         {
-            'img_src': 'bana/img/page/home/extrait-judiciaire.svg',
+            'img_src': 'bana/img/page/work/casier-judiciaire.png',
             'title': _('Extrait de casier judiciaire'),
             'highlight': _(''),
             'description': _('Certificat de bonne vie et mœurs modèle 596.2 pour tous les membres')
         },
         {
-            'img_src': 'bana/img/page/home/rencontre-avant-trajet.svg',
+            'img_src': 'bana/img/page/work/rencontre.png',
             'title': _('Rencontre préalable'),
             'highlight': _(''),
             'description': _("Rencontre en personne avec le parent, l'enfant et le Yaya avant le 1er trajet")
         },
         {
-            'img_src': 'bana/img/page/home/avis-et-evaluations.svg',
+            'img_src': 'bana/img/page/work/avis.png',
             'title': _("Système d'avis réciproque"),
             'highlight': _(''),
             'description': _("Parents et Yaya sont notés pour un système d'avis équitable")
@@ -96,12 +96,12 @@ def work(request):
         {
             'number': '1',
             'title': 'Créez votre profil gratuitement',
-            'description': "Ajoutez votre photo, vos informations et vos trajets.",
+            'description': "Encodez vos informations, ajoutez votre photo et indiquez vos trajets.",
         },
         {
             'number': '2',
             'title': 'Découvrez les profils compatibles',
-            'description': "Bana identifie automatiquement les parents et les Yaya qui font déjà le même chemin, au même moment.",
+            'description': "Bana identifie automatiquement les parents et les Yaya qui font déjà le même chemin.",
         },
         {
             'number': '3',
@@ -114,19 +114,19 @@ def work(request):
         {
             'icon_src': 'bana/img/page/work/prise-en-charge-3.svg',
             'title': 'Prise en charge',
-            'short_description': "Le Yaya récupère l'enfant auprès d'un adulte responsable et prévient le parent du départ.",
+            'short_description': "Le Yaya récupère l'enfant auprès d'un adulte responsable et prévient le parent du départ",
             'description': "Le Yaya récupère l'enfant à la maison ou auprès d'un adulte (parent, enseignant, éducateur…). Le parent reçoit un <strong>message confirmant la prise en charge</strong> et le départ de l'enfant.",
         },
         {
             'icon_src': 'bana/img/page/work/accompagnement-securise-1.svg',
             'title': 'Accompagnement sécurisé',
-            'short_description': "L'enfant voyage en sécurité jusqu'à destination, quel que soit le mode de transport.",
+            'short_description': "L'enfant voyage accompagné jusqu'à destination, quel que soit le mode de transport",
             'description': "Le Yaya accompagne l'enfant du départ jusqu'à la destination. Quel que soit le moyen de transport utilisé, <strong>le Yaya assure la sécurité de l'enfant pendant tout le trajet</strong>.",
         },
         {
             'icon_src': 'bana/img/page/work/arrivee-et-confirmation-1.svg',
             'title': 'Arrivée et confirmation',
-            'short_description': "L'enfant est confié à un adulte à l'arrivée — le parent reçoit une confirmation.",
+            'short_description': "L'enfant est confié à un adulte à l'arrivée et le parent reçoit une confirmation",
             'description': "L'enfant est confié à un adulte responsable à l'arrivée selon les directives du parent. Le parent reçoit un <strong>message confirmant l'arrivée de l'enfant</strong>.",
         },
         
@@ -141,39 +141,94 @@ def work(request):
 
     work_profiles = [
         {
-            'img_src': 'bana/img/other/Sandy.png',
-            'name': 'Sandy D.',
-            'age': '38 ans',
-            'short_bio': 'Maman de Justin et Bastien, 5 et 7 ans',
-            'full_description': "Avant, je choisissais leurs activités en fonction de mes disponibilités. Aujourd'hui, je peux leur ouvrir la porte à un monde de possibilités : il n'y a plus de limites !",
+            'name': 'Jean-Philippe',
+            'short_bio': 'Papa solo de 2 enfants',
+            'city': 'Nivelles',
+            'full_description': "Mes enfants ont rapidement créé un lien affectif avec leurs accompagnatrices respectives et ont pu poursuivre leur activité tout au long de l'année. Une réussite totale. Je ne peux que recommander ce service.",
         },
         {
-            'img_src': 'bana/img/other/Thi.png',
-            'name': 'Thi M.',
-            'age': '38 ans',
-            'short_bio': 'Maman de 2 garçons, 5 et 9 ans',
-            'full_description': "Bana me permet d'aider et de dépanner d'autres parents. J'apprécie particulièrement le concept collaboratif et communautaire de cette application.",
+            'name': 'Stéphanie',
+            'short_bio': 'Maman de 2 enfants',
+            'city': 'Baulers',
+            'full_description': "Super expérience avec Bana pour conduire ma fille de l'école à son cours de danse à l'académie ! Toujours à l'heure et un petit mot pour vous rassurer quand votre enfant est bien déposé ! À recommander !",
         },
         {
-            'img_src': 'bana/img/other/Andre.png',
-            'name': 'André K.',
-            'age': '41 ans',
-            'short_bio': 'Papa de 3 enfants, 1, 5 et 8 ans',
-            'full_description': "Comme beaucoup de parents, j'étais assez réticent à confier mes enfants à d'autres. J'ai donc contacté Bana pour discuter de la confiance et de la sécurité : j'ai été très vite rassuré !",
+            'name': 'Bernard',
+            'short_bio': 'Papa de 3 enfants',
+            'city': 'Sombreffe',
+            'full_description': "Service parfait avec des valeurs au top. Je recommande !",
         },
         {
-            'img_src': 'bana/img/other/Shilo.png',
-            'name': 'Shilo B.',
-            'age': '10 ans',
-            'short_bio': "Élève de 5ᵉ primaire",
-            'full_description': "Ce que j'adore avec Bana, c'est l'idée que je peux passer plus de temps avec mes amis car on va ensemble aux activités, c'est trop cool !",
+            'name': 'Thi Minh',
+            'short_bio': 'Maman de 2 enfants',
+            'city': 'Overijse',
+            'full_description': "Super service fiable. La personne de contact était très douce et a pris le temps de nous expliquer le fonctionnement.",
         },
         {
-            'img_src': 'bana/img/other/Ludo.png',
-            'name': 'Ludo B.',
-            'age': '42 ans',
-            'short_bio': 'Papa de 2 garçons, 18 et 10 ans',
-            'full_description': "J'y ai rencontré des parents très sérieux et flexibles. Nous partageons beaucoup de choses avec des amis qui vont au-delà des trajets de nos enfants.",
+            'name': 'Patrick',
+            'short_bio': 'Papa solo de 3 enfants',
+            'city': 'Namur',
+            'full_description': "Concept qui simplifie la vie des parents qui sont toujours en train de courir pour aller déposer et récupérer leurs enfants à l'école et leurs différentes activités. Merci Bana",
+        },
+        {
+            'name': 'Valérie',
+            'short_bio': 'Maman solo de 1 enfant',
+            'city': 'Wavre',
+            'full_description': "J'étais un peu perdue et grâce à Bana ma vie a été plus calme, moins stressante et plus reposante !! Merci pour tout",
+        },
+        {
+            'name': 'Stéphane',
+            'short_bio': 'Papa de 2 enfants',
+            'city': 'Ixelles',
+            'full_description': "Service vraiment utile au quotidien pour les parents qui travaillent !",
+        },
+        {
+            'name': 'Sandy',
+            'short_bio': 'Maman solo de 2 enfants',
+            'city': 'Villers-La-Ville',
+            'full_description': "J'ai eu la possibilité de profiter du service d'accompagnement de Bana. J'ai pu constater le sérieux des accompagnateurs. J'ai enfin trouvé une solution pour que mes enfants soient conduits en toute sécurité à leur activité. Merci Bana",
+        },
+        {
+            'name': 'Ludovic',
+            'short_bio': 'Papa de 2 enfants',
+            'city': 'Tervuren',
+            'full_description': "Super expérience avec Bana, j'ai très vite trouvé une solution au problème de déplacements de mes enfants",
+        },
+        {
+            'name': 'Hélène',
+            'short_bio': 'Maman de 1 enfant',
+            'city': 'Anderlecht',
+            'full_description': "Bana a rendu notre quotidien plus serein. Grâce à un service bien organisé et sécurisé, nous avons pu mieux concilier vie privée et vie professionnelle.",
+        },
+        {
+            'name': 'Alexandre',
+            'short_bio': 'Papa de 1 enfant',
+            'city': 'Ham-Sur-Heure-Nalinnes',
+            'full_description': "Merci pour ce service de qualité, j'ai la possibilité d'avoir plus de temps pour moi et mon enfant se fait de nouveaux amis, tout le monde est content !! Je recommande Bana à tous",
+        },
+        {
+            'name': 'Cynthia',
+            'short_bio': 'Maman solo de 2 enfants',
+            'city': 'Charleroi',
+            'full_description': "Service de qualité !",
+        },
+        {
+            'name': 'Réginald',
+            'short_bio': 'Papa de 1 enfant',
+            'city': 'Watermael-Boitsfort',
+            'full_description': "Les trajets de l'école au club de judo ensuite du club à la maison ne sont plus du tout un souci. Grâce à la communauté Bana j'ai trouvé la solution pour supprimer le stress des déplacements les jours où le travail prend trop de place !",
+        },
+        {
+            'name': 'Isabel',
+            'short_bio': 'Maman de 3 enfants',
+            'city': 'Nivelles',
+            'full_description': "Les accompagnatrices sont fiables, très gentilles et s'occupent soigneusement des enfants.",
+        },
+        {
+            'name': 'Cédrick',
+            'short_bio': 'Papa solo de 2 enfants',
+            'city': 'Genval',
+            'full_description': "Bana me donne plus de flexibilité dans mon quotidien, en libérant mon temps et en facilitant la vie de ma famille pour certains de nos besoins de déplacement spécifiques. C'est un réel plaisir !",
         },
     ]
     return render(request, 'work.html', {
@@ -210,40 +265,110 @@ def yaya(request):
 
     work_profiles = [
         {
-            'img_src': 'bana/img/other/Sandy.png',
-            'name': 'Sandy D.',
-            'age': '38 ans',
-            'short_bio': 'Maman de Justin et Bastien, 5 et 7 ans',
-            'full_description': 'Avant, je choisissais leurs activités en fonction de mes disponibilités. Aujourd’hui, je peux leur ouvrir la porte à un monde de possibilités : il n’y a plus de limites !'
+            'name': 'Océane',
+            'age': '20 ans',
+            'short_bio': 'Étudiante en Puériculture',
+            'city': 'Nivelles',
+            'full_description': "J'avais déjà l'habitude de prendre le bus tous les jours pour rentrer chez moi après les cours. Avec Bana, je peux rendre ce trajet utile en accompagnant un enfant. C'est une expérience enrichissante, aussi bien humainement que dans le cadre de mes études.",
         },
         {
-            'img_src': 'bana/img/other/Thi.png',
-            'name': 'Thi M.',
-            'age': '38 ans',
-            'short_bio': 'Maman de 2 garçons, 5 et 9 ans',
-            'full_description': 'Bana me permet d’aider et de dépanner d’autres parents. J’apprécie particulièrement le concept collaboratif et communautaire de cette application.'
+            'name': 'Timothé',
+            'age': '23 ans',
+            'short_bio': 'Étudiant en Kinésithérapie',
+            'city': 'Louvain-La-Neuve',
+            'full_description': "Je cherchais un job étudiant qui ait du sens et qui soit flexible. Accompagner un enfant quelques fois par semaine s'intègre parfaitement dans mon emploi du temps et j'ai le sentiment d'être vraiment utile.",
         },
         {
-            'img_src': 'bana/img/other/Andre.png',
-            'name': 'André K.',
+            'name': 'Meriem',
+            'age': '34 ans',
+            'short_bio': 'Enseignante',
+            'city': 'Sint-Pieters-Leeuw',
+            'full_description': "J'accompagne déjà des enfants toute la journée dans mon métier. Être Yaya est une façon de prolonger cet engagement en dehors de l'école et d'aider concrètement des familles de ma communauté.",
+        },
+        {
+            'name': 'Guillaume',
+            'age': '39 ans',
+            'short_bio': 'Papa de 1 enfant',
+            'city': 'La Louvière',
+            'full_description': "Je dépose déjà mon fils à l'école tous les matins. Accompagner un deuxième enfant ne me prend que quelques minutes et cela rend un vrai service à une autre famille.",
+        },
+        {
+            'name': 'Sofia',
+            'age': '22 ans',
+            'short_bio': 'Étudiante en Droit',
+            'city': 'Ixelles',
+            'full_description': "Entre les cours, les stages et les examens, j'avais besoin d'un job étudiant flexible. Avec Bana, je choisis les trajets qui correspondent à mon emploi du temps et je reçois un défraiement pour mon aide auprès des familles.",
+        },
+        {
+            'name': 'Gaspard',
+            'age': '19 ans',
+            'short_bio': 'Étudiant en Éducation physique',
+            'city': 'Woluwé-Saint-Pierre',
+            'full_description': "Pour moi c'est mieux qu'un job étudiant parce que je les accompagne juste à vélo en allant coacher les U10 et je suis payé pour ce trajet plusieurs fois par semaine.",
+        },
+        {
+            'name': 'Thi Minh',
             'age': '41 ans',
-            'short_bio': 'Papa de 3 enfants, 1, 5 et 8 ans',
-            'full_description': 'Comme beaucoup de parents, j’étais assez réticent à confier mes enfants à d’autres. J’ai donc contacté Bana pour discuter de la confiance et de la sécurité : j’ai été très vite rassuré !'
+            'short_bio': 'Maman de 2 enfants',
+            'city': 'Overijse',
+            'full_description': "Bana me permet d'aider et de dépanner d'autres parents. J'apprécie particulièrement le concept collaboratif et communautaire de cette application.",
         },
         {
-            'img_src': 'bana/img/other/Shilo.png',
-            'name': 'Shilo B.',
-            'age': '10 ans',
-            'short_bio': 'élève de 5ᵉ primaire',
-            'full_description': 'Ce que j’adore avec Bana, c’est l’idée que je peux passer plus de temps avec mes amis car on va ensemble aux activités, c’est trop cool !'
+            'name': 'Lucie',
+            'age': '15 ans',
+            'short_bio': 'Étudiante en secondaire',
+            'city': 'Nivelles',
+            'full_description': "Être Yaya m'a permis de gagner en responsabilités. Les parents me font confiance et j'aime savoir que je peux accompagner des enfants à pied après les cours.",
         },
         {
-            'img_src': 'bana/img/other/Ludo.png',
-            'name': 'Ludo B.',
-            'age': '42 ans',
-            'short_bio': 'papa de 2 garçons, 18 et 10 ans',
-            'full_description': 'J’y ai rencontré des parents très sérieux et flexibles. Nous partageons beaucoup de choses avec des amis qui vont au-delà des trajets de nos enfants.'
-        }
+            'name': 'Mehdi',
+            'age': '24 ans',
+            'short_bio': 'Étudiant en Ingénierie',
+            'city': 'Mons',
+            'full_description': "Je me déplace uniquement en bus et à pied. Bana m'a montré qu'on pouvait accompagner des enfants sans avoir de voiture. C'est une belle découverte.",
+        },
+        {
+            'name': 'Françoise',
+            'age': '67 ans',
+            'short_bio': 'Jeune retraitée',
+            'city': 'Waterloo',
+            'full_description': "Depuis ma retraite, j'avais envie de rester active et de me sentir utile. Accompagner des enfants à pied quelques fois par semaine me permet de garder un rythme et de rester en forme.",
+        },
+        {
+            'name': 'Yassine',
+            'age': '18 ans',
+            'short_bio': 'Étudiant en Communication',
+            'city': 'Namur',
+            'full_description': "Le défraiement est plutôt cool. Et ce qui me motive aussi c'est de savoir que j'aide une famille sans changer mes habitudes. Je fais simplement le trajet que je faisais déjà.",
+        },
+        {
+            'name': 'Caroline',
+            'age': '54 ans',
+            'short_bio': 'Maman de 3 enfants',
+            'city': 'Charleroi',
+            'full_description': "Mes enfants sont maintenant plus grands, mais je me souviens combien j'étais inquiète lorsqu'ils devaient se déplacer seuls étant petits. En devenant Yaya, je peux aujourd'hui rassurer d'autres parents et leur donner un petit coup de pouce dans leur journée.",
+        },
+        {
+            'name': 'Théodore',
+            'age': '17 ans',
+            'short_bio': "Étudiant en Technique d'animation",
+            'city': 'Nalinnes',
+            'full_description': "Moi j'adore partager mes trajets avec Liam. C'est devenu comme un petit frère. Ma maman est fière de moi en plus !",
+        },
+        {
+            'name': 'Sarah',
+            'age': '23 ans',
+            'short_bio': 'Étudiante en Médecine',
+            'city': 'Uccle',
+            'full_description': "Je cherchais un moyen de gagner un peu d'argent à côté de mes études sans devoir sacrifier le peu de temps libre que j'ai. Avec Bana, je peux être utile, garder une certaine flexibilité et être défrayée pour des petits trajets au quotidien. En plus, les petits sont adorables !",
+        },
+        {
+            'name': 'Matteo',
+            'age': '46 ans',
+            'short_bio': 'Papa solo de 3 enfants',
+            'city': 'Laeken',
+            'full_description': "Gérer les trajets des enfants seul, une semaine sur deux, est un vrai challenge avec le travail. Sur Bana, j'ai trouvé un autre parent avec qui partager les trajets. Ça me simplifie tellement la vie.",
+        },
     ]
 
     return render(request,'yaya.html', {"work_profiles": work_profiles, "yaya_benefits": yaya_benefits})

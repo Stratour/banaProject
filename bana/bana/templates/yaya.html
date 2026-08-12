@@ -7,6 +7,9 @@
 
 {% block extra_head %}
 <link rel="preload" as="image" href="{% static 'bana/img/page/yaya/accompagnateur-enfants-trajets-scolaires.jpg' %}">
+<link rel="stylesheet" href="{% static 'bana/css/components/citation.css' %}">
+<link rel="stylesheet" href="{% static 'bana/css/components/testimonials.css' %}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{% static 'bana/css/components/testimonials.css' %}"></noscript>
 {% endblock %}
 
 {% block content %}
@@ -66,15 +69,22 @@
             {% endif %}
             {% endcomment %}
 
-            <div class="flex flex-col items-center md:items-start justify-center gap-4 py-8">
-                <p class="text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug text-center md:text-left">
-                    "En prenant l'enfant par la main, <br>
-                    on prend la mère par le cœur"
-                </p>
-                <span class="text-sm font-medium text-[#007F73] tracking-widest uppercase mt-2">— Proverbe danois</span>
+            <div class="citation-brush">
+
+                <!-- Fond décoratif (coup de pinceau + guillemets) -->
+                <img src="{% static 'bana/img/background/bg-citation.png' %}" alt="" aria-hidden="true"
+                     loading="lazy" width="1080" height="1080"
+                     class="citation-brush__bg">
+
+                <div class="citation-brush__inner">
+                    <p class="citation-brush__text text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug text-center">
+                        En prenant l'enfant par la main, on prend la mère par le cœur
+                    </p>
+                    <span class="citation-brush__author text-sm text-center font-medium text-[#007F73] tracking-widest uppercase">— Proverbe danois</span>
+                </div>
             </div>
 
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4 text-justify">
                 <h2 class="text-xl md:text-2xl font-bold">
                     Et si vos déplacements pouvaient aider une famille ?
                 </h2>
@@ -129,7 +139,7 @@
             <!-- Text block -->
             <div class="w-full md:w-[60%] lg:w-[55%] md:absolute md:bottom-0 md:left-0 z-10 flex md:marker:font-semibold">
 
-                <div class="animate-on-scroll bg-brand-gradient-br text-white px-6 md:px-10 pt-20 pb-10 md:py-14 md:pr-24 lg:pr-40 xl:pr-40 rounded-2xl flex flex-col gap-4 w-full md:min-h-[450px] md:justify-center" data-delay="50">
+                <div class="animate-on-scroll bg-brand-gradient-br text-white md:font-semibold px-6 md:px-10 pt-20 pb-10 md:py-14 md:pr-24 lg:pr-40 xl:pr-40 rounded-2xl flex flex-col gap-4 w-full md:min-h-[450px] md:justify-center" data-delay="50">
 
                     <h2 class="animate-on-scroll text-3xl md:text-5xl font-extrabold text-brand-50 text-center md:text-left" data-delay="100">
                         Yaya
@@ -139,20 +149,20 @@
                         Qu'est-ce-que c'est ?
                     </h3>
 
-                    <p class="text-center md:text-left text-lg">
-                        Chez Bana, un Yaya désigne un grand frère ou une grande sœur, une personne responsable qui veille sur les
-                        plus jeunes pendant leurs trajets.
+                    <p class="text-justify text-lg">
+                        Chez Bana, un Yaya désigne un grand frère ou une grande sœur, <span class="text-brand-50 font-semibold">une personne responsable qui veille sur les
+                        plus jeunes pendant leurs trajets.</span>
                     </p>
 
-                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="200">
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="200">
                         Pour devenir Yaya, il faut :
                     </p>
-                    <ul class="text-center md:text-left">
+                    <ul class="text-left">
                         <li class="text-brand-50 font-semibold text-lg">• Avoir minimum 15 ans</li>
                         <li class="text-brand-50 font-semibold text-lg">• Être responsable et fiable</li>
                         <li class="text-brand-50 font-semibold text-lg">• Être bienveillant envers les enfants</li>
                     </ul>
-                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="200">
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="200">
                         Quel que soit votre moyen de transport, vous pouvez aider des parents et sécuriser le
                         déplacement de leur enfant tout en faisant vos trajets habituels.
                     </p>
@@ -178,7 +188,7 @@
             <!-- Card -->
             <div class="animate-on-scroll w-full md:w-[60%] lg:w-[55%] md:absolute md:bottom-0 md:right-0 z-10 flex" data-delay="150">
 
-                <div class="bg-brand-gradient-tl text-white px-6 md:px-10 pt-20 pb-10 md:py-14 md:pl-24 lg:pl-40 xl:pl-40 md:pr-12 rounded-2xl flex flex-col gap-4 w-full md:min-h-[450px] md:justify-center">
+                <div class="bg-brand-gradient-tl text-white md:font-semibold text-justify px-6 md:px-10 pt-20 pb-10 md:py-14 md:pl-24 lg:pl-40 xl:pl-40 md:pr-12 rounded-2xl flex flex-col gap-4 w-full md:min-h-[450px] md:justify-center">
 
                     <h2 class="text-3xl md:text-5xl font-extrabold text-brand-50 text-center md:text-left">
                         Pourquoi ?
@@ -188,22 +198,22 @@
                         4 bonnes raisons de devenir Yaya :
                     </h3>
 
-                    <p class="animate-on-scroll text-center md:text-left md:font-semibold" data-delay="50">
+                    <p class="animate-on-scroll text-justify" data-delay="50">
                         <span class="text-brand-50 font-semibold text-lg">1. Se rendre utile</span><br>
                         Participez à une entraide de quartier concrète.
                     </p>
 
-                    <p class="animate-on-scroll text-center md:text-left md:font-semibold" data-delay="100">
+                    <p class="animate-on-scroll text-justify" data-delay="100">
                         <span class="text-brand-50 font-semibold text-lg">2. Assurer la sécurité des enfants</span><br>
                         Et les aider à gagner en autonomie.
                     </p>
 
-                    <p class="animate-on-scroll text-center md:text-left md:font-semibold" data-delay="150">
+                    <p class="animate-on-scroll text-justify" data-delay="150">
                         <span class="text-brand-50 font-semibold text-lg">3. Gagner de l'argent</span><br>
                         Recevez un défraiement pour chaque trajet.
                     </p>
 
-                    <p class="animate-on-scroll text-center md:text-left md:font-semibold" data-delay="200">
+                    <p class="animate-on-scroll text-justify" data-delay="200">
                         <span class="text-brand-50 font-semibold text-lg">4. Avoir de l'impact</span><br>
                         Contribuez à développer une mobilité plus responsable.
                     </p>
@@ -233,10 +243,10 @@
                 
 
                 <!-- TEXTE -->
-                <div class="animate-on-scroll animate-right w-full md:w-1/2 text-center md:text-left text-white
-                        rounded-2xl md:rounded-none px-6 py-8 md:p-0 flex flex-col gap-4 md:font-semibold">
+                <div class="animate-on-scroll animate-right w-full md:w-1/2 text-white
+                        rounded-2xl md:rounded-none px-6 py-8 md:p-0 flex flex-col gap-4 md:font-semibold text-justify">
 
-                    <h2 class="text-2xl lg:text-3xl text-white font-bold mb-2">
+                    <h2 class="text-2xl lg:text-3xl text-white font-bold mb-2 text-left">
                         Un défraiement pour votre aide
                     </h2>
 
@@ -251,7 +261,7 @@
                         afin de garantir un équilibre entre les familles et les Yaya accompagnateurs.
                     </p>
 
-                    <h2 class="text-2xl lg:text-3xl font-bold mt-6 mb-2 text-white">
+                    <h2 class="text-2xl lg:text-3xl font-bold mt-6 mb-2 text-white text-left">
                         Un engagement flexible
                     </h2>
 
@@ -345,66 +355,59 @@
 
     </section>
 
-    <!-- LOGOS -->
-    <section class="px-4 md:px-8 lg:px-16 pt-28 bg-gray-50 flex flex-col items-center text-center">
+    <!-- ═══════════════════════════════════════════════ -->
+    <!-- 9. AVIS PARENTS -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section class="px-4 md:px-8 lg:px-16 pt-28 pb-20 bg-gray-50 flex flex-col items-center text-center">
 
-        <h2 class="text-3xl md:text-5xl text-brand-300 font-extrabold mb-10 animate-on-scroll" data-delay="50">
-            Ils en parlent mieux que nous
+        <h2 class="text-3xl md:text-5xl text-brand-300 font-extrabold mb-4 animate-on-scroll" data-delay="50">
+            Ils font vivre notre communauté
         </h2>
+        <p class="animate-on-scroll text-lg text-gray-600 font-semibold" data-delay="100">
+            Découvrez pourquoi ils ont choisi de devenir Yaya et d'accompagner des enfants avec Bana
+        </p>
 
-        <!-- SLIDER WRAPPER CENTRÉ -->
-        <div class="relative w-full md:w-1/2 overflow-hidden h-[500px]">
+        <!-- Carrousel de témoignages -->
+        <div class="testimonials carousel-container animate-on-scroll w-full max-w-3xl mt-14" data-autoplay="7000" data-delay="150">
 
-            <!-- Slides container -->
-            <div id="slider" class="flex transition-transform duration-500 ease-in-out">
+            <div class="testimonials__stage flex items-center gap-2 sm:gap-5">
 
-                {% for profile in work_profiles %}
-                <div
-                    class="min-w-full flex flex-col items-center justify-center px-6 py-16 text-center gap-8 animate-on-scroll" data-delay="150">
+                <!-- Guillemets en filigrane
+                <img src="{% static 'bana/img/other/guillemets.png' %}" alt="" aria-hidden="true"
+                     class="testimonials__mark" width="1080" height="1080" loading="lazy">-->
 
-                    <!-- Citation -->
-                    <div class="relative max-w-2xl min-h-[150px] flex items-center justify-center overflow-hidden">
+                <button type="button" aria-label="Témoignage précédent"
+                    class="prev flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border text-brand bg-brand-50 text-xl leading-none hover:border-brand hover:text-brand transition">
+                    ‹
+                </button>
 
-                        <div class="absolute inset-0 bg-center bg-no-repeat bg-contain opacity-30"
-                            style="background-image: url('{% static 'bana/img/other/comment.png' %}')">
-                        </div>
+                <div class="flex-1 min-w-0 overflow-hidden">
+                    <div class="carousel flex items-stretch transition-transform duration-700 ease-in-out">
 
-                        <p class="relative text-base md:text-lg text-gray-700 leading-relaxed px-4">
-                            {{ profile.full_description }}
-                        </p>
+                        {% for profile in work_profiles %}
+                        <figure class="mySlides testimonials__slide w-full flex-shrink-0 flex flex-col justify-center px-2 sm:px-8 py-8">
+
+                            <figcaption class="mb-8">
+                                <span class="block text-xl font-bold text-brand">{{ profile.city }}</span>
+                                <span class="block text-base font-semibold mt-1">{{ profile.name }} · {{ profile.age }} · {{ profile.short_bio }}</span>
+                            </figcaption>
+
+                            <blockquote class="testimonials__quote text-base md:text-lg text-gray-700 leading-relaxed">
+                                {{ profile.full_description }}
+                            </blockquote>
+
+                        </figure>
+                        {% endfor %}
 
                     </div>
-
-                    <!-- Avatar -->
-                    <img src="{% static profile.img_src %}" class="w-20 h-20 rounded-full object-cover shadow-md"
-                        alt="{{ profile.name }}" width="80" height="80" loading="lazy">
-
-                    <!-- Infos -->
-                    <div class="flex flex-col items-center gap-1">
-                        <p class="text-lg font-bold text-teal-700">
-                            {{ profile.name }}
-                        </p>
-                        <p class="text-sm text-gray-600">
-                            {{ profile.age }}<br>
-                            {{ profile.short_bio }}
-                        </p>
-                    </div>
-
                 </div>
-                {% endfor %}
+
+                <button type="button" aria-label="Témoignage suivant"
+                    class="next flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border text-brand bg-brand-50 text-xl leading-none hover:border-brand hover:text-brand transition">
+                    ›
+                </button>
 
             </div>
-
-            <!-- Boutons -->
-            <button onclick="prevSlide()"
-                class="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-brand-gradient-tl text-white shadow-lg hover:scale-110 transition animate-on-scroll" data-delay="200">
-                ‹
-            </button>
-
-            <button onclick="nextSlide()"
-                class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-brand-gradient-br text-white shadow-lg hover:scale-110 transition animate-on-scroll" data-delay="200">
-                ›
-            </button>
 
         </div>
 

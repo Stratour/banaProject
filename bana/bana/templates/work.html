@@ -8,89 +8,12 @@
 
 {% block extra_head %}
 <link rel="preload" as="image" href="{% static 'bana/img/page/work/transport-scolaire-enseignement-specialise.jpg' %}">
+<link rel="stylesheet" href="{% static 'bana/css/components/citation.css' %}">
+<link rel="stylesheet" href="{% static 'bana/css/components/testimonials.css' %}" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="{% static 'bana/css/components/testimonials.css' %}"></noscript>
 {% endblock %}
 
 {% block content %}
-
-{% comment "BACKUP — contenu original work.html avant refonte. Pour restaurer : déplacez ce bloc hors du comment et commentez le contenu actif." %}
-
-    <!-- HERO -->
-    <section class="relative flex items-center justify-center min-h-screen text-center px-4 md:px-8 lg:px-16"
-        style="background-image: url({% static 'bana/img/page/work/Bana_work_vonecia_carswell.jpg' %}); background-size: cover; background-position: center;">
-        <div class="absolute inset-0 bg-black/50"></div>
-        <div class="animate-on-scroll relative z-10 max-w-3xl flex flex-col items-center gap-6 text-white -translate-y-16" data-delay="250">
-            <p class="text-sm font-semibold uppercase tracking-widest text-brand-50">Comment ça marche</p>
-            <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">Bana en 4 étapes simples</h1>
-            <p class="text-base md:text-lg font-semibold text-white/85">Une plateforme pensée pour connecter parents et Yayas qui font déjà le même trajet.</p>
-            <a href="account_signup" class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-brand-300 font-semibold">Créer mon compte gratuitement</a>
-            <a href="yaya" class="inline-flex items-center gap-2 text-sm font-semibold text-white/70">Qui sont les Yayas ?</a>
-        </div>
-    </section>
-
-    <!-- BANDE 4 ÉTAPES -->
-    <section class="bg-brand-gradient-bl text-white py-10 px-4 md:px-8 lg:px-16">
-        <div class="w-full md:w-3/4 mx-auto grid grid-cols-2 md:grid-cols-4 gap-x-2 sm:gap-x-6 md:gap-x-12 text-center">
-            for step in work_steps
-            <div class="animate-on-scroll flex flex-col items-center py-4 md:py-10 gap-2 md:gap-3">
-                <img class="w-8 h-8 md:w-12 md:h-12" src="step.img_src" alt="step.title">
-                <h3 class="text-xs sm:text-sm md:text-base font-bold leading-tight">step.title</h3>
-                <p class="hidden sm:block text-xs md:text-sm text-white/80">step.description</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ANCIENNE VARIANTE HERO (commentée) -- supprimée dans backup -->
-
-    <!-- VIDEO + DESCRIPTION (ancienne mise en page côte à côte) -->
-    <section class="bg-white py-16 px-4 md:px-8 lg:px-16">
-        <div class="animate-on-scroll max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center" data-delay="100">
-            <div class="flex flex-col gap-4 text-center md:text-left order-2 md:order-1">
-                <h2 class="text-2xl md:text-3xl font-extrabold text-brand">Voyez Bana en action</h2>
-                <p class="text-gray-600 md:text-lg">En 2 minutes, découvrez comment parents et Yayas se connectent et organisent les trajets du quotidien.</p>
-            </div>
-            <div class="w-full order-1 md:order-2">
-                <div class="relative w-full">
-                    <img src="tablet.png" alt="Tablet Frame" class="w-full relative z-20 pointer-events-none select-none">
-                    <div class="absolute z-10 top-[5%] left-[5%] right-[5%] bottom-[5%] overflow-hidden">
-                        <video id="video-element" class="w-full h-full object-cover hidden" controls>
-                            <source src="how_it_works.mp4" type="video/mp4">
-                        </video>
-                        <button id="play-overlay" class="absolute inset-0 flex items-center justify-center cursor-pointer">
-                            <img src="video-thumbnail.avif" alt="Aperçu vidéo" class="absolute inset-0 w-full h-full object-cover">
-                            <img src="Icon_play.svg" alt="Lire la vidéo" class="relative w-16 h-16 md:w-24 md:h-24">
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 4 ÉTAPES DÉTAILLÉES -->
-    <section class="bg-brand-gradient-bl py-16 px-4 md:px-8 lg:px-16">
-        <h2 class="animate-on-scroll text-2xl md:text-4xl font-extrabold text-white text-center mb-12">En détail</h2>
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 pt-4">
-            for step in work_detail_steps -- step cards with cta.url='#' for step 3
-        </div>
-        <div class="flex justify-center mt-10">
-            <a href="account_signup" class="inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand text-white font-semibold">Créer mon compte gratuitement</a>
-        </div>
-    </section>
-
-    <!-- TRAJET ÉTAPE PAR ÉTAPE (commenté dans l'original) -->
-    <section class="bg-brand-gradient-bl text-white py-14 px-4 md:px-8 lg:px-16">
-        <h2>Le trajet, étape par étape</h2>
-        for step in work_journey_steps -- icon + title + description
-        <a href="#">En savoir plus sur les tarifs</a>
-    </section>
-
-    <!-- TÉMOIGNAGES -->
-    <section class="px-4 md:px-8 lg:px-16 pt-20 pb-16 bg-gray-50 flex flex-col items-center text-center">
-        <h2 class="text-3xl md:text-5xl text-brand-300 font-extrabold mb-10">Ils nous font confiance</h2>
-        slider with work_profiles
-    </section>
-
-{% endcomment %}
-
 
     <!-- ═══════════════════════════════════════════════ -->
     <!-- 1. HERO -->
@@ -110,17 +33,19 @@
                 Bana crée le lien
             </h1>
             <p class="text-base md:text-xl font-semibold text-white/85">
-                Bana met en <span class="text-brand-50">relation les parents avec des personnes de confiance</span> <br>
-                qui font déjà le même chemin
-                <br>
-                à pied, à vélo, en transport en commun ou en covoiturage.
-
+                Bana met <span class="text-brand-50">les parents en relation avec des personnes de confiance</span> <br>
+                qui font déja le même chemin          
             </p>
+            <p class="text-base md:text-xl font-semibold text-white/85">
+                À pied, en transport en commun, à vélo ou en covoiturage
+            </p>
+
 
             <a href="{% url 'account_signup' %}"
                 class="inline-flex items-center justify-center mt-8 sm:mt-16 md:mt-36 px-6 py-3 rounded-full bg-brand-50 text-brand-300 font-semibold hover:bg-brand-200 hover:text-white transition [text-shadow:none]">
                 Créer mon compte gratuitement
             </a>
+            {% comment "HREF YAYA" %}
             <a href="{% url 'yaya' %}"
                 class="inline-flex items-center gap-2 text-sm font-semibold text-white/70 hover:text-white transition underline underline-offset-4 [text-shadow:none]">
                 Qui sont les Yayas ?
@@ -128,6 +53,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                 </svg>
             </a>
+            {% endcomment %}
         </div>
     </section>
 
@@ -138,7 +64,7 @@
         <div
             class="animate-on-scroll w-full md:max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center text-center md:text-left" data-delay="150">
 
-            <div class="flex flex-col gap-4">
+            <div class="flex flex-col gap-4 text-justify">
                 <h2 class="text-xl md:text-2xl font-bold">
                     Les trajets du quotidien sont un défi pour beaucoup de familles
                 </h2>
@@ -149,19 +75,27 @@
                 </p>
 
                 <p class="text-lg">
-                    Et si vous trouviez de l'aide en rencontrant quelqu'un qui fait déjà le même trajet que vous ?
+                    <strong>Et si vous trouviez de l'aide en rencontrant une personne fiable qui fait déjà le même trajet que vous ?</strong>
                 </p>
 
                 <p class="text-lg">
-                    Bana met en relation des familles et des personnes de confiance, appelées Yaya, qui partagent le même trajet, au même moment.
+                    Bana met des familles en relation avec des accompagnateurs de confiance, appelés Yaya, qui partagent le même trajet, au même moment.
                 </p>
             </div>
 
-            <div class="flex flex-col items-center gap-3 text-center">
-                <p class="text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug">
-                    "Élever un enfant, c'est lui apprendre <br> à se passer de nous"
-                </p>
-                <span class="text-sm font-medium text-[#007F73] tracking-widest uppercase mt-2">— Ernest Legouvé</span>
+            <div class="citation-brush">
+
+                <!-- Fond décoratif (coup de pinceau + guillemets) -->
+                <img src="{% static 'bana/img/background/bg-citation.png' %}" alt="" aria-hidden="true"
+                     loading="lazy" width="1080" height="1080"
+                     class="citation-brush__bg">
+
+                <div class="citation-brush__inner">
+                    <p class="citation-brush__text text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug text-center">
+                        Élever un enfant, c'est lui apprendre à se passer de nous
+                    </p>
+                    <span class="citation-brush__author text-sm text-center font-medium text-[#007F73] tracking-widest uppercase">— Ernest Legouvé</span>
+                </div>
             </div>
         </div>
     </section>
@@ -182,49 +116,7 @@
 
         </div>
     </section>
-    {% comment "" %}
-    <!-- ═══════════════════════════════════════════════ -->
-    <!-- VIDÉO (centré, élargi) -->
-    <!-- ═══════════════════════════════════════════════ -->
-    <section class="bg-gray-50 py-16 px-4 md:px-8 lg:px-16">
-        <div class="max-w-5xl mx-auto text-center">
-
-            <h2 class="animate-on-scroll text-2xl md:text-4xl font-extrabold text-brand mb-4">
-                Voyez Bana en action
-            </h2>
-            <p class="animate-on-scroll text-gray-500 md:text-lg mb-3 font-semibold" data-delay="100">
-                En 30 secondes, découvrez comment parents et Yayas organisent les trajets du quotidien.
-            </p>
-            {% comment "" %}
-            <p class="animate-on-scroll text-gray-400 text-sm mb-10" data-delay="150">
-                De l'inscription au premier trajet accompagné — l'expérience complète en un coup d'œil.
-            </p>
-            
-
-            <div class="animate-on-scroll relative w-full max-w-4xl mx-auto" data-delay="150">
-                <img src="{% static 'bana/img/other/tablet.png' %}" alt=""
-                    aria-hidden="true" class="w-full relative z-20 pointer-events-none select-none"
-                    width="1613" height="911" loading="lazy">
-                <div class="absolute z-10 top-[5%] left-[5%] right-[5%] bottom-[5%] overflow-hidden">
-                    <video id="video-element" class="w-full h-full object-cover hidden" controls>
-                        <source src="{% static 'bana/video/how_it_works.mp4' %}" type="video/mp4">
-                    </video>
-                    <button id="play-overlay" class="absolute inset-0 flex items-center justify-center cursor-pointer">
-                        <img src="{% static 'bana/img/other/video-thumbnail.avif' %}" alt="Aperçu vidéo"
-                            class="absolute inset-0 w-full h-full object-cover"
-                            width="1613" height="911" loading="lazy">
-                        <img src="{% static 'bana/img/icon/Icon_play.svg' %}" alt="Lire la vidéo"
-                            class="relative w-20 h-20 md:w-28 md:h-28 drop-shadow-xl"
-                            width="80" height="80">
-                    </button>
-                </div>
-            </div>
-
-        </div>
-    </section>
-    {% endcomment %}
-    
-
+   
     <!-- ═══════════════════════════════════════════════ -->
     <!-- 4. COMMENT COMMENCER — 3 ÉTAPES -->
     <!-- ═══════════════════════════════════════════════ -->
@@ -234,16 +126,16 @@
             Comment commencer ?
         </h2>
 
-        <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-stretch gap-6 lg:gap-8">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row md:items-stretch gap-6 lg:gap-8">
 
             {% for step in work_detail_steps %}
             <div class="animate-on-scroll flex-1 flex flex-col gap-3 bg-white rounded-2xl border-l-4 border-brand shadow-lg hover:bg-brand-50 hover:shadow-[0_8px_30px_rgba(0,127,115,0.2)] hover:-translate-y-1 transition-all duration-200 p-6">
-                <span class="self-start text-white font-bold text-lg px-6 py-2"
-                     style="background:#007F73; clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 50%, calc(100% - 14px) 100%, 0 100%);">
-                    0{{ step.number }}
+                <span class="self-start flex items-center justify-center w-14 h-14 text-brand font-bold text-lg bg-no-repeat bg-contain bg-center"
+                     style="background-image: url('{% static 'bana/img/page/work/BANA_SHAPE_LIME.svg' %}');">
+                    {{ step.number }}
                 </span>
-                <h3 class="font-bold text-gray-900 leading-snug">{{ step.title }}</h3>
-                <p class="text-sm text-gray-600 leading-relaxed">{{ step.description|safe }}</p>
+                <h3 class="text-xl font-bold text-gray-900 leading-snug">{{ step.title }}</h3>
+                <p class="text-lg text-gray-900 leading-relaxed">{{ step.description|safe }}</p>
             </div>
             {% endfor %}
 
@@ -251,7 +143,7 @@
 
         <div class="flex justify-center mt-10">
             <a href="{% url 'account_signup' %}"
-                class="animate-on-scroll inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand text-white font-semibold hover:bg-brand-200 transition">
+                class="animate-on-scroll inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand text-white font-semibold hover:bg-brand-50 hover:text-brand transition">
                 Créer mon compte gratuitement
             </a>
         </div>
@@ -263,7 +155,7 @@
     <!-- 4. CARDS + IMAGES -->
     <!-- ═══════════════════════════════════════════════ -->
     <!-- COMMUNAUTÉ-->
-    <section class="flex justify-center px-4 md:px-8 lg:px-16 py-8 sm:py-16 md:py-32 bg-white">
+    <section class="flex justify-center px-4 md:px-8 lg:px-16 py-8 sm:py-16 md:py-32 bg-gray-50">
 
         <div class="relative w-full max-w-[1200px] xl:max-w-[1400px] mx-auto md:min-h-[560px]">
 
@@ -289,11 +181,11 @@
                         Qui sont les Yayas ?  
                     </h3>
 
-                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="200">
-                        Les Yayas sont des personnes de confiance qui acceptent de partager un trajet qu’elles font déjà : étudiants, parents, enseignants, coachs, éducateurs, professionnels de l’enfance ou personnes engagées dans leur quartier.
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="200">
+                        Les Yayas sont <span class="text-brand-50 font-semibold">des personnes de confiance qui acceptent de partager un trajet qu’elles font déjà</span> : étudiants, parents, enseignants, coachs, éducateurs, professionnels de l’enfance ou personnes engagées dans leur quartier.
                     </p>
 
-                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="200">
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="200">
                         Ce ne sont pas des chauffeurs de taxi. Ce sont des membres d’une communauté locale, <span class="text-brand-50 font-semibold">vérifiés par Bana et choisis librement par les parents.</span>
                     </p>
 
@@ -304,15 +196,28 @@
     </section>
 
     <!-- SYSTÈME D'AVIS-->
-    <section class="flex justify-center px-4 md:px-8 lg:px-16 py-8 sm:py-16 md:py-32 bg-white">
+    <section class="flex justify-center px-4 md:px-8 lg:px-16 py-8 sm:py-16 md:py-32 bg-gray-50">
 
         <div class="relative w-full max-w-[1200px] xl:max-w-[1400px] mx-auto md:min-h-[560px]">
 
             <!-- Image -->
             <div class="relative w-4/5 sm:w-3/4 mx-auto -mb-16 md:mb-0 md:w-1/2 md:absolute md:-top-12 lg:-top-16 md:left-0 z-20 animate-on-scroll animate-left">
-                <img src="{% static 'bana/img/page/yaya/job-etudiant-transport-scolaire-belgique.jpg' %}" alt="Job étudiant transport scolaire Belgique"
-                    class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover"
-                    width="1800" height="945" loading="lazy">
+                <div class="carousel-container relative overflow-hidden rounded-2xl shadow-md">
+                    <div class="carousel flex transition-transform duration-700 ease-in-out">
+                        <div class="mySlides w-full flex-shrink-0">
+                            <img src="{% static 'bana/img/page/work/carte-avis-sarah.png' %}" alt="Avis d'un parent sur Sarah E., Yaya à Uccle : 5/5"
+                                class="w-full h-auto" width="1800" height="945" loading="lazy">
+                        </div>
+                        <div class="mySlides w-full flex-shrink-0">
+                            <img src="{% static 'bana/img/page/work/carte-avis-thomas.png' %}" alt="Avis d'une Yaya sur Thomas L., parent à Uccle : 5/5"
+                                class="w-full h-auto" width="1800" height="945" loading="lazy">
+                        </div>
+                    </div>
+                    <div class="carousel-dots absolute inset-x-0 bottom-3 z-20 flex justify-center gap-2">
+                        <button type="button" class="carousel-dot w-3 h-3 rounded-full bg-brand shadow opacity-100 transition-all duration-300" aria-label="Avis 1"></button>
+                        <button type="button" class="carousel-dot w-3 h-3 rounded-full bg-brand shadow opacity-50 transition-all duration-300" aria-label="Avis 2"></button>
+                    </div>
+                </div>
             </div>
 
             <!-- Text block -->
@@ -328,16 +233,16 @@
                         Des évaluations réciproques
                     </h3>
 
-                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="200">
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="200">
                         Après les trajets, parents et Yaya peuvent laisser une évaluation réciproque.
                     </p>
 
-                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="200">
-                        Ces avis permettent de valoriser les expériences positives, d’encourager la ponctualité, le respect et la fiabilité, et d’aider chacun à choisir sereinement les personnes avec qui organiser ses trajets.
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="200">
+                        Ces avis permettent de <span class="text-brand-50 font-semibold">valoriser les expériences positives</span>, d’encourager la ponctualité, le respect et la fiabilité, et d’aider chacun à <span class="text-brand-50 font-semibold">choisir sereinement les personnes avec qui organiser ses trajets.</span>
                     </p>
 
-                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="250">
-                        Chez Bana, la confiance se construit trajet après trajet. Chaque famille et chaque Yaya reste libre de choisir avec qui avancer.
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="250">
+                        Chaque famille et chaque Yaya reste libre de choisir avec qui avancer. Chez Bana, la confiance se construit trajet après trajet.
                     </p>
 
                     <!-- CTA -->
@@ -357,14 +262,14 @@
     <!-- ═══════════════════════════════════════════════ -->
     <!-- 5. COMMENT SE DÉROULE UN TRAJET -->
     <!-- ═══════════════════════════════════════════════ -->
-    <section class="bg-white pb-20 px-4 md:px-8 lg:px-16">
+    <section class="bg-white py-20 px-4 md:px-8 lg:px-16">
         <div class="max-w-7xl mx-auto">
 
-            <h2 class="animate-on-scroll text-2xl md:text-4xl font-extrabold text-brand text-center mb-3" data-delay="50">
-                Comment se déroule un trajet
+            <h2 class="animate-on-scroll text-2xl md:text-4xl font-extrabold text-center mb-3" data-delay="50">
+                Comment se déroule un trajet ?
             </h2>
-            <p class="animate-on-scroll text-center text-gray-500 mb-16" data-delay="100">
-                De la prise en charge jusqu'à l'arrivée, chaque trajet suit un cadre clair
+            <p class="animate-on-scroll text-center text-gray-900 mb-16 text-lg font-semibold" data-delay="100">
+                De la prise en charge jusqu'à l'arrivée, <br> chaque trajet suit un cadre clair
             </p>
 
             <!-- Timeline desktop -->
@@ -373,11 +278,11 @@
                 <div class="flex">
                     {% for step in work_journey_steps %}
                     <div class="animate-on-scroll flex-1 flex flex-col items-center text-center px-4 relative z-10">
-                        <div class="w-20 h-20 rounded-full bg-white border-2 border-brand/40 flex items-center justify-center mb-4 shadow-md transition-transform duration-200 hover:scale-125 hover:shadow-lg">
+                        <div class="w-20 h-20 rounded-full bg-white border-2 border-brand/40 flex items-center justify-center mb-4 shadow-md transition-transform duration-200 hover:scale-125 hover:shadow-lg hover:bg-brand-50">
                             <img class="w-14 h-14" src="{% static step.icon_src %}" alt="" aria-hidden="true" width="56" height="56">
                         </div>
-                        <h3 class="font-bold text-base text-gray-900 mb-1.5 leading-tight">{{ step.title }}</h3>
-                        <p class="text-sm text-gray-500 leading-relaxed">{{ step.short_description }}</p>
+                        <h3 class="font-bold text-xl text-gray-900 mb-1.5 leading-tight">{{ step.title }}</h3>
+                        <p class="text-lg text-gray-900 leading-relaxed">{{ step.short_description }}</p>
                     </div>
                     {% endfor %}
                 </div>
@@ -412,10 +317,16 @@
     <section class="bg-brand-gradient-bl py-16 px-4 md:px-8 lg:px-16">
         <div class="animate-on-scroll max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center text-white" data-delay="150">
 
-            <div class="flex flex-col gap-4">
-                <h2 class="text-2xl md:text-3xl font-extrabold">Et après le trajet ?</h2>
-                <p class="text-white/90 md:text-lg">
-                    {% lorem 1 %}
+            <div class="flex flex-col gap-4 font-semibold text-justify">
+                <h2 class="text-2xl md:text-3xl font-extrabold text-left">Et après le trajet ?</h2>
+                <p class="text-white md:text-lg">
+                Le parent verse le défraiement - <span class="text-brand-50 font-semibold">petite compensation pour le trajet et le service rendu </span>- directement au Yaya, selon les modalités convenues.
+                </p>
+                <p class="text-white md:text-lg">
+                Ensuite, parents et Yaya peuvent laisser une évaluation sur leur expérience.
+                </p>
+                <p class="text-white md:text-lg">
+                Ce système d’avis réciproques permet de <span class="text-brand-50 font-semibold">construire une relation équilibrée et transparente</span>, où chacun contribue à créer une communauté fiable et respectueuse.
                     {% comment "" %}
                     <strong>S'inscrire comme Yaya est gratuit.</strong>
                     <br>
@@ -425,7 +336,7 @@
                 </p>
                 <a href="{% url 'yaya' %}"
                     class="self-start inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-white transition underline underline-offset-4">
-                    En savoir plus sur devenir Yaya
+                    En savoir plus sur Devenir Yaya
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                     </svg>
@@ -436,21 +347,24 @@
                 <li class="flex items-center gap-4 bg-white/10 rounded-2xl px-5 py-4 transition hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg cursor-default">
                     <img src="{% static 'bana/img/page/tarifs/defraiement-1.svg' %}" alt="" aria-hidden="true" class="w-12 h-12" width="48" height="48">
                     <div>
-                        <p class="font-bold">Defraiement</p>
-                        <p class="text-sm text-white/80">Le parent verse directement au Yaya le défraiement convenu pour le trajet.</p>
+                        <p class="font-bold text-lg">Défraiement</p>
+                        <p class="text-base text-white">Le parent verse directement le défraiement au Yaya pour le trajet</p>
                     </div>
                 </li>
                 <li class="flex items-center gap-4 bg-white/10 rounded-2xl px-5 py-4 transition hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg cursor-default">
-                    <img src="{% static 'bana/img/page/tarifs/defraiement-1.svg' %}" alt="" aria-hidden="true" class="w-12 h-12" width="48" height="48">
+                    <img src="{% static 'bana/img/page/work/avis.png' %}" alt="" aria-hidden="true" class="w-12 h-12" width="48" height="48">
                     <div>
-                        <p class="font-bold">Évaluations</p>
-                        <p class="text-sm text-white/80">Versé directement par les familles, sans commission Bana</p>
+                        <p class="font-bold text-lg">Évaluations</p>
+                        <p class="text-base text-white">Parent et Yaya partagent leur expérience du trajet en laissant un avis</p>
                     </div>
                 </li>
             </ul>
 
         </div>
     </section>
+    
+    {% comment "" %}
+    
     
     <!-- ═══════════════════════════════════════════════ -->
     <!-- 7. CTA -->
@@ -477,8 +391,69 @@
 
         </div>
     </section>
+    {% endcomment %}
 
     <!-- ═══════════════════════════════════════════════ -->
+    <!-- 9. AVIS PARENTS -->
+    <!-- ═══════════════════════════════════════════════ -->
+    <section class="px-4 md:px-8 lg:px-16 py-20 bg-gray-50 flex flex-col items-center text-center">
+
+        <h2 class="text-3xl md:text-5xl text-brand-300 font-extrabold mb-4 animate-on-scroll" data-delay="50">
+            Ils nous font confiance
+        </h2>
+        <p class="animate-on-scroll text-lg text-gray-600 font-semibold" data-delay="100">
+            Découvrez les expériences de parents qui ont choisi Bana pour les trajets de leurs enfants
+        </p>
+
+        <!-- Carrousel de témoignages -->
+        <div class="testimonials carousel-container animate-on-scroll w-full max-w-3xl mt-14" data-autoplay="7000" data-delay="150">
+
+            <div class="testimonials__stage flex items-center gap-2 sm:gap-5">
+
+                <!-- Guillemets en filigrane
+                <img src="{% static 'bana/img/other/guillemets.png' %}" alt="" aria-hidden="true"
+                     class="testimonials__mark" width="1080" height="1080" loading="lazy">-->
+
+                <button type="button" aria-label="Témoignage précédent"
+                    class="prev flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border text-brand bg-brand-50 text-xl leading-none hover:border-brand hover:text-brand transition">
+                    ‹
+                </button>
+
+                <div class="flex-1 min-w-0 overflow-hidden">
+                    <div class="carousel flex items-stretch transition-transform duration-700 ease-in-out">
+
+                        {% for profile in work_profiles %}
+                        <figure class="mySlides testimonials__slide w-full flex-shrink-0 flex flex-col justify-center px-2 sm:px-8 py-8">
+
+                            <figcaption class="mb-8">
+                                <span class="block text-xl font-bold text-brand">{{ profile.city }}</span>
+                                <span class="block text-base font-semibold  mt-1">{{ profile.name }} · {{ profile.short_bio }}  </span>
+                            </figcaption>
+
+                            <blockquote class="testimonials__quote text-base md:text-lg text-gray-700 leading-relaxed">
+                                {{ profile.full_description }}
+                            </blockquote>
+
+
+
+                        </figure>
+                        {% endfor %}
+
+                    </div>
+                </div>
+
+                <button type="button" aria-label="Témoignage suivant"
+                    class="next flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full border text-brand bg-brand-50 text-xl leading-none hover:border-brand hover:text-brand transition">
+                    ›
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+        <!-- ═══════════════════════════════════════════════ -->
     <!-- 8. FAQ ACCORDÉON -->
     <!-- ═══════════════════════════════════════════════ -->
     <section class="bg-white py-16 px-4 md:px-8 lg:px-16">
@@ -580,7 +555,7 @@
             </div>
         </div>
     </section>
-
+    
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",

@@ -10,6 +10,7 @@
 <link rel="preload" as="image" href="{% static 'bana/img/page/about/mobilite-multimodale-enfants-belgique.jpg' %}">
 <link rel="stylesheet" href="{% static 'bana/css/pages/home.css' %}" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="{% static 'bana/css/pages/home.css' %}"></noscript>
+<link rel="stylesheet" href="{% static 'bana/css/components/citation.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -28,10 +29,10 @@
         <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
             Transformer la mobilité scolaire en Belgique
         </h1>
-        <p class="text-base md:text-lg font-medium text-white/90 max-w-2xl">
-            Chez Bana, nous développons une nouvelle culture de la mobilité scolaire
+        <p class="text-base md:text-xl font-semibold text-white/85">
+            Chez Bana, nous développons une<span class="text-brand-50 font-semibold"> nouvelle culture de la mobilité scolaire</span>
             <br>
-            plus collaborative, plus responsable et adaptée aux besoins des parents d’aujourd’hui.
+            plus collaborative, plus responsable et adaptée aux besoins des parents
             
         </p>
         <a href="{% url 'account_signup' %}"
@@ -42,55 +43,43 @@
 </section>
 
 <!-- ===== 2. LE DÉFI DES FAMILLES ===== -->
-<section class="px-4 md:px-8 py-16 md:py-24 bg-white">
+<section class="px-4 md:px-8 pt-16 pb-4 bg-white">
     <div class="w-full max-w-7xl mx-auto">
 
         <!-- Citation + contenu -->
         <div class="animate-on-scroll grid md:grid-cols-2 gap-10 items-center text-center md:text-left mb-12" data-delay="150">
 
             <!-- Gauche : citation -->
-            <div class="flex flex-col items-center md:items-start justify-center gap-4 py-8">
-                <p class="text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug text-center md:text-left">
-                    "Il est nécessaire de permettre à davantage de familles de s'en sortir au quotidien sans la voiture"
-                </p>
-                <span class="text-sm font-medium text-[#007F73] tracking-widest uppercase mt-2">— La Ligue des Familles</span>
+            <div class="citation-brush">
+
+                <!-- Fond décoratif (coup de pinceau + guillemets) -->
+                <img src="{% static 'bana/img/background/bg-citation.png' %}" alt="" aria-hidden="true"
+                     loading="lazy" width="1080" height="1080"
+                     class="citation-brush__bg">
+
+                <div class="citation-brush__inner">
+                    <p class="citation-brush__text text-2xl md:text-3xl font-bold italic text-brand leading-snug text-center">
+                        En terme de mobilité, rien n'est conçu spécifiquement pour les familles
+                    </p>
+                    <span class="citation-brush__author text-sm text-center font-medium text-brand tracking-widest uppercase">— La Ligue des Familles</span>
+                </div>
             </div>
 
             <!-- Droite : titre + listes -->
             <div class="flex flex-col gap-3 text-center md:text-left">
                 <h2 class="text-xl md:text-2xl font-bold">
-                    Les trajets des enfants sont devenus un défi quotidien pour les familles
+                    Les trajets des enfants: un angle mort de la mobilité
                 </h2>
-                <p>
+                <p class="md:text-lg md:text-justify">
                     Chaque jour, des milliers de parents organisent leur vie autour des trajets des enfants.
+                    École, crèche, travail, activités extrascolaires... <strong>8 parents sur 10 enchaînent plusieurs trajets au quotidien.</strong>
+
                 </p>
-                <p>
-                    École, crèche, activités extrascolaires, horaires décalés, embouteillages, manque d'alternatives adaptées à la mobilité familiale…
+                <p class="md:text-lg md:text-justify">
+                    Ces déplacements représentent près d'<strong>un tiers du trafic</strong> aux heures de pointe et génèrent une <strong>charge mentale et logistique considérable</strong> pour les familles.
                 </p>
-                <p>
-                    Ces déplacements représentent aujourd'hui près d'un tiers du trafic aux heures de pointe et génèrent une charge mentale et logistique considérable pour les familles.
-                </p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm text-left mt-1">
-                    <div>
-                        <p class="font-semibold mb-2">Particulièrement pour :</p>
-                        <ul class="space-y-1 list-disc list-inside text-gray-600">
-                            <li>les parents actifs professionnellement,</li>
-                            <li>les familles monoparentales,</li>
-                            <li>les parents en reconversion ou en formation,</li>
-                            <li>les travailleurs à horaires variables.</li>
-                        </ul>
-                    </div>
-                    <div>
-                        <p class="font-semibold mb-2">Pendant ce temps :</p>
-                        <ul class="space-y-1 list-disc list-inside text-gray-600">
-                            <li>les centres-villes et les rues autour des écoles saturent,</li>
-                            <li>les trajets deviennent plus stressants,</li>
-                            <li>les enfants perdent progressivement en autonomie dans leurs déplacements.</li>
-                        </ul>
-                    </div>
-                </div>
-                <p>
-                    Et lorsqu'une famille souhaite adopter une mobilité plus durable, les trajets des enfants deviennent souvent le principal frein au changement.
+                <p class="md:text-lg md:text-justify">
+                    Faute d'alternatives adaptées, les enfants restent largement dépendants de leurs parents, et de leur voiture, <strong>freinant les ambitions de mobilité durable.</strong>
                 </p>
             </div>
         </div>
@@ -106,7 +95,7 @@
             <!-- Image -->
             <div class="relative w-4/5 sm:w-3/4 mx-auto -mb-16 md:mb-0 md:w-1/2 md:absolute md:-top-12 lg:-top-16 md:right-0 z-20 animate-on-scroll animate-right">
                 <picture>
-                    <source srcset="{% static 'bana/img/page/about/communaute-de-confiance-pour-les-enfants.jpg' %}" type="image/webp">
+                    <source srcset="{% static 'bana/img/page/about/frein-principal.png' %}" type="image/webp">
                     <img src="{% static 'bana/img/page/home/deplacements-scolaires-belgique.jpg' %}" alt="Déplacements scolaires en Belgique"
                         class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover" width="1672" height="941" loading="lazy" />
                 </picture>
@@ -118,6 +107,50 @@
                 <div class="animate-on-scroll bg-brand-gradient-br text-white md:font-semibold px-6 md:px-10 pt-20 pb-10 md:py-14 md:pr-24 lg:pr-40 xl:pr-40 rounded-2xl flex flex-col gap-4 w-full md:min-h-[450px] md:justify-center" data-delay="50">
 
                     <h2 class="animate-on-scroll text-4xl md:text-5xl font-extrabold text-brand-50 text-center md:text-left" data-delay="100">
+                        Frein principal
+                    </h2>
+
+                    <h3 class="animate-on-scroll text-xl md:text-3xl font-extrabold text-center md:text-justify" data-delay="150">
+                        La voiture reste souvent le seul choix possible
+                    </h3>
+
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="200">
+                        Selon une étude de la Ligue des Familles, <span class="text-brand-50 font-semibold">6 parents sur 10 estiment ne pas pouvoir se passer de la voiture</span> pour les déplacements des enfants.   
+                        Alors que les adultes disposent d'une offre de mobilité toujours plus diversifiée, les enfants restent oubliés.
+                    </p>
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="200">
+                        Dès lors, même lorsqu'une famille souhaite adopter une mobilité plus durable, <span class="text-brand-50 font-semibold">les trajets des enfants deviennent souvent le principal frein au changement.</span>
+
+                    </p>
+
+                    <p class="md:text-lg md:text-justify font-bold">
+                    Transformer la mobilité des enfants, c'est agir simultanément sur la qualité de vie des familles, la congestion urbaine et la transition vers des déplacements plus durables.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="flex justify-center px-4 md:px-8 lg:px-16 py-8 sm:py-16 md:py-32 bg-gray-50">
+
+        <div class="relative w-full max-w-[1200px] xl:max-w-[1400px] mx-auto md:min-h-[560px]">
+
+            <!-- Image -->
+            <div class="relative w-4/5 sm:w-3/4 mx-auto -mb-16 md:mb-0 md:w-1/2 md:absolute md:-top-12 lg:-top-16 md:left-0 z-20 animate-on-scroll animate-left">
+                <picture>
+                    <source srcset="{% static 'bana/img/page/about/communaute-de-confiance-pour-les-enfants.jpg' %}" type="image/webp">
+                    <img src="{% static 'bana/img/page/home/deplacements-scolaires-belgique.jpg' %}" alt="Déplacements scolaires en Belgique"
+                        class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover" width="1672" height="941" loading="lazy" />
+                </picture>
+            </div>
+
+            <!-- Text block -->
+            <div class="w-full md:w-[60%] lg:w-[55%] md:absolute md:bottom-0 md:right-0 z-10 flex">
+
+                <div class="animate-on-scroll bg-brand-gradient-tl text-white md:font-semibold px-6 md:px-10 pt-20 pb-10 md:py-14 md:pl-24 lg:pl-40 xl:pl-40 rounded-2xl flex flex-col gap-4 w-full md:min-h-[450px] md:justify-center" data-delay="50">
+
+                    <h2 class="animate-on-scroll text-4xl md:text-5xl font-extrabold text-brand-50 text-center md:text-left" data-delay="100">
                         Notre mission
                     </h2>
 
@@ -125,13 +158,20 @@
                         Rendre la mobilité durable réellement accessible aux familles
                     </h3>
 
-                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="200">
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="200">
                         Chez Bana, nous croyons qu’une autre mobilité scolaire est possible : une mobilité plus collaborative, intergénérationnelle, flexible et adaptée à la réalité du quotidien.
                     </p>
 
-                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="200">
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="200">
                         Notre mission est simple : <span class="text-brand-50 font-semibold">créer une communauté de confiance sur laquelle les familles peuvent compter pour faciliter les trajets des enfants.</span> Parce que lorsque les trajets des enfants deviennent plus simples, c’est toute la mobilité familiale qui évolue.
                     </p>
+                    <!-- CTA -->
+                    <div class="flex justify-center md:justify-start pt-4">
+                        <a href="{% url 'account_signup' %}"
+                            class="animate-on-scroll inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-brand font-semibold hover:bg-brand-200 hover:text-white transition" data-delay="300">
+                            Nous rejoindre
+                        </a>
+                    </div>
 
                 </div>
             </div>
@@ -139,38 +179,6 @@
         </div>
     </section>
 
-<section class="px-4 md:px-8 py-16 md:py-24 bg-white">
-    <div class="w-full max-w-7xl mx-auto">
-    <!-- Bloc Entreprises & Villes -->
-        <div class="animate-on-scroll bg-brand-gradient-bl rounded-3xl p-8 md:p-12 text-white" data-delay="200">
-            <h3 class="text-xl md:text-2xl font-bold text-white mb-4">
-                Une problématique qui concerne aussi les Entreprises et les Villes
-            </h3>
-            <p class="text-white/75 mb-6 leading-relaxed">
-                Les trajets des enfants influencent directement l'organisation du travail, la charge mentale des parents et l'équilibre entre vie professionnelle et vie familiale.
-            </p>
-            <p class="font-semibold text-white mb-4">Faciliter ces déplacements, c'est aussi :</p>
-            <ul class="grid sm:grid-cols-2 gap-3">
-                <li class="flex items-start gap-3">
-                    <span class="font-bold mt-0.5 flex-shrink-0 text-white/60">✓</span>
-                    <span class="text-white/85">améliorer la qualité de vie des familles,</span>
-                </li>
-                <li class="flex items-start gap-3">
-                    <span class="font-bold mt-0.5 flex-shrink-0 text-white/60">✓</span>
-                    <span class="text-white/85">soutenir les travailleurs parents,</span>
-                </li>
-                <li class="flex items-start gap-3">
-                    <span class="font-bold mt-0.5 flex-shrink-0 text-white/60">✓</span>
-                    <span class="text-white/85">réduire la pression automobile autour des écoles,</span>
-                </li>
-                <li class="flex items-start gap-3">
-                    <span class="font-bold mt-0.5 flex-shrink-0 text-white/60">✓</span>
-                    <span class="text-white/85">encourager une mobilité plus durable à l'échelle locale.</span>
-                </li>
-            </ul>
-        </div>
-    </div>
-</section>
 
 <!-- ===== 3. LES YAYA ===== -->
 <section class="bg-brand-gradient-bl w-full py-16 md:py-24 px-4 md:px-8 lg:px-16 text-white">
@@ -264,7 +272,7 @@
                 <span class="text-xs font-bold tracking-[0.2em] uppercase" style="color:#F59E0B">Reconnaissances</span>
                 <div class="h-px flex-1 max-w-[80px]" style="background: linear-gradient(to left, transparent, #F59E0B)"></div>
             </div>
-            <h2 class="text-2xl md:text-4xl font-extrabold text-brand">Une initiative déjà reconnue pour son impact</h2>
+            <h2 class="text-2xl md:text-4xl font-extrabold text-brand">Un impact déjà reconnu</h2>
             <p class="text-gray-900 mt-2 mx-auto">Des institutions qui reconnaissent notre impact sur la mobilité et la communauté.</p>
             <p class="text-gray-900 mt-2 mx-auto">Au-delà des trajets, Bana recrée du lien social et de l'entraide intergénérationnelle autour d'un objectif commun : <br>
                 <strong>permettre aux enfants de se déplacer dans un environnement plus sain, plus sûr et plus serein.</strong></p>
@@ -468,27 +476,55 @@
 
         <!-- MOBILE -->
         <div class="md:hidden relative rounded-2xl overflow-hidden shadow-xl mx-4">
-            <picture>
-                <source srcset="{% static 'bana/img/page/about/Soutenir_Bana.jpg' %}" type="image/webp">
-                <img src="{% static 'bana/img/page/home/yaya-accompagnement-enfant-belgique.jpg' %}"
-                    class="absolute inset-0 w-full h-full object-cover" alt="Yaya accompagnant un enfant" width="3027" height="3072" loading="lazy" />
-            </picture>
+            <div class="carousel-container absolute inset-0">
+                <div class="carousel flex h-full transition-transform duration-700 ease-in-out">
+                    <div class="mySlides w-full h-full flex-shrink-0">
+                        <picture>
+                            <source srcset="{% static 'bana/img/page/about/Soutenir_Bana.jpg' %}" type="image/webp">
+                            <img src="{% static 'bana/img/page/home/yaya-accompagnement-enfant-belgique.jpg' %}"
+                                class="w-full h-full object-cover" alt="Yaya accompagnant un enfant" width="3027" height="3072" loading="lazy" />
+                        </picture>
+                    </div>
+                    <div class="mySlides w-full h-full flex-shrink-0">
+                        <picture>
+                            <source srcset="{% static 'bana/img/page/about/Soutenir_Bana.jpg' %}" type="image/webp">
+                            <img src="{% static 'bana/img/page/home/yaya-accompagnement-enfant-belgique.jpg' %}"
+                                class="w-full h-full object-cover" alt="Yaya accompagnant un enfant" width="3027" height="3072" loading="lazy" />
+                        </picture>
+                    </div>
+                    <div class="mySlides w-full h-full flex-shrink-0">
+                        <picture>
+                            <source srcset="{% static 'bana/img/page/about/Soutenir_Bana.jpg' %}" type="image/webp">
+                            <img src="{% static 'bana/img/page/home/yaya-accompagnement-enfant-belgique.jpg' %}"
+                                class="w-full h-full object-cover" alt="Yaya accompagnant un enfant" width="3027" height="3072" loading="lazy" />
+                        </picture>
+                    </div>
+                </div>
+            </div>
             <div class="absolute inset-0 bg-brand-300/50"></div>
             <div class="relative z-10 text-white px-6 py-12 text-center flex flex-col items-center gap-4">
                 <h2 class="text-xl font-bold">
-                    Soutenir Bana
+                    Rejoignez la mission
                 </h2>
-                <p class="text-lg">
-                    Entreprises, institutions et partenaires engagés soutiennent notre asbl et sa mission à travers du mécénat financier, du mécénat de compétences, du sponsoring, du matériel ou de la visibilité au sein de leur réseau.
+                <p class="animate-on-scroll font-semibold md:text-lg mb-6 text-justify" data-delay="150">
+                    Entreprises, institutions et partenaires engagés : <span class="text-brand-50 font-semibold">construisons ensemble une nouvelle culture de la mobilité scolaire en Belgique.</span>
                 </p>
-                <p class="text-lg">
-                    En soutenant Bana, ils contribuent au développement d'une mobilité plus durable, plus inclusive et plus adaptée à la réalité des familles.
+                <p class="text-lg font-semibold">
+                    En devenant partenaire de Bana, vous contribuez à une mobilité plus durable, plus inclusive et adaptée aux réalités des familles avec enfants.
+                </p>
+                <p class="text-lg font-semibold">
+                    Que ce soit pour <span class="text-brand-50 font-semibold">proposer une nouvelle solution de mobilité à vos collaborateurs, déployer Bana sur votre territoire ou soutenir notre développement</span>, plusieurs formes de collaboration sont possibles : partenariat, mécénat, sponsoring ou relais auprès de votre réseau.
                 </p>
                 <a href="{% url 'yaya' %}"
                     class="flex items-center justify-center px-6 py-3 font-semibold text-brand bg-brand-50 hover:bg-brand-200 hover:text-white rounded-full"
                     aria-label="Devenir Yaya">
                     Devenir partenaire
                 </a>
+            </div>
+            <div class="carousel-dots absolute inset-x-0 bottom-3 z-20 flex justify-center gap-2">
+                <button type="button" class="carousel-dot w-3 h-3 rounded-full bg-white shadow opacity-100 transition-all duration-300" aria-label="Image 1"></button>
+                <button type="button" class="carousel-dot w-3 h-3 rounded-full bg-white shadow opacity-50 transition-all duration-300" aria-label="Image 2"></button>
+                <button type="button" class="carousel-dot w-3 h-3 rounded-full bg-white shadow opacity-50 transition-all duration-300" aria-label="Image 3"></button>
             </div>
         </div>
 
@@ -505,17 +541,20 @@
                     <div class="w-1/2 text-white z-20">
 
                         <h2 class="animate-on-scroll text-2xl lg:text-3xl font-bold mb-4" data-delay="50">
-                            Soutenir Bana
+                            Rejoignez la mission
                         </h2>
 
-                        <p class="animate-on-scroll md:text-lg mb-6" data-delay="150">
-                            Entreprises, institutions et partenaires engagés soutiennent notre asbl et sa mission à travers du mécénat financier, du mécénat de compétences, du sponsoring, du matériel ou de la visibilité au sein de leur réseau.
+                        <p class="animate-on-scroll font-semibold md:text-lg mb-6 text-justify" data-delay="150">
+                            Entreprises, institutions et partenaires engagés : <span class="text-brand-50 font-semibold">construisons ensemble une nouvelle culture de la mobilité scolaire en Belgique.</span>
                         </p>
 
-                        <p class="animate-on-scroll font-semibold md:text-lg mb-6" data-delay="150">
-                            En soutenant Bana, vous contribuez au développement d'une mobilité plus durable, plus inclusive et plus adaptée à la réalité des familles.
+                        <p class="animate-on-scroll font-semibold md:text-lg mb-6 text-justify" data-delay="150">
+                            En devenant partenaire de Bana, vous contribuez à une mobilité plus durable, plus inclusive et adaptée aux réalités des familles avec enfants.
                         </p>
 
+                        <p class="animate-on-scroll font-semibold md:text-lg mb-6 text-justify" data-delay="150">
+                            Que ce soit pour <span class="text-brand-50 font-semibold">proposer une nouvelle solution de mobilité à vos collaborateurs, déployer Bana sur votre territoire ou soutenir notre développement</span>, plusieurs formes de collaboration sont possibles : partenariat, mécénat, sponsoring ou visibilité auprès de votre réseau.
+                        </p>
                         <a href="{% url 'yaya' %}"
                             class="animate-on-scroll inline-flex items-center justify-center px-6 py-3 rounded-full bg-brand-50 text-brand font-semibold hover:bg-brand-200 hover:text-white transition" data-delay="250">
                             Devenir partenaire
@@ -525,11 +564,36 @@
 
                     <!-- IMAGE QUI DÉPASSE À DROITE -->
                     <div class="absolute right-[calc(50%-380px)] lg:right-[calc(50%-700px)] top-1/2 -translate-y-1/2 z-10 w-[300px] lg:w-[600px]">
-                        <picture>
-                            <source srcset="{% static 'bana/img/page/about/Soutenir_Bana.jpg' %}" type="image/webp">
-                            <img src="{% static 'bana/img/page/home/yaya-accompagnement-enfant-belgique.jpg' %}"
-                                class="animate-on-scroll w-full h-[520px] lg:h-[600px] object-cover rounded-2xl shadow-2xl" data-delay="150" alt="Yaya accompagnant un enfant" width="3027" height="3072" loading="lazy" />
-                        </picture>
+                        <div class="animate-on-scroll carousel-container relative overflow-hidden rounded-2xl shadow-2xl" data-delay="150">
+                            <div class="carousel flex transition-transform duration-700 ease-in-out">
+                                <div class="mySlides w-full flex-shrink-0">
+                                    <picture>
+                                        <source srcset="{% static 'bana/img/page/about/Soutenir_Bana.jpg' %}" type="image/webp">
+                                        <img src="{% static 'bana/img/page/home/yaya-accompagnement-enfant-belgique.jpg' %}"
+                                            class="w-full h-[520px] lg:h-[600px] object-cover" alt="Yaya accompagnant un enfant" width="3027" height="3072" loading="lazy" />
+                                    </picture>
+                                </div>
+                                <div class="mySlides w-full flex-shrink-0">
+                                    <picture>
+                                        <source srcset="{% static 'bana/img/page/about/Soutenir_Bana.jpg' %}" type="image/webp">
+                                        <img src="{% static 'bana/img/page/home/yaya-accompagnement-enfant-belgique.jpg' %}"
+                                            class="w-full h-[520px] lg:h-[600px] object-cover" alt="Yaya accompagnant un enfant" width="3027" height="3072" loading="lazy" />
+                                    </picture>
+                                </div>
+                                <div class="mySlides w-full flex-shrink-0">
+                                    <picture>
+                                        <source srcset="{% static 'bana/img/page/about/Soutenir_Bana.jpg' %}" type="image/webp">
+                                        <img src="{% static 'bana/img/page/home/yaya-accompagnement-enfant-belgique.jpg' %}"
+                                            class="w-full h-[520px] lg:h-[600px] object-cover" alt="Yaya accompagnant un enfant" width="3027" height="3072" loading="lazy" />
+                                    </picture>
+                                </div>
+                            </div>
+                            <div class="carousel-dots absolute inset-x-0 bottom-3 z-20 flex justify-center gap-2">
+                                <button type="button" class="carousel-dot w-3 h-3 rounded-full bg-white shadow opacity-100 transition-all duration-300" aria-label="Image 1"></button>
+                                <button type="button" class="carousel-dot w-3 h-3 rounded-full bg-white shadow opacity-50 transition-all duration-300" aria-label="Image 2"></button>
+                                <button type="button" class="carousel-dot w-3 h-3 rounded-full bg-white shadow opacity-50 transition-all duration-300" aria-label="Image 3"></button>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -541,10 +605,13 @@
     </section>
 
 <!-- ===== 8. ILS PARLENT DE NOUS ===== -->
-    <section class="py-16 bg-gray-50">
-        <h2 class="animate-on-scroll text-3xl md:text-5xl font-extrabold text-brand text-center mb-14">
+    <section class="px-4 md:px-8 lg:px-16 py-8 bg-gray-50 flex flex-col items-center text-center">
+        <h2 class="animate-on-scroll text-3xl md:text-5xl font-extrabold text-brand text-center mb-4">
             Ils nous soutiennent
         </h2>
+        <p class="animate-on-scroll text-lg mb-6 text-gray-600 font-semibold" data-delay="100">
+            Découvrez les organisations engagées à nos côtés pour construire une mobilité plus durable, solidaire et inclusive pour les enfants
+        </p>
 
         <div class="marquee-wrapper max-w-5xl mx-auto">
             <div class="marquee-track py-2" aria-label="Presse">
@@ -555,6 +622,7 @@
                 <a href="https://www.digit-up.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_digit_up.svg' %}" alt="Digit-Up"></a>
                 <a href="https://startit-x.com/en/accelerate/start-it-kbc" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_startit@kbc.png' %}" alt="Start it @KBC"></a>
                 <a href="https://capinnove.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_capinnove.png' %}" alt="Cap Innove"></a>
+                <a href="https://www.raal.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_raal.svg' %}" alt="RAAL"></a>
 
                 <a href="https://www.materne.be/pages/pocket" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_materne.png' %}" alt="Materne"></a>
                 <a href="https://alvityl.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_alvityl.png' %}" alt="Alvityl"></a>
@@ -562,6 +630,7 @@
                 <a href="https://www.digit-up.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_digit_up.svg' %}" alt="Digit-Up"></a>
                 <a href="https://startit-x.com/en/accelerate/start-it-kbc" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_startit@kbc.png' %}" alt="Start it @KBC"></a>
                 <a href="https://capinnove.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_capinnove.png' %}" alt="Cap Innove"></a>
+                <a href="https://www.raal.be/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_raal.svg' %}" alt="RAAL"></a>
 
 
             </div>

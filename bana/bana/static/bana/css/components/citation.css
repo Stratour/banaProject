@@ -1,0 +1,60 @@
+/* ==========================================================================
+   Citation encadrée par le coup de pinceau (bg-citation.png)
+   --------------------------------------------------------------------------
+   Le PNG de fond est carré, mais le coup de pinceau n'occupe que ~37 % de sa
+   hauteur. L'image reste donc à 100 % de la largeur du bloc (elle ne déborde
+   jamais) et c'est le texte qui est dimensionné en unités de conteneur (cqw)
+   pour rester dans la bande verte quelle que soit la largeur de la colonne.
+
+   Les tailles Tailwind présentes dans les templates servent de repli pour les
+   navigateurs sans container queries : les déclarations en cqw sont alors
+   invalides et donc ignorées.
+
+   Important : ne pas mettre de <br> dans la citation — le texte doit pouvoir
+   se réagencer librement pour tenir dans la bande.
+   ========================================================================== */
+
+.citation-brush {
+    position: relative;
+    container-type: inline-size;
+}
+
+.citation-brush__bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: auto;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+}
+
+/* min-height = hauteur de la bande verte : le texte reste toujours dedans */
+.citation-brush__inner {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 37cqw;
+    padding-block: 2cqw;
+}
+
+.citation-brush__text {
+    width: 76%;
+    margin-inline: auto;
+    font-size: clamp(1rem, 6cqw, 2.25rem);
+    line-height: 1.25;
+}
+
+/* Citations longues (> ~80 caractères) : sinon 4 lignes débordent de la bande */
+.citation-brush--long .citation-brush__text {
+    font-size: clamp(0.875rem, 5cqw, 1.875rem);
+}
+
+.citation-brush__author {
+    margin-top: 1cqw;
+    font-size: clamp(0.7rem, 2.4cqw, 0.875rem);
+}

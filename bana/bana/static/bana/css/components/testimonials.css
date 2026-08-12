@@ -1,0 +1,42 @@
+/* ==========================================================================
+   Carrousel de témoignages
+   --------------------------------------------------------------------------
+   Piloté par components/carousel.js (classes .carousel-container / .carousel /
+   .mySlides / .prev / .next / .carousel-dot), défilement automatique réglé
+   via data-autoplay sur le conteneur.
+
+   La piste étant un flex, sa hauteur s'aligne sur le témoignage le plus long :
+   pas de hauteur fixe à maintenir et aucun saut de mise en page au défilement.
+   ========================================================================== */
+
+.testimonials {
+    position: relative;
+}
+
+/* Zone de repère du filigrane : la piste seule, sans la navigation */
+.testimonials__stage {
+    position: relative;
+}
+
+/* Grands guillemets centrés derrière le témoignage */
+.testimonials__mark {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(110px, 27.5%, 230px);
+    height: auto;
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+}
+
+.testimonials__slide {
+    position: relative;
+    z-index: 1;
+}
+
+/* Équilibre les fins de ligne des citations longues */
+.testimonials__quote {
+    text-wrap: pretty;
+}

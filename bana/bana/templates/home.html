@@ -8,6 +8,7 @@
 {% block extra_head %}
 <link rel="stylesheet" href="{% static 'bana/css/pages/home.css' %}" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="{% static 'bana/css/pages/home.css' %}"></noscript>
+<link rel="stylesheet" href="{% static 'bana/css/components/citation.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -59,14 +60,22 @@
     <section class="px-4 md:px-8 py-16 bg-gray-50">
         <div class="animate-on-scroll w-full md:max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center text-center md:text-left" data-delay="150">
 
-            <div class="flex flex-col items-center md:items-start justify-center gap-4 py-8">
-                <p class="text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug text-center md:text-left -mt-6">
-                    "Il faut tout un village <br> pour élever un enfant"
-                </p>
-                <span class="text-sm font-medium text-[#007F73] tracking-widest uppercase mt-2">— Proverbe africain</span>
+            <div class="citation-brush">
+
+                <!-- Fond décoratif (coup de pinceau + guillemets) -->
+                <img src="{% static 'bana/img/background/bg-citation.png' %}" alt="" aria-hidden="true"
+                     loading="lazy" width="1080" height="1080"
+                     class="citation-brush__bg">
+
+                <div class="citation-brush__inner">
+                    <p class="citation-brush__text text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug text-center">
+                        Il faut tout un village pour élever un enfant
+                    </p>
+                    <span class="citation-brush__author text-sm text-center font-medium text-[#007F73] tracking-widest uppercase">— Proverbe africain</span>
+                </div>
             </div>
 
-            <div class="flex flex-col gap-4 text-center md:text-left">
+            <div class="flex flex-col gap-4 text-center md:text-justify">
                 <h2 class="text-xl md:text-2xl font-bold">
                     Une plateforme qui permet aux parents de trouver une personne de confiance
                 </h2>
@@ -128,19 +137,19 @@
                         Un service basé sur l'entraide locale
                     </h3>
 
-                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="200">
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="200">
                         Les Yaya sont des personnes de confiance qui souhaitent
                         <span class="text-brand-50 font-semibold">aider les familles</span>
                         de leur quartier tout en effectuant leurs trajets habituels.
                     </p>
 
-                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="250">
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="250">
                         Ils rendent possible une
                         <span class="text-brand-50 font-semibold">organisation plus simple et plus sereine pour les parents</span>,
                         tout en permettant aux enfants de se déplacer en sécurité.
                     </p>
 
-                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="300">
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="300">
                         <span class="text-brand-50 font-semibold">Chaque trajet est défrayé</span>
                         par le parent au Yaya en reconnaissance du service et du temps
                         consacré à l'accompagnement sur le trajet.
@@ -236,18 +245,18 @@
                         Les Yaya : des accompagnateurs de confiance pour vos enfants
                     </h3>
 
-                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="50">
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="50">
                         Le mot "Yaya" signifie grand frère ou grande sœur : symbolisant la
                         <span class="text-brand-50 font-semibold">sagesse et responsabilité</span>.
                         Chez Bana, les Yaya accompagnent les enfants lors de leurs trajets quotidiens.
                     </p>
-                    <p class="animate-on-scroll text-center md:text-left text-lg" data-delay="50">
+                    <p class="animate-on-scroll text-justify text-lg" data-delay="50">
                         Chaque trajet est organisé
                         <span class="text-brand-50 font-semibold">porte-à-porte :</span>
                         le Yaya récupère l'enfant auprès d'un adulte et le confie à un adulte à l'arrivée.
                     </p>
 
-                    <p class="animate-on-scroll text-center md:text-left text-brand-50 font-semibold text-lg" data-delay="100">
+                    <p class="animate-on-scroll text-justify text-brand-50 font-semibold text-lg" data-delay="100">
                         Votre enfant n'est jamais seul.
                     </p>
 
@@ -346,23 +355,28 @@
     </section>
 
     <!-- LOGOS -->
-    <section class="py-16 bg-gray-50">
-        <h2 class="animate-on-scroll text-3xl md:text-5xl font-extrabold text-brand text-center mb-14">
+    <section class="px-4 md:px-8 lg:px-16 py-8 bg-gray-50 flex flex-col items-center text-center">
+        <h2 class="animate-on-scroll text-3xl md:text-5xl font-extrabold text-brand text-center mb-4">
             Ils parlent de nous
         </h2>
+        <p class="animate-on-scroll text-lg mb-6 text-gray-600 font-semibold" data-delay="100">
+            Découvrez les articles et reportages consacrés à Bana
+        </p>
 
         <div class="marquee-wrapper max-w-5xl mx-auto">
             <div class="marquee-track py-2" aria-label="Presse">
 
                 <!-- Série 1 -->
                 <a href="https://www.sudinfo.be/id703073/article/2023-08-28/un-partenariat-pour-un-ramassage-scolaire-pratique-et-sur-en-cette-rentree-2023" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_sudinfo.png' %}" alt="SudInfo"></a>
-                <a href="https://www.sudinfo.be/id703073/article/2023-08-28/un-partenariat-pour-un-ramassage-scolaire-pratique-et-sur-en-cette-rentree-2023" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lacapitale.png' %}" alt="La Capitale"></a>                <a href="https://www.lalibre.be/regions/brabant/2021/09/24/nivelles-bana-une-plateforme-en-ligne-qui-fait-cooperer-les-parents-NSAM4WB5QFBYXJSFKUFOEPOM6A/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lalibre.svg' %}" alt="La Libre"></a>
+                <a href="https://www.sudinfo.be/id703073/article/2023-08-28/un-partenariat-pour-un-ramassage-scolaire-pratique-et-sur-en-cette-rentree-2023" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lacapitale.png' %}" alt="La Capitale"></a>                
+                <a href="https://www.lalibre.be/regions/brabant/2021/09/24/nivelles-bana-une-plateforme-en-ligne-qui-fait-cooperer-les-parents-NSAM4WB5QFBYXJSFKUFOEPOM6A/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lalibre.svg' %}" alt="La Libre"></a>
                 <a href="https://www.lavenir.net/regions/charleroi/2024/09/02/bana-community-debarque-a-charleroi-une-nouvelle-alternative-pour-assurer-les-trajets-scolaires-des-enfants-3B4WGQJ56BCKFNARSQR3E43UL4/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_lavenir.svg' %}" alt="L'Avenir"></a>
                 <a href="https://maisonslash.be/fr/inspire/parent-preneur/le-parentpreneur-nyota-a-invente-un-concept-incroyable-bana-community-pour-partager-le-trajet-des-enfants" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300 logo-sq"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_maison_slash.png' %}" alt="MaisonSlash"></a>
                 <a href="https://www.rtbf.be/article/a-charleroi-bana-community-vient-donner-un-coup-de-pouce-aux-parents-dans-la-gestion-des-trajets-scolaires-11438554" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_rtbf.svg' %}" alt="RTBF"></a>
                 <a href="https://www.telesambre.be/info/societe/bana-community-sinstalle-charleroi-une-nouvelle-solution-pour-les-trajets-scolaires/66975" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_telesambre.svg' %}" alt="Télé Sambre"></a>
                 <a href="https://auvio.rtbf.be/media/charleroi-matin-charleroi-matin-3249330" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_vivacite.svg' %}" alt="Vivacité"></a>
                 <a href="https://www.dhnet.be/regions/charleroi/2024/09/02/bana-community-debarque-a-charleroi-une-nouvelle-alternative-pour-assurer-les-trajets-scolaires-des-enfants-ZUBVCMZHQVEWNA3I75EDIZQBLY/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_dh.svg' %}" alt="DH"></a>
+                <a href="https://www.wallonie-entreprendre.be/fr/actualites/accompagnement/bana-nyota-facilite-la-mobilite-des-enfants-grace-a-un-projet-entrepreneurial-engage/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_wallonie-entreprendre.svg' %}" alt="WallonieEntreprendre"></a>
 
                 <!-- Série 2 — dupliquée pour boucle parfaite -->
                 <a href="https://www.sudinfo.be/id703073/article/2023-08-28/un-partenariat-pour-un-ramassage-scolaire-pratique-et-sur-en-cette-rentree-2023" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_sudinfo.png' %}" alt="SudInfo"></a>
@@ -374,6 +388,7 @@
                 <a href="https://www.telesambre.be/info/societe/bana-community-sinstalle-charleroi-une-nouvelle-solution-pour-les-trajets-scolaires/66975" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_telesambre.svg' %}" alt=""></a>
                 <a href="https://auvio.rtbf.be/media/charleroi-matin-charleroi-matin-3249330" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_vivacite.svg' %}" alt=""></a>
                 <a href="https://www.dhnet.be/regions/charleroi/2024/09/02/bana-community-debarque-a-charleroi-une-nouvelle-alternative-pour-assurer-les-trajets-scolaires-des-enfants-ZUBVCMZHQVEWNA3I75EDIZQBLY/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300" aria-hidden="true" tabindex="-1"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_dh.svg' %}" alt=""></a>
+                <a href="https://www.wallonie-entreprendre.be/fr/actualites/accompagnement/bana-nyota-facilite-la-mobilite-des-enfants-grace-a-un-projet-entrepreneurial-engage/" target="_blank" rel="noopener noreferrer" class="shrink-0 opacity-50 hover:opacity-100 transition-all duration-300"><img class="h-8 w-auto object-contain grayscale hover:grayscale-0" src="{% static 'bana/img/logo/logo_wallonie-entreprendre.svg' %}" alt="WallonieEntreprendre"></a>
 
             </div>
         </div>
