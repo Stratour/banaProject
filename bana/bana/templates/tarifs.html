@@ -6,7 +6,7 @@
 {% block og_description %}{% trans "Essentiel, Confort ou Ambassadeur : choisissez la formule qui vous correspond. Vérification d'identité incluse, badges enfants, support prioritaire." %}{% endblock %}
 
 {% block extra_head %}
-<link rel="preload" as="image" href="{% static 'bana/img/page/tarifs/tarifs-transport-scolaire-belgique.jpg' %}">
+<link rel="preload" as="image" href="{% static 'bana/img/page/tarifs/solution_trajets_enfant_ramassage_scolaire_belgique.png' %}">
 <link rel="stylesheet" href="{% static 'bana/css/components/citation.css' %}">
 {% endblock %}
 
@@ -17,7 +17,7 @@
     <!-- ═══════════════════════════════════════════════ -->
     <section class="relative flex flex-col items-center min-h-screen text-center px-4 md:px-8 lg:px-16 bg-gray-900">
 
-        <img src="{% static 'bana/img/page/tarifs/tarifs-transport-scolaire-belgique.jpg' %}"
+        <img src="{% static 'bana/img/page/tarifs/solution_trajets_enfant_ramassage_scolaire_belgique.png' %}"
              class="absolute inset-0 w-full h-full object-cover object-center"
              fetchpriority="high" loading="eager"
              width="1920" height="1280" alt="">
@@ -31,13 +31,13 @@
             </h1>
 
             <p class="text-base md:text-xl font-semibold">
-                La confiance, ça se mérite.
-            </p>
-
-            <p class="text-base md:text-xl font-semibold">
-                Chez Bana, l'inscription est gratuite.
+                Chez Bana, l'inscription est gratuite
                 <br>
-                Vous passez à l'abonnement uniquement lorsqu'une <span class="text-brand-50 font-semibold">mise en relation compatible</span> vous est proposée.
+                <span class="text-brand-50 font-semibold">La confiance, ça se mérite</span>
+            </p>
+            <p class="text-base md:text-xl font-semibold">
+                Vous passez à l'abonnement uniquement lorsqu'une <br>
+                <span class="text-brand-50 font-semibold">mise en relation compatible</span> vous est proposée
             </p>
 
             <a href="{% url 'account_signup' %}"
@@ -212,7 +212,7 @@
     <!-- SECTION 3 — ET CÔTÉ YAYA ?                     -->
     <!-- ═══════════════════════════════════════════════ -->
 
-    <section class="bg-white py-16 md:py-24 overflow-hidden relative">
+    <section class="bg-white py-16 overflow-hidden relative">
 
         <!-- MOBILE -->
         <div class="md:hidden relative rounded-2xl overflow-hidden shadow-xl mx-4">
@@ -253,15 +253,16 @@
                     <div class="w-1/2 text-white z-20">
 
                         <h2 class="text-2xl md:text-3xl font-extrabold">Et côté Yaya ?</h2>
-                <p class="text-white/90 md:text-lg">
-                    <strong>S'inscrire comme Yaya est gratuit.</strong>
-                    <br>
+                        <p class="md:text-lg">
+                        <strong>S'inscrire comme Yaya est gratuit.</strong>
+                        </p> <br>
+                <p class="md:text-lg">
                     Pour accéder aux matchings, l'abonnement coûte seulement <strong class="text-brand-50">4,90€/an</strong>.
                     <br>
                     Ensuite, recevez  un<strong class="text-brand-50"> défraiement</strong> pour chaque trajet effectué.
                 </p>
                 <a href="{% url 'yaya' %}"
-                    class="self-start inline-flex items-center gap-2 text-sm font-semibold text-white/80 hover:text-white transition underline underline-offset-4">
+                    class="self-start inline-flex items-center gap-2 text-lg my-4 font-semibold hover:text-brand-50 transition underline underline-offset-4">
                     En savoir plus sur devenir Yaya
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -307,35 +308,35 @@
     <!-- ═══════════════════════════════════════════════ -->
     <!-- SECTION 4 — DÉFRAIEMENT DES TRAJETS            -->
     <!-- ═══════════════════════════════════════════════ -->
-    <section class="bg-white py-16 px-4 md:px-8 lg:px-16">
+    <section class="bg-white py-14 px-4 md:px-8 lg:px-16">
         <div class="max-w-7xl mx-auto">
 
-            <div class="animate-on-scroll text-center mb-12" data-delay="100">
+            <div class="animate-on-scroll text-center mb-14" data-delay="100">
                 <h2 class="text-2xl md:text-4xl font-extrabold text-gray-900">Défraiement des trajets</h2>
             </div>
 
             <div class="animate-on-scroll grid grid-cols-1 md:grid-cols-2 gap-10 items-start" data-delay="150">
 
                 <!-- Colonne gauche — explication -->
-                <div class="flex flex-col gap-6">
+                <div class="flex flex-col gap-6 text-justify">
                     <div>
                         <h3 class="text-xl font-bold text-brand mb-3">Une contribution pour chaque trajet</h3>
-                        <p class="text-gray-600 mb-1">
+                        <p class="mb-1 text-lg">
                             Chaque trajet est défrayé en reconnaissance de l'aide apportée aux parents.
                         </p>
-                        <p class="text-gray-600 mb-4">En tant que parent, vous versez directement au Yaya une petite contribution pour chaque trajet effectué avec votre enfant.
+                        <p class="mb-4 text-lg">En tant que parent, vous versez directement au Yaya une <strong>petite contribution pour chaque trajet effectué avec votre enfant.</strong>
                         </p>
-                        <p class="text-gray-600 mb-3 font-semibold">Ce montant reconnaît :</p>
-                        <ul class="flex flex-col gap-2 text-gray-700">
-                            <li class="flex items-center gap-2">
+                        <p class="mb-3 text-lg font-semibold">Ce montant reconnaît :</p>
+                        <ul class="flex flex-col gap-2">
+                            <li class="flex items-center text-lg gap-2">
                                 <span class="w-1.5 h-1.5 rounded-full bg-brand shrink-0"></span>
                                 Le temps consacré à l'accompagnement
                             </li>
-                            <li class="flex items-center gap-2">
+                            <li class="flex items-center text-lg gap-2">
                                 <span class="w-1.5 h-1.5 rounded-full bg-brand shrink-0"></span>
                                 La responsabilité liée à la sécurité de l'enfant
                             </li>
-                            <li class="flex items-center gap-2">
+                            <li class="flex items-center text-lg gap-2">
                                 <span class="w-1.5 h-1.5 rounded-full bg-brand shrink-0"></span>
                                 Les éventuels frais de déplacement
                             </li>
@@ -343,9 +344,9 @@
                     </div>
 
                     <!-- Notice importante (simplifiée) -->
-                    <div class="bg-gray-50 border-l-4 border-brand-50 rounded-r-xl p-4">
-                        <p class="text-sm font-bold text-brand mb-1">Important</p>
-                        <p class="text-sm text-brand">
+                    <div class="bg-gray-50 border-l-4 border-brand-50 rounded-r-xl p-4 text-justify">
+                        <p class="text-xl font-bold text-brand mb-1">Important</p>
+                        <p class="text-base text-brand">
                             Le défraiement est librement convenu entre parent et Yaya. <br> Bana fournit uniquement des <strong>repères indicatifs</strong> et n'intervient pas dans le paiement.
                         </p>
                     </div>
@@ -355,72 +356,29 @@
                 <div class="flex flex-col gap-6">
 
                     <!-- Tableau contribution recommandée -->
-                    <div class="bg-white border border-brand/20 rounded-2xl overflow-hidden shadow-sm">
+                    <div class="bg-white border border-brand/20 rounded-2xl overflow-hidden shadow-sm ml-11">
                         <div class="bg-brand-gradient-bl px-6 py-3">
-                            <p class="text-white font-bold text-center">Contribution recommandée</p>
+                            <p class="text-white text-xl font-bold text-center">Contribution recommandée</p>
                         </div>
                         <table class="w-full">
                             <thead>
                                 <tr class="border-b border-gray-100">
-                                    <th class="text-left px-6 py-3 text-sm font-semibold text-brand">Durée du trajet</th>
-                                    <th class="text-right px-6 py-3 text-sm font-semibold text-brand">Défraiement par enfant</th>
+                                    <th class="text-left px-6 py-3 text-lg font-semibold text-brand">Durée du trajet</th>
+                                    <th class="text-right px-6 py-3 text-lg font-semibold text-brand">Défraiement par enfant</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for row in defraiement_table %}
                                 <tr class="{% if not forloop.last %}border-b border-gray-100{% endif %}">
-                                    <td class="px-6 py-4 text-sm text-gray-700">{{ row.duration }}</td>
-                                    <td class="px-6 py-4 text-sm font-bold text-brand text-right">{{ row.amount }}</td>
+                                    <td class="px-6 py-4 text-base">{{ row.duration }}</td>
+                                    <td class="px-6 py-4 text-base font-bold text-brand text-right">{{ row.amount }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
-
-                    {% comment "" %}
-                    <!-- 3 règles -->
-                    <ul class="flex flex-col gap-4">
-                        <li class="flex items-start gap-3">
-                            <img src="{% static 'bana/img/icon/Icon_check.svg' %}" alt="" class="w-5 h-5 mt-0.5 shrink-0">
-                            <p class="text-sm text-gray-700">
-                                <strong>Même montant pour tous les moyens de transport</strong> : marche, vélo, transport en commun ou covoiturage — le défraiement reste identique.
-                            </p>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <img src="{% static 'bana/img/icon/Icon_check.svg' %}" alt="" class="w-5 h-5 mt-0.5 shrink-0">
-                            <p class="text-sm text-gray-700">
-                                <strong>Montant indicatif par enfant</strong> : calculé par enfant pour valoriser l'attention et la responsabilité du Yaya.
-                            </p>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <img src="{% static 'bana/img/icon/Icon_check.svg' %}" alt="" class="w-5 h-5 mt-0.5 shrink-0">
-                            <p class="text-sm text-gray-700">
-                                <strong>Maximum 4 enfants par trajet</strong> : pour garantir la sécurité et le confort de tous.
-                            </p>
-                        </li>
-                    </ul>
-                    {% endcomment %}
-                    
-
                 </div>
             </div>
-
-            
-            {% comment "" %}
-            <div class="animate-on-scroll flex flex-col sm:flex-row justify-center gap-4 mt-12" data-delay="200">
-                <a href="{% url 'account_signup' %}"
-                    class="inline-flex items-center justify-center px-8 py-3 rounded-full bg-brand text-white font-semibold hover:bg-brand-300 transition">
-                    Rechercher un trajet
-                </a>
-                <a href="{% url 'account_signup' %}"
-                    class="inline-flex items-center justify-center px-8 py-3 rounded-full border-2 border-brand text-brand font-semibold hover:bg-brand hover:text-white transition">
-                    Proposer un trajet
-                </a>
-            </div>
-            {% endcomment %}
-            <!-- CTAs -->
-            
-
         </div>
     </section>
 

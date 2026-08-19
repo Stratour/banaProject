@@ -108,12 +108,10 @@
                 {% trans "Notre mission" %}
             </a>
 
-            {% comment "" %}
             <a href="{% url 'contact' %}"
                class="relative transition-colors duration-150 {% if url_name == 'contact' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
                 {% trans "Contact" %}
             </a>
-            {% endcomment %}
 
         </div>
         {% endwith %}

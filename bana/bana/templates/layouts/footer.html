@@ -27,9 +27,7 @@
                 <li><a href="{% url 'yaya' %}" class="hover:text-brand-50 hover:font-semibold {% if url_name == 'yaya' %}text-brand-50 font-semibold{% endif %}">{% trans "Devenir yaya" %}</a></li>
                 <li><a href="{% url 'tarifs' %}" class="hover:text-brand-50 hover:font-semibold {% if url_name == 'tarifs' %}text-brand-50 font-semibold{% endif %}">{% trans "Tarifs" %}</a></li>
                 <li><a href="{% url 'about' %}" class="hover:text-brand-50 hover:font-semibold {% if url_name == 'about' %}text-brand-50 font-semibold{% endif %}">{% trans "Notre mission" %}</a></li>
-                {% comment "" %}
-                <li><a href="{% url 'contact' %}" class="font-light hover:text-brand-50 {% if url_name == 'contact' %}text-brand-50{% endif %}">{% trans "Contact" %}</a></li>
-                {% endcomment %}
+                <li><a href="{% url 'contact' %}" class=" hover:text-brand-50 hover:font-semibold{% if url_name == 'contact' %}text-brand-50 font-semibold{% endif %}">{% trans "Contact" %}</a></li>
             </ul>
             {% endwith %}
                 
@@ -37,7 +35,7 @@
 
         <!-- charte Links -->
         <div class="flex-none mr-12">
-            <h3 class="text-brand-50 font-bold text-lg mb-2">{% trans "Règlement" %}</h3>
+            <h3 class="text-brand-50 font-bold text-lg mb-2">{% trans "Informations" %}</h3>
             <ul class="space-y-1">
                 <li><a href="{% static 'bana/doc/charte-de-bonne-conduite-yaya-mai-2026.pdf' %}" target="_blank" class="hover:text-brand-50 hover:font-semibold">{% trans "Charte Yaya" %}</a></li>
                 <li><a href="{% static 'bana/doc/reglement-bana-yaya.pdf' %}" target="_blank" class="hover:text-brand-50 hover:font-semibold">{% trans "Règlement Yaya" %}</a></li>
