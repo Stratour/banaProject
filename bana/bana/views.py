@@ -555,25 +555,6 @@ def about(request):
     })
 
 
-
-
-# --- Parent page ---------------------------------------------------------------------------
-def parent(request):
-    features_search = [
-        {"icon": "Icon_clock.svg", "title": "Time saving", "highlight": "Flexibility", "text": "in your calendar"},
-        {"icon": "Icon_currency.svg", "title": "Economic", "highlight": "money", "text": "on gasoline"},
-        {"icon": "Icon_earth.svg", "title": "Ecological", "highlight": "alternative", "text": "transport"},
-        {"icon": "Icon_hearth.svg", "title": "Community", "highlight": "Social connection", "text": "& sharing moments"},
-    ]
-
-    features_share = [
-        {"icon": "Icon_flexibility.svg", "title": "Flexibility", "highlight": "You choose", "text": "the rides you share"},
-        {"icon": "Icon_experience.svg", "title": "Experience", "highlight": "development", "text": "Support children's"},
-        {"icon": "Icon_support.svg", "title": "Most importantly", "highlight": "in your community", "text": "Support other parents"},
-        {"icon": "Icon_trust.svg", "title": "Trust", "highlight": "Provide safe", "text": ", reliable rides with trusted parents."},
-    ]
-    return render(request, 'parent.html', {"features_search": features_search, "features_share": features_share})
-
 # --- Conact page ---------------------------------------------------------------------------
 def contact(request):
     return render(request, 'contact.html')
@@ -651,7 +632,7 @@ def robots_txt(request):
         "Disallow: /admin/",
         "Disallow: /bana_admin/",
         "Disallow: /bug_tracker/",
-        "Disallow: /trajets/",
+        "Disallow: /trajects/",
         "Disallow: /chat/",
         "Disallow: /profil/",
         "Disallow: /webhook/",

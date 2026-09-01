@@ -8,15 +8,45 @@
 
 {% block content %}
 
-<!-- ===== 1. INTRO ===== -->
-<section class="bg-white pt-16 md:pt-24 pb-8 md:pb-12 px-4 md:px-8 lg:px-16 text-center">
-    <div class="animate-on-scroll max-w-2xl mx-auto flex flex-col items-center gap-4" data-delay="100">
-        <span class="text-xs font-bold tracking-[0.2em] uppercase text-brand">Contact</span>
-        <h1 class="text-3xl md:text-5xl font-extrabold text-gray-900">Restons connectés</h1>
-        <p class="text-gray-600 md:text-lg">
-            Une question sur votre trajet, votre inscription ou un partenariat ?
-            <br>
-            L'équipe Bana vous répond rapidement.
+<!-- ═══════════════════════════════════════════════ -->
+<!-- 1. HERO -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="relative overflow-hidden bg-brand-gradient-br text-white px-4 md:px-8 lg:px-16 pt-16 md:pt-24 pb-20 md:pb-28">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 md:gap-16 items-center">
+
+        <div class="animate-on-scroll flex flex-col items-center md:items-start gap-5 text-center md:text-left" data-delay="100">
+            <span class="text-xs font-bold tracking-[0.2em] uppercase text-brand-50">Contact</span>
+            <h1 class="text-3xl md:text-5xl font-extrabold leading-tight">
+                Une vraie personne <br class="hidden md:block"> vous répond
+            </h1>
+            <p class="text-white/85 md:text-lg max-w-sm">
+                Pas de robot, pas de ticket anonyme : l'équipe Bana lit chaque message et vous répond, simplement.
+            </p>
+        </div>
+
+        <div class="animate-on-scroll relative w-4/5 md:w-full max-w-sm mx-auto md:max-w-none" data-delay="200">
+            <div class="absolute -inset-3 rounded-[2rem] bg-brand-50/20 -rotate-3"></div>
+            <picture>
+                <source srcset="{% static 'bana/img/page/contact/Bana_contact_paul_hanaoka.webp' %}" type="image/webp">
+                <img src="{% static 'bana/img/page/contact/Bana_contact_paul_hanaoka.jpg' %}"
+                     class="relative w-full aspect-[4/3] object-cover rounded-3xl shadow-2xl"
+                     width="1920" height="1280" loading="eager" fetchpriority="high" alt="">
+            </picture>
+        </div>
+
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- 2. DE QUOI PARLE-T-ON -->
+<!-- ═══════════════════════════════════════════════ -->
+<section class="bg-white pt-12 md:pt-16 pb-4 px-4 md:px-8 lg:px-16">
+    <div class="animate-on-scroll max-w-2xl mx-auto text-center" data-delay="100">
+        <p class="text-lg md:text-xl text-gray-700 leading-relaxed">
+            <span class="font-bold text-brand">Avant de vous inscrire</span>, un
+            <span class="font-bold text-brand">souci sur un trajet</span>, une idée de
+            <span class="font-bold text-brand">partenariat</span>, ou juste une question qui vous trotte en tête —
+            écrivez-nous, on répond.
         </p>
     </div>
 </section>

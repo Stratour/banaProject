@@ -6,7 +6,7 @@
 {% block og_description %}{% trans "Essentiel, Confort ou Ambassadeur : choisissez la formule qui vous correspond. Vérification d'identité incluse, badges enfants, support prioritaire." %}{% endblock %}
 
 {% block extra_head %}
-<link rel="preload" as="image" href="{% static 'bana/img/page/tarifs/solution_trajets_enfant_ramassage_scolaire_belgique.png' %}">
+<link rel="preload" as="image" href="{% static 'bana/img/page/tarifs/solution-trajets-ramassage-scolaire-belgique.jpg' %}">
 <link rel="stylesheet" href="{% static 'bana/css/components/citation.css' %}">
 {% endblock %}
 
@@ -17,10 +17,13 @@
     <!-- ═══════════════════════════════════════════════ -->
     <section class="relative flex flex-col items-center min-h-screen text-center px-4 md:px-8 lg:px-16 bg-gray-900">
 
-        <img src="{% static 'bana/img/page/tarifs/solution_trajets_enfant_ramassage_scolaire_belgique.png' %}"
-             class="absolute inset-0 w-full h-full object-cover object-center"
-             fetchpriority="high" loading="eager"
-             width="1920" height="1280" alt="">
+        <picture>
+            <source srcset="{% static 'bana/img/page/tarifs/solution-trajets-ramassage-scolaire-belgique.webp' %}" type="image/webp">
+            <img src="{% static 'bana/img/page/tarifs/solution-trajets-ramassage-scolaire-belgique.jpg' %}"
+                 class="absolute inset-0 w-full h-full object-cover object-center"
+                 fetchpriority="high" loading="eager"
+                 width="1672" height="941" alt="">
+        </picture>
 
         <div class="absolute inset-0 bg-black/15"></div>
 
@@ -217,7 +220,7 @@
         <!-- MOBILE -->
         <div class="md:hidden relative rounded-2xl overflow-hidden shadow-xl mx-4">
             <picture>
-                <source srcset="{% static 'bana/img/page/about/Soutenir_Bana.jpg' %}" type="image/webp">
+                <source srcset="{% static 'bana/img/page/home/yaya-accompagnement-enfant-belgique.webp' %}" type="image/webp">
                 <img src="{% static 'bana/img/page/home/yaya-accompagnement-enfant-belgique.jpg' %}"
                     class="absolute inset-0 w-full h-full object-cover" alt="Yaya accompagnant un enfant" width="3027" height="3072" loading="lazy" />
             </picture>
@@ -291,7 +294,7 @@
                     <!-- IMAGE QUI DÉPASSE À DROITE -->
                     <div class="absolute right-[calc(50%-380px)] lg:right-[calc(50%-700px)] top-1/2 -translate-y-1/2 z-10 w-[300px] lg:w-[600px]">
                         <picture>
-                            <source srcset="{% static 'bana/img/page/tarifs/babysitter-sortie-ecole-belgique.jpg' %}" type="image/webp">
+                            <source srcset="{% static 'bana/img/page/tarifs/babysitter-sortie-ecole-belgique.webp' %}" type="image/webp">
                             <img src="{% static 'bana/img/page/tarifs/babysitter-sortie-ecole-belgique.jpg' %}"
                                 class="animate-on-scroll w-full h-[180px] lg:h-[360px] object-cover rounded-2xl shadow-2xl" data-delay="150" alt="Yaya accompagnant un enfant" width="1800" height="1080" loading="lazy" />
                         </picture>

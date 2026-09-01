@@ -1,0 +1,27 @@
+{% extends "layouts/base.html" %}
+{% load static i18n %}
+
+{% block title %}{% trans "Page introuvable" %}{% endblock %}
+{% block meta_description %}{% trans "Cette page n'existe pas ou plus." %}{% endblock %}
+{% block meta_robots %}<meta name="robots" content="noindex,follow">{% endblock %}
+
+{% block content %}
+<div class="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
+    <img src="{% static 'bana/img/logo/Bana_logo_dark_green.svg' %}" alt="Bana.mobi" class="w-24 mb-8">
+    <p class="text-sm font-bold tracking-widest text-brand uppercase mb-2">{% trans "Erreur 404" %}</p>
+    <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-4">{% trans "Page introuvable" %}</h1>
+    <p class="text-gray-600 max-w-md mb-8">
+        {% trans "Cette page n'existe pas ou a été déplacée. Vérifiez l'adresse ou repartez de l'accueil." %}
+    </p>
+    <div class="flex flex-col sm:flex-row gap-3">
+        <a href="{% url 'home' %}"
+           class="px-6 py-3 bg-[#007F73] text-white rounded-lg hover:opacity-90 transition-opacity font-semibold">
+            {% trans "Retour à l'accueil" %}
+        </a>
+        <a href="{% url 'contact' %}"
+           class="px-6 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-semibold">
+            {% trans "Contacter Bana" %}
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -60,6 +60,7 @@ if DEBUG:
 # MIDDLEWARE
 # ================================
 MIDDLEWARE = [
+    'bana.middleware.WWWRedirectMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',

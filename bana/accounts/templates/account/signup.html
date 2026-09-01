@@ -16,7 +16,7 @@
 
         {% if not SOCIALACCOUNT_ONLY %}
         {% url 'account_signup' as action_url %}
-        <form method="post" class="lg:w-1/2" action="{{ signup_url }}">
+        <form method="post" class="w-full lg:w-1/2" action="{{ signup_url }}">
             {% csrf_token %}
             <!-- Service Input -->
             <div class="form-group mb-8">

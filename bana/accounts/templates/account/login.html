@@ -14,7 +14,7 @@
     <h2 class="text-brand-200 text-lg font-bold mb-12 text-center">{% trans "Bienvenue" %}</h2>
 
     {% url 'account_login' as login_url %}
-    <form method="post" class="lg:w-1/2" action="{{ login_url }}">
+    <form method="post" class="w-full lg:w-1/2" action="{{ login_url }}">
       {% csrf_token %}
 
       {# Non-field errors #}

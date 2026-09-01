@@ -10,6 +10,16 @@
     {% block meta_robots %}<meta name="robots" content="index,follow">{% endblock %}
     <link rel="canonical" href="{% block canonical %}https://www.bana.mobi{{ request.path }}{% endblock %}">
     <meta name="google-site-verification" content="kghjIV3_TtQIggeANOM-7FM4I02uBLjHWL92eYxfqBc" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NSMR9CPK6G"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-NSMR9CPK6G');
+    </script>
     <meta property="og:site_name" content="Bana">
     <meta property="og:type" content="website">
     <meta property="og:locale" content="{{ LANGUAGE_CODE|default:'fr' }}_BE">
@@ -38,7 +48,7 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
+      "@type": "LocalBusiness",
       "name": "Bana",
       "alternateName": "Bana.mobi",
       "url": "https://www.bana.mobi",
@@ -47,7 +57,24 @@
       "address": {
         "@type": "PostalAddress",
         "addressCountry": "BE"
-      }
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Belgique"
+      },
+      "telephone": "+32495283791",
+      "email": "contact@bana.mobi",
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+        "opens": "08:30",
+        "closes": "18:30"
+      },
+      "sameAs": [
+        "https://www.facebook.com/BanaCommunity/",
+        "https://www.instagram.com/bana_tribus/",
+        "https://www.linkedin.com/company/banamobi/"
+      ]
     }
     </script>
     <script type="application/ld+json">
@@ -56,7 +83,7 @@
       "@type": "WebSite",
       "name": "Bana",
       "url": "https://www.bana.mobi",
-      "inLanguage": ["fr-BE", "en", "nl"]
+      "inLanguage": "fr-BE"
     }
     </script>
     {% block extra_head %}{% endblock %}

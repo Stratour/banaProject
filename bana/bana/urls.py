@@ -40,12 +40,11 @@ urlpatterns = [
 urlpatterns += i18n_patterns(
     # Pages globales
     path('', views.home, name='home'),
-    path('contact/', views.contact, name='contact'),
-    path('mission/', views.about, name='about'),
     path('comment-ca-marche/', views.work, name='work'),
-    path('parent/', views.parent, name='parent'),
     path('devenir-yaya/', views.yaya, name='yaya'),
     path('tarifs/', views.tarifs, name='tarifs'),
+    path('mission/', views.about, name='about'),
+    path('contact/', views.contact, name='contact'),
 
     # Admin Interfaces
     path('bana_admin/', include('bana_admin.urls')),

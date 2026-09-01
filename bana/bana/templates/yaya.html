@@ -17,10 +17,13 @@
     <!-- HERO -->
     <section class="relative flex flex-col items-center min-h-screen md:min-h-screen text-center px-4 md:px-8 lg:px-16 bg-gray-900">
 
-        <img src="{% static 'bana/img/page/yaya/accompagnateur-enfants-trajets-scolaires.jpg' %}"
-             class="absolute inset-0 w-full h-full object-cover object-center"
-             fetchpriority="high" loading="eager"
-             width="1536" height="1024" alt="">
+        <picture>
+            <source srcset="{% static 'bana/img/page/yaya/accompagnateur-enfants-trajets-scolaires.webp' %}" type="image/webp">
+            <img src="{% static 'bana/img/page/yaya/accompagnateur-enfants-trajets-scolaires.jpg' %}"
+                 class="absolute inset-0 w-full h-full object-cover object-center"
+                 fetchpriority="high" loading="eager"
+                 width="1536" height="1024" alt="">
+        </picture>
 
         <div class="absolute inset-0 bg-black/15"></div>
 
