@@ -1,0 +1,59 @@
+/* Design system pour les pages trajects (Proposer / Rechercher / Réservations).
+   Cf. maquettes new_design/*.html. Uniquement ce que Tailwind ne peut pas exprimer :
+   police custom scopée, thumb des inputs range, et quelques transitions de grille. */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+.trajects-app {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+}
+
+.trajects-app input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+/* Slider "Rayon de recherche" */
+.trajects-app input[type="range"].tj-range {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+.trajects-app input[type="range"].tj-range::-webkit-slider-runnable-track {
+  background: transparent;
+  height: 6px;
+}
+.trajects-app input[type="range"].tj-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid #007F73;
+  box-shadow: 0 2px 6px rgba(0, 127, 115, 0.25);
+  cursor: pointer;
+  margin-top: -8px;
+}
+.trajects-app input[type="range"].tj-range::-moz-range-track {
+  background: transparent;
+  height: 6px;
+}
+.trajects-app input[type="range"].tj-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid #007F73;
+  box-shadow: 0 2px 6px rgba(0, 127, 115, 0.25);
+  cursor: pointer;
+}
+
+/* Barre de progression du stepper (ligne remplie derrière les cercles) */
+.trajects-app .tj-step-line-fill {
+  transition: width 0.25s ease;
+}
+
+/* Grille calendrier : transition douce sur le fond des cellules */
+.trajects-app .tj-cal-cell {
+  transition: background-color 0.1s ease, color 0.1s ease;
+}

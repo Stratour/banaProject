@@ -3,252 +3,176 @@
 
 {% block head_title %}{% trans "Mes trajets" %}{% endblock %}
 
-{% block content %}
-<div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'bana/css/pages/trajects.css' %}">
+{% endblock %}
 
-  <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
+{% block page_background %}
+<div class="fixed inset-0 -z-10 opacity-50 pointer-events-none" style="background-image:url('{% static "bana/img/background/bg-bana-2.png" %}'); background-size:cover; background-repeat:no-repeat; background-position:center;"></div>
+{% endblock %}
+
+{% block content %}
+<div class="trajects-app">
+  <div class="relative max-w-6xl mx-auto">
+
+  <h1 class="text-[28px] font-extrabold text-[#0F0F0F] mt-6 md:mt-8 mb-[22px] tracking-tight">
     {% trans "Mes trajets" %}
   </h1>
 
-  <!-- Onglets -->
   {% include "trajects/partials/tabs_proposition.html" %}
 
-  
-    {% if proposed_trajects %}
-    <div class="space-y-5">    
+  {% if proposed_trajects %}
+    <div class="flex flex-col gap-4">
       {% for proposed in proposed_trajects %}
-        <article
-          class="group rounded-2xl border border-gray-200 bg-white p-5 sm:p-6 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all ring-1 ring-transparent hover:ring-brand/10">
+        <article class="bg-white rounded-[18px] border border-[#E5E4DF] p-6 sm:p-7 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
 
           <!-- Header -->
-          <header class="flex items-start justify-between gap-4">
-            <div class="flex items-center gap-3 min-w-0">
-              <div class="min-w-0">
-               <p class="text-xs text-gray-500">{% trans "Nom du trajet" %}</p>
-                <h2 class="text-xl font-bold text-gray-900">
-                  {{ proposed.groupe_name|default:"Mon trajet" }}
-                </h2>
-                <p class="text-xs text-gray-500">
-                  {% trans "Du" %} {{ proposed.groupe_first_date|date:"d/m/Y" }}
-                  {% trans "au" %} {{ proposed.groupe_last_date|date:"d/m/Y" }}
-                </p>
-              </div>
+          <div class="flex items-start justify-between gap-4 mb-4">
+            <div class="min-w-0">
+              <p class="text-[10px] font-semibold uppercase tracking-wider text-[#C0BFBA] mb-1">{% trans "Nom du trajet" %}</p>
+              <h2 class="text-[19px] font-extrabold text-[#0F0F0F] tracking-tight mb-2">
+                {{ proposed.groupe_name|default:"Mon trajet" }}
+              </h2>
+              <p class="text-xs text-[#0F0F0F]">
+                {% trans "Du" %} {{ proposed.groupe_first_date|date:"d/m/Y" }}
+                {% trans "au" %} {{ proposed.groupe_last_date|date:"d/m/Y" }}
+              </p>
             </div>
-            
+
             <button type="button"
-                onclick="document.getElementById('delete-proposed-{{ proposed.groupe_uid }}').showModal()"
-                class="inline-flex items-center gap-2 rounded-full border border-red-300 text-red-700 px-3 py-1.5 text-sm font-semibold hover:bg-red-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300">
-                
-                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7h6m-7 0V5a2 2 0 012-2h2a2 2 0 012 2v2"/>
-                </svg>
-                {% trans "Supprimer" %}
+                    onclick="document.getElementById('delete-proposed-{{ proposed.groupe_uid }}').showModal()"
+                    class="inline-flex items-center gap-1.5 rounded-lg border-[1.5px] border-red-300 text-red-500 bg-red-50 px-3.5 py-2 text-xs font-semibold hover:bg-red-100 whitespace-nowrap shrink-0">
+              🗑 {% trans "Supprimer" %}
             </button>
 
             <dialog id="delete-proposed-{{ proposed.groupe_uid }}" class="rounded-xl p-0 w-full max-w-md">
-             <form method="POST" action="{% url 'delete_proposed_groupe' proposed.groupe_uid %}" class="p-6 space-y-5">
-              {% csrf_token %}
-              <header class="space-y-1">
-              <h3 class="text-lg font-semibold text-gray-900">{% trans "Supprimer le trajet" %}</h3>
-              <p class="text-sm text-gray-600">
-                {% trans "Êtes-vous sûr de vouloir supprimer ce trajet ?" %}
-              </p>
-            </header>
-
-            <div class="flex items-center justify-end gap-3 pt-2">
-              <button type="button"
-                      onclick="document.getElementById('delete-proposed-{{ proposed.groupe_uid }}').close()"
-                      class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
-                {% trans "Annuler" %}
-              </button>
-              <button type="submit"
-                      class="bg-red-500 text-white px-4 py-2 rounded-full font-bold hover:bg-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
-                {% trans "Confirmer" %}
-              </button>
-            </form>
+              <form method="POST" action="{% url 'delete_proposed_groupe' proposed.groupe_uid %}" class="p-6 space-y-5">
+                {% csrf_token %}
+                <header class="space-y-1">
+                  <h3 class="text-lg font-semibold text-gray-900">{% trans "Supprimer le trajet" %}</h3>
+                  <p class="text-sm text-gray-600">{% trans "Êtes-vous sûr de vouloir supprimer ce trajet ?" %}</p>
+                </header>
+                <div class="flex items-center justify-end gap-3 pt-2">
+                  <button type="button"
+                          onclick="document.getElementById('delete-proposed-{{ proposed.groupe_uid }}').close()"
+                          class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    {% trans "Annuler" %}
+                  </button>
+                  <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-full font-bold hover:bg-red-600">
+                    {% trans "Confirmer" %}
+                  </button>
+                </div>
+              </form>
             </dialog>
+          </div>
 
-            <!-- Badge simplifié 
+          <div class="h-px bg-[#F3F4F6] mb-4"></div>
+
+          <!-- Départ / Arrivée -->
+          <div class="grid gap-5 sm:grid-cols-2 mb-4">
             <div>
-              {% if proposed.is_simple %}
-                <span class="inline-flex items-center gap-1.5 rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1 text-xs font-semibold">
-                  <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                  </svg>
-                  Trajet simplifié
-                </span>
-              {% endif %}
-            </div>-->
-          </header>
-
-          <div class="my-4 border-t border-gray-100"></div>
-
-          <!-- Meta -->
-          <div class="grid gap-4 sm:grid-cols-2">
-            <!-- Départ -->
-            <div class="space-y-2 text-sm text-gray-700">
-              <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <!-- map-pin -->
-                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
+              <div class="flex items-center gap-1.5 mb-1.5">
+                <svg class="h-3.5 w-3.5 text-brand shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"></path>
                 </svg>
-                {% trans "Départ" %}
-              </p>
-              <p>
-                <span class="font-medium">{{ proposed.traject.start_adress }}</span>
-                <span class="mx-1 text-gray-400">·</span>
-                <!-- clock -->
-                <svg class="inline h-4 w-4 -mt-0.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                {{ proposed.departure_time|default:"—" }}
-              </p>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-brand">{% trans "Départ" %}</span>
+              </div>
+              <p class="text-[13px] font-medium text-[#0F0F0F] leading-snug mb-2">{{ proposed.traject.start_adress }}</p>
+              <p class="text-xs text-[#0F0F0F]">⏱ {{ proposed.departure_time|default:"—" }}</p>
             </div>
-
-            <!-- Arrivée !-->
-            <div class="space-y-2 text-sm text-gray-700">
-              <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <!-- flag -->
-                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M5 5v14M5 5h10l-2 4 2 4H5"/>
+            <div>
+              <div class="flex items-center gap-1.5 mb-1.5">
+                <svg class="h-3.5 w-3.5 text-brand shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5v14M5 5h10l-2 4 2 4H5"></path>
                 </svg>
-                {% trans "Arrivée" %}
-              </p>
-              <p>
-                <span class="font-medium">{{ proposed.traject.end_adress }}</span>
-                <span class="mx-1 text-gray-400">·</span>
-                <svg class="inline h-4 w-4 -mt-0.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                {{ proposed.arrival_time|default:"—" }}
-              </p>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-brand">{% trans "Arrivée" %}</span>
+              </div>
+              <p class="text-[13px] font-medium text-[#0F0F0F] leading-snug mb-2">{{ proposed.traject.end_adress }}</p>
+              <p class="text-xs text-[#0F0F0F]">⏱ {{ proposed.arrival_time|default:"—" }}</p>
             </div>
+          </div>
 
-            <!-- Transport -->
-            <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
-              <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <!-- car -->
-                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/>
-                </svg>
-                {% trans "Transport" %}
-              </p>
-              <div class="mt-2 flex flex-wrap gap-2">
-                {% for mode in proposed.transport_modes.all %}
-                  {% with label=mode.name|default:mode %}
-                    {% with key=label|lower %}
-                      <span class="inline-flex items-center gap-1.5 rounded-full border border-brand/30 bg-brand-50 text-brand px-2.5 py-1 text-xs font-medium">
-                        {% if "car" in key %}
-                          <!-- car -->
-                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 13h14M6 16h.01M18 16h.01"/> 
-                          </svg>
-                          <p>{% trans "Voiture" %}</p>
-                        {% elif "bike" in key %}
-                          <!-- bike -->
-                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <circle cx="6" cy="17" r="3" stroke-width="2"/>
-                            <circle cx="18" cy="17" r="3" stroke-width="2"/>
-                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                  d="M6 17l6-8 2 3h4"/>                                  
-                          </svg>
-                          <p>{% trans "Vélo" %}</p>
-                        {% elif "transport" in key %}
-                          <!-- bus/tram -->
-                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <rect x="4" y="4" width="16" height="12" rx="2" stroke-width="2"/>
-                            <path stroke-width="2" d="M4 11h16M8 20l2-2m6 2l-2-2"/>
-                            <circle cx="8" cy="16" r="1" />
-                            <circle cx="16" cy="16" r="1" />
-                          </svg>
-                          <p>{% trans "Transport en commun" %}</p>
-                        {% elif "walking" in key %}
-                          <!-- walking -->
-                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                  d="M13 5a2 2 0 11-4 0 2 2 0 014 0zM12 7l-2 4-2 2m4-6l2 3 3 1m-7 1l-2 6m5-5l-1 5"/>
-                          </svg>
-                          <p>{% trans "À pied" %}</p>
-                        {% else %}
-                          <!-- default -->
-                          <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"/>
-                          </svg>
-                        {% endif %}
+          <!-- Transport -->
+          <div class="flex items-center gap-2 flex-wrap mb-4">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-[#C0BFBA]">{% trans "Transport" %}</span>
+            {% for mode in proposed.transport_modes.all %}
+              {% include "trajects/partials/transport_badge.html" with mode=mode %}
+            {% empty %}
+              <span class="text-[#C0BFBA] text-xs">{% trans "Non spécifié" %}</span>
+            {% endfor %}
+          </div>
+
+          <!-- Détails -->
+          {% if proposed.details %}
+            <div class="mb-4 px-4 py-3 bg-[#FAFAF8] rounded-[10px] border border-[#EDEDEA]">
+              <p class="text-[10px] font-bold uppercase tracking-wider text-[#C0BFBA] mb-1">{% trans "Plus de détails" %}</p>
+              <p class="text-[13px] text-[#0F0F0F] leading-relaxed">{{ proposed.details }}</p>
+            </div>
+          {% endif %}
+
+          <div class="h-px bg-[#F3F4F6] mb-3.5"></div>
+
+          <div class="flex justify-end">
+            <button type="button" data-tj-toggle-dates
+                    class="inline-flex items-center gap-2 rounded-[9px] border-[1.5px] border-[#E5E7EB] bg-white px-5 py-3 text-base font-semibold text-[#0F0F0F] hover:bg-gray-50">
+              <span data-tj-toggle-label>{% trans "Voir les dates" %} ↓</span>
+              <span class="text-[11px] text-brand font-bold bg-[#E6F5F3] px-2.5 py-0.5 rounded-full">{{ proposed.groupe_count }}</span>
+            </button>
+          </div>
+
+          <div data-tj-dates-panel class="hidden mt-4 pt-4 border-t border-[#F3F4F6]">
+            <div class="grid gap-2.5" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">
+              {% for occ in proposed.occurrences %}
+                <div class="flex items-center justify-between gap-2 rounded-[10px] px-4 py-3 text-sm font-semibold bg-white text-[#1C1C1C] border border-[#E5E7EB] whitespace-nowrap {% if occ.is_past %}opacity-60{% endif %}">
+                  <span>{{ occ.date|date:"D"|capfirst }} {{ occ.date|date:"d M" }}</span>
+                  <div class="flex items-center gap-1.5 shrink-0">
+                    {% if occ.is_past %}
+                      <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-[#F3F4F6] text-[#9CA3AF]">{% trans "Passée" %}</span>
+                    {% else %}
+                      <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-[#E6F5F3] text-[#005A52]">
+                        {{ occ.number_of_places }} {% if occ.number_of_places == 1 %}{% trans "place" %}{% else %}{% trans "places" %}{% endif %}
                       </span>
-                    {% endwith %}
-                  {% endwith %}
-                {% empty %}
-                  <span class="text-gray-400">{% trans "Non spécifié" %}</span>
-                {% endfor %}
-              </div>
-            </div>
+                    {% endif %}
+                    <button type="button" title="{% trans 'Supprimer cette date' %}"
+                            onclick="document.getElementById('delete-date-{{ occ.id }}').showModal()"
+                            class="w-6 h-6 shrink-0 rounded-md border-[1.5px] border-red-300 bg-white text-red-500 text-xs flex items-center justify-center hover:bg-red-50">✕</button>
+                  </div>
+                </div>
 
-            <!-- Langues
-            <div class="space-y-2 text-sm text-gray-700">
-              <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <circle cx="12" cy="12" r="9" stroke-width="2"/>
-                  <path stroke-width="2" d="M2 12h20M12 3a15 15 0 010 18M12 3a15 15 0 000 18"/>
-                </svg>
-                Langue(s) parlée(s)
-              </p>
-              <div class="mt-2 flex flex-wrap gap-2">
-                {% for language in proposed.languages.all %}
-                  <span class="inline-flex items-center rounded-full border border-gray-200 px-2.5 py-1 text-xs font-medium">
-                    {{ language.lang_name }}
-                  </span>
-                {% empty %}
-                  <span class="text-gray-400">Aucune spécifiée</span>
-                {% endfor %}
-              </div>
-            </div>-->
-
-            <!-- Détails (si non simple) -->
-            {% if proposed.details %}
-            <div class="space-y-2 text-sm text-gray-700 sm:col-span-2">
-              <p class="font-semibold text-gray-900 flex items-center gap-2">
-                <!-- doc -->
-                <svg class="h-4 w-4 text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M7 7h10M7 11h10M7 15h7"/>
-                </svg>
-                {% trans "Détails" %}
-              </p>
-              <p class="text-gray-700">{{ proposed.details }}</p>
+                <dialog id="delete-date-{{ occ.id }}" class="rounded-xl p-0 w-full max-w-md">
+                  <form method="POST" action="{% url 'delete_proposed_traject' occ.groupe_uid occ.id %}" class="p-6 space-y-5">
+                    {% csrf_token %}
+                    <header class="space-y-1">
+                      <h3 class="text-lg font-semibold text-gray-900">{% trans "Supprimer cette date" %}</h3>
+                      <p class="text-sm text-gray-600">{% trans "Êtes-vous sûr de vouloir supprimer cette date ?" %}</p>
+                    </header>
+                    <div class="flex items-center justify-end gap-3 pt-2">
+                      <button type="button" onclick="document.getElementById('delete-date-{{ occ.id }}').close()"
+                              class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                        {% trans "Annuler" %}
+                      </button>
+                      <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-full font-bold hover:bg-red-600">
+                        {% trans "Confirmer" %}
+                      </button>
+                    </div>
+                  </form>
+                </dialog>
+              {% endfor %}
             </div>
-            {% endif %}
-            </div>
+          </div>
 
-            <footer class="mt-5 flex justify-end">
-                <a href="{% url 'my_proposed_groupe_detail' proposed.groupe_uid %}" 
-                class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-                {% trans "Voir les dates" %}
-              </a>
-              </footer>
-          
         </article>
       {% endfor %}
     </div>
-  
   {% else %}
-    <div class="rounded-xl border border-dashed border-gray-300 bg-white p-6 text-center text-gray-500">
+    <div class="rounded-[18px] border border-dashed border-[#D8D7D2] bg-white p-8 text-center text-[#0F0F0F]">
       {% trans "Vous n’avez aucun trajet pour l’instant." %}
     </div>
   {% endif %}
 
+  </div>
 </div>
+
+<script src="{% static 'bana/js/pages/trajects_list.js' %}"></script>
 {% endblock %}

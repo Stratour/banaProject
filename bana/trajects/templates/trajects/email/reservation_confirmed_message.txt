@@ -1,0 +1,5 @@
+{% autoescape off %}Bonjour,
+
+Votre réservation pour le trajet {{ trajet_info }} du {{ date_str }} a été confirmée.
+
+Connectez-vous à Bana pour voir les détails.{% endautoescape %}

@@ -3,6 +3,10 @@
 
 {% block head_title %}{% trans "Mon profil" %}{% endblock head_title %}
 
+{% block page_background %}
+<div class="fixed inset-0 -z-10 opacity-50 pointer-events-none" style="background-image:url('{% static 'bana/img/background/bg-bana-2.png' %}'); background-size:cover; background-repeat:no-repeat; background-position:center;"></div>
+{% endblock %}
+
 {% block content %}
 <section class="section profile">
     <div class="max-w-6xl mx-auto px-4 py-8 space-y-8">

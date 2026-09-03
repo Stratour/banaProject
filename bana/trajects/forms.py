@@ -87,6 +87,14 @@ class RecurrenceValidationMixin:
 
         return cleaned_data
     
+TJ_INPUT_CLASS = (
+    "w-full px-4 py-3 border-[1.5px] border-[#E5E7EB] rounded-[10px] text-base "
+    "text-[#1C1C1C] bg-white outline-none focus:border-brand transition placeholder:text-[#ABABAB]"
+)
+TJ_TEXTAREA_CLASS = TJ_INPUT_CLASS + " resize-y leading-relaxed"
+TJ_PILL_INPUT_CLASS = "hidden"
+
+
 class TrajectForm(forms.ModelForm):
     class Meta:
         model = Traject
@@ -99,14 +107,14 @@ class TrajectForm(forms.ModelForm):
         widgets = {
             "start_adress": forms.TextInput(attrs={
                 "id": "start_adress",
-                "class": "w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand",
-                "placeholder": _("Entrez une adresse de départ (Ville, code postal)"),
+                "class": TJ_INPUT_CLASS,
+                "placeholder": _("Adresse de départ (ville, code postal)"),
                 "autocomplete": "off",
             }),
             "end_adress": forms.TextInput(attrs={
                 "id": "end_adress",
-                "class": "w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand",
-                "placeholder": _("Entrez une adresse d’arrivée (Ville, code postal)"),
+                "class": TJ_INPUT_CLASS,
+                "placeholder": _("Adresse d’arrivée (ville, code postal)"),
                 "autocomplete": "off",
             }),
             "start_place_id": forms.HiddenInput(attrs={
@@ -143,7 +151,7 @@ class ProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     transport_modes = forms.ModelMultipleChoiceField(
         queryset=TransportMode.objects.all(),
         widget=forms.CheckboxSelectMultiple(attrs={
-            'class': 'form-checkbox h-5 w-5 text-brand'
+            'class': TJ_PILL_INPUT_CLASS
         }),
         label=_("Moyens de transport"),
         required=True,
@@ -155,7 +163,7 @@ class ProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     languages = forms.ModelMultipleChoiceField(
         queryset=Languages.objects.all(),
         widget=forms.SelectMultiple(attrs={
-            "class": "w-full p-3 border border-brand rounded-2xl shadow-sm focus:ring-brand focus:border-brand"
+            "class": TJ_INPUT_CLASS
         }),
         required=False,
         label=_("Langue parlée"),
@@ -164,7 +172,7 @@ class ProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     departure_time = forms.TimeField(
         widget=forms.TimeInput(attrs={
             "type": "time",
-            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "class": TJ_INPUT_CLASS,
             "placeholder": "hh:mm",
         }),
         error_messages={
@@ -176,7 +184,7 @@ class ProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     arrival_time = forms.TimeField(
         widget=forms.TimeInput(attrs={
             "type": "time",
-            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "class": TJ_INPUT_CLASS,
             "placeholder": "hh:mm",
         }),
         error_messages={
@@ -186,20 +194,21 @@ class ProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     )
 
     number_of_places = forms.ChoiceField(
-    choices=[("", _("-- Sélectionnez le nombre de places --"))] + ProposedTraject.NUMBER_PLACE,
-    widget=forms.Select(attrs={
-        "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand"
-    }),
-    required=True,
-    label=_("Nombre de places"),
-    error_messages={
-        "required": _("Veuillez sélectionner un nombre de places.")
-    },
-)
+        choices=[(str(i), _("%(n)s place") % {"n": i} if i == 1 else _("%(n)s places") % {"n": i}) for i in range(1, 8)],
+        initial="1",
+        widget=forms.Select(attrs={
+            "class": TJ_INPUT_CLASS
+        }),
+        required=True,
+        label=_("Nombre de places"),
+        error_messages={
+            "required": _("Veuillez sélectionner un nombre de places.")
+        },
+    )
 
     recurrence_type = forms.ChoiceField(
         choices=RECURRENCE_CHOICES,
-        widget=forms.RadioSelect,
+        widget=forms.RadioSelect(attrs={'class': TJ_PILL_INPUT_CLASS}),
         required=True,
         initial="one_week",
         label=_("Type de récurrence"),
@@ -216,7 +225,7 @@ class ProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
 
     date_debut = forms.DateField(
         widget=forms.DateInput(attrs={
-            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "class": TJ_INPUT_CLASS,
             "type": "date",
         }),
         required=True,
@@ -225,7 +234,7 @@ class ProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
 
     date_fin = forms.DateField(
         widget=forms.DateInput(attrs={
-            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "class": TJ_INPUT_CLASS,
             "type": "date",
         }),
         required=False,
@@ -258,8 +267,8 @@ class ProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
         }
         widgets = {
             "details": forms.Textarea(attrs={
-                "class": "w-full p-3 border border-brand rounded-2xl shadow-sm focus:ring-brand focus:border-brand min-h-[120px]",
-                "placeholder": _("Ajoutez des détails utiles pour les passagers"),
+                "class": TJ_TEXTAREA_CLASS,
+                "placeholder": _("Ex : Allergies, siège auto disponible, animaux à bord du véhicule..."),
                 "rows": 4,
             }),
         }
@@ -279,8 +288,8 @@ class SimpleProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     start_adress = forms.CharField(
         widget=forms.TextInput(attrs={
             "id": "start_adress",
-            "class": "w-full p-3 border border-brand shadow-sm rounded-full focus:ring-brand focus:border-brand",
-            "placeholder": _("Entrez le point de départ (Adresse, ville, code postal)"),
+            "class": TJ_INPUT_CLASS,
+            "placeholder": _("Point de départ (adresse, ville, code postal)"),
             "autocomplete": "off",
         }),
         label=_("Ville de départ"),
@@ -297,7 +306,7 @@ class SimpleProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     transport_modes = forms.ModelMultipleChoiceField(
         queryset=TransportMode.objects.all(),
         widget=forms.CheckboxSelectMultiple(attrs={
-            'class': 'form-checkbox h-5 w-5 text-brand'
+            'class': TJ_PILL_INPUT_CLASS
         }),
         label=_("Moyens de transport"),
         required=True,
@@ -309,7 +318,7 @@ class SimpleProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     number_of_places = forms.ChoiceField(
         choices=[("", _("-- Sélectionnez le nombre de places --"))] + ProposedTraject.NUMBER_PLACE,
         widget=forms.Select(attrs={
-            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand"
+            "class": TJ_INPUT_CLASS
         }),
         required=True,
         label=_("Nombre de places"),
@@ -320,16 +329,17 @@ class SimpleProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
 
     search_radius_km = forms.IntegerField(
         label=_("Rayon de recherche (km)"),
-        initial=1,
+        initial=5,
         min_value=1,
         max_value=50,
         widget=forms.NumberInput(attrs={
-            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
-            "placeholder": "1",
+            "class": "tj-range w-full",
+            "type": "range",
             "min": "1",
             "max": "50",
+            "step": "1",
         }),
-        help_text=_("Dans quel rayon souhaitez-vous aider ? (1-50 km)"),
+        help_text=_("Distance maximale entre votre point de départ et celui du parent (1-50 km)."),
         error_messages={
             "required": _("Veuillez renseigner un rayon de recherche."),
             "min_value": _("Le rayon doit être d’au moins 1 km."),
@@ -339,7 +349,7 @@ class SimpleProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
 
     recurrence_type = forms.ChoiceField(
         choices=RECURRENCE_CHOICES,
-        widget=forms.RadioSelect,
+        widget=forms.RadioSelect(attrs={'class': TJ_PILL_INPUT_CLASS}),
         required=True,
         initial="one_week",
         label=_("Type de récurrence"),
@@ -356,7 +366,7 @@ class SimpleProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
 
     date_debut = forms.DateField(
         widget=forms.DateInput(attrs={
-            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "class": TJ_INPUT_CLASS,
             "type": "date",
         }),
         required=True,
@@ -365,7 +375,7 @@ class SimpleProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
 
     date_fin = forms.DateField(
         widget=forms.DateInput(attrs={
-            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "class": TJ_INPUT_CLASS,
             "type": "date",
         }),
         required=False,
@@ -426,7 +436,7 @@ class ResearchedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     transport_modes = forms.ModelMultipleChoiceField(
         queryset=TransportMode.objects.all(),
         widget=forms.CheckboxSelectMultiple(attrs={
-            'class': 'form-checkbox h-5 w-5 text-brand'
+            'class': TJ_PILL_INPUT_CLASS
         }),
         label=_("Moyens de transport"),
         required=True,
@@ -438,7 +448,7 @@ class ResearchedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     children = forms.ModelMultipleChoiceField(
         queryset=Child.objects.none(),
         widget=forms.CheckboxSelectMultiple(attrs={
-            'class': 'form-checkbox h-5 w-5 text-brand'
+            'class': TJ_PILL_INPUT_CLASS
         }),
         required=True,
         label=_("Choix du ou des enfants"),
@@ -450,7 +460,7 @@ class ResearchedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     departure_time = forms.TimeField(
         widget=forms.TimeInput(attrs={
             "type": "time",
-            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "class": TJ_INPUT_CLASS,
             "placeholder": "hh:mm",
         }),
         error_messages={
@@ -462,7 +472,7 @@ class ResearchedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     arrival_time = forms.TimeField(
         widget=forms.TimeInput(attrs={
             "type": "time",
-            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "class": TJ_INPUT_CLASS,
             "placeholder": "hh:mm",
         }),
         error_messages={
@@ -473,7 +483,7 @@ class ResearchedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
 
     recurrence_type = forms.ChoiceField(
         choices=RECURRENCE_CHOICES,
-        widget=forms.RadioSelect,
+        widget=forms.RadioSelect(attrs={'class': TJ_PILL_INPUT_CLASS}),
         required=True,
         initial="one_week",
         label=_("Type de récurrence"),
@@ -491,7 +501,7 @@ class ResearchedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     date_debut = forms.DateField(
         widget=forms.DateInput(attrs={
             "type": "date",
-            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "class": TJ_INPUT_CLASS,
         }),
         required=True,
         label=_("Date de début"),
@@ -500,7 +510,7 @@ class ResearchedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
     date_fin = forms.DateField(
         widget=forms.DateInput(attrs={
             "type": "date",
-            "class": "w-full p-3 border border-brand rounded-full shadow-sm focus:ring-brand focus:border-brand",
+            "class": TJ_INPUT_CLASS,
         }),
         required=False,
         label=_("Date de fin"),

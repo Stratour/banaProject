@@ -6,6 +6,7 @@
 {% block og_description %}{% trans "Trouvez un Yaya de confiance pour les trajets maison-école-activités de vos enfants. Plateforme belge sécurisée, communautaire et flexible." %}{% endblock %}
 
 {% block extra_head %}
+<link rel="preload" as="image" href="{% static 'bana/img/page/home/transport-scolaire-belgique.webp' %}" type="image/webp">
 <link rel="stylesheet" href="{% static 'bana/css/pages/home.css' %}" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="{% static 'bana/css/pages/home.css' %}"></noscript>
 <link rel="stylesheet" href="{% static 'bana/css/components/citation.css' %}">
@@ -63,9 +64,12 @@
             <div class="citation-brush">
 
                 <!-- Fond décoratif (coup de pinceau + guillemets) -->
-                <img src="{% static 'bana/img/background/bg-citation.png' %}" alt="" aria-hidden="true"
-                     loading="lazy" width="1080" height="1080"
-                     class="citation-brush__bg">
+                <picture>
+                    <source srcset="{% static 'bana/img/background/bg-citation.webp' %}" type="image/webp">
+                    <img src="{% static 'bana/img/background/bg-citation.png' %}" alt="" aria-hidden="true"
+                         loading="lazy" width="1080" height="1080"
+                         class="citation-brush__bg">
+                </picture>
 
                 <div class="citation-brush__inner">
                     <p class="citation-brush__text text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug text-center">
@@ -207,23 +211,23 @@
                     <div class="flex-1 min-w-0 flex flex-col px-5 py-6">
                         <h4 class="text-lg font-bold leading-tight">Sofia B.</h4>
                         <p class="text-sm text-zinc-400">Yaya | Bruxelles</p>
-                        <img class="block h-6 w-32 object-fill self-start mb-3" src="{% static 'bana/img/page/home/evaluations-etoiles.svg' %}" alt="Évaluation 5 étoiles" width="128" height="24">
+                        <img class="block h-6 w-32 object-fill self-start mb-3" src="{% static 'bana/img/page/home/evaluations-etoiles.png' %}" alt="Évaluation 5 étoiles" width="128" height="24">
                         <hr class="border-gray-200 mb-4">
                         <div class="grid grid-cols-2 gap-x-3 gap-y-4">
                             <div class="flex flex-col items-center text-center gap-1">
-                                <img class="w-12 h-12" src="{% static 'bana/img/page/home/identite-verifiee.svg' %}" alt="" aria-hidden="true" width="40" height="40">
+                                <img class="w-12 h-12" src="{% static 'bana/img/page/home/identite-verifiee.png' %}" alt="" aria-hidden="true" width="40" height="40">
                                 <p class="text-xs leading-tight font-semibold">Carte d'identité vérifiée</p>
                             </div>
                             <div class="flex flex-col items-center text-center gap-1">
-                                <img class="w-12 h-12" src="{% static 'bana/img/page/home/rencontre-avant-trajet.svg' %}" alt="" aria-hidden="true" width="40" height="40">
+                                <img class="w-12 h-12" src="{% static 'bana/img/page/home/rencontre-avant-trajet.png' %}" alt="" aria-hidden="true" width="40" height="40">
                                 <p class="text-xs leading-tight font-semibold">Rencontre avant le premier trajet</p>
                             </div>
                             <div class="flex flex-col items-center text-center gap-1">
-                                <img class="w-12 h-12" src="{% static 'bana/img/page/home/extrait-judiciaire.svg' %}" alt="" aria-hidden="true" width="40" height="40">
+                                <img class="w-12 h-12" src="{% static 'bana/img/page/home/extrait-judiciaire.png' %}" alt="" aria-hidden="true" width="40" height="40">
                                 <p class="text-xs leading-tight font-semibold">Extrait de casier judiciaire</p>
                             </div>
                             <div class="flex flex-col items-center text-center gap-1">
-                                <img class="w-12 h-12" src="{% static 'bana/img/page/home/avis-et-evaluations.svg' %}" alt="" aria-hidden="true" width="40" height="40">
+                                <img class="w-12 h-12" src="{% static 'bana/img/page/home/avis-et-evaluations.png' %}" alt="" aria-hidden="true" width="40" height="40">
                                 <p class="text-xs leading-tight font-semibold">Système d'avis et d'évaluations réciproques</p>
                             </div>
                         </div>

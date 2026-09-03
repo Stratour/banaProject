@@ -1,5 +1,9 @@
 {% extends "allauth/layouts/base.html" %}
-{% load allauth i18n %}
+{% load allauth i18n static %}
+
+{% block page_background %}
+<div class="fixed inset-0 -z-10 opacity-50 pointer-events-none" style="background-image:url('{% static 'bana/img/background/bg-bana-2.png' %}'); background-size:cover; background-repeat:no-repeat; background-position:center;"></div>
+{% endblock %}
 
 {% block extra_head %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.css">
@@ -126,6 +130,21 @@
                 <p class="mt-1 py-2 px-4 rounded-full border border-gray-200 bg-gray-50 text-gray-700 text-sm">{{ user.profile.verified_last_name }}</p>
               {% endif %}
             </div>
+          </div>
+
+          <div class="max-w-sm">
+            <label class="block text-sm font-semibold text-gray-700 mb-1">{% trans "Numéro de téléphone" %}</label>
+            <div class="mt-1 flex items-stretch rounded-full border border-brand bg-white overflow-hidden focus-within:ring-2 focus-within:ring-brand">
+              <div class="relative flex items-center bg-gray-50 border-r border-brand">
+                {{ form.phone_prefix }}
+                <svg class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9l6 6 6-6"/>
+                </svg>
+              </div>
+              {{ form.phone_number }}
+            </div>
+            {% if form.phone_prefix.errors %}<p class="mt-1 text-xs text-red-600">{{ form.phone_prefix.errors }}</p>{% endif %}
+            {% if form.phone_number.errors %}<p class="mt-1 text-xs text-red-600">{{ form.phone_number.errors }}</p>{% endif %}
           </div>
 
           <div>

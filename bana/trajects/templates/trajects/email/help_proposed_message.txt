@@ -1,0 +1,7 @@
+{% autoescape off %}Bonjour,
+
+Bonne nouvelle ! Un accompagnateur est disponible pour votre recherche de trajet :
+
+{{ trajet_info }} le {{ date_str }} (départ à {{ heure_depart }}).
+
+Connectez-vous à Bana pour consulter les trajets disponible et effectuer une réservation. {{ matchings_url }}{% endautoescape %}

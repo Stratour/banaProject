@@ -1,0 +1,8 @@
+{% autoescape off %}Bonjour,
+
+Vous avez reçu une nouvelle demande de réservation.
+
+Détails du trajet : {{ trajet_info }}
+Nombre d'enfant(s) demandé(s) : {{ requested_places }}
+
+Connectez-vous à Bana pour accepter ou refuser la demande.{% endautoescape %}

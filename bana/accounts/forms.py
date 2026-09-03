@@ -18,6 +18,11 @@ TRANSPORT_MODES_CHOICES = [
     ('walking', _('À pied')),
 ]
 
+# Belgique uniquement pour l'instant — ajouter ici pour ouvrir d'autres indicatifs.
+PHONE_PREFIX_CHOICES = [
+    ('+32', '🇧🇪 +32'),
+]
+
 
 # ---------- Mixin : règles globales ----------
 class TailwindFormMixin:
@@ -138,10 +143,23 @@ class ProfileUpdateForm(TailwindFormMixin, forms.ModelForm):
         label="Langues parlées"
     )
 
+    phone_prefix = forms.ChoiceField(
+        choices=PHONE_PREFIX_CHOICES,
+        required=False,
+        label="Indicatif",
+        widget=forms.Select(attrs={
+            'class': 'appearance-none bg-none bg-transparent border-0 py-2 pl-3 pr-7 text-sm font-semibold text-gray-700 focus:ring-0 focus:outline-none cursor-pointer'
+        })
+    )
+
     class Meta:
         model = Profile
-        fields = ['profile_picture', 'address', 'languages', 'transport_modes', 'bio', 'document_bvm']
+        fields = ['profile_picture', 'address', 'phone_prefix', 'phone_number', 'languages', 'transport_modes', 'bio', 'document_bvm']
         widgets = {
+            'phone_number': forms.TextInput(attrs={
+                'class': 'flex-1 min-w-0 border-0 px-3 py-2 focus:ring-0 focus:outline-none',
+                'placeholder': "4xx xx xx xx"
+            }),
             # TEXTAREA => no rounded
             'bio': forms.Textarea(attrs={
                 'class': 'mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-none',

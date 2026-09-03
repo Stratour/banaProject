@@ -2,6 +2,11 @@
 {% load i18n static %}
 
 {% block head_title %}{% trans "Mon abonnement" %}{% endblock head_title %}
+
+{% block page_background %}
+<div class="fixed inset-0 -z-10 opacity-50 pointer-events-none" style="background-image:url('{% static 'bana/img/background/bg-bana-2.png' %}'); background-size:cover; background-repeat:no-repeat; background-position:center;"></div>
+{% endblock %}
+
 {% block content %}
 <section class="section profile">
   <div class="container" data-aos="fade-up" data-aos-delay="100">
@@ -101,6 +106,26 @@
 
               </div>
 
+            {% elif is_free_period %}
+
+              <div class="rounded-lg border border-brand/30 bg-white px-4 py-3">
+                <p class="text-gray-800 font-semibold">
+                  🎁 {% trans "Accès gratuit pendant la phase de test" %}
+                </p>
+                <p class="text-gray-600 text-sm mt-1">
+                  {% blocktrans %}Toutes les fonctionnalités, y compris le matching, sont gratuites jusqu’au{% endblocktrans %}
+                  {{ free_access_until|date:"d/m/Y" }} {% trans "inclus. Aucun abonnement n’est nécessaire pour l’instant." %}
+                </p>
+              </div>
+
+              <div class="pt-2">
+                <button type="button" disabled
+                        title="{% trans "Indisponible pendant la phase de test gratuite" %}"
+                        class="inline-flex items-center px-5 py-2 rounded-full bg-gray-200 text-gray-500 font-semibold cursor-not-allowed">
+                  {% trans "S’abonner (bientôt disponible)" %}
+                </button>
+              </div>
+
             {% else %}
 
               <div>
@@ -111,7 +136,7 @@
                 <form method="post" action="{% url 'create_checkout_session' %}">
                   {% csrf_token %}
                   <input type="hidden" name="price_id" value="{{ price.id }}">
-                  <button type="submit" 
+                  <button type="submit"
                           class="inline-flex items-center px-5 py-2 rounded-full bg-brand text-white hover:bg-brand-dark font-semibold transition">
                     {% trans "S’abonner pour" %} {{ product_price|floatformat:0 }} €/{% trans "ans" %}
                   </button>

@@ -7,7 +7,7 @@
 
 
 {% block extra_head %}
-<link rel="preload" as="image" href="{% static 'bana/img/page/work/transport-scolaire-enseignement-specialise.jpg' %}">
+<link rel="preload" as="image" href="{% static 'bana/img/page/work/transport-scolaire-enseignement-specialise.webp' %}" type="image/webp">
 <link rel="stylesheet" href="{% static 'bana/css/components/citation.css' %}">
 <link rel="stylesheet" href="{% static 'bana/css/components/testimonials.css' %}" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="{% static 'bana/css/components/testimonials.css' %}"></noscript>
@@ -20,10 +20,13 @@
     <!-- ═══════════════════════════════════════════════ -->
     <section class="relative flex flex-col items-center min-h-screen text-center px-4 md:px-8 lg:px-16 bg-gray-900">
 
-        <img src="{% static 'bana/img/page/work/transport-scolaire-enseignement-specialise.jpg' %}"
-             class="absolute inset-0 w-full h-full object-cover object-top"
-             fetchpriority="high" loading="eager"
-             width="1672" height="941" alt="">
+        <picture>
+            <source srcset="{% static 'bana/img/page/work/transport-scolaire-enseignement-specialise.webp' %}" type="image/webp">
+            <img src="{% static 'bana/img/page/work/transport-scolaire-enseignement-specialise.jpg' %}"
+                 class="absolute inset-0 w-full h-full object-cover object-top"
+                 fetchpriority="high" loading="eager"
+                 width="1600" height="900" alt="">
+        </picture>
 
         <div class="absolute inset-0 bg-black/15"></div>
 
@@ -86,9 +89,12 @@
             <div class="citation-brush">
 
                 <!-- Fond décoratif (coup de pinceau + guillemets) -->
-                <img src="{% static 'bana/img/background/bg-citation.png' %}" alt="" aria-hidden="true"
-                     loading="lazy" width="1080" height="1080"
-                     class="citation-brush__bg">
+                <picture>
+                    <source srcset="{% static 'bana/img/background/bg-citation.webp' %}" type="image/webp">
+                    <img src="{% static 'bana/img/background/bg-citation.png' %}" alt="" aria-hidden="true"
+                         loading="lazy" width="1080" height="1080"
+                         class="citation-brush__bg">
+                </picture>
 
                 <div class="citation-brush__inner">
                     <p class="citation-brush__text text-2xl md:text-3xl font-bold italic text-[#007F73] leading-snug text-center">
@@ -162,9 +168,9 @@
             <!-- Image -->
             <div class="relative w-4/5 sm:w-3/4 mx-auto -mb-16 md:mb-0 md:w-1/2 md:absolute md:-top-12 lg:-top-16 md:right-0 z-20 animate-on-scroll animate-right">
                 <picture>
-                    <source srcset="{% static 'bana/img/page/home/deplacements-scolaires-belgique.webp' %}" type="image/webp">
-                    <img src="{% static 'bana/img/page/home/deplacements-scolaires-belgique.jpg' %}" alt="Déplacements scolaires en Belgique"
-                        class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover" width="1672" height="941" loading="lazy" />
+                    <source srcset="{% static 'bana/img/page/work/communauté-yaya-belgique.webp' %}" type="image/webp">
+                    <img src="{% static 'bana/img/page/work/communauté-yaya-belgique.jpg' %}" alt="Communauté de Yaya en Belgique"
+                        class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover" width="1600" height="900" loading="lazy" />
                 </picture>
             </div>
 
@@ -205,12 +211,18 @@
                 <div class="carousel-container relative overflow-hidden rounded-2xl shadow-md">
                     <div class="carousel flex transition-transform duration-700 ease-in-out">
                         <div class="mySlides w-full flex-shrink-0">
-                            <img src="{% static 'bana/img/page/work/carte-avis-sarah.png' %}" alt="Avis d'un parent sur Sarah E., Yaya à Uccle : 5/5"
-                                class="w-full h-auto" width="1800" height="945" loading="lazy">
+                            <picture>
+                                <source srcset="{% static 'bana/img/page/work/carte-avis-sarah.webp' %}" type="image/webp">
+                                <img src="{% static 'bana/img/page/work/carte-avis-sarah.png' %}" alt="Avis d'un parent sur Sarah E., Yaya à Uccle : 5/5"
+                                    class="w-full h-auto" width="1800" height="945" loading="lazy">
+                            </picture>
                         </div>
                         <div class="mySlides w-full flex-shrink-0">
-                            <img src="{% static 'bana/img/page/work/carte-avis-thomas.png' %}" alt="Avis d'une Yaya sur Thomas L., parent à Uccle : 5/5"
-                                class="w-full h-auto" width="1800" height="945" loading="lazy">
+                            <picture>
+                                <source srcset="{% static 'bana/img/page/work/carte-avis-thomas.webp' %}" type="image/webp">
+                                <img src="{% static 'bana/img/page/work/carte-avis-thomas.png' %}" alt="Avis d'une Yaya sur Thomas L., parent à Uccle : 5/5"
+                                    class="w-full h-auto" width="1800" height="945" loading="lazy">
+                            </picture>
                         </div>
                     </div>
                     <div class="carousel-dots absolute inset-x-0 bottom-3 z-20 flex justify-center gap-2">
@@ -345,7 +357,7 @@
 
             <ul class="flex flex-col gap-4">
                 <li class="flex items-center gap-4 bg-white/10 rounded-2xl px-5 py-4 transition hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg cursor-default">
-                    <img src="{% static 'bana/img/page/tarifs/defraiement-1.svg' %}" alt="" aria-hidden="true" class="w-12 h-12" width="48" height="48">
+                    <img src="{% static 'bana/img/page/tarifs/defraiement-1.png' %}" alt="" aria-hidden="true" class="w-12 h-12" width="48" height="48">
                     <div>
                         <p class="font-bold text-lg">Défraiement</p>
                         <p class="text-base text-white">Le parent verse directement le défraiement au Yaya pour le trajet</p>

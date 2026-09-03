@@ -10,25 +10,25 @@ from django.utils.translation import gettext_lazy as _
 def home(request):
     home_benefits = [
         {
-            'img_src': 'bana/img/page/home/flexibilite-agenda.svg',
+            'img_src': 'bana/img/page/home/flexibilite-agenda.png',
             'title': _('Gain de temps'),
             'highlight': _('Flexibilité'),
             'description': _('Flexibilité dans votre agenda')
         },
         {
-            'img_src': 'bana/img/page/home/economie-carburant.svg',
+            'img_src': 'bana/img/page/home/economie-carburant.png',
             'title': _('Économique'),
             'highlight': _('Économiser'),
             'description': _('Économiser sur <br>le carburant')
         },
         {
-            'img_src': 'bana/img/page/home/ecologie.svg',
+            'img_src': 'bana/img/page/home/ecologie.png',
             'title': _('Écologique'),
             'highlight': _('Utiliser'),
             'description': _('Utiliser des moyens de transport alternatifs')
         },
         {
-            'img_src': 'bana/img/page/home/communaute.svg',
+            'img_src': 'bana/img/page/home/communaute.png',
             'title': _('Communauté'),
             'highlight': _('Créer du lien social'),
             'description': _('Créer du lien social <br> dans votre quartier')
@@ -242,7 +242,7 @@ def work(request):
 def yaya(request):
     yaya_benefits = [
         {
-            'img_src': 'bana/img/page/yaya/flexibilite.svg',
+            'img_src': 'bana/img/page/yaya/flexibilite.png',
             'title': _('Flexible'),
             'description': _('Engagement uniquement selon votre disponibilité')
         },
@@ -252,12 +252,12 @@ def yaya(request):
             'description': _('Recevez jusqu’à 176€/mois pour vos trajets quotidiens')
         },
         {
-            'img_src': 'bana/img/page/yaya/sans-voiture-obligatoire.svg',
+            'img_src': 'bana/img/page/yaya/sans-voiture-obligatoire.png',
             'title': _('Sans voiture obligatoire'),
             'description': _('Tous les moyens de transport sont utilisés')
         },
         {
-            'img_src': 'bana/img/page/yaya/communautaire.svg',
+            'img_src': 'bana/img/page/yaya/communautaire.png',
             'title': _('Communautaire'),
             'description': _('Créer du lien social dans votre quartier')
         }
@@ -434,12 +434,12 @@ def tarifs(request):
             'description': _("Parents et Yaya <br> s'inscrivent gratuitement"),
         },
         {
-            'img_src': 'bana/img/page/tarifs/abonnement-payant.svg',
+            'img_src': 'bana/img/page/tarifs/abonnement-payant.png',
             'title': _('Abonnement payant'),
             'description': _("Nécessaire pour découvrir <br> les matchings"),
         },
         {
-            'img_src': 'bana/img/page/tarifs/defraiement-1.svg',
+            'img_src': 'bana/img/page/tarifs/defraiement-1.png',
             'title': _('Trajets défrayés'),
             'description': _("Petite compensation <br> pour chaque trajet effectué"),
         },
@@ -457,8 +457,8 @@ def about(request):
         {'emoji': '🧒', 'icon': 'bana/img/page/about/autonomie.png',      'text': "Autonomie progressive des enfants"},
         {'emoji': '🧠', 'icon': 'bana/img/page/about/mental.png',         'text': 'Moins de charge mentale'},
         {'emoji': '🤝', 'icon': 'bana/img/page/about/communautaire.png',  'text': "Plus d'entraide communautaire"},
-        {'emoji': '🌱', 'icon': 'bana/img/page/about/environnement.svg',  'text': 'Impact environnemental concret'},
-        {'emoji': '🔒', 'icon': 'bana/img/page/about/securite.svg',       'text': 'Plus de sécurité autour des écoles'},
+        {'emoji': '🌱', 'icon': 'bana/img/page/about/environnement.png',  'text': 'Impact environnemental concret'},
+        {'emoji': '🔒', 'icon': 'bana/img/page/about/securite.png',       'text': 'Plus de sécurité autour des écoles'},
     ]
     odd_badges = [
         {'number': '03', 'name': 'Bonne santé et bien-être'},
@@ -523,6 +523,7 @@ def about(request):
     team_members = [
         {
             'img_src': 'bana/img/page/about/nyota-profil-bana.jpg',
+            'img_src_webp': 'bana/img/page/about/nyota-profil-bana.webp',
             'name': 'Nyota',
             'role': 'Fondatrice',
             'description': 'Entrepreneuriat social et mobilité, Nyota porte la vision communautaire de Bana.',
@@ -531,6 +532,7 @@ def about(request):
         },
         {
             'img_src': 'bana/img/page/about/luca-profil-bana.jpg',
+            'img_src_webp': 'bana/img/page/about/luca-profil-bana.webp',
             'name': 'Luca',
             'role': 'Développeur IT',
             'description': 'Architecture et développement de la plateforme, du backend aux interfaces.',
@@ -539,6 +541,7 @@ def about(request):
         },
         {
             'img_src': 'bana/img/page/about/raph-profil-bana.jpg',
+            'img_src_webp': 'bana/img/page/about/raph-profil-bana.webp',
             'name': 'Raphaël',
             'role': 'Développeur IT',
             'description': 'Innovation digitale et intégration des fonctionnalités clés de la plateforme.',

@@ -1,5 +1,17 @@
+from datetime import date
+
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+
+# Phase de test : accès gratuit à toutes les fonctionnalités réservées aux
+# abonnés (matching, réservations...) jusqu'à cette date incluse, sans
+# paiement réel. Voir Subscription.is_user_abonned() et
+# stripe_sub.views.create_checkout_session (garde-fou anti-paiement).
+# Passé cette date, is_user_abonned() revient automatiquement à la vérification
+# normale d'un abonnement Stripe actif — aucune action nécessaire pour
+# réactiver le paiement.
+FREE_ACCESS_UNTIL = date(2026, 9, 30)
 
 # Create your models here.
 
@@ -29,10 +41,16 @@ class Subscription(models.Model):
         """
         Vérifie si l'utilisateur a un abonnement actif.
         Renvoie True ou False.
+
+        Pendant la phase de test (cf. FREE_ACCESS_UNTIL), tout utilisateur
+        connecté est considéré comme abonné, sans paiement réel.
         """
         if user_instance is None or not user_instance.is_authenticated:
             return False
-            
+
+        if timezone.now().date() <= FREE_ACCESS_UNTIL:
+            return True
+
         return cls.objects.filter(user=user_instance, is_active=True).exists()
     
     #def check_if_expired(self):

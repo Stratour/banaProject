@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /tmp/claude-1004/-home-rootkitbana-banaProject/ee77384a-015a-4243-aec9-898576fdf688/scratchpad/imgtools)",
+      "Bash(npm init *)",
+      "Bash(npm install *)",
+      "Bash(node -e ' *)",
+      "Bash(node convert.js)",
+      "Bash(npx svgo *)",
+      "Bash(python3 -c ' *)",
+      "Bash(node inspect_svgs.js)",
+      "Bash(node fix_fake_svgs.js)",
+      "Bash(node -e \"require\\('/tmp/claude-1004/-home-rootkitbana-banaProject/ee77384a-015a-4243-aec9-898576fdf688/scratchpad/imgtools/node_modules/sharp'\\)\\('page/about/frein-principal.png'\\).metadata\\(\\).then\\(m=>console.log\\(m\\)\\)\")",
+      "Bash(node convert2.js)"
+    ]
+  }
+}

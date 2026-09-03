@@ -1,8 +1,14 @@
 {% extends "allauth/layouts/base.html" %}
+{% load static %}
 
 {% block head_title %}
 Vérification d'identité
 {% endblock head_title %}
+
+{% block page_background %}
+<div class="fixed inset-0 -z-10 opacity-50 pointer-events-none" style="background-image:url('{% static 'bana/img/background/bg-bana-2.png' %}'); background-size:cover; background-repeat:no-repeat; background-position:center;"></div>
+{% endblock %}
+
 {% block content %}
 <div class="max-w-xl mx-auto mt-12 px-6 py-8 bg-white rounded-2xl shadow-md">
   <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Vérification de votre identité</h2>

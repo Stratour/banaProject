@@ -16,7 +16,7 @@ from django.views.decorators.http import require_POST
 
 
 from accounts.models import Profile
-from .models import Subscription
+from .models import Subscription, FREE_ACCESS_UNTIL
 
 # Config Stripe
 stripe.api_key = settings.STRIPE_SECRET_KEY
@@ -33,17 +33,27 @@ def subscription(request):
     status = profile.service  # 'Yaya' ou 'Parent'
 
     active_subscription = Subscription.objects.filter(user=request.user, is_active=True).first()
+    is_free_period = timezone.now().date() <= FREE_ACCESS_UNTIL
 
-    lookup_keys = {
-        'Yaya': 'yaya_annual_2e',
-        'Parent': 'parent_annual_99e',
-    }
-    lookup_key = lookup_keys.get(status)
+    product = None
+    price = None
+    product_price = None
 
-    prices = stripe.Price.list(lookup_keys=[lookup_key], expand=["data.product"])
-    price = prices.data[0]
-    product = price.product
-    product_price = price.unit_amount / 100.0
+    # Pendant la phase de test, le bouton "S'abonner" est désactivé côté
+    # template : pas besoin d'interroger Stripe pour un prix qui ne sera pas
+    # affiché (évite aussi un crash si les price lookup_keys sont absents
+    # côté Stripe, cf. FREE_ACCESS_UNTIL dans models.py).
+    if not is_free_period and not active_subscription:
+        lookup_keys = {
+            'Yaya': 'yaya_annual_2e',
+            'Parent': 'parent_annual_99e',
+        }
+        lookup_key = lookup_keys.get(status)
+
+        prices = stripe.Price.list(lookup_keys=[lookup_key], expand=["data.product"])
+        price = prices.data[0]
+        product = price.product
+        product_price = price.unit_amount / 100.0
 
     return render(request, 'stripe_sub/subscription.html', {
         'status': status,
@@ -51,12 +61,26 @@ def subscription(request):
         'price': price,
         'product_price': product_price,
         'active_subscription': active_subscription,
+        'is_free_period': is_free_period,
+        'free_access_until': FREE_ACCESS_UNTIL,
         'page_title': "Mon abonnement",
     })
 
 
 @login_required
 def create_checkout_session(request):
+    # Garde-fou anti-paiement pendant la phase de test : même si le bouton
+    # "S'abonner" est désactivé côté template, on bloque aussi ici tout
+    # appel direct à cette vue pour qu'aucun paiement réel ne puisse être
+    # déclenché (cf. FREE_ACCESS_UNTIL dans models.py).
+    if timezone.now().date() <= FREE_ACCESS_UNTIL:
+        messages.info(
+            request,
+            "L'application est gratuite pendant la phase de test, jusqu'au "
+            f"{FREE_ACCESS_UNTIL.strftime('%d/%m/%Y')} inclus. Aucun paiement n'est nécessaire.",
+        )
+        return redirect("subscription")
+
     profile = request.user.profile
     status = profile.service
     price_id = request.POST.get('price_id')
@@ -407,6 +431,7 @@ def _handle_identity_success(session):
 
     try:
         profile.save()
+        profile.update_profile_verified()
         logger.info(f"Profil mis à jour pour user_id={user_id}")
     except Exception:
         logger.error(f"Impossible de sauvegarder le profil user_id={user_id}", exc_info=True)
@@ -425,6 +450,7 @@ def _handle_identity_failure(session, reason):
         profile = Profile.objects.get(user=user)
         profile.ci_is_verified = False
         profile.save()
+        profile.update_profile_verified()
         logger.info(f"Profil mis à jour (échec vérification) pour user_id={user_id}")
     except Exception:
         logger.error("Impossible de mettre à jour profil après échec Identity", exc_info=True)

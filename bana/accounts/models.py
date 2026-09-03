@@ -13,6 +13,8 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     profile_picture = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     address = models.CharField(max_length=100, blank=True)
+    phone_prefix = models.CharField(max_length=5, default='+32', blank=True)
+    phone_number = models.CharField(max_length=20, blank=True)
     ci_is_verified = models.BooleanField(default=False)
     bvm_is_verified = models.BooleanField(default=False)
     prfl_is_verified = models.BooleanField(default=False)
@@ -38,6 +40,12 @@ class Profile(models.Model):
     onboarding_seen = models.BooleanField(default=False)
 
     @property
+    def full_phone_number(self):
+        if not self.phone_number:
+            return ""
+        return f"{self.phone_prefix} {self.phone_number}".strip()
+
+    @property
     def trips_count(self):
         from trajects.models import Reservation
         today = timezone.now().date()
@@ -56,7 +64,9 @@ class Profile(models.Model):
         is_complete = bool(
             self.profile_picture and
             self.address and
-            self.languages.exists()
+            self.languages.exists() and
+            self.ci_is_verified and
+            self.bvm_is_verified
         )
         if self.prfl_is_verified != is_complete:
             self.prfl_is_verified = is_complete

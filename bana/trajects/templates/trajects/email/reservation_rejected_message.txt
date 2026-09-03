@@ -1,0 +1,5 @@
+{% autoescape off %}Bonjour,
+
+Votre réservation pour le trajet {{ trajet_info }} du {{ date_str }} a été refusée.
+
+Connectez-vous à Bana pour consulter d'autres trajets.{% endautoescape %}

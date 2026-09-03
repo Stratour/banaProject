@@ -6,7 +6,7 @@
 {% block og_description %}{% trans "Essentiel, Confort ou Ambassadeur : choisissez la formule qui vous correspond. Vérification d'identité incluse, badges enfants, support prioritaire." %}{% endblock %}
 
 {% block extra_head %}
-<link rel="preload" as="image" href="{% static 'bana/img/page/tarifs/solution-trajets-ramassage-scolaire-belgique.jpg' %}">
+<link rel="preload" as="image" href="{% static 'bana/img/page/tarifs/solution-trajets-ramassage-scolaire-belgique.webp' %}" type="image/webp">
 <link rel="stylesheet" href="{% static 'bana/css/components/citation.css' %}">
 {% endblock %}
 
@@ -85,9 +85,12 @@
             <div class="citation-brush citation-brush--long">
 
                 <!-- Fond décoratif (coup de pinceau + guillemets) -->
-                <img src="{% static 'bana/img/background/bg-citation.png' %}" alt="" aria-hidden="true"
-                     loading="lazy" width="1080" height="1080"
-                     class="citation-brush__bg">
+                <picture>
+                    <source srcset="{% static 'bana/img/background/bg-citation.webp' %}" type="image/webp">
+                    <img src="{% static 'bana/img/background/bg-citation.png' %}" alt="" aria-hidden="true"
+                         loading="lazy" width="1080" height="1080"
+                         class="citation-brush__bg">
+                </picture>
 
                 <div class="citation-brush__inner">
                     <p class="citation-brush__text text-xl md:text-2xl font-bold italic text-[#007F73] leading-snug text-center">
@@ -274,14 +277,14 @@
 
                 <ul class="flex flex-col gap-4 mt-4">
                     <li class="flex items-center gap-4 bg-white/10 rounded-2xl px-5 py-4 transition hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg cursor-default">
-                        <img src="{% static 'bana/img/page/tarifs/formule-unique.svg' %}" alt="" aria-hidden="true" class="w-12 h-12" width="48" height="48">
+                        <img src="{% static 'bana/img/page/tarifs/formule-unique.png' %}" alt="" aria-hidden="true" class="w-12 h-12" width="48" height="48">
                         <div>
                             <p class="font-bold">Formule unique</p>
                             <p class="text-sm text-white/80">Seulement 4,90€/an pour rejoindre la communauté</p>
                         </div>
                     </li>
                     <li class="flex items-center gap-4 bg-white/10 rounded-2xl px-5 py-4 transition hover:bg-white/20 hover:-translate-y-0.5 hover:shadow-lg cursor-default">
-                        <img src="{% static 'bana/img/page/tarifs/defraiement-1.svg' %}" alt="" aria-hidden="true" class="w-12 h-12" width="48" height="48">
+                        <img src="{% static 'bana/img/page/tarifs/defraiement-1.png' %}" alt="" aria-hidden="true" class="w-12 h-12" width="48" height="48">
                         <div>
                             <p class="font-bold">Défraiement dès le premier trajet</p>
                             <p class="text-sm text-white/80">Versé directement par les familles, sans commission Bana</p>

@@ -124,6 +124,7 @@ def verify_bvm_prfl(request, profile_id):
         if not profile.bvm_is_verified:
             profile.bvm_is_verified = True
             profile.save()
+            profile.update_profile_verified()
             messages.success(request, f'Le statut BVM pour {profile.user.username} a été validé avec succès.')
         else:
             messages.warning(request, f'Le profil de {profile.user.username} avait déjà un BVM validé.')
@@ -142,12 +143,14 @@ def verify_profile_prfl(request, profile_id):
     if request.method == 'POST':
         profile = get_object_or_404(Profile, id=profile_id)
 
-        if not profile.prfl_is_verified:
-            profile.prfl_is_verified = True
-            profile.save()
-            messages.success(request, f'Le statut de vérification PRFL pour {profile.user.username} a été mis à jour avec succès.')
-        else:
+        if profile.prfl_is_verified:
             messages.warning(request, f'Le profil de {profile.user.username} était déjà vérifié (PRFL).')
+        else:
+            profile.update_profile_verified()
+            if profile.prfl_is_verified:
+                messages.success(request, f'Le statut de vérification PRFL pour {profile.user.username} a été mis à jour avec succès.')
+            else:
+                messages.error(request, f'Le profil de {profile.user.username} ne remplit pas encore toutes les conditions (profil complet, CI et BVM vérifiés).')
 
         # Rediriger l'utilisateur vers la page de liste des profils après la modification
         #return redirect('admin_panel') # Assurez-vous que c'est le nom de votre URL pour admin_views

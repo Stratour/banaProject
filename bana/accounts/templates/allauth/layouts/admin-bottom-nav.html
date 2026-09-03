@@ -98,7 +98,7 @@
     {% if request.user.profile.service == "Parent" %}
     <a href="{% url 'researched_traject' %}"
        class="flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium transition-colors
-              {% if url_name == 'researched_traject' or url_name == 'my_researched_trajects' or url_name == 'my_researched_groupe_detail' or url_name == 'my_matchings_researched' or url_name == 'my_matchings_researched_detail' %}text-brand{% else %}text-gray-400{% endif %}">
+              {% if url_name == 'researched_traject' or url_name == 'my_researched_trajects' or url_name == 'my_matchings_researched' %}text-brand{% else %}text-gray-400{% endif %}">
       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/>
       </svg>
@@ -107,7 +107,7 @@
     {% elif request.user.profile.service == "Yaya" %}
     <a href="{% url 'simple_proposed_traject' %}"
        class="flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium transition-colors
-              {% if url_name == 'simple_proposed_traject' or url_name == 'my_simple_trajects' or url_name == 'my_simple_groupe_detail' or url_name == 'my_matchings_simple' or url_name == 'my_matchings_simple_detail' %}text-brand{% else %}text-gray-400{% endif %}">
+              {% if url_name == 'simple_proposed_traject' or url_name == 'my_simple_trajects' or url_name == 'my_matchings_simple' %}text-brand{% else %}text-gray-400{% endif %}">
       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35" stroke-linecap="round"/>
       </svg>
@@ -118,7 +118,7 @@
     <!-- Proposer -->
     <a href="{% url 'proposed_traject' %}"
        class="flex flex-col items-center justify-center gap-0.5 text-[10px] font-medium transition-colors
-              {% if url_name == 'proposed_traject' or url_name == 'my_proposed_trajects' or url_name == 'my_proposed_groupe_detail' or url_name == 'my_matchings_proposed' or url_name == 'my_matchings_proposed_detail' %}text-brand{% else %}text-gray-400{% endif %}">
+              {% if url_name == 'proposed_traject' or url_name == 'my_proposed_trajects' or url_name == 'my_matchings_proposed' %}text-brand{% else %}text-gray-400{% endif %}">
       <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
       </svg>

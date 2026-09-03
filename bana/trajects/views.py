@@ -1,18 +1,23 @@
 import re
-from django.core.mail import send_mail
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from .utils.geocoding import get_autocomplete_suggestions, get_place_details
-from django.conf import settings
+from .utils.mail import (
+    send_reservation_confirmed_email,
+    send_reservation_rejected_email,
+    send_new_reservation_request_email,
+    send_help_proposed_email,
+    send_help_proposed_bulk_email,
+)
 from django.contrib import messages
-from accounts.models import Child, FavoriteAddress
+from accounts.models import Child, FavoriteAddress, Review
 from stripe_sub.models import Subscription
 from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode, Reservation
 from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm, SimpleProposedTrajectForm
-from django.db.models import Q, Min, Max, Count, Case, When, DateField
+from django.db.models import Q, Min, Max, Count, Avg, Case, When, DateField
 from datetime import datetime, timedelta, date
 from django.contrib.gis.geos import Point
 from django.contrib.gis.measure import D
@@ -167,15 +172,38 @@ def _delete_groupe(request, model, filters, redirect_success, redirect_error):
     return redirect(redirect_success)
 
 
-def _delete_single(request, model, filters, redirect_name, groupe_uid, success_msg):
+def _delete_single(request, model, filters, redirect_name, success_msg):
     """Supprime une occurrence unique. POST uniquement."""
     if request.method != "POST":
         messages.error(request, "Action non autorisée.")
-        return redirect(redirect_name, groupe_uid=groupe_uid)
+        return redirect(redirect_name)
     obj = get_object_or_404(model, user=request.user, **filters)
     obj.delete()
     messages.success(request, success_msg)
-    return redirect(redirect_name, groupe_uid=groupe_uid)
+    return redirect(redirect_name)
+
+
+def _match_row_status(research, proposal, today, parent_confirmed_ids, parent_pending_ids):
+    """
+    Statut d'une date de matching côté Yaya, réutilisé à la fois pour
+    l'affichage (pastille) et pour savoir si une date est "proposable"
+    (cf. propose_help_match). Une réservation n'est jamais créée par le
+    Yaya : "confirmed"/"pending" reflètent une réservation déjà initiée
+    par le PARENT (via auto_reserve).
+    """
+    if research.date and research.date < today:
+        return "past"
+    if research.id in parent_confirmed_ids:
+        return "confirmed"
+    if research.id in parent_pending_ids:
+        return "pending"
+    avail = _available_places(proposal) if proposal else 0
+    required = len(research.children.all()) or 1
+    if avail <= 0:
+        return "complet"
+    if avail < required:
+        return "not_enough"
+    return "available"
 
 
 def _build_match_rows(matched_dates_qs, proposed_by_date, today, extra_fields_fn=None, skip_if_no_proposal=False):
@@ -898,6 +926,38 @@ def generate_recurrent_dates(
 
     return sorted(set(dates))
 
+def _resolve_recurrent_dates(request, recurrence_type, date_debut, date_fin, selected_days):
+    """
+    Calcule la liste finale des dates à créer, en tenant compte :
+    - de la sélection libre du calendrier (mode "one_week" / occasionnel),
+      transmise via le champ caché POST "selected_dates" (CSV de dates ISO) ;
+      si présente, elle prime sur le calcul jour(s)-de-semaine + plage ;
+    - des dates explicitement exclues par l'utilisateur (POST "excluded_dates",
+      CSV de dates ISO), applicable à tous les modes de récurrence.
+    """
+    selected_raw = (request.POST.get("selected_dates") or "").strip()
+    excluded_raw = (request.POST.get("excluded_dates") or "").strip()
+    excluded_set = {d for d in excluded_raw.split(",") if d}
+
+    if recurrence_type == "one_week" and selected_raw:
+        recurrent_dates = sorted({
+            datetime.strptime(d, "%Y-%m-%d").date()
+            for d in selected_raw.split(",") if d
+        })
+    else:
+        recurrent_dates = generate_recurrent_dates(
+            date_debut=date_debut,
+            date_fin=date_fin,
+            recurrence_type=recurrence_type,
+            specific_days=selected_days,
+        )
+
+    if excluded_set:
+        recurrent_dates = [d for d in recurrent_dates if d.isoformat() not in excluded_set]
+
+    return recurrent_dates
+
+
 # ============================================================
 # 💾 Enregistrement des trajets proposés et recherchés
 # ============================================================
@@ -936,11 +996,12 @@ def save_proposed_traject(request, traject_form, proposed_form, groupe_name=None
     groupe_name = (groupe_name or "").strip() or "Mon trajet"
     groupe_uid = groupe_uid or uuid.uuid4()
 
-    recurrent_dates = generate_recurrent_dates(
+    recurrent_dates = _resolve_recurrent_dates(
+        request=request,
+        recurrence_type=recurrence_type,
         date_debut=date_debut,
         date_fin=date_fin,
-        recurrence_type=recurrence_type,
-        specific_days=selected_days,
+        selected_days=selected_days,
     )
 
     if not recurrent_dates:
@@ -1001,11 +1062,12 @@ def save_researched_traject(request, traject_form, researched_form, groupe_name=
     groupe_name = (groupe_name or "").strip() or "Ma recherche"
     groupe_uid = groupe_uid or uuid.uuid4()
 
-    recurrent_dates = generate_recurrent_dates(
+    recurrent_dates = _resolve_recurrent_dates(
+        request=request,
+        recurrence_type=recurrence_type,
         date_debut=date_debut,
         date_fin=date_fin,
-        recurrence_type=recurrence_type,
-        specific_days=selected_days,
+        selected_days=selected_days,
     )
 
     if not recurrent_dates:
@@ -1050,11 +1112,12 @@ def save_simple_proposed_traject(request, form, groupe_name=None, groupe_uid=Non
     date_fin = cleaned.get("date_fin") or date_debut
     selected_days = cleaned.get("tr_weekdays") or []
 
-    recurrent_dates = generate_recurrent_dates(
+    recurrent_dates = _resolve_recurrent_dates(
+        request=request,
+        recurrence_type=recurrence_type,
         date_debut=date_debut,
         date_fin=date_fin,
-        recurrence_type=recurrence_type,
-        specific_days=selected_days,
+        selected_days=selected_days,
     )
 
     if not recurrent_dates:
@@ -1120,17 +1183,18 @@ def my_proposed_trajects(request):
 
     proposed_headers = []
     for g in groupes:
-        header = (
+        occurrences = list(
             ProposedTraject.objects
             .filter(user=user, groupe_uid=g["groupe_uid"], is_active=True)
             .order_by("date", "departure_time")
-            .first()
         )
-        if not header:
+        if not occurrences:
             continue
+        header = occurrences[0]
         header.groupe_count = g["count"]
         header.groupe_first_date = g["first_date"]
         header.groupe_last_date = g["last_date"]
+        header.occurrences = occurrences  # chaque occurrence expose déjà .is_past (property du modèle)
         proposed_headers.append(header)
 
     return render(request, "trajects/proposition/trajets_liste.html", {
@@ -1150,18 +1214,19 @@ def my_simple_trajects(request):
 
     headers = []
     for g in groupes:
-        header = (
+        occurrences = list(
             ProposedTraject.objects
             .filter(user=user, is_simple=True, is_active=True, groupe_uid=g['groupe_uid'])
             .order_by('date', 'departure_time')
-            .first()
         )
-        if not header:
+        if not occurrences:
             continue
-        
+
+        header = occurrences[0]
         header.groupe_count = g['count']
         header.groupe_first_date = g['first_date']
         header.groupe_last_date = g['last_date']
+        header.occurrences = occurrences  # chaque occurrence expose déjà .is_past (property du modèle)
         headers.append(header)
 
     return render(request, 'trajects/proposition_rayon/trajets_liste.html', {
@@ -1174,26 +1239,33 @@ def my_simple_trajects(request):
 def my_researched_trajects(request):
     user = request.user
     is_abonned = Subscription.is_user_abonned(user)
-    
+    today = timezone.now().date()
+
     groupes = _aggregate_groupes(
         ResearchedTraject.objects.filter(user=user, is_active=True)
     )
-    
+
     researched_headers = []
     for g in groupes:
-        header = (
+        occurrences = list(
             ResearchedTraject.objects
             .filter(user=user, groupe_uid=g['groupe_uid'], is_active=True)
             .order_by('date', 'departure_time')
-            .first()
         )
-        if not header:
+        if not occurrences:
             continue
-        
+
+        # ResearchedTraject n'a pas de property is_past (contrairement à
+        # ProposedTraject) — on la calcule ici pour le template.
+        for occ in occurrences:
+            occ.is_past = bool(occ.date and occ.date < today)
+
+        header = occurrences[0]
         # ✅ On “colle” des infos de groupe sur l’objet pour le template
         header.groupe_count = g['count']
         header.groupe_first_date = g['first_date']
         header.groupe_last_date = g['last_date']
+        header.occurrences = occurrences
 
         researched_headers.append(header)
 
@@ -1205,113 +1277,7 @@ def my_researched_trajects(request):
     })
 
 # ============================================================
-# 🧭 VUES UTILISATEURS DETAIL 
-# ============================================================
-
-@name_required
-def my_proposed_groupe_detail(request, groupe_uid):
-    user = request.user
-    is_abonned = Subscription.is_user_abonned(user)
-    today = timezone.now().date()
-    
-    occurrences_all= (
-        ProposedTraject.objects
-        .filter(user=user, groupe_uid=groupe_uid, is_active=True, is_simple=False)
-        .order_by('date', 'departure_time')
-    )
-
-    header = occurrences_all.first()
-
-    # ✅ Stats réelles (toujours correctes)
-    stats = occurrences_all.aggregate(
-        first_date=Min('date'),
-        last_date=Max('date'),
-        count=Count('id')
-    )
-    
-    occurrences_upcoming = occurrences_all.filter(date__gte=today).order_by('date', 'departure_time')
-    
-    occurrences_past = occurrences_all.filter(date__lt=today).order_by('-date', '-departure_time')
-
-    return render(request, 'trajects/proposition/trajet_detail.html', {
-        'header': header,
-        'occurrences_upcoming': occurrences_upcoming,
-        'occurrences_past': occurrences_past,
-        'is_abonned': is_abonned,
-        'stats': stats,
-        'page_title': _("Proposer un trajet - Mes trajets"),
-    })
-
-@name_required
-def my_simple_groupe_detail(request, groupe_uid):
-    user = request.user
-    is_abonned = Subscription.is_user_abonned(user)
-    today = timezone.now().date()
-    
-    occurrences_all = (
-        ProposedTraject.objects
-        .filter(user=user, is_simple=True, groupe_uid=groupe_uid, is_active=True)
-        .order_by('date', 'departure_time')
-    )
-    header = occurrences_all.first()
-
-    # ✅ Stats réelles (toujours correctes)
-    stats = occurrences_all.aggregate(
-        first_date=Min('date'),
-        last_date=Max('date'),
-        count=Count('id')
-    )
-    
-    occurrences_upcoming = occurrences_all.filter(date__gte=today).order_by('date', 'departure_time')
-    
-    occurrences_past = occurrences_all.filter(date__lt=today).order_by('-date', '-departure_time')
-
-    
-    return render(request, 'trajects/proposition_rayon/trajet_detail.html', {
-        'header': header,
-        'occurrences_upcoming': occurrences_upcoming,
-        'occurrences_past': occurrences_past,
-        'stats': stats,
-        'is_abonned': is_abonned,
-        'page_title': _("Rechercher un trajet rayon - Mes trajets"),
-    })
-    
-@name_required
-def my_researched_groupe_detail(request, groupe_uid):
-    user = request.user
-    is_abonned = Subscription.is_user_abonned(user)
-    today = timezone.now().date()
-    
-    occurrences_all = (
-        ResearchedTraject.objects
-        .filter(user=user, groupe_uid=groupe_uid, is_active=True)
-        .order_by('date', 'departure_time')
-    )
-
-    researched_header = occurrences_all.first()
-
-    # ✅ Stats réelles (toujours correctes)
-    stats = occurrences_all.aggregate(
-        first_date=Min('date'),
-        last_date=Max('date'),
-        count=Count('id')
-    )
-
-    occurrences_upcoming = occurrences_all.filter(date__gte=today).order_by('date', 'departure_time')
-    
-    occurrences_past = occurrences_all.filter(date__lt=today).order_by('-date', '-departure_time')
-    
-    return render(request, 'trajects/recherche/trajet_detail.html', {
-        'header': researched_header,
-        'occurrences_upcoming': occurrences_upcoming,
-        'occurrences_past': occurrences_past,
-        'is_abonned': is_abonned,
-        'stats': stats,
-        'page_title': _("Rechercher un trajet - Mes trajets"),
-    })
- 
-# ============================================================
-# 🔵 Matching des trajets 
+# 🔵 Matching des trajets
 # ============================================================
 
 @name_required
@@ -1322,6 +1288,22 @@ def my_matchings_proposed(request):
     user = request.user
     today = timezone.now().date()
     is_abonned = Subscription.is_user_abonned(user)
+    profile = user.profile
+    is_subscription_complete = is_abonned and bool(
+        profile.ci_is_verified and profile.document_bvm and profile.profile_picture
+    )
+
+    # "confirmed"/"pending" reflètent des réservations déjà initiées par le
+    # PARENT (auto_reserve) — le Yaya ne crée jamais de Reservation lui-même,
+    # voir _match_row_status.
+    parent_pending_ids = set(
+        Reservation.objects.filter(proposed_traject__user=user, status="pending")
+        .values_list("researched_traject_id", flat=True)
+    )
+    parent_confirmed_ids = set(
+        Reservation.objects.filter(proposed_traject__user=user, status="confirmed")
+        .values_list("researched_traject_id", flat=True)
+    )
 
     groupes = _aggregate_groupes(
         ProposedTraject.objects.filter(user=user, is_active=True, is_simple=False),
@@ -1344,39 +1326,66 @@ def my_matchings_proposed(request):
         if not header:
             continue
 
-        matched_researches = _collect_matches(
+        proposed_qs = (
             ProposedTraject.objects
             .filter(user=user, is_active=True, is_simple=False, groupe_uid=g["groupe_uid"], date__gte=today)
             .select_related("traject", "user", "user__profile")
             .prefetch_related("transport_modes", "languages")
         )
+        matched_researches = _collect_matches(proposed_qs)
+        proposed_by_date = {p.date: p for p in proposed_qs}
 
         pair_map = {}
         for research in matched_researches:
             key = (research.groupe_uid, research.user_id)
-            if key not in pair_map:
-                pair_map[key] = research
-                research.matched_date_debut = research.date
-                research.matched_date_fin = research.date
-            else:
-                existing = pair_map[key]
-                if research.date:
-                    existing.matched_date_debut = min(existing.matched_date_debut, research.date) if existing.matched_date_debut else research.date
-                    existing.matched_date_fin = max(existing.matched_date_fin, research.date) if existing.matched_date_fin else research.date
+            pair_map.setdefault(key, []).append(research)
 
         if not pair_map:
             continue
 
+        matches = []
+        for (researched_groupe_uid, parent_user_id), researches in pair_map.items():
+            researches_sorted = sorted(
+                researches,
+                key=lambda r: (r.date or today, r.departure_time or datetime.min.time()),
+            )
+            representative = researches_sorted[0]
+            rows = _build_match_rows(
+                researches_sorted, proposed_by_date, today,
+                extra_fields_fn=lambda research, proposal: {
+                    "status": _match_row_status(research, proposal, today, parent_confirmed_ids, parent_pending_ids),
+                },
+            )
+            ratings = Review.objects.filter(reviewed_user=representative.user).aggregate(
+                avg=Avg("rating"), count=Count("id")
+            )
+            matches.append({
+                "user": representative.user,
+                "groupe_uid": researched_groupe_uid,
+                "traject": representative.traject,
+                "departure_time": representative.departure_time,
+                "arrival_time": representative.arrival_time,
+                "matched_date_debut": researches_sorted[0].date,
+                "matched_date_fin": researches_sorted[-1].date,
+                "dates_count": len(rows),
+                "rows": rows,
+                "languages": representative.user.profile.languages.all(),
+                "average_rating": round(ratings["avg"] or 0, 1),
+                "reviews_count": ratings["count"] or 0,
+                "has_available": any(row["status"] == "available" for row in rows),
+            })
+
         headers.append({
             "header": header,
             "stats": g,
-            "matches": list(pair_map.values()),
-            "matches_count": len(pair_map),
+            "matches": matches,
+            "matches_count": len(matches),
         })
 
     return render(request, "trajects/proposition/matchings.html", {
         "groups": headers,
         "is_abonned": is_abonned,
+        "is_subscription_complete": is_subscription_complete,
         "today": today,
         "page_title": _("Proposer un trajet - Mes matchings"),
     })
@@ -1389,6 +1398,19 @@ def my_matchings_simple(request):
     user = request.user
     today = timezone.now().date()
     is_abonned = Subscription.is_user_abonned(user)
+    profile = user.profile
+    is_subscription_complete = is_abonned and bool(
+        profile.ci_is_verified and profile.document_bvm and profile.profile_picture
+    )
+
+    parent_pending_ids = set(
+        Reservation.objects.filter(proposed_traject__user=user, status="pending")
+        .values_list("researched_traject_id", flat=True)
+    )
+    parent_confirmed_ids = set(
+        Reservation.objects.filter(proposed_traject__user=user, status="confirmed")
+        .values_list("researched_traject_id", flat=True)
+    )
 
     groupes = _aggregate_groupes(
         ProposedTraject.objects.filter(user=user, is_active=True, is_simple=True),
@@ -1403,47 +1425,74 @@ def my_matchings_simple(request):
         header = (
             ProposedTraject.objects
             .filter(user=user, is_active=True, is_simple=True, groupe_uid=g["groupe_uid"])
-            .select_related("traject")
-            .prefetch_related("transport_modes")
+            .select_related("traject", "user", "user__profile")
+            .prefetch_related("transport_modes", "languages")
             .order_by("date", "departure_time")
             .first()
         )
         if not header:
             continue
 
-        matched_researches = _collect_matches(
+        proposed_qs = (
             ProposedTraject.objects
             .filter(user=user, is_active=True, is_simple=True, groupe_uid=g["groupe_uid"], date__gte=today)
-            .select_related("traject")
-            .prefetch_related("transport_modes")
+            .select_related("traject", "user", "user__profile")
+            .prefetch_related("transport_modes", "languages")
         )
+        matched_researches = _collect_matches(proposed_qs)
+        proposed_by_date = {p.date: p for p in proposed_qs}
 
         pair_map = {}
         for research in matched_researches:
             key = (research.groupe_uid, research.user_id)
-            if key not in pair_map:
-                pair_map[key] = research
-                research.matched_date_debut = research.date
-                research.matched_date_fin = research.date
-            else:
-                existing = pair_map[key]
-                if research.date:
-                    existing.matched_date_debut = min(existing.matched_date_debut, research.date) if existing.matched_date_debut else research.date
-                    existing.matched_date_fin = max(existing.matched_date_fin, research.date) if existing.matched_date_fin else research.date
+            pair_map.setdefault(key, []).append(research)
 
         if not pair_map:
             continue
 
+        matches = []
+        for (researched_groupe_uid, parent_user_id), researches in pair_map.items():
+            researches_sorted = sorted(
+                researches,
+                key=lambda r: (r.date or today, r.departure_time or datetime.min.time()),
+            )
+            representative = researches_sorted[0]
+            rows = _build_match_rows(
+                researches_sorted, proposed_by_date, today,
+                extra_fields_fn=lambda research, proposal: {
+                    "status": _match_row_status(research, proposal, today, parent_confirmed_ids, parent_pending_ids),
+                },
+            )
+            ratings = Review.objects.filter(reviewed_user=representative.user).aggregate(
+                avg=Avg("rating"), count=Count("id")
+            )
+            matches.append({
+                "user": representative.user,
+                "groupe_uid": researched_groupe_uid,
+                "traject": representative.traject,
+                "departure_time": representative.departure_time,
+                "arrival_time": representative.arrival_time,
+                "matched_date_debut": researches_sorted[0].date,
+                "matched_date_fin": researches_sorted[-1].date,
+                "dates_count": len(rows),
+                "rows": rows,
+                "languages": representative.user.profile.languages.all(),
+                "average_rating": round(ratings["avg"] or 0, 1),
+                "reviews_count": ratings["count"] or 0,
+                "has_available": any(row["status"] == "available" for row in rows),
+            })
+
         headers.append({
             "header": header,
             "stats": g,
-            "matches": list(pair_map.values()),
-            "matches_count": len(pair_map),
+            "matches": matches,
+            "matches_count": len(matches),
         })
 
     return render(request, "trajects/proposition_rayon/matchings.html", {
         "groups": headers,
         "is_abonned": is_abonned,
+        "is_subscription_complete": is_subscription_complete,
         "today": today,
         "page_title": _("Rechercher un trajet rayon - Mes matchings"),
     })
@@ -1459,6 +1508,29 @@ def my_matchings_researched(request):
     user = request.user
     today = timezone.now().date()
     is_abonned = Subscription.is_user_abonned(user)
+    profile = user.profile
+    is_subscription_complete = is_abonned and bool(
+        profile.ci_is_verified and profile.document_bvm and profile.profile_picture
+    )
+
+    # Réservations déjà faites par le parent connecté, réutilisées pour
+    # savoir quel bouton afficher par date dans l'accordéon (cf. reservation_key
+    # dans _build_match_rows ci-dessous).
+    my_pending_keys = set(
+        f"{proposal_id}_{research_id}"
+        for proposal_id, research_id in Reservation.objects.filter(user=user, status="pending")
+        .values_list("proposed_traject_id", "researched_traject_id")
+    )
+    my_confirmed_keys = set(
+        f"{proposal_id}_{research_id}"
+        for proposal_id, research_id in Reservation.objects.filter(user=user, status="confirmed")
+        .values_list("proposed_traject_id", "researched_traject_id")
+    )
+    my_canceled_keys = set(
+        f"{proposal_id}_{research_id}"
+        for proposal_id, research_id in Reservation.objects.filter(user=user, status="canceled")
+        .values_list("proposed_traject_id", "researched_traject_id")
+    )
 
     groupes = _aggregate_groupes(
         ResearchedTraject.objects.filter(user=user, is_active=True),
@@ -1481,380 +1553,80 @@ def my_matchings_researched(request):
         if not header:
             continue
 
-        matched_proposals = _collect_matches(
+        researched_qs = (
             ResearchedTraject.objects
             .filter(user=user, is_active=True, groupe_uid=g["groupe_uid"], date__gte=today)
             .select_related("traject")
             .prefetch_related("transport_modes", "children")
         )
+        matched_proposals = _collect_matches(researched_qs)
 
         pair_map = {}
         for proposal in matched_proposals:
-            key = (proposal.groupe_uid, proposal.user_id, proposal.is_simple)
-            if key not in pair_map:
-                pair_map[key] = proposal
-                proposal.matched_date_debut = proposal.date
-                proposal.matched_date_fin = proposal.date
-            else:
-                existing = pair_map[key]
-                if proposal.date:
-                    existing.matched_date_debut = min(existing.matched_date_debut, proposal.date) if existing.matched_date_debut else proposal.date
-                    existing.matched_date_fin = max(existing.matched_date_fin, proposal.date) if existing.matched_date_fin else proposal.date
+            key = (proposal.groupe_uid, proposal.user_id)
+            pair_map.setdefault(key, []).append(proposal)
 
         if not pair_map:
             continue
 
+        matches = []
+        for (proposed_groupe_uid, matched_user_id), proposals in pair_map.items():
+            proposals_sorted = sorted(
+                proposals,
+                key=lambda p: (p.date or today, p.departure_time or datetime.min.time()),
+            )
+            representative = proposals_sorted[0]
+            proposed_by_date = {p.date: p for p in proposals_sorted}
+            rows = _build_match_rows(
+                researched_qs, proposed_by_date, today,
+                skip_if_no_proposal=True,
+                extra_fields_fn=lambda research, proposal: {
+                    "proposal": proposal,
+                    "reservation_key": f"{proposal.id}_{research.id}",
+                    "is_simple": proposal.is_simple,
+                    "radius_km": proposal.search_radius_km if proposal.is_simple else None,
+                    "is_reservable": (
+                        not (research.date and research.date < today)
+                        and f"{proposal.id}_{research.id}" not in my_confirmed_keys
+                        and f"{proposal.id}_{research.id}" not in my_pending_keys
+                        and f"{proposal.id}_{research.id}" not in my_canceled_keys
+                    ),
+                },
+            )
+            ratings = Review.objects.filter(reviewed_user=representative.user).aggregate(
+                avg=Avg("rating"), count=Count("id")
+            )
+            matches.append({
+                "user": representative.user,
+                "groupe_uid": proposed_groupe_uid,
+                "traject": representative.traject,
+                "departure_time": representative.departure_time,
+                "arrival_time": representative.arrival_time,
+                "search_radius_km": representative.search_radius_km,
+                "matched_date_debut": proposals_sorted[0].date,
+                "matched_date_fin": proposals_sorted[-1].date,
+                "dates_count": len(rows),
+                "rows": rows,
+                "reservable_count": sum(1 for r in rows if r["is_reservable"]),
+                "languages": representative.user.profile.languages.all(),
+                "average_rating": round(ratings["avg"] or 0, 1),
+                "reviews_count": ratings["count"] or 0,
+            })
+
         headers.append({
             "header": header,
             "stats": g,
-            "matches": list(pair_map.values()),
-            "matches_count": len(pair_map),
+            "matches": matches,
+            "matches_count": len(matches),
         })
 
     return render(request, "trajects/recherche/matchings.html", {
         "groups": headers,
         "is_abonned": is_abonned,
-        "today": today,
-        "page_title": _("Rechercher un trajet - Mes matchings"),
-    })
-    
-# ============================================================
-# 🔵 MATCHINGS DES TRAJETS DETAIL
-# ============================================================
-   
-@name_required
-def my_matchings_proposed_detail(request, proposed_groupe_uid, researched_groupe_uid, parent_user_id):
-    user = request.user
-    today = timezone.now().date()
-    is_abonned = Subscription.is_user_abonned(user)
-    profile = user.profile
-    is_subscription_complete = is_abonned and bool(
-        profile.ci_is_verified and profile.document_bvm and profile.profile_picture
-    )
-
-    parent_pending_ids = set(
-        Reservation.objects.filter(proposed_traject__user=user, status="pending")
-        .values_list("researched_traject_id", flat=True)
-    )
-    parent_confirmed_ids = set(
-        Reservation.objects.filter(proposed_traject__user=user, status="confirmed")
-        .values_list("researched_traject_id", flat=True)
-    )
-
-    proposed_qs = (
-        ProposedTraject.objects
-        .filter(user=user, is_active=True, is_simple=False, groupe_uid=proposed_groupe_uid)
-        .select_related("traject", "user", "user__profile")
-        .prefetch_related("transport_modes", "languages")
-        .order_by("date", "departure_time")
-    )
-    header = proposed_qs.first()
-    if not header:
-        return render(request, "trajects/proposition/matching_detail.html", {
-            "error": "Groupe proposé introuvable.",
-            "is_abonned": is_abonned,
-        })
-
-    proposed_stats = proposed_qs.aggregate(
-        first_date=Min("date"),
-        last_date=Max("date"),
-        next_date=Min(Case(When(date__gte=today, then="date"), output_field=DateField())),
-        count=Count("id")
-    )
-
-    researched_qs = (
-        ResearchedTraject.objects
-        .filter(user_id=parent_user_id, is_active=True, groupe_uid=researched_groupe_uid)
-        .select_related("traject", "user", "user__profile")
-        .prefetch_related("transport_modes", "children", "children__chld_languages")
-        .order_by("date", "departure_time")
-    )
-    parent_header = researched_qs.first()
-    if not parent_header:
-        return render(request, "trajects/proposition/matching_detail.html", {
-            "header": header,
-            "error": "Groupe du parent introuvable.",
-            "is_abonned": is_abonned,
-        })
-
-    parent_stats = researched_qs.aggregate(
-        first_date=Min("date"),
-        last_date=Max("date"),
-        next_date=Min(Case(When(date__gte=today, then="date"), output_field=DateField())),
-        count=Count("id")
-    )
-
-    matched_researched_ids = set()
-    for proposal in proposed_qs.filter(date__gte=today):
-        matched = find_matching_trajects(proposal)
-        matched_researched_ids.update([m.id for m in matched])
-
-    matched_dates_qs = (
-        ResearchedTraject.objects
-        .filter(
-            id__in=matched_researched_ids,
-            user_id=parent_user_id,
-            groupe_uid=researched_groupe_uid,
-            is_active=True,
-            date__gte=today,
-        )
-        .select_related("traject", "user", "user__profile")
-        .prefetch_related("transport_modes", "children", "children__chld_languages")
-        .order_by("date", "departure_time")
-    )
-
-    proposed_by_date = {p.date: p for p in proposed_qs.filter(date__gte=today)}
-    rows = _build_match_rows(matched_dates_qs, proposed_by_date, today)
-    matched_parent_stats = matched_dates_qs.aggregate(first_date=Min("date"), last_date=Max("date"))
-
-    return render(request, "trajects/proposition/matching_detail.html", {
-        "header": header,
-        "proposed_stats": proposed_stats,
-        "parent_header": parent_header,
-        "parent_stats": parent_stats,
-        "matched_parent_stats": matched_parent_stats,
-        "rows": rows,
-        "is_abonned": is_abonned,
         "is_subscription_complete": is_subscription_complete,
-        "today": today,
-        "parent_pending_ids": parent_pending_ids,
-        "parent_confirmed_ids": parent_confirmed_ids,
-        "page_title": _("Proposer un trajet - Mes matchings"),
-    })
-
-@name_required
-def my_matchings_simple_detail(request, proposed_groupe_uid, researched_groupe_uid, parent_user_id):
-    user = request.user
-    today = timezone.now().date()
-    is_abonned = Subscription.is_user_abonned(user)
-    profile = user.profile
-    is_subscription_complete = is_abonned and bool(
-        profile.ci_is_verified and profile.document_bvm and profile.profile_picture
-    )
-
-    parent_pending_ids = set(
-        Reservation.objects.filter(proposed_traject__user=user, status="pending")
-        .values_list("researched_traject_id", flat=True)
-    )
-    parent_confirmed_ids = set(
-        Reservation.objects.filter(proposed_traject__user=user, status="confirmed")
-        .values_list("researched_traject_id", flat=True)
-    )
-
-    proposed_qs = (
-        ProposedTraject.objects
-        .filter(user=user, is_active=True, is_simple=True, groupe_uid=proposed_groupe_uid)
-        .select_related("traject")
-        .prefetch_related("transport_modes")
-        .order_by("date", "departure_time")
-    )
-    header = proposed_qs.first()
-    if not header:
-        return render(request, "trajects/proposition_rayon/matching_detail.html", {
-            "error": "Groupe simple introuvable.",
-            "is_abonned": is_abonned,
-        })
-
-    proposed_stats = proposed_qs.aggregate(
-        first_date=Min("date"),
-        last_date=Max("date"),
-        next_date=Min(Case(When(date__gte=today, then="date"), output_field=DateField())),
-        count=Count("id")
-    )
-
-    researched_qs = (
-        ResearchedTraject.objects
-        .filter(user_id=parent_user_id, is_active=True, groupe_uid=researched_groupe_uid)
-        .select_related("traject", "user", "user__profile")
-        .prefetch_related("transport_modes", "children", "children__chld_languages")
-        .order_by("date", "departure_time")
-    )
-    parent_header = researched_qs.first()
-    if not parent_header:
-        return render(request, "trajects/proposition_rayon/matching_detail.html", {
-            "header": header,
-            "error": "Groupe du parent introuvable.",
-            "is_abonned": is_abonned,
-        })
-
-    parent_stats = researched_qs.aggregate(
-        first_date=Min("date"),
-        last_date=Max("date"),
-        next_date=Min(Case(When(date__gte=today, then="date"), output_field=DateField())),
-        count=Count("id")
-    )
-
-    matched_researched_ids = set()
-    for proposal in proposed_qs.filter(date__gte=today):
-        matched = find_matching_trajects(proposal)
-        matched_researched_ids.update([m.id for m in matched])
-
-    matched_dates_qs = (
-        ResearchedTraject.objects
-        .filter(
-            id__in=matched_researched_ids,
-            user_id=parent_user_id,
-            groupe_uid=researched_groupe_uid,
-            is_active=True,
-            date__gte=today,
-        )
-        .select_related("traject", "user", "user__profile")
-        .prefetch_related("transport_modes", "children", "children__chld_languages")
-        .order_by("date", "departure_time")
-    )
-
-    proposed_by_date = {p.date: p for p in proposed_qs.filter(date__gte=today)}
-    rows = _build_match_rows(
-        matched_dates_qs, proposed_by_date, today,
-        extra_fields_fn=lambda _, proposal: {
-            "radius_km": proposal.search_radius_km if proposal else None,
-            "transport_modes": proposal.transport_modes.all() if proposal else [],
-        },
-    )
-    matched_parent_stats = matched_dates_qs.aggregate(first_date=Min("date"), last_date=Max("date"))
-
-    return render(request, "trajects/proposition_rayon/matching_detail.html", {
-        "header": header,
-        "proposed_stats": proposed_stats,
-        "parent_header": parent_header,
-        "parent_stats": parent_stats,
-        "matched_parent_stats": matched_parent_stats,
-        "rows": rows,
-        "is_abonned": is_abonned,
-        "is_subscription_complete": is_subscription_complete,
-        "today": today,
-        "parent_pending_ids": parent_pending_ids,
-        "parent_confirmed_ids": parent_confirmed_ids,
-        "page_title": _("Rechercher un trajet rayon - Mes matchings"),
-    })
-
-@name_required
-def my_matchings_researched_detail(request, researched_groupe_uid, proposed_groupe_uid, matched_user_id):
-    user = request.user
-    today = timezone.now().date()
-    is_abonned = Subscription.is_user_abonned(user)
-    profile = user.profile
-    is_subscription_complete = is_abonned and bool(
-        profile.ci_is_verified and profile.document_bvm and profile.profile_picture
-    )
-
-    researched_qs = (
-        ResearchedTraject.objects
-        .filter(user=user, is_active=True, groupe_uid=researched_groupe_uid)
-        .select_related("traject")
-        .prefetch_related("transport_modes", "children")
-        .order_by("date", "departure_time")
-    )
-    researched_header = researched_qs.first()
-    if not researched_header:
-        return render(request, "trajects/recherche/matching_detail.html", {
-            "error": "Groupe de recherche introuvable.",
-            "is_abonned": is_abonned,
-        })
-
-    researched_stats = researched_qs.aggregate(
-        first_date=Min("date"),
-        last_date=Max("date"),
-        next_date=Min(Case(When(date__gte=today, then="date"), output_field=DateField())),
-        count=Count("id")
-    )
-
-    proposed_qs = (
-        ProposedTraject.objects
-        .filter(
-            user_id=matched_user_id,
-            is_active=True,
-            groupe_uid=proposed_groupe_uid,
-        )
-        .select_related("traject", "user", "user__profile")
-        .prefetch_related("transport_modes", "languages")
-        .order_by("date", "departure_time")
-    )
-    proposed_header = proposed_qs.first()
-    if not proposed_header:
-        return render(request, "trajects/recherche/matching_detail.html", {
-            "researched_header": researched_header,
-            "error": "Groupe proposé introuvable.",
-            "is_abonned": is_abonned,
-        })
-
-    proposed_stats = proposed_qs.aggregate(
-        first_date=Min("date"),
-        last_date=Max("date"),
-        next_date=Min(Case(When(date__gte=today, then="date"), output_field=DateField())),
-        count=Count("id")
-    )
-
-    matched_proposed_ids = set()
-    for research in researched_qs.filter(date__gte=today):
-        matched = find_matching_trajects(research)
-        matched_proposed_ids.update([m.id for m in matched])
-
-    matched_dates_qs = (
-        ProposedTraject.objects
-        .filter(
-            pk__in=matched_proposed_ids,
-            user_id=matched_user_id,
-            groupe_uid=proposed_groupe_uid,
-            is_active=True,
-            date__gte=today,
-        )
-        .select_related("traject", "user", "user__profile")
-        .prefetch_related("transport_modes", "languages")
-        .order_by("date", "departure_time")
-    )
-
-    proposed_by_date = {p.date: p for p in matched_dates_qs}
-
-    # Réservations déjà faites par le parent connecté
-    my_pending_keys = set(
-        f"{proposal_id}_{research_id}"
-        for proposal_id, research_id in Reservation.objects.filter(
-            user=user,
-            status="pending"
-        ).values_list("proposed_traject_id", "researched_traject_id")
-    )
-
-    my_confirmed_keys = set(
-        f"{proposal_id}_{research_id}"
-        for proposal_id, research_id in Reservation.objects.filter(
-            user=user,
-            status="confirmed"
-        ).values_list("proposed_traject_id", "researched_traject_id")
-    )
-
-    my_canceled_keys = set(
-        f"{proposal_id}_{research_id}"
-        for proposal_id, research_id in Reservation.objects.filter(
-            user=user,
-            status="canceled"
-        ).values_list("proposed_traject_id", "researched_traject_id")
-    )
-
-    rows = _build_match_rows(
-        researched_qs, proposed_by_date, today,
-        skip_if_no_proposal=True,
-        extra_fields_fn=lambda research, proposal: {
-            "proposal": proposal,
-            "reservation_key": f"{proposal.id}_{research.id}",
-            "is_simple": proposal.is_simple,
-            "radius_km": proposal.search_radius_km if proposal.is_simple else None,
-        },
-    )
-    matched_proposed_stats = matched_dates_qs.aggregate(first_date=Min("date"), last_date=Max("date"))
-
-    return render(request, "trajects/recherche/matching_detail.html", {
-        "researched_header": researched_header,
-        "researched_stats": researched_stats,
-        "proposed_header": proposed_header,
-        "proposed_stats": proposed_stats,
-        "matched_proposed_stats": matched_proposed_stats,
-        "rows": rows,
         "my_pending_keys": my_pending_keys,
         "my_confirmed_keys": my_confirmed_keys,
         "my_canceled_keys": my_canceled_keys,
-        "is_abonned": is_abonned,
-        "is_subscription_complete": is_subscription_complete,
         "today": today,
         "page_title": _("Rechercher un trajet - Mes matchings"),
     })
@@ -1895,8 +1667,7 @@ def delete_proposed_traject(request, groupe_uid, pk):
     return _delete_single(
         request, ProposedTraject,
         filters={"pk": pk, "groupe_uid": groupe_uid, "is_simple": False},
-        redirect_name="my_proposed_groupe_detail",
-        groupe_uid=groupe_uid,
+        redirect_name="my_proposed_trajects",
         success_msg="La date du trajet proposé a été supprimée.",
     )
 
@@ -1915,8 +1686,7 @@ def delete_simple_traject(request, groupe_uid, pk):
     return _delete_single(
         request, ProposedTraject,
         filters={"pk": pk, "groupe_uid": groupe_uid, "is_simple": True},
-        redirect_name="my_simple_groupe_detail",
-        groupe_uid=groupe_uid,
+        redirect_name="my_simple_trajects",
         success_msg="La date du trajet simplifié a été supprimée.",
     )
 
@@ -1925,8 +1695,7 @@ def delete_researched_traject(request, groupe_uid, pk):
     return _delete_single(
         request, ResearchedTraject,
         filters={"pk": pk, "groupe_uid": groupe_uid},
-        redirect_name="my_researched_groupe_detail",
-        groupe_uid=groupe_uid,
+        redirect_name="my_researched_trajects",
         success_msg="La date du trajet recherché a été supprimée.",
     )
 
@@ -2083,22 +1852,7 @@ def manage_reservation(request, reservation_id, action):
         reservation.proposed_traject.save(update_fields=["number_of_places"])
 
         # Envoi de mail si une adresse email existe
-        if reservation.user.email:
-            send_mail(
-                subject="Votre réservation a été confirmée",
-                message=(
-                    f"Bonjour,\n\n"
-                    f"Votre réservation pour le trajet "
-                    f"{reservation.proposed_traject.traject.start_adress} → "
-                    f"{reservation.proposed_traject.traject.end_adress} "
-                    f"du {reservation.proposed_traject.date.strftime('%d/%m/%Y')} "
-                    f"a été confirmée.\n\n"
-                    "Connectez-vous à Bana pour voir les détails."
-                ),
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[reservation.user.email],
-                fail_silently=True,
-            )
+        send_reservation_confirmed_email(reservation)
 
         messages.success(request, "Réservation confirmée.")
         return redirect(next_url or "my_reservations")
@@ -2124,22 +1878,7 @@ def manage_reservation(request, reservation_id, action):
         reservation.status = "canceled"
         reservation.save(update_fields=["status"])
 
-        if reservation.user.email:
-            send_mail(
-                subject="Votre réservation a été refusée",
-                message=(
-                    f"Bonjour,\n\n"
-                    f"Votre réservation pour le trajet "
-                    f"{reservation.proposed_traject.traject.start_adress} → "
-                    f"{reservation.proposed_traject.traject.end_adress} "
-                    f"du {reservation.proposed_traject.date.strftime('%d/%m/%Y')} "
-                    f"a été refusée.\n\n"
-                    "Connectez-vous à Bana pour consulter d'autres trajets."
-                ),
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[reservation.user.email],
-                fail_silently=True,
-            )
+        send_reservation_rejected_email(reservation)
 
         messages.success(request, "Réservation refusée.")
         return redirect(next_url or "my_reservations")
@@ -2175,24 +1914,78 @@ def auto_reserve(request, proposed_id, researched_id):
     )
     reservation.transport_modes.set(researched_traject.transport_modes.all())
 
-    proposer_email = proposed_traject.user.email
-    trajet_info = f"{proposed_traject.traject.start_adress} → {proposed_traject.traject.end_adress}"
-
-    send_mail(
-        subject="Nouvelle demande de réservation reçue",
-        message=(
-            f"Bonjour,\n\n"
-            f"Vous avez reçu une nouvelle demande de réservation.\n\n"
-            f"Détails du trajet : {trajet_info}\n"
-            f"Nombre d'enfant(s) demandé(s) : {requested_places}\n\n"
-            "Connectez-vous à Bana pour accepter ou refuser la demande."
-        ),
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[proposer_email],
-        fail_silently=False,
-    )
+    send_new_reservation_request_email(proposed_traject, requested_places)
 
     messages.success(request, "Votre demande de réservation a été envoyée.")
+    return redirect(next_url or 'my_matchings_researched')
+
+@subscription_complete_required
+@transaction.atomic
+def auto_reserve_bulk(request):
+    """
+    Version groupée de auto_reserve : le parent coche plusieurs dates dans
+    un même panneau de matching (une par ligne, valeur "proposedId_researchId")
+    et envoie une seule requête au lieu de cliquer "Réserver" pour chacune.
+    """
+    next_url = request.POST.get("next")
+
+    if request.method != "POST":
+        return redirect(next_url or 'my_matchings_researched')
+
+    pairs = request.POST.getlist("pairs")
+    if not pairs:
+        messages.warning(request, "Veuillez sélectionner au moins une date.")
+        return redirect(next_url or 'my_matchings_researched')
+
+    created_count = 0
+    skipped_count = 0
+
+    for pair in pairs:
+        proposed_id_str, _, researched_id_str = pair.partition("_")
+        if not proposed_id_str.isdigit() or not researched_id_str.isdigit():
+            skipped_count += 1
+            continue
+
+        proposed_traject = ProposedTraject.objects.filter(id=int(proposed_id_str), is_active=True).first()
+        researched_traject = ResearchedTraject.objects.filter(
+            id=int(researched_id_str), user=request.user, is_active=True
+        ).first()
+
+        if not proposed_traject or not researched_traject or proposed_traject.user == request.user:
+            skipped_count += 1
+            continue
+
+        existing = Reservation.objects.filter(
+            user=request.user,
+            proposed_traject=proposed_traject,
+            researched_traject=researched_traject
+        ).exclude(status="canceled").exists()
+
+        if existing:
+            skipped_count += 1
+            continue
+
+        requested_places = researched_traject.children.count()
+        reservation = Reservation.objects.create(
+            user=request.user,
+            proposed_traject=proposed_traject,
+            researched_traject=researched_traject,
+            number_of_places=requested_places,
+            status='pending'
+        )
+        reservation.transport_modes.set(researched_traject.transport_modes.all())
+        send_new_reservation_request_email(proposed_traject, requested_places)
+        created_count += 1
+
+    if created_count:
+        messages.success(
+            request,
+            f"{created_count} demande(s) de réservation envoyée(s)." if created_count > 1
+            else "Votre demande de réservation a été envoyée."
+        )
+    if skipped_count:
+        messages.warning(request, f"{skipped_count} date(s) ignorée(s) (déjà réservée(s) ou indisponible(s)).")
+
     return redirect(next_url or 'my_matchings_researched')
 
 @subscription_complete_required
@@ -2206,26 +1999,72 @@ def propose_help(request, researched_id):
         return redirect(next_url or 'my_matchings_proposed')
     request.session[session_key] = True
 
-    parent_email = research.user.email
-    trajet_info = f"{research.traject.start_adress} → {research.traject.end_adress}"
-    date_str = research.date.strftime("%d/%m/%Y") if research.date else ""
-    heure_depart = research.departure_time.strftime("%H:%M") if research.departure_time else "—"
-
-    send_mail(
-        subject="Recherche de trajet disponible",
-        message=(
-            f"Bonjour,\n\n"
-            f"Bonne nouvelle ! Un accompagnateur est disponible pour votre recherche de trajet :\n\n"
-            f"{trajet_info} le {date_str} (départ à {heure_depart}).\n\n"
-            "Connectez-vous à Bana pour consulter les trajets disponible et effectuer une réservation. https://www.bana.mobi/trajets/recherches/matchings/"
-        ),
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[parent_email],
-        fail_silently=False,
-    )
+    send_help_proposed_email(research)
 
     messages.success(request, "Votre aide a été proposée et le parent a été informé par email.")
     return redirect(next_url or 'my_matchings_proposed')
+
+@subscription_complete_required
+def propose_help_match(request, proposed_groupe_uid, researched_groupe_uid, parent_user_id):
+    """
+    Signale en un clic, au parent d'un matching, que le Yaya a des dates
+    disponibles — un seul email groupé (pas un par date). Remplace, côté
+    matchings.html, les anciens clics répétés sur propose_help par date.
+    Utilisé aussi bien pour les trajets précis (proposition) que pour les
+    trajets dans un rayon (proposition_rayon) — le groupe_uid identifie
+    déjà les deux sans ambiguïté.
+    """
+    user = request.user
+    today = timezone.now().date()
+    next_url = request.POST.get("next")
+
+    proposed_qs = (
+        ProposedTraject.objects
+        .filter(user=user, is_active=True, groupe_uid=proposed_groupe_uid, date__gte=today)
+        .select_related("traject")
+    )
+    header = proposed_qs.first()
+    fallback_url = 'my_matchings_simple' if header and header.is_simple else 'my_matchings_proposed'
+    if not header:
+        messages.error(request, "Groupe introuvable.")
+        return redirect(next_url or fallback_url)
+
+    proposed_by_date = {p.date: p for p in proposed_qs}
+
+    matched_researches = [
+        r for r in _collect_matches(proposed_qs)
+        if r.groupe_uid == researched_groupe_uid and r.user_id == parent_user_id
+    ]
+    if not matched_researches:
+        messages.error(request, "Aucune date correspondante trouvée pour ce matching.")
+        return redirect(next_url or fallback_url)
+
+    parent_pending_ids = set(
+        Reservation.objects.filter(proposed_traject__user=user, status="pending")
+        .values_list("researched_traject_id", flat=True)
+    )
+    parent_confirmed_ids = set(
+        Reservation.objects.filter(proposed_traject__user=user, status="confirmed")
+        .values_list("researched_traject_id", flat=True)
+    )
+
+    available = [
+        r for r in matched_researches
+        if _match_row_status(r, proposed_by_date.get(r.date), today, parent_confirmed_ids, parent_pending_ids) == "available"
+    ]
+
+    session_key = f"help_notified_group_{user.id}_{researched_groupe_uid}_{parent_user_id}"
+    if not available:
+        messages.warning(request, "Aucune date disponible pour ce matching en ce moment.")
+    elif request.session.get(session_key, False):
+        messages.warning(request, "Vous avez déjà signalé votre disponibilité au parent pour ce matching.")
+    else:
+        request.session[session_key] = True
+        representative = sorted(available, key=lambda r: r.date or today)[0]
+        send_help_proposed_bulk_email(representative, len(available))
+        messages.success(request, "Votre aide a été proposée et le parent a été informé par email.")
+
+    return redirect(next_url or fallback_url)
 
 @name_required
 def my_reservations(request):
@@ -2328,6 +2167,41 @@ def my_reservations(request):
         })
 
     # =========================
+    # Données pour la vue calendrier (réservations effectuées, non paginées)
+    # =========================
+    def _display_name_and_initials(person):
+        if not person:
+            return "", "?"
+        profile = getattr(person, "profile", None)
+        if profile and profile.ci_is_verified and profile.verified_first_name and profile.verified_last_name:
+            first, last = profile.verified_first_name, profile.verified_last_name
+        else:
+            first, last = person.first_name, person.last_name
+        display = f"{first} {(last or '')[:1]}.".strip()
+        initials = f"{(first or '?')[:1]}{(last or '')[:1]}".upper()
+        return display, initials
+
+    calendar_entries = []
+    for r in _sorted_qs:
+        pt = r.proposed_traject
+        if not pt or not pt.date:
+            continue
+        yaya_display, yaya_initials = _display_name_and_initials(pt.user)
+        calendar_entries.append({
+            "iso": pt.date.isoformat(),
+            "status": r.status,
+            "trip": pt.groupe_name or pt.traject.start_adress,
+            "depart": pt.traject.start_adress,
+            "arrivee": pt.traject.end_adress,
+            "heure": (
+                f"{pt.departure_time.strftime('%H:%M')} → {pt.arrival_time.strftime('%H:%M')}"
+                if pt.departure_time and pt.arrival_time else "—"
+            ),
+            "yaya": yaya_display,
+            "initials": yaya_initials,
+        })
+
+    # =========================
     # Réservations reçues (yaya)
     # =========================
     received_base = (
@@ -2394,6 +2268,7 @@ def my_reservations(request):
     context = {
         'made_reservations': made_page_obj,
         'received_reservations': received_page_obj,
+        'calendar_entries': calendar_entries,
         'is_abonned': is_abonned,
         'tab': tab,
         'active_count': active_count,

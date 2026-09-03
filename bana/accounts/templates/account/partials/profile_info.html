@@ -2,7 +2,13 @@
 
      {# ——— INFOS PRIVÉES (restructurée, carte blanche) ——— #}
       <div id="editable-profile-section" class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-8">
-        <h2 class="text-xl font-semibold text-brand">{% trans "Infos privées" %}</h2>
+        <div class="flex items-center justify-between gap-4">
+          <h2 class="text-xl font-semibold text-brand">{% trans "Infos privées" %}</h2>
+          <a href="{% url 'accounts:profile_edit' %}"
+            class="inline-flex items-center px-5 py-2 rounded-full bg-brand text-white hover:bg-brand-dark font-semibold transition">
+            {% trans "Editer mon profil" %}
+          </a>
+        </div>
 
         <div class="grid gap-6 md:grid-cols-3">
 
@@ -40,6 +46,13 @@
             <div>
               <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Ville" %}</p>
               <p>{{ user.profile.address|default:"—" }}</p>
+            </div>
+
+            <div class="border-t border-gray-100"></div>
+
+            <div>
+              <p class="block text-sm font-bold text-brand uppercase mb-1">{% trans "Numéro de téléphone" %}</p>
+              <p>{{ user.profile.full_phone_number|default:"—" }}</p>
             </div>
           </section>
 
@@ -107,13 +120,6 @@
                 {% endif %}
             </div>
           </section>
-        </div>
-        
-        <div class="pt-2">
-          <a href="{% url 'accounts:profile_edit' %}"
-            class="inline-flex items-center px-5 py-2 rounded-full bg-brand text-white hover:bg-brand-dark font-semibold transition">
-            {% trans "Modifier mon profil" %}
-          </a>
         </div>
       </div>
 </div>

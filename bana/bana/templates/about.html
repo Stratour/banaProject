@@ -7,7 +7,7 @@
 {% block og_description %}{% trans "Bana s'engage pour une mobilité scolaire plus sereine, collaborative et durable. Découvrez notre vision, nos Yaya et l'équipe derrière la plateforme." %}{% endblock %}
 
 {% block extra_head %}
-<link rel="preload" as="image" href="{% static 'bana/img/page/about/mobilite-multimodale-enfants-belgique.jpg' %}">
+<link rel="preload" as="image" href="{% static 'bana/img/page/about/accompagnateurs-transport-scolaire-belgique.webp' %}" type="image/webp">
 <link rel="stylesheet" href="{% static 'bana/css/pages/home.css' %}" media="print" onload="this.media='all'">
 <noscript><link rel="stylesheet" href="{% static 'bana/css/pages/home.css' %}"></noscript>
 <link rel="stylesheet" href="{% static 'bana/css/components/citation.css' %}">
@@ -18,10 +18,13 @@
 <!-- ===== 1. HERO ===== -->
 <section class="relative flex flex-col items-center justify-center min-h-screen text-center px-4 md:px-8 lg:px-16 bg-gray-900">
 
-    <img src="{% static 'bana/img/page/about/accompagnateurs-transport-scolaire-belgique.jpg' %}"
-         class="absolute inset-0 w-full h-full object-cover object-center"
-         fetchpriority="high" loading="eager"
-         width="1672" height="940" alt="">
+    <picture>
+        <source srcset="{% static 'bana/img/page/about/accompagnateurs-transport-scolaire-belgique.webp' %}" type="image/webp">
+        <img src="{% static 'bana/img/page/about/accompagnateurs-transport-scolaire-belgique.jpg' %}"
+             class="absolute inset-0 w-full h-full object-cover object-center"
+             fetchpriority="high" loading="eager"
+             width="1200" height="630" alt="">
+    </picture>
 
     <div class="absolute inset-0 bg-black/15"></div>
 
@@ -53,9 +56,12 @@
             <div class="citation-brush">
 
                 <!-- Fond décoratif (coup de pinceau + guillemets) -->
-                <img src="{% static 'bana/img/background/bg-citation.png' %}" alt="" aria-hidden="true"
-                     loading="lazy" width="1080" height="1080"
-                     class="citation-brush__bg">
+                <picture>
+                    <source srcset="{% static 'bana/img/background/bg-citation.webp' %}" type="image/webp">
+                    <img src="{% static 'bana/img/background/bg-citation.png' %}" alt="" aria-hidden="true"
+                         loading="lazy" width="1080" height="1080"
+                         class="citation-brush__bg">
+                </picture>
 
                 <div class="citation-brush__inner">
                     <p class="citation-brush__text text-2xl md:text-3xl font-bold italic text-brand leading-snug text-center">
@@ -95,8 +101,8 @@
             <!-- Image -->
             <div class="relative w-4/5 sm:w-3/4 mx-auto -mb-16 md:mb-0 md:w-1/2 md:absolute md:-top-12 lg:-top-16 md:right-0 z-20 animate-on-scroll animate-right">
                 <picture>
-                    <source srcset="{% static 'bana/img/page/home/deplacements-scolaires-belgique.webp' %}" type="image/webp">
-                    <img src="{% static 'bana/img/page/home/deplacements-scolaires-belgique.jpg' %}" alt="Déplacements scolaires en Belgique"
+                    <source srcset="{% static 'bana/img/page/about/frein-principal.webp' %}" type="image/webp">
+                    <img src="{% static 'bana/img/page/about/frein-principal.png' %}" alt="Frein principal"
                         class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover" width="1672" height="941" loading="lazy" />
                 </picture>
             </div>
@@ -139,8 +145,8 @@
             <!-- Image -->
             <div class="relative w-4/5 sm:w-3/4 mx-auto -mb-16 md:mb-0 md:w-1/2 md:absolute md:-top-12 lg:-top-16 md:left-0 z-20 animate-on-scroll animate-left">
                 <picture>
-                    <source srcset="{% static 'bana/img/page/home/deplacements-scolaires-belgique.webp' %}" type="image/webp">
-                    <img src="{% static 'bana/img/page/home/deplacements-scolaires-belgique.jpg' %}" alt="Déplacements scolaires en Belgique"
+                    <source srcset="{% static 'bana/img/page/about/notre-mission-communautaire.webp' %}" type="image/webp">
+                    <img src="{% static 'bana/img/page/about/notre-mission-communautaire.jpg' %}" alt="Notre mission communautaire"
                         class="w-full aspect-[5/3] rounded-2xl shadow-md object-cover" width="1672" height="941" loading="lazy" />
                 </picture>
             </div>
@@ -274,9 +280,12 @@
 
             <!-- Prix 1 — Galimmo -->
             <div class="md:col-span-3 relative rounded-3xl overflow-hidden min-h-[340px] animate-on-scroll group" data-delay="200">
-                <img src="{% static 'bana/img/page/about/Bana_prix_1.png' %}"
-                    alt="Trophées Bana — Prix Galimmo"
-                    class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                <picture>
+                    <source srcset="{% static 'bana/img/page/about/Bana_prix_1.webp' %}" type="image/webp">
+                    <img src="{% static 'bana/img/page/about/Bana_prix_1.png' %}"
+                        alt="Trophées Bana — Prix Galimmo" loading="lazy"
+                        class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                </picture>
                 <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, transparent 100%)"></div>
                 <div class="absolute top-5 left-5 flex items-center gap-2 rounded-full px-3 py-1.5 text-[14px] font-bold text-white" style="background-color:#F59E0B">
                     🏆 Galimmo Belgique
@@ -289,9 +298,12 @@
 
             <!-- Prix 3 — SPW Mobilité -->
             <div class="md:col-span-2 relative rounded-3xl overflow-hidden min-h-[280px] animate-on-scroll group" data-delay="300">
-                <img src="{% static 'bana/img/page/about/Semaine_mobilité_2026.jpg' %}"
-                    alt="Semaine de la Mobilité — SPW Wallonie"
-                    class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                <picture>
+                    <source srcset="{% static 'bana/img/page/about/Semaine_mobilité_2026.webp' %}" type="image/webp">
+                    <img src="{% static 'bana/img/page/about/Semaine_mobilité_2026.jpg' %}"
+                        alt="Semaine de la Mobilité — SPW Wallonie" loading="lazy"
+                        class="w-full h-full object-cover transition duration-700 group-hover:scale-105">
+                </picture>
                 <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.15) 55%, transparent 100%)"></div>
                 <div class="absolute top-5 left-5 flex items-center gap-2 rounded-full px-3 py-1.5 font-bold text-[14px] text-white" style="background-color:#F59E0B">
                     🏆 SPF Mobilité
@@ -419,8 +431,11 @@
             <div class="relative group animate-on-scroll flex flex-col" data-delay="{{ forloop.counter }}00">
                 <!-- Photo qui dépasse au-dessus -->
                 <div class="bg-white absolute -top-12 left-1/2 -translate-x-1/2 z-10 w-24 h-24 rounded-2xl overflow-hidden shadow-md ring-4 ring-white/30 group-hover:ring-brand-300/30 transition-all duration-300">
-                    <img src="{% static member.img_src %}" alt="{{ member.name }}"
-                        class="w-full h-full object-cover object-top">
+                    <picture>
+                        <source srcset="{% static member.img_src_webp %}" type="image/webp">
+                        <img src="{% static member.img_src %}" alt="{{ member.name }}" loading="lazy"
+                            class="w-full h-full object-cover object-top">
+                    </picture>
                 </div>
                 <!-- Card -->
                 <div class="bg-brand group-hover:bg-white border-2 group-hover:border-brand-300/30 rounded-2xl pt-16 pb-6 px-5 text-center flex flex-col flex-1 shadow-sm group-hover:shadow-lg transition-all duration-300">

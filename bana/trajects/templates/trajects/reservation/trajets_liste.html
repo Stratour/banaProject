@@ -1,14 +1,26 @@
 {% extends 'allauth/layouts/base.html' %}
 {% load static i18n %}
 
-{% block head_title %}
-  {% trans "Mes réservations" %}
+{% block head_title %}{% trans "Mes réservations" %}{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'bana/css/pages/trajects.css' %}">
+{% endblock %}
+
+{% block page_background %}
+<div class="fixed inset-0 -z-10 opacity-50 pointer-events-none" style="background-image:url('{% static "bana/img/background/bg-bana-2.png" %}'); background-size:cover; background-repeat:no-repeat; background-position:center;"></div>
 {% endblock %}
 
 {% block content %}
-  <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
-    <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight">{% trans "Mes réservations" %}</h1>
+<div class="trajects-app">
+  <div class="relative max-w-6xl mx-auto">
 
-    {% include 'trajects/reservation/partials/reservations_content.html' %}
+  <h1 class="text-[28px] font-extrabold text-[#0F0F0F] mt-6 md:mt-8 mb-[22px] tracking-tight">{% trans "Mes réservations" %}</h1>
+
+  {% include 'trajects/reservation/partials/reservations_content.html' %}
+
   </div>
+</div>
+
+<script src="{% static 'bana/js/pages/reservations_calendar.js' %}"></script>
 {% endblock %}

@@ -48,3 +48,21 @@ window.addEventListener('scroll', () => {
   document.getElementById('site-header')
     .classList.toggle('shadow-md', window.scrollY > 10);
 }, { passive: true });
+
+/* ===== Hauteur du header exposée en variable CSS =====
+   Le header vitrine est "sticky top-0" et la sidebar app l'est aussi (voir
+   base.html) : sans ça, les deux se disputent la même position en haut de
+   l'écran au scroll et le header cache le sommet de la sidebar. On mesure la
+   hauteur réelle du header (elle varie selon le breakpoint) et on l'expose en
+   variable CSS pour que la sidebar se cale juste en dessous. */
+const siteHeaderEl = document.getElementById('site-header');
+function syncHeaderHeightVar() {
+  if (siteHeaderEl) {
+    document.documentElement.style.setProperty('--app-header-h', `${siteHeaderEl.offsetHeight}px`);
+  }
+}
+syncHeaderHeightVar();
+window.addEventListener('resize', syncHeaderHeightVar);
+if (siteHeaderEl && window.ResizeObserver) {
+  new ResizeObserver(syncHeaderHeightVar).observe(siteHeaderEl);
+}

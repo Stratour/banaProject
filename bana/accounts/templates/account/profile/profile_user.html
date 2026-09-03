@@ -11,6 +11,10 @@
 {% endif %}
 {% endblock head_title %}
 
+{% block page_background %}
+<div class="fixed inset-0 -z-10 opacity-50 pointer-events-none" style="background-image:url('{% static 'bana/img/background/bg-bana-2.png' %}'); background-size:cover; background-repeat:no-repeat; background-position:center;"></div>
+{% endblock %}
+
 {% block content %}
 
   <!-- 🔙 Bouton retour -->
@@ -213,7 +217,7 @@
     {% endif %}
 
 <!-- 📋 Liste des avis -->
-<h3 class="text-2xl font-semibold text-gray-700 mt-6 mb-3">{% trans "Avis reçus" %}</h3>
+<h3 id="avis-recus" class="text-2xl font-semibold text-gray-700 mt-6 mb-3">{% trans "Avis reçus" %}</h3>
 
 <ul class="bg-gray-50 p-4 rounded-md shadow-sm space-y-3">
   {% for review in reviews %}

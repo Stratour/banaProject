@@ -36,14 +36,31 @@
 
 <body class="bg-gray-50 min-h-screen flex flex-col">
 
+    <!-- Fond de section (optionnel, propre à certaines pages ex. trajects) -->
+    <!-- Doit rester le tout premier enfant de <body> et en z-index négatif : c'est ce qui
+         garantit qu'il peint SOUS absolument tout (sidebar, contenu, footer), y compris les
+         zones où un élément par-dessus est transparent (ex. le SVG arrondi du footer). Placé
+         plus bas dans le DOM (ex. dans <main>), il resterait visuellement "fixed" à l'écran
+         mais peindrait quand même APRÈS les frères de niveau body situés avant lui dans le DOM
+         (comme le footer), qui le recouvriraient alors avec leur propre background-color. -->
+    {% block page_background %}{% endblock %}
+
     <!-- Header vitrine pleine largeur -->
     {% include 'layouts/header.html' %}
 
     <!-- Zone app : sidebar + contenu -->
-    <div class="flex flex-1 bg-gray-50">
+    <!-- min-height calée sur --app-header-h : sans ça, cette ligne se réduit à la hauteur de
+         son contenu (page courte type "Nouveau trajet" étape 1), ce qui entraîne la sidebar et
+         le footer vers le haut — d'où le décalage visuel en changeant d'onglet/de page. -->
+    <!-- Pas de bg-gray-50 ici : transparent pour laisser passer le fond de section
+         (page_background) le cas échéant ; sinon le bg-gray-50 du <body> fait le même effet. -->
+    <div class="flex flex-1" style="min-height: calc(100vh - var(--app-header-h, 0px));">
 
         <!-- Side navigation (desktop) -->
-        <aside class="hidden md:flex md:flex-col md:w-64 bg-white shadow-lg rounded-r-2xl shrink-0 sticky top-0 h-screen overflow-y-auto">
+        <!-- top/max-height calés sur --app-header-h (voir header.js) : le header vitrine est
+             lui aussi "sticky top-0", donc un top-0 fixe ici ferait chevaucher les deux. -->
+        <aside class="hidden md:flex md:flex-col md:w-64 bg-white shadow-lg rounded-r-2xl shrink-0 sticky overflow-y-auto"
+               style="top: var(--app-header-h, 0px); max-height: calc(100vh - var(--app-header-h, 0px));">
             {% include 'allauth/layouts/admin-side-nav.html' %}
         </aside>
 

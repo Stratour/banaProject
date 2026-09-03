@@ -3,295 +3,228 @@
 
 {% block head_title %}{% trans "Rechercher un trajet" %}{% endblock %}
 
-{% block content %}
-<div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'bana/css/pages/trajects.css' %}">
+{% endblock %}
 
-  <h1 class="text-2xl sm:text-3xl font-semibold text-gray-900 tracking-tight mb-6">
+{% block page_background %}
+<div class="fixed inset-0 -z-10 opacity-50 pointer-events-none" style="background-image:url('{% static "bana/img/background/bg-bana-2.png" %}'); background-size:cover; background-repeat:no-repeat; background-position:center;"></div>
+{% endblock %}
+
+{% block content %}
+<div class="trajects-app">
+  <div class="relative max-w-6xl mx-auto">
+
+  <h1 class="text-[28px] font-extrabold text-[#0F0F0F] mt-6 md:mt-8 mb-[22px] tracking-tight">
     {% trans "Rechercher un trajet" %}
   </h1>
-  
+
   {% include "trajects/partials/tabs_proposition_rayon.html" %}
-  
-<form class="my-12 space-y-16" method="post" action="{% url 'simple_proposed_traject' %}" novalidate>
-  {% csrf_token %}
 
-  <!-- Étape 1 : ville de départ -->
-  <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
-    <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/icon/Icon_step_path.svg' %}" alt="Départ">
+  <form method="post" action="{% url 'simple_proposed_traject' %}" novalidate data-tj-wizard>
+    {% csrf_token %}
 
-    <div class="flex-1 space-y-6 w-full">
-      <div class="mb-6">
-        <label for="groupe_name" class="block text-sm font-medium text-gray-700 mb-1">
-          {% trans "Nom du trajet" %}
-        </label>
-
-        <input
-          type="text"
-          id="groupe_name"
-          name="groupe_name"
-          value="{{ request.POST.groupe_name|default_if_none:'' }}"
-          class="w-full p-3 border border-gray-300 rounded-xl shadow-sm focus:ring-brand focus:border-brand"
-          placeholder='{% trans "Ex: École Charleroi (matin)" %}'
-          maxlength="80"
-        />
-
-        <p class="mt-1 text-xs text-gray-500">
-          {% trans "Ce nom servira à regrouper vos trajets." %}
-        </p>
+    <!-- Stepper -->
+    <div class="mb-8">
+      <div class="grid grid-cols-3 mb-3.5">
+        <span data-tj-step-label="1" class="text-xs font-bold uppercase tracking-wider text-left">{% trans "Trajet" %}</span>
+        <span data-tj-step-label="2" class="text-xs font-bold uppercase tracking-wider text-center">{% trans "Quand" %}</span>
+        <span data-tj-step-label="3" class="text-xs font-bold uppercase tracking-wider text-right">{% trans "Détails" %}</span>
       </div>
-
-      <div>
-        <label class="block text-sm font-bold text-brand uppercase mb-1">
-          {% trans "Ville de départ" %}
-        </label>
-
-        {{ form.start_adress }}
-        {{ form.start_place_id }}
-
-        {% for error in form.start_adress.errors %}
-          <p class="mt-1 text-xs text-red-600">{{ error }}</p>
-        {% endfor %}
-
-        {% for error in form.start_place_id.errors %}
-          <p class="mt-1 text-xs text-red-600">{{ error }}</p>
-        {% endfor %}
-
-        <ul id="start-suggestion-list" class="hidden bg-white border border-gray-300 shadow-md mt-1 max-h-48 overflow-auto"></ul>
+      <div class="relative flex items-center justify-between h-[36px] px-[18px]">
+        <div class="absolute left-[18px] right-[18px] top-1/2 -translate-y-1/2 h-2 bg-[#E5E4DF] rounded-full"></div>
+        <div data-tj-step-line-fill class="tj-step-line-fill absolute left-[18px] top-1/2 -translate-y-1/2 h-2 bg-brand rounded-full" style="width:0"></div>
+        <div data-tj-step-circle="1" class="relative z-10 w-[36px] h-[36px] rounded-full flex items-center justify-center text-sm font-bold">1</div>
+        <div data-tj-step-circle="2" class="relative z-10 w-[36px] h-[36px] rounded-full flex items-center justify-center text-sm font-bold">2</div>
+        <div data-tj-step-circle="3" class="relative z-10 w-[36px] h-[36px] rounded-full flex items-center justify-center text-sm font-bold">3</div>
       </div>
     </div>
 
-    {% comment "RAYON EN COMMENTAIRE" %}
-    <div>
-      <label class="block text-sm font-bold text-brand uppercase mb-1">
-        {% trans "Rayon de recherche" %} (km)
-      </label>
+    <!-- STEP 1 : Trajet -->
+    <div data-tj-step="1">
+      <div class="bg-white rounded-[18px] border border-[#E5E4DF] p-6 sm:p-8 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
 
-      <div class="flex items-center gap-4">
-        {{ form.search_radius_km }}
-        <div class="flex items-center gap-2 bg-brand px-4 py-2 rounded-lg min-w-fit">
-          <span class="text-brand-50">km</span>
-        </div>
-      </div>
-
-      {% for error in form.search_radius_km.errors %}
-        <p class="mt-1 text-xs text-red-600">{{ error }}</p>
-      {% endfor %}
-
-      <p class="text-xs text-gray-500 mt-2">
-        {% trans "Sélectionnez dans quel rayon vous souhaitez rechercher un trajet (1-50 km)" %}
-      </p>
-    </div>
-    {% endcomment %}
-
-  </div>
-
-  <hr class="my-10">
-
-  <!-- Étape 2 : calendrier -->
-  <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
-    <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/icon/Icon_step_calendar.svg' %}" alt="Logo Bana">
-
-    <div class="flex-1 space-y-6 w-full">
-      <div>
-        <label class="block text-sm font-bold text-brand uppercase mb-2">
-          {% trans "Jours de la semaine" %}
-        </label>
-
-        <div class="flex flex-wrap gap-2" id="weekday-selector">
-          {% for i, day in days_of_week %}
-            <label
-              data-index="{{ i }}"
-              class="w-10 h-10 flex items-center justify-center text-xs font-semibold rounded-full cursor-pointer border transition
-                {% if i in tr_weekdays %}
-                  bg-brand-50 text-brand border-brand
-                {% else %}
-                  border-gray-300 text-gray-400 hover:border-brand hover:text-brand
-                {% endif %}"
-            >
-              {{ day|slice:":2" }}
-              <input
-                type="checkbox"
-                name="tr_weekdays"
-                value="{{ i }}"
-                class="hidden"
-                {% if i in tr_weekdays %}checked{% endif %}
-              >
-            </label>
-          {% endfor %}
-        </div>
-
-        {% for error in form.tr_weekdays.errors %}
-          <p class="mt-1 text-xs text-red-600">{{ error }}</p>
-        {% endfor %}
-      </div>
-
-      <div class="flex flex-col md:flex-row gap-6">
-        <div class="flex-1">
-          <label class="block text-sm font-bold uppercase text-brand mb-2">
-            {% trans "Récurrence" %}
+        <div class="mb-6">
+          <label for="groupe_name" class="block text-xs font-bold uppercase tracking-wider text-brand mb-2">
+            {% trans "Nom du trajet" %}
           </label>
+          <input type="text" id="groupe_name" name="groupe_name"
+                 value="{{ request.POST.groupe_name|default_if_none:'' }}"
+                 maxlength="80"
+                 placeholder="{% trans 'Ex : École Charleroi (matin)' %}"
+                 class="w-full px-4 py-3 border-[1.5px] border-[#E5E7EB] rounded-[10px] text-base text-[#1C1C1C] outline-none focus:border-brand transition">
+          <p class="text-sm text-[#ABABAB] mt-1.5">{% trans "Ce nom servira à regrouper vos trajets." %}</p>
+        </div>
 
-          <div class="space-y-2">
-            {% for radio in form.recurrence_type %}
-              <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                {{ radio.tag }}
-                <span>{{ radio.choice_label }}</span>
+        <div class="mb-7">
+          <label class="block text-xs font-bold uppercase tracking-wider text-brand mb-2">{% trans "Ville de départ" %}</label>
+          <div class="relative">
+            {{ form.start_adress }}
+            {{ form.start_place_id }}
+            {% for error in form.start_adress.errors %}<p class="text-sm text-red-600 mt-1">{{ error }}</p>{% endfor %}
+            {% for error in form.start_place_id.errors %}<p class="text-sm text-red-600 mt-1">{{ error }}</p>{% endfor %}
+            <ul id="start-suggestion-list" class="hidden absolute z-20 w-full bg-white border border-gray-200 rounded-lg shadow-lg mt-1 max-h-48 overflow-auto"></ul>
+          </div>
+        </div>
+
+        <div class="mb-7">
+          <div class="flex items-center justify-between mb-3">
+            <label class="block text-xs font-bold uppercase tracking-wider text-brand">{% trans "Rayon de recherche" %}</label>
+            <span data-tj-radius-label class="text-sm font-bold text-brand">{{ form.search_radius_km.value|default:5 }} km</span>
+          </div>
+          <div class="grid grid-cols-1 grid-rows-1 h-[22px]">
+            <div class="col-start-1 row-start-1 self-center h-1.5 bg-[#E5E7EB] rounded-full"></div>
+            <div data-tj-radius-track class="col-start-1 row-start-1 self-center h-1.5 bg-brand rounded-full pointer-events-none" style="width:0"></div>
+            <div class="col-start-1 row-start-1">
+              {{ form.search_radius_km }}
+            </div>
+          </div>
+          <div class="flex justify-between mt-2 text-xs text-[#ABABAB] font-medium">
+            <span>1 km</span>
+            <span>50 km</span>
+          </div>
+          {% for error in form.search_radius_km.errors %}<p class="text-sm text-red-600 mt-1">{{ error }}</p>{% endfor %}
+          <p class="text-sm text-[#ABABAB] mt-1.5">{{ form.search_radius_km.help_text }}</p>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-brand mb-3">{% trans "Moyens de transport" %}</label>
+          <div class="flex flex-wrap gap-2" data-tj-pill-group>
+            {% for cb in form.transport_modes %}
+              <label data-tj-pill class="px-4.5 py-2 rounded-full border-[1.5px] border-[#E5E7EB] text-[#374151] text-base font-medium cursor-pointer transition" style="padding-left:18px;padding-right:18px">
+                {{ cb.tag }}
+                {{ cb.choice_label }}
               </label>
             {% endfor %}
           </div>
-
-          {% for error in form.recurrence_type.errors %}
-            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
-          {% endfor %}
+          {% for error in form.transport_modes.errors %}<p class="text-sm text-red-600 mt-1">{{ error }}</p>{% endfor %}
         </div>
 
-        <div class="flex-1">
-          <label class="block text-sm font-bold uppercase text-brand mb-1">
-            {% trans "Date de début" %}
-          </label>
-
-          {{ form.date_debut }}
-
-          {% for error in form.date_debut.errors %}
-            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
-          {% endfor %}
-        </div>
-
-        <div class="flex-1" id="date_fin_container">
-          <label class="block text-sm font-bold uppercase text-brand mb-1">
-            {% trans "Date de fin" %}
-          </label>
-
-          {{ form.date_fin }}
-
-          {% for error in form.date_fin.errors %}
-            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
-          {% endfor %}
-        </div>
       </div>
-
-      <div class="max-w-xl">
-        <label class="block text-sm font-bold uppercase text-brand mb-2">
-          {% trans "Moyens de transport" %}
-        </label>
-
-        <div class="flex flex-wrap gap-2">
-          {% for cb in form.transport_modes %}
-            <label class="inline-flex items-center gap-2 px-3 py-2 text-sm rounded-xl border border-gray-200 hover:bg-gray-50 cursor-pointer transition">
-              {{ cb.tag }}
-              <span class="text-gray-700">{{ cb.choice_label }}</span>
-            </label>
-          {% endfor %}
-        </div>
-
-        {% for error in form.transport_modes.errors %}
-          <p class="mt-1 text-xs text-red-600">{{ error }}</p>
-        {% endfor %}
+      <div class="flex justify-end mt-4">
+        <button type="button" data-tj-next
+                class="px-8 py-3.5 bg-brand text-white rounded-[10px] text-base font-bold tracking-tight">
+          {% trans "Suivant" %} →
+        </button>
       </div>
     </div>
-  </div>
 
-  <hr class="my-10">
+    <!-- STEP 2 : Quand -->
+    <div data-tj-step="2" class="hidden">
+      <div class="bg-white rounded-[18px] border border-[#E5E4DF] p-6 sm:p-8 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
 
-  <!-- Étape 3 : places -->
-  <div class="flex flex-col lg:flex-row items-start gap-6 lg:gap-24">
-    <img class="w-28 h-28 lg:w-40 lg:h-40 mx-auto lg:mx-0" src="{% static 'bana/img/icon/Icon_step_child.svg' %}" alt="Logo Bana">
-
-    <div class="flex-1 space-y-6 w-full">
-      <div class="flex flex-col md:flex-row gap-6">
-        <div class="flex-1">
-          <label class="block text-sm font-bold uppercase text-brand mb-1">
-            {% trans "Places disponibles" %}
-          </label>
-
-          {{ form.number_of_places }}
-
-          {% for error in form.number_of_places.errors %}
-            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
-          {% endfor %}
+        <div class="mb-7">
+          <label class="block text-xs font-bold uppercase tracking-wider text-brand mb-3">{% trans "Type de récurrence" %}</label>
+          <div class="flex flex-col sm:flex-row gap-2.5" data-tj-pill-group>
+            {% for radio in form.recurrence_type %}
+              <label data-tj-pill class="flex-1 flex flex-col items-center gap-1 px-3 py-3.5 rounded-xl border-[1.5px] border-[#E5E7EB] cursor-pointer transition text-center">
+                {{ radio.tag }}
+                <span class="font-bold text-base text-[#1C1C1C]">{{ radio.choice_label }}</span>
+              </label>
+            {% endfor %}
+          </div>
+          {% for error in form.recurrence_type.errors %}<p class="text-sm text-red-600 mt-1">{{ error }}</p>{% endfor %}
         </div>
+
+        <div id="weekdays_container" class="mb-6 hidden">
+          <label class="block text-xs font-bold uppercase tracking-wider text-brand mb-3">{% trans "Jours de la semaine" %}</label>
+          <div class="flex gap-2 flex-wrap" id="weekday-selector">
+            {% for i, day in days_of_week %}
+              <label data-index="{{ i }}" data-tj-pill title="{{ day }}"
+                     class="w-11 h-11 flex items-center justify-center text-sm font-semibold rounded-full cursor-pointer border-[1.5px] border-[#F3F4F6] text-[#6B7280] transition">
+                {{ day|slice:":2" }}
+                <input type="checkbox" name="tr_weekdays" value="{{ i }}" class="hidden" {% if i in tr_weekdays %}checked{% endif %}>
+              </label>
+            {% endfor %}
+          </div>
+          {% for error in form.tr_weekdays.errors %}<p class="text-sm text-red-600 mt-1">{{ error }}</p>{% endfor %}
+        </div>
+
+        <div id="daterange_container" class="mb-6 hidden">
+          <div class="flex flex-col sm:flex-row gap-4">
+            <div class="flex-1">
+              <label class="block text-xs font-bold uppercase tracking-wider text-brand mb-2">{% trans "Date de début" %}</label>
+              {{ form.date_debut }}
+              {% for error in form.date_debut.errors %}<p class="text-sm text-red-600 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+            <div class="flex-1">
+              <label class="block text-xs font-bold uppercase tracking-wider text-brand mb-2">{% trans "Date de fin" %}</label>
+              {{ form.date_fin }}
+              {% for error in form.date_fin.errors %}<p class="text-sm text-red-600 mt-1">{{ error }}</p>{% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-5">
+          <div data-tj-calendar class="bg-[#FAFAF8] rounded-xl border border-[#E8E7E3] px-5 py-4"></div>
+        </div>
+
+        <div data-tj-recap class="hidden bg-[#E6F5F3] border border-[#B4D9D5] rounded-[10px] px-4 py-3.5 text-sm font-semibold text-[#005A52] mb-5"></div>
+
+        <div data-tj-excluded-panel class="hidden bg-[#E6F5F3] rounded-[10px] border border-[#B4D9D5] px-4.5 py-4">
+          <div class="flex justify-between items-center mb-2.5 flex-wrap gap-1">
+            <p class="text-sm font-bold text-[#005A52]">✅ <span data-tj-excluded-summary></span></p>
+            <span data-tj-excluded-counter class="text-xs text-[#4d8f88] font-semibold"></span>
+          </div>
+          <p class="text-xs text-[#6b9994] mb-2.5">{% trans "Cliquez sur le ✕ d'une date pour l'exclure si elle ne vous convient pas." %}</p>
+          <div data-tj-excluded-list class="flex flex-wrap gap-1.5"></div>
+        </div>
+
+        <input type="hidden" name="excluded_dates" data-tj-excluded-input value="">
+        <input type="hidden" name="selected_dates" data-tj-selected-input value="">
+
+      </div>
+      <div class="flex justify-between mt-4">
+        <button type="button" data-tj-prev
+                class="px-6 py-3.5 bg-white text-[#374151] border-[1.5px] border-[#E5E7EB] rounded-[10px] text-base font-semibold">
+          ← {% trans "Retour" %}
+        </button>
+        <button type="button" data-tj-next
+                class="px-8 py-3.5 bg-brand text-white rounded-[10px] text-base font-bold tracking-tight">
+          {% trans "Suivant" %} →
+        </button>
       </div>
     </div>
-  </div>
 
-  <div class="text-center">
-    <button
-      type="submit"
-      class="w-full sm:w-auto px-6 py-3 bg-brand text-white font-semibold rounded-full hover:bg-brand-dark transition"
-    >
-      {% trans "Enregistrer le trajet" %}
-    </button>
+    <!-- STEP 3 : Détails -->
+    <div data-tj-step="3" class="hidden">
+      <div class="bg-white rounded-[18px] border border-[#E5E4DF] p-6 sm:p-8 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-brand mb-2">{% trans "Places disponibles" %}</label>
+          <p class="text-sm text-[#ABABAB] mb-3">{% trans "Nombre de places proposées pour ce trajet" %}</p>
+          <div class="w-full sm:w-[220px]">
+            {{ form.number_of_places }}
+            {% for error in form.number_of_places.errors %}<p class="text-sm text-red-600 mt-1">{{ error }}</p>{% endfor %}
+          </div>
+        </div>
+
+      </div>
+      <div class="flex justify-between mt-4">
+        <button type="button" data-tj-prev
+                class="px-6 py-3.5 bg-white text-[#374151] border-[1.5px] border-[#E5E7EB] rounded-[10px] text-base font-semibold">
+          ← {% trans "Retour" %}
+        </button>
+        <button type="submit"
+                class="px-9 py-3.5 bg-brand text-white rounded-[10px] text-base font-bold tracking-tight">
+          {% trans "Enregistrer le trajet" %}
+        </button>
+      </div>
+    </div>
+
+  </form>
+
   </div>
-</form>
 </div>
 
 {{ fav_addresses|json_script:"favorite-addresses-data" }}
 
 <script src="{% static 'bana/js/core/address_autocomplete.js' %}"></script>
-
+<script src="{% static 'bana/js/pages/trajects_wizard.js' %}"></script>
 <script>
-
-  document.addEventListener("DOMContentLoaded", function () {
-    const weekdayLabels = document.querySelectorAll("#weekday-selector label");
-    const weekdayCheckboxes = document.querySelectorAll('input[name="tr_weekdays"]');
-    const recurrenceRadios = document.querySelectorAll('input[name="recurrence_type"]');
-    const dateFinContainer = document.getElementById("date_fin_container");
-
-    function updateWeekdayStyles() {
-        weekdayLabels.forEach(label => {
-            const input = label.querySelector('input');
-            const isChecked = input.checked;
-
-            label.classList.toggle('bg-brand-50', isChecked);
-            label.classList.toggle('text-brand', isChecked);
-            label.classList.toggle('border-brand', isChecked);
-
-            label.classList.toggle('text-gray-400', !isChecked);
-            label.classList.toggle('border-gray-300', !isChecked);
-        });
-    }
-
-    function updateRecurrenceFields() {
-        const selectedType = document.querySelector('input[name="recurrence_type"]:checked')?.value;
-        const selectedDaysCount = Array.from(weekdayCheckboxes).filter(cb => cb.checked).length;
-
-        if (!selectedType) {
-            dateFinContainer.style.display = 'none';
-            return;
-        }
-
-        if (selectedType === "weekly" || selectedType === "biweekly") {
-            dateFinContainer.style.display = 'block';
-        } else if (selectedType === "one_week") {
-            dateFinContainer.style.display = selectedDaysCount > 1 ? 'block' : 'none';
-        } else {
-            dateFinContainer.style.display = 'none';
-        }
-    }
-
-    function refreshUI() {
-        updateWeekdayStyles();
-        updateRecurrenceFields();
-    }
-
-    // Le label gère déjà le toggle du checkbox nativement,
-    // donc on écoute simplement le changement du checkbox
-    weekdayCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener("change", refreshUI);
-    });
-
-    recurrenceRadios.forEach(radio => {
-        radio.addEventListener("change", updateRecurrenceFields);
-    });
-
-    refreshUI();
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("address_autocomplete.js loaded");
-  // Initialisation
-  setupAutocomplete("start_adress", "start_place_id", "start-suggestion-list");
-});
-
+  document.addEventListener("DOMContentLoaded", () => {
+    setupAutocomplete("start_adress", "start_place_id", "start-suggestion-list");
+  });
 </script>
+
 {% endblock %}

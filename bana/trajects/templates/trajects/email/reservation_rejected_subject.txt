@@ -1,0 +1,1 @@
+{% autoescape off %}Votre réservation a été refusée{% endautoescape %}
