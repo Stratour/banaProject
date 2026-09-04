@@ -1,9 +1,22 @@
 {% extends './layouts/base.html' %}
 {% load static i18n %}
-{% block title %}{% trans "Comment ça marche" %}{% endblock %}
+{% block title %}{% trans "Comment fonctionne : trajets scolaires sécurisés" %}{% endblock %}
 {% block meta_description %}{% trans "Comment fonctionne Bana ? Inscription gratuite, ajout de trajets, matching avec un Yaya vérifié et rencontre obligatoire avant le 1er trajet. Découvrez les étapes." %}{% endblock %}
 {% block og_title %}{% trans "Comment fonctionne Bana — Étapes et FAQ" %}{% endblock %}
 {% block og_description %}{% trans "De l'inscription à la prise en charge de votre enfant : découvrez en détail comment Bana garantit des trajets sécurisés et de confiance." %}{% endblock %}
+
+{% block breadcrumb_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://www.bana.mobi/fr/"},
+    {"@type": "ListItem", "position": 2, "name": "Comment ça marche", "item": "https://www.bana.mobi{{ request.path }}"}
+  ]
+}
+</script>
+{% endblock %}
 
 
 {% block extra_head %}

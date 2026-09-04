@@ -1,10 +1,23 @@
 {% extends './layouts/base.html' %}
 {% load static i18n %}
 
-{% block title %}{% trans "Contact" %}{% endblock %}
+{% block title %}{% trans "Contact : une question sur vos trajets scolaires ?" %}{% endblock %}
 {% block meta_description %}{% trans "Contactez l'équipe Bana. Questions sur les trajets, l'inscription, le fonctionnement ? Nous vous répondons rapidement." %}{% endblock %}
 {% block og_title %}{% trans "Contact — Bana" %}{% endblock %}
 {% block og_description %}{% trans "Une question, un partenariat, une demande spécifique ? L'équipe Bana est à votre écoute." %}{% endblock %}
+
+{% block breadcrumb_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://www.bana.mobi/fr/"},
+    {"@type": "ListItem", "position": 2, "name": "Contact", "item": "https://www.bana.mobi{{ request.path }}"}
+  ]
+}
+</script>
+{% endblock %}
 
 {% block content %}
 

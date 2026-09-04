@@ -26,17 +26,19 @@
     <meta property="og:url" content="https://www.bana.mobi{{ request.path }}">
     <meta property="og:title" content="{% block og_title %}Bana — Covoiturage et accompagnement scolaire en Belgique{% endblock %}">
     <meta property="og:description" content="{% block og_description %}Trouvez un Yaya de confiance pour les trajets maison-école-activités de vos enfants. Plateforme belge sécurisée.{% endblock %}">
-    <meta property="og:image" content="{% block og_image %}https://www.bana.mobi{% static 'bana/img/icon/icon-512.png' %}{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}https://www.bana.mobi{% static 'bana/img/icon/web-app-manifest-512x512.png' %}{% endblock %}">
     <meta name="twitter:card" content="summary_large_image">
 
-    <link href="{% static 'bana/img/icon/favicon.ico' %}" rel="icon">
+    <link rel="icon" type="image/png" href="{% static 'bana/img/icon/favicon-96x96.png' %}" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="{% static 'bana/img/icon/favicon.svg' %}">
+    <link rel="shortcut icon" href="{% static 'bana/img/icon/favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'bana/img/icon/apple-touch-icon.png' %}">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#007F73">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Bana.mobi">
-    <link rel="apple-touch-icon" href="{% static 'bana/img/icon/icon-192.png' %}">
+    <meta name="apple-mobile-web-app-title" content="Bana">
     {% tailwind_css %}
     <link rel="stylesheet" href="{% static 'bana/css/components/animate.css' %}" media="print" onload="this.media='all'">
     <noscript><link rel="stylesheet" href="{% static 'bana/css/components/animate.css' %}"></noscript>
@@ -48,11 +50,11 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "LocalBusiness",
+      "@type": "Organization",
       "name": "Bana",
       "alternateName": "Bana.mobi",
       "url": "https://www.bana.mobi",
-      "logo": "https://www.bana.mobi{% static 'bana/img/icon/icon-512.png' %}",
+      "logo": "https://www.bana.mobi{% static 'bana/img/icon/web-app-manifest-512x512.png' %}",
       "description": "Plateforme belge de mobilité partagée et d'accompagnement scolaire pour les enfants.",
       "address": {
         "@type": "PostalAddress",
@@ -62,13 +64,19 @@
         "@type": "Country",
         "name": "Belgique"
       },
-      "telephone": "+32495283791",
-      "email": "contact@bana.mobi",
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
-        "opens": "08:30",
-        "closes": "18:30"
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "telephone": "+32495283791",
+        "email": "contact@bana.mobi",
+        "areaServed": "BE",
+        "availableLanguage": ["French"],
+        "hoursAvailable": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+          "opens": "08:30",
+          "closes": "18:30"
+        }
       },
       "sameAs": [
         "https://www.facebook.com/BanaCommunity/",
@@ -86,6 +94,7 @@
       "inLanguage": "fr-BE"
     }
     </script>
+    {% block breadcrumb_schema %}{% endblock %}
     {% block extra_head %}{% endblock %}
 </head>
 

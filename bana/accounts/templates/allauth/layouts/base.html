@@ -19,14 +19,16 @@
       gtag('config', 'G-NSMR9CPK6G');
     </script>
 
-    <link href="{% static 'bana/img/icon/favicon.ico' %}" rel="icon">
+    <link rel="icon" type="image/png" href="{% static 'bana/img/icon/favicon-96x96.png' %}" sizes="96x96">
+    <link rel="icon" type="image/svg+xml" href="{% static 'bana/img/icon/favicon.svg' %}">
+    <link rel="shortcut icon" href="{% static 'bana/img/icon/favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'bana/img/icon/apple-touch-icon.png' %}">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#007F73">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Bana.mobi">
-    <link rel="apple-touch-icon" href="{% static 'bana/img/icon/icon-192.png' %}">
+    <meta name="apple-mobile-web-app-title" content="Bana">
     {% tailwind_css %}
     <link rel="stylesheet" href="{% static 'bana/css/components/toast.css' %}">
     <link rel="stylesheet" href="{% static 'bana/css/components/footer.css' %}">

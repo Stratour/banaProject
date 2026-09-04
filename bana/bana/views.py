@@ -576,28 +576,16 @@ def manifest(request):
         "orientation": "portrait-primary",
         "icons": [
             {
-                "src": "/static/bana/img/icon/icon-192.png",
+                "src": "/static/bana/img/icon/web-app-manifest-192x192.png",
                 "sizes": "192x192",
                 "type": "image/png",
-                "purpose": "any"
+                "purpose": "any maskable"
             },
             {
-                "src": "/static/bana/img/icon/icon-512.png",
+                "src": "/static/bana/img/icon/web-app-manifest-512x512.png",
                 "sizes": "512x512",
                 "type": "image/png",
-                "purpose": "any"
-            },
-            {
-                "src": "/static/bana/img/icon/icon-192-maskable.png",
-                "sizes": "192x192",
-                "type": "image/png",
-                "purpose": "maskable"
-            },
-            {
-                "src": "/static/bana/img/icon/icon-512-maskable.png",
-                "sizes": "512x512",
-                "type": "image/png",
-                "purpose": "maskable"
+                "purpose": "any maskable"
             }
         ],
         "id": "/fr/",

@@ -1,10 +1,23 @@
 {% extends './layouts/base.html' %}
 {% load static i18n %}
 
-{% block title %}{% trans "Notre mission" %}{% endblock %}
+{% block title %}{% trans "Notre mission : mobilité scolaire durable en Belgique" %}{% endblock %}
 {% block meta_description %}{% trans "La mission de Bana : transformer la mobilité scolaire en Belgique grâce à une communauté de confiance, collaborative et multimodale." %}{% endblock %}
 {% block og_title %}{% trans "Notre mission — Bana Community" %}{% endblock %}
 {% block og_description %}{% trans "Bana s'engage pour une mobilité scolaire plus sereine, collaborative et durable. Découvrez notre vision, nos Yaya et l'équipe derrière la plateforme." %}{% endblock %}
+
+{% block breadcrumb_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://www.bana.mobi/fr/"},
+    {"@type": "ListItem", "position": 2, "name": "Notre mission", "item": "https://www.bana.mobi{{ request.path }}"}
+  ]
+}
+</script>
+{% endblock %}
 
 {% block extra_head %}
 <link rel="preload" as="image" href="{% static 'bana/img/page/about/accompagnateurs-transport-scolaire-belgique.webp' %}" type="image/webp">
@@ -121,7 +134,7 @@
                     </h3>
 
                     <p class="animate-on-scroll text-justify text-lg" data-delay="200">
-                        Selon une étude de la Ligue des Familles, <span class="text-brand-50 font-semibold">6 parents sur 10 estiment ne pas pouvoir se passer de la voiture</span> pour les déplacements des enfants.   
+                        Selon une étude de la <a href="https://liguedesfamilles.be/" target="_blank" rel="noopener noreferrer" class="underline underline-offset-4 hover:text-brand-50 transition">Ligue des Familles</a>, <span class="text-brand-50 font-semibold">6 parents sur 10 estiment ne pas pouvoir se passer de la voiture</span> pour les déplacements des enfants.
                         Alors que les adultes disposent d'une offre de mobilité toujours plus diversifiée, les enfants restent oubliés.
                     </p>
                     <p class="animate-on-scroll text-justify text-lg" data-delay="200">

@@ -1,9 +1,22 @@
 {% extends './layouts/base.html' %}
 {% load static i18n %}
-{% block title %}{% trans "Tarifs" %}{% endblock %}
+{% block title %}{% trans "Tarifs : formules parents et Yaya en Belgique" %}{% endblock %}
 {% block meta_description %}{% trans "Formules Bana à 99€, 149€ ou 199€/an. Inscription gratuite, paiement uniquement en cas de matching. Sans engagement, sans commission sur les trajets." %}{% endblock %}
 {% block og_title %}{% trans "Tarifs Bana — 3 formules adaptées à vos besoins" %}{% endblock %}
 {% block og_description %}{% trans "Essentiel, Confort ou Ambassadeur : choisissez la formule qui vous correspond. Vérification d'identité incluse, badges enfants, support prioritaire." %}{% endblock %}
+
+{% block breadcrumb_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://www.bana.mobi/fr/"},
+    {"@type": "ListItem", "position": 2, "name": "Tarifs", "item": "https://www.bana.mobi{{ request.path }}"}
+  ]
+}
+</script>
+{% endblock %}
 
 {% block extra_head %}
 <link rel="preload" as="image" href="{% static 'bana/img/page/tarifs/solution-trajets-ramassage-scolaire-belgique.webp' %}" type="image/webp">

@@ -11,7 +11,18 @@
       "Bash(node inspect_svgs.js)",
       "Bash(node fix_fake_svgs.js)",
       "Bash(node -e \"require\\('/tmp/claude-1004/-home-rootkitbana-banaProject/ee77384a-015a-4243-aec9-898576fdf688/scratchpad/imgtools/node_modules/sharp'\\)\\('page/about/frein-principal.png'\\).metadata\\(\\).then\\(m=>console.log\\(m\\)\\)\")",
-      "Bash(node convert2.js)"
+      "Bash(node convert2.js)",
+      "WebFetch(domain:www.bana.mobi)",
+      "Bash(file favicon-bana/*.png favicon-bana/*.ico favicon-bana/*.svg)",
+      "Bash(file extracted_*.bin)",
+      "Bash(cp __TRACKED_VAR__/optimized/apple-touch-icon.png apple-touch-icon.png)",
+      "Bash(cp __TRACKED_VAR__/optimized/favicon-96x96.png favicon-96x96.png)",
+      "Bash(cp __TRACKED_VAR__/optimized/web-app-manifest-192x192.png web-app-manifest-192x192.png)",
+      "Bash(cp __TRACKED_VAR__/optimized/web-app-manifest-512x512.png web-app-manifest-512x512.png)",
+      "Bash(cp __TRACKED_VAR__/favicon-optimized-256.svg favicon.svg)",
+      "Bash(python3 -c \"import ast; ast.parse\\(open\\('bana/views.py'\\).read\\(\\)\\)\")",
+      "Bash(node -e \"new Function\\(require\\('fs'\\).readFileSync\\('bana/static/bana/js/sw.js','utf8'\\)\\)\")",
+      "Bash(sudo -n cat /etc/nginx/sites-enabled/*bana*)"
     ]
   }
 }

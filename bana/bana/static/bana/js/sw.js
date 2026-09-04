@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'bana-v10';
+const CACHE_VERSION = 'bana-v11';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
 
@@ -8,9 +8,10 @@ const PRECACHE_ASSETS = [
   '/static/bana/css/components/toast.css',
   '/static/bana/js/core/toast.js',
   '/static/bana/js/core/modal.js',
-  '/static/bana/img/icon/icon-192.png',
-  '/static/bana/img/icon/icon-512.png',
+  '/static/bana/img/icon/web-app-manifest-192x192.png',
+  '/static/bana/img/icon/web-app-manifest-512x512.png',
   '/static/bana/img/icon/favicon.ico',
+  '/static/bana/img/icon/favicon.svg',
   '/static/bana/img/logo/Bana_logo_dark_green.svg',
   '/static/css/dist/styles.css',
   '/offline/',

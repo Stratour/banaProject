@@ -1,9 +1,22 @@
 {% extends './layouts/base.html' %}
 {% load static i18n%}
-{% block title %}{% trans "Devenir Yaya" %}{% endblock %}
+{% block title %}{% trans "Devenir Yaya : accompagnateur scolaire en Belgique" %}{% endblock %}
 {% block meta_description %}{% trans "Devenez Yaya et accompagnez les enfants de votre quartier. Jusqu'à 176€/mois, flexible, sans voiture obligatoire. Tous moyens de transport acceptés." %}{% endblock %}
 {% block og_title %}{% trans "Devenir Yaya — Accompagnez les enfants en Belgique" %}{% endblock %}
 {% block og_description %}{% trans "Rejoignez la communauté Bana en tant que Yaya. Engagement selon vos disponibilités, défraiement jusqu'à 176€/mois, lien social garanti." %}{% endblock %}
+
+{% block breadcrumb_schema %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://www.bana.mobi/fr/"},
+    {"@type": "ListItem", "position": 2, "name": "Devenir Yaya", "item": "https://www.bana.mobi{{ request.path }}"}
+  ]
+}
+</script>
+{% endblock %}
 
 {% block extra_head %}
 <link rel="preload" as="image" href="{% static 'bana/img/page/yaya/accompagnateur-enfants-trajets-scolaires.webp' %}" type="image/webp">
