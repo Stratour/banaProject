@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include
 from django.conf.urls.i18n import i18n_patterns
+from django.views.generic.base import RedirectView
 from stripe_sub.views import stripe_webhook
 from . import views
 from .sitemaps import StaticViewSitemap
@@ -41,6 +42,8 @@ urlpatterns += i18n_patterns(
     # Pages globales
     path('', views.home, name='home'),
     path('comment-ca-marche/', views.work, name='work'),
+    # Ancienne URL indexée par Google avant le renommage -> 301 vers la nouvelle (évite le 404 en Search Console)
+    path('work/', RedirectView.as_view(pattern_name='work', permanent=True)),
     path('devenir-yaya/', views.yaya, name='yaya'),
     path('tarifs/', views.tarifs, name='tarifs'),
     path('mission/', views.about, name='about'),

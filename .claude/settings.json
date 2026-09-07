@@ -43,7 +43,21 @@
       "Bash(curl -sL \"https://export-download.canva.com/lJ-4U/DAHUP8lJ-4U/-1/0/0001-2811886911771445259.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260904%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260904T015557Z&X-Amz-Expires=54531&X-Amz-Signature=c7006a37d121c7812ca4c3cab42f94976c47d590d0a04ee0b1af05b7caaed84c&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Fri%2C%2004%20Sep%202026%2017%3A04%3A48%20GMT\" -o candidate3-draft.png)",
       "Bash(curl -sL \"https://export-download.canva.com/ALCOY/DAHUPxALCOY/-1/0/0001-1027335557901922134.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH5AO7UJ26%2F20260903%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260903T154913Z&X-Amz-Expires=90088&X-Amz-Signature=f790dde11d6e621ed6018435a7094ff4c47e3caf53b27efb67bf6deff989a170&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Fri%2C%2004%20Sep%202026%2016%3A50%3A41%20GMT\" -o candidate4-draft.png)",
       "Bash(mkdir -p /home/rootkitbana/banaProject/bana/bana/static/bana/img/og)",
-      "Bash(cp /tmp/claude-1004/-home-rootkitbana-banaProject/ee77384a-015a-4243-aec9-898576fdf688/scratchpad/imgtools/og-default.jpg /home/rootkitbana/banaProject/bana/bana/static/bana/img/og/og-default.jpg)"
+      "Bash(cp /tmp/claude-1004/-home-rootkitbana-banaProject/ee77384a-015a-4243-aec9-898576fdf688/scratchpad/imgtools/og-default.jpg /home/rootkitbana/banaProject/bana/bana/static/bana/img/og/og-default.jpg)",
+      "Bash(curl -sI -L --max-redirs 5 \"https://bana.mobi/\")",
+      "Bash(curl -sI \"https://www.bana.mobi/\")",
+      "Bash(curl -sI \"https://bana.mobi/fr/\")",
+      "Bash(curl -sI \"https://bana.mobi/fr/devenir-yaya/\")",
+      "Bash(curl -sI \"https://bana.mobi/fr/work/\")",
+      "Bash(curl -s \"https://www.bana.mobi/sitemap.xml\")",
+      "Bash(curl -s \"https://www.bana.mobi/robots.txt\")",
+      "Edit(/.claude/skills/seo-geo-aeo/**)",
+      "Bash(curl -sI \"https://bana.mobi/fr/mission/\")",
+      "Bash(curl -sI \"https://bana.mobi/fr/tarifs/\")",
+      "Bash(curl -sI \"https://bana.mobi/static/bana/doc/mentions-legales-bana.8f741c4d7174.pdf\")",
+      "Bash(curl -sI \"https://www.bana.mobi/static/bana/doc/mentions-legales-bana.8f741c4d7174.pdf\")",
+      "Bash(sudo -n nginx -t)",
+      "Read(//etc/nginx/**)"
     ]
   }
 }

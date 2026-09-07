@@ -99,6 +99,15 @@ Work through each category systematically. Your analysis covers the **whole site
 - **Schema markup**: Any JSON-LD or microdata present? Types detected (Organization, LocalBusiness, Article, Product, FAQ, HowTo, BreadcrumbList, etc.)?
 - **Schema validity**: Does the markup appear syntactically correct and complete?
 
+**Indexation Coverage (Google Search Console "pages not indexed" patterns):**
+
+If the user shares Search Console indexing errors, or you have shell/curl access to the site, check these specifically — they map directly to Search Console's four most common exclusion reasons, and most of the time only one of the four is a real bug:
+
+- **"Page with redirect" / "Autre page avec balise canonique correcte"** — check whether this is *expected* before flagging it. Fetch the canonical tag's domain (`www` vs bare domain, `http` vs `https`) and compare it against what the server actually does: `curl -sI https://domain.tld/path` and `curl -sI https://www.domain.tld/path` — does one 301 cleanly to the other, and does that target match the canonical tag and the URLs listed in `sitemap.xml`? If yes, these Search Console entries are Google *confirming* correct canonicalization, not errors — say so plainly instead of "fixing" something that isn't broken. Flag it as a real issue only if the canonical tag, the sitemap, and the actual redirect target disagree with each other (e.g., canonical says `www` but nginx/server redirects `www` → bare domain, or sitemap lists a non-canonical domain).
+- **"Excluded by noindex tag"** — check `robots.txt` and the page's `<meta name="robots">` / `X-Robots-Tag` header for that URL. Confirm the page is one that *should* be excluded (login, signup, password reset, cart, admin, error pages, internal search/filter params). Only flag as a bug if a page meant to be publicly discoverable carries noindex.
+- **"Not found (404)"** — for each 404'd URL, check whether it matches an old/renamed route: look for a URL name in the code whose current `path()` doesn't match the name or template filename (e.g., a Django `path('new-slug/', view, name='old_name')`, or a template/static folder still named after the old slug) — that mismatch is the signature of a past URL rename. If found, recommend (or add) a permanent redirect (301 / `RedirectView(permanent=True)`) from the old path to the new one instead of leaving a dead 404, to preserve link equity from external backlinks and old indexed URLs.
+- **Sitemap/canonical consistency pass**: confirm `sitemap.xml` lists only the canonical protocol+domain form (matching what `<link rel="canonical">` outputs and what the server treats as the non-redirecting target) — a sitemap mixing `www`/non-`www` or `http`/`https` variants with the canonical tag is a common self-inflicted cause of these exclusions.
+
 ### GEO Signals (Generative Engine Optimization)
 
 GEO optimizes for AI-powered search engines (Perplexity, ChatGPT Search, Google AI Overviews, Gemini) that synthesize answers from multiple sources and cite pages. These engines reward clarity, authority, and factual richness.
