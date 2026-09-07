@@ -47,6 +47,8 @@ urlpatterns += i18n_patterns(
     path('devenir-yaya/', views.yaya, name='yaya'),
     path('tarifs/', views.tarifs, name='tarifs'),
     path('mission/', views.about, name='about'),
+    # Ancienne URL indexée par Google avant le renommage -> 301 vers la nouvelle (évite le 404 en Search Console)
+    path('about/', RedirectView.as_view(pattern_name='about', permanent=True)),
     path('contact/', views.contact, name='contact'),
 
     # Admin Interfaces

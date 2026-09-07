@@ -57,7 +57,10 @@
       "Bash(curl -sI \"https://bana.mobi/static/bana/doc/mentions-legales-bana.8f741c4d7174.pdf\")",
       "Bash(curl -sI \"https://www.bana.mobi/static/bana/doc/mentions-legales-bana.8f741c4d7174.pdf\")",
       "Bash(sudo -n nginx -t)",
-      "Read(//etc/nginx/**)"
+      "Read(//etc/nginx/**)",
+      "Bash(curl -sI \"https://www.bana.mobi/fr/work/\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} -> %{redirect_url}\\\\n\" \"https://bana.mobi/fr/work/\")",
+      "Bash(pdftotext -layout /home/rootkitbana/banaProject/bana/staticfiles/bana/doc/mentions-legales-bana.pdf -)"
     ]
   }
 }
