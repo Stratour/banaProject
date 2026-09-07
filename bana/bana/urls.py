@@ -50,6 +50,7 @@ urlpatterns += i18n_patterns(
     # Ancienne URL indexée par Google avant le renommage -> 301 vers la nouvelle (évite le 404 en Search Console)
     path('about/', RedirectView.as_view(pattern_name='about', permanent=True)),
     path('contact/', views.contact, name='contact'),
+    path('faq/', views.faq, name='faq'),
 
     # Admin Interfaces
     path('bana_admin/', include('bana_admin.urls')),

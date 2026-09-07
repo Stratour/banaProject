@@ -450,6 +450,117 @@ def tarifs(request):
         'tarifs_highlights': tarifs_highlights,
     })
 
+# --- FAQ page ---------------------------------------------------------------------------
+def faq(request):
+    faq_categories = [
+        {
+            'slug': 'trajets-matching',
+            'label': _('Trajets & Matching'),
+            'questions': [
+                {
+                    'question': _('Comment fonctionne le système de matching ?'),
+                    'answer': _("Grâce à son système de matching, Bana met en relation des parents et des Yaya qui effectuent déjà des trajets similaires aux mêmes horaires pour accompagner les enfants entre la maison, l'école et les activités extrascolaires."),
+                    'featured': True,
+                },
+                {
+                    'question': _('Comment entrer en contact avec un matching ?'),
+                    'answer': _("Une fois l'abonnement activé, vous avez accès à l'adresse email de vos matchings afin de pouvoir échanger avec les membres de la communauté et organiser les trajets.<br>Vous pouvez ensuite partager vos coordonnées téléphoniques pour communiquer plus facilement."),
+                },
+                {
+                    'question': _('Comment se déroule le premier contact ?'),
+                    'answer': _("Avant le premier trajet, une rencontre entre le parent, l'enfant et le Yaya est fortement recommandée afin de faire connaissance et d'organiser le trajet en toute confiance. Bana recommande également que le premier trajet soit effectué en présence du parent."),
+                    'featured': True,
+                },
+                {
+                    'question': _("Comment fonctionne le système d'avis et d'évaluations ?"),
+                    'answer': _("Après les trajets, les parents et les Yaya peuvent laisser un avis sur leur expérience. Ce système d'évaluations réciproques permet de renforcer la confiance, de valoriser les comportements respectueux et d'aider les membres de la communauté à choisir leurs matchings en toute sérénité."),
+                },
+            ],
+        },
+        {
+            'slug': 'securite-verification',
+            'label': _('Sécurité & Vérification'),
+            'questions': [
+                {
+                    'question': _('Comment sont vérifiés les Yayas ?'),
+                    'answer': _('Chaque Yaya fournit une carte d\'identité et un extrait de casier judiciaire. Seuls les Yayas ayant obtenu le badge <strong>"Yaya vérifié"</strong> apparaissent dans les résultats et peuvent être contactés par les parents.'),
+                    'featured': True,
+                },
+                {
+                    'question': _('À quel âge mon enfant peut-il utiliser Bana ?'),
+                    'answer': _("Bana est conçu pour les enfants en âge scolaire (maternelle à secondaire). Le parent reste responsable de définir les conditions qui lui conviennent selon l'autonomie de son enfant."),
+                },
+            ],
+        },
+        {
+            'slug': 'tarifs-paiement',
+            'label': _('Tarifs & Paiement'),
+            'questions': [
+                {
+                    'question': _("L'inscription sur Bana est-elle gratuite ?"),
+                    'answer': _("Oui. L'inscription est gratuite pour les parents et les Yaya afin de créer un profil et d'indiquer ses trajets."),
+                    'featured': True,
+                },
+                {
+                    'question': _('Quand devient-on payant sur Bana ?'),
+                    'answer': _("Vous payez uniquement lorsqu'un matching existe et que vous souhaitez entrer en contact avec les membres de la communauté."),
+                    'featured': True,
+                },
+                {
+                    'question': _('Y a-t-il un engagement annuel ?'),
+                    'answer': _("Non. L'abonnement est annuel mais sans reconduction automatique. À l'échéance, vous choisissez librement de renouveler ou non."),
+                },
+                {
+                    'question': _('Le prix des trajets est-il fixé par Bana ?'),
+                    'answer': _("Non. Le montant du défraiement est librement convenu entre le parent et le Yaya. Bana fournit une fourchette indicative afin de garantir un équilibre entre accessibilité pour les familles et reconnaissance du temps consacré par les Yaya."),
+                },
+                {
+                    'question': _('Bana intervient-il dans le paiement ?'),
+                    'answer': _("Non. Le paiement se fait directement entre le parent et le Yaya, en dehors de la plateforme (espèces, virement, etc.). Bana facilite uniquement la mise en relation et ne perçoit aucune commission sur les trajets."),
+                },
+            ],
+        },
+        {
+            'slug': 'general',
+            'label': _('Général'),
+            'questions': [
+                {
+                    'question': _('Lorem ipsum dolor sit amet, consectetur adipiscing elit ?'),
+                    'answer': _('Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'),
+                },
+                {
+                    'question': _('Duis aute irure dolor in reprehenderit in voluptate velit esse ?'),
+                    'answer': _('Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Cillum dolore eu fugiat nulla pariatur.'),
+                },
+                {
+                    'question': _('Sed ut perspiciatis unde omnis iste natus error sit voluptatem ?'),
+                    'answer': _('Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.'),
+                },
+            ],
+        },
+        {
+            'slug': 'compte-inscription',
+            'label': _('Compte & Inscription'),
+            'questions': [
+                {
+                    'question': _('Neque porro quisquam est qui dolorem ipsum quia dolor sit amet ?'),
+                    'answer': _('Consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.'),
+                },
+                {
+                    'question': _('Ut enim ad minima veniam, quis nostrum exercitationem ullam ?'),
+                    'answer': _('Corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse.'),
+                },
+                {
+                    'question': _('At vero eos et accusamus et iusto odio dignissimos ducimus ?'),
+                    'answer': _('Qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.'),
+                },
+            ],
+        },
+    ]
+    for category in faq_categories:
+        category['has_featured'] = any(q.get('featured') for q in category['questions'])
+    return render(request, 'faq.html', {'faq_categories': faq_categories})
+
 # --- Notre mission page ---------------------------------------------------------------------------
 def about(request):
     impacts = [

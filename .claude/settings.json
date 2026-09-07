@@ -60,7 +60,9 @@
       "Read(//etc/nginx/**)",
       "Bash(curl -sI \"https://www.bana.mobi/fr/work/\")",
       "Bash(curl -s -o /dev/null -w \"%{http_code} -> %{redirect_url}\\\\n\" \"https://bana.mobi/fr/work/\")",
-      "Bash(pdftotext -layout /home/rootkitbana/banaProject/bana/staticfiles/bana/doc/mentions-legales-bana.pdf -)"
+      "Bash(pdftotext -layout /home/rootkitbana/banaProject/bana/staticfiles/bana/doc/mentions-legales-bana.pdf -)",
+      "Read(//tmp/**)",
+      "Bash(pkill -f \"runserver 127.0.0.1:876\")"
     ]
   }
 }

@@ -1,0 +1,18 @@
+/* faq.css — uniquement ce que Tailwind ne peut pas exprimer via des classes statiques */
+
+/* Chip de thème actif (état géré côté JS, pas connu au moment du rendu template) —
+   fond blanc pour ressortir sur l'aside en dégradé de marque */
+.faq-chip.is-active {
+    background-color: #fff;
+    color: #007F73;
+}
+
+/* Scroll horizontal des chips sur mobile, sans scrollbar visible */
+.faq-chip-row {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.faq-chip-row::-webkit-scrollbar {
+    display: none;
+}
