@@ -27,16 +27,20 @@
                 <button id="appAvatarBtnMobile"
                         class="flex items-center rounded-full p-1 hover:bg-white/20 focus:outline-none"
                         onclick="toggleAppAvatarMobile()" aria-label="Menu utilisateur">
-                    <div class="h-9 w-9 rounded-full bg-brand-50 ring-2 ring-white/30 overflow-hidden flex items-center justify-center flex-shrink-0">
-                        {% if request.user.profile.profile_picture %}
-                            <img src="{{ request.user.profile.profile_picture.url }}" alt="Avatar" class="h-full w-full object-cover">
-                        {% else %}
-                            <span class="text-sm font-bold text-brand">
-                                {% if user.profile.ci_is_verified %}
-                                    {{ request.user.profile.verified_first_name.0 }}.{{ request.user.profile.verified_last_name.0 }}
-                                {% else %}
-                                    {{ request.user.first_name.0 }}.{{ request.user.last_name.0 }}
-                                {% endif %}
+                    <div class="relative h-9 w-9 flex-shrink-0">
+                        <div class="h-full w-full rounded-full bg-brand-50 ring-2 ring-white/30 overflow-hidden flex items-center justify-center">
+                            {% if request.user.profile.profile_picture %}
+                                <img src="{{ request.user.profile.profile_picture.url }}" alt="Avatar" class="h-full w-full object-cover">
+                            {% else %}
+                                <img src="{% static 'bana/img/icon/Icon_bana.png' %}" alt="Avatar" class="h-full w-full object-cover">
+                            {% endif %}
+                        </div>
+                        {% if request.user.profile.prfl_is_verified %}
+                            <span class="absolute -top-1 -left-1 inline-flex h-4 w-4 rounded-full bg-white ring-2 ring-white shadow">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+                                    <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
+                                    <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
                             </span>
                         {% endif %}
                     </div>
@@ -121,8 +125,8 @@
             <div id="auth-buttons" class="md:flex items-center space-x-4">
 
                 {% if user.is_staff %}
-                <a href="{% url 'bana_admin:admin_view' %}"
-                    class="bg-brand-50 text-gray-900 px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand hover:no-underline">
+                <a href="{% url 'bana_admin:validate_members' %}"
+                    class="bg-brand-50 text-brand px-4 py-2 rounded-full font-bold w-32 flex justify-center items-center hover:text-brand hover:no-underline">
                     Admin
                 </a>
                 {% endif %}
@@ -180,16 +184,20 @@
                     <button id="appAvatarBtnDesktop"
                             class="flex items-center gap-1.5 rounded-full p-1 hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white"
                             onclick="toggleAppAvatar()" aria-label="Menu utilisateur">
-                        <div class="h-9 w-9 rounded-full bg-brand-50 ring-2 ring-[#E9F5F1] overflow-hidden flex items-center justify-center flex-shrink-0">
-                            {% if request.user.profile.profile_picture %}
-                                <img src="{{ request.user.profile.profile_picture.url }}" alt="Avatar" class="h-full w-full object-cover">
-                            {% else %}
-                                <span class="text-sm font-bold text-brand">
-                                    {% if user.profile.ci_is_verified %}
-                                        {{ request.user.profile.verified_first_name.0 }}.{{ request.user.profile.verified_last_name.0 }}
-                                    {% else %}
-                                        {{ request.user.first_name.0 }}.{{ request.user.last_name.0 }}
-                                    {% endif %}
+                        <div class="relative h-9 w-9 flex-shrink-0">
+                            <div class="h-full w-full rounded-full bg-brand-50 ring-2 ring-[#E9F5F1] overflow-hidden flex items-center justify-center">
+                                {% if request.user.profile.profile_picture %}
+                                    <img src="{{ request.user.profile.profile_picture.url }}" alt="Avatar" class="h-full w-full object-cover">
+                                {% else %}
+                                    <img src="{% static 'bana/img/icon/Icon_bana.png' %}" alt="Avatar" class="h-full w-full object-cover">
+                                {% endif %}
+                            </div>
+                            {% if request.user.profile.prfl_is_verified %}
+                                <span class="absolute -top-1 -left-1 inline-flex h-4 w-4 rounded-full bg-white ring-2 ring-white shadow">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+                                        <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
+                                        <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    </svg>
                                 </span>
                             {% endif %}
                         </div>

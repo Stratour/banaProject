@@ -65,22 +65,26 @@
 
                 <div class="px-6 py-5 flex items-center gap-4 flex-wrap sm:flex-nowrap">
 
-                  <div class="h-[50px] w-[50px] rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] overflow-hidden shrink-0">
-                    {% if match.user.profile.profile_picture %}
-                      <a {% if is_abonned %}href="{% url 'accounts:profile_user' user_id=match.user.id %}"{% endif %}>
-                        <img src="{{ match.user.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="">
-                      </a>
-                    {% else %}
-                      <a {% if is_abonned %}href="{% url 'accounts:profile_user' user_id=match.user.id %}"{% endif %}
-                         class="flex items-center justify-center w-full h-full">
-                        <span class="text-base font-extrabold text-brand">
-                          {% if match.user.profile.ci_is_verified %}
-                            {{ match.user.profile.verified_first_name|slice:":1" }}.{{ match.user.profile.verified_last_name|slice:":1" }}
-                          {% else %}
-                            {{ match.user.first_name|slice:":1" }}.{{ match.user.last_name|slice:":1" }}
-                          {% endif %}
-                        </span>
-                      </a>
+                  <div class="relative h-[50px] w-[50px] shrink-0">
+                    <div class="h-full w-full rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] overflow-hidden">
+                      {% if match.user.profile.profile_picture %}
+                        <a {% if is_abonned %}href="{% url 'accounts:profile_user' user_id=match.user.id %}"{% endif %}>
+                          <img src="{{ match.user.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="">
+                        </a>
+                      {% else %}
+                        <a {% if is_abonned %}href="{% url 'accounts:profile_user' user_id=match.user.id %}"{% endif %}
+                           class="flex items-center justify-center w-full h-full">
+                          <img src="{% static 'bana/img/icon/Icon_bana.png' %}" alt="" class="h-full w-full object-cover">
+                        </a>
+                      {% endif %}
+                    </div>
+                    {% if match.user.profile.prfl_is_verified %}
+                      <span class="absolute -top-1 -left-1 inline-flex h-4 w-4 rounded-full bg-white ring-2 ring-white shadow">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+                          <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
+                          <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </span>
                     {% endif %}
                   </div>
 

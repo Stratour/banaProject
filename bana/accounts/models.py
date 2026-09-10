@@ -72,6 +72,21 @@ class Profile(models.Model):
             self.prfl_is_verified = is_complete
             self.save(update_fields=['prfl_is_verified'])
 
+    @property
+    def verification_missing_fields(self):
+        missing = []
+        if not self.profile_picture:
+            missing.append(_("Photo de profil"))
+        if not self.address:
+            missing.append(_("Adresse"))
+        if not self.languages.exists():
+            missing.append(_("Langues"))
+        if not self.ci_is_verified:
+            missing.append(_("CI vérifiée"))
+        if not self.bvm_is_verified:
+            missing.append(_("BVM vérifiée"))
+        return missing
+
     def __str__(self):
         return self.user.username
 

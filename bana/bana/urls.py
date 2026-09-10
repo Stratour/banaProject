@@ -54,10 +54,10 @@ urlpatterns += i18n_patterns(
 
     # Admin Interfaces
     path('bana_admin/', include('bana_admin.urls')),
-    
-    # Bug Tracker
-    path('bug_tracker/', include('bug_tracker.urls')),
-    
+
+    # Bug Tracker : app non utilisée, routes désactivées (dossier conservé)
+    # path('bug_tracker/', include('bug_tracker.urls')),
+
     # Authentification
     path('accounts/', include('allauth.urls')),
     path('', include('accounts.urls')),

@@ -1,16 +1,6 @@
 <nav class="bg-gray-50 border-b border-gray-200 mb-8 shadow-md">
     <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex space-x-2 py-2">
-            
-            <a href="{% url 'bana_admin:admin_view' %}"
-               class="px-4 py-2 text-base font-semibold rounded-lg flex items-center hover:no-underline
-                      {% if request.resolver_match.url_name == 'admin_view' %}
-                        rounded-full bg-brand text-brand-50 font-semibold hover:text-brand-50
-                      {% else %}
-                        text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full 
-                      {% endif %}">
-                Admin
-            </a>
 
             <a href="{% url 'bana_admin:validate_members' %}"
                class="px-4 py-2 text-base font-semibold rounded-lg flex items-center hover:no-underline
@@ -30,16 +20,6 @@
                         text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full 
                       {% endif %}">
                 Visite du site
-            </a>
-
-            <a href="{% url 'bug_tracker:dashboard' %}"
-               class="px-4 py-2 text-base font-semibold rounded-lg flex items-center hover:no-underline
-                      {% if request.resolver_match.url_name == 'dashboard' %}
-                        rounded-full bg-brand text-brand-50 font-semibold hover:text-brand-50
-                      {% else %}
-                         text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full 
-                      {% endif %}">
-                Bug Tracker
             </a>
 
             <a href="/admin"

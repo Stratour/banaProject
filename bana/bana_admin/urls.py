@@ -6,8 +6,8 @@ app_name = 'bana_admin'
 urlpatterns = [
     path('admin_view', views.admin_view, name='admin_view'),
     path('validate_members', views.validate_members, name='validate_members'),
-    path('admin-panel/verify-prfl/<int:profile_id>/', views.verify_profile_prfl, name='verify_profile_prfl'),
     path('admin-panel/verify-bvm/<int:profile_id>/', views.verify_bvm_prfl, name='verify_bvm_prfl'),
+    path('admin-panel/reject-bvm/<int:profile_id>/', views.reject_bvm_prfl, name='reject_bvm_prfl'),
     path('admin/site-stats/', views.site_stats_view, name='site_stats'),
 
     path('wxc', views.ValidationListView.as_view(), name='list'),

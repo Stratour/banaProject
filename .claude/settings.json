@@ -62,7 +62,9 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code} -> %{redirect_url}\\\\n\" \"https://bana.mobi/fr/work/\")",
       "Bash(pdftotext -layout /home/rootkitbana/banaProject/bana/staticfiles/bana/doc/mentions-legales-bana.pdf -)",
       "Read(//tmp/**)",
-      "Bash(pkill -f \"runserver 127.0.0.1:876\")"
+      "Bash(pkill -f \"runserver 127.0.0.1:876\")",
+      "Bash(node /tmp/claude-1004/bundled-skills/2.1.263/3180016d8f5beb6e686d4e7608ca62da/design/seed-canvas.mjs --template /tmp/claude-1004/bundled-skills/2.1.263/3180016d8f5beb6e686d4e7608ca62da/design/payload.template.html --out avis-section-redesign.html --title 'Section Avis' --artboard Main.dc.html --artboard States.dc.html --canvas canvas.json)",
+      "Bash(node \"/tmp/claude-1004/bundled-skills/2.1.263/3180016d8f5beb6e686d4e7608ca62da/design/seed-canvas.mjs\" --check \"/tmp/claude-1004/-home-rootkitbana-banaProject/b5c2a624-dbae-425f-af5f-0903107af443/scratchpad/avis-design/avis-section-redesign.html\")"
     ]
   }
 }

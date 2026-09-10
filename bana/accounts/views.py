@@ -127,7 +127,7 @@ def profile_user(request, user_id=None):
     if not is_own_profile:
         existing_review = Review.objects.filter(reviewer=request.user, reviewed_user=user).first()
         allow_review = existing_review is None
-        is_editing = "edit_review" in request.GET and existing_review
+        is_editing = "edit_review" in request.GET and bool(existing_review)
         form = ReviewForm(instance=existing_review if is_editing else None)
 
         if request.method == "POST":
@@ -139,6 +139,15 @@ def profile_user(request, user_id=None):
                 review.save()
                 messages.success(request, "Votre note a été mise à jour.")
                 return redirect("accounts:profile_user", user_id=user.id)
+
+        elif request.htmx:
+            return render(request, "account/partials/formulaire_avis.html", {
+                "user": user,
+                "allow_review": allow_review,
+                "existing_review": existing_review,
+                "is_editing": is_editing,
+                "form": form,
+            })
 
     return render(
         request,

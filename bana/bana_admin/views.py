@@ -12,9 +12,32 @@ from .models import InscriptionValidation, SiteVisit
 from django.contrib.auth.models import User
 from accounts.models import Profile
 from datetime import timedelta
-from django.db.models import Count
+from django.db.models import Count, Prefetch, Q
 from django.core.paginator import Paginator
-from .utils import get_site_stats
+from stripe_sub.models import Subscription
+
+
+MEMBER_SORT_OPTIONS = [
+    ('-user__date_joined', "Inscription (plus récente d'abord)"),
+    ('user__date_joined', "Inscription (plus ancienne d'abord)"),
+    ('user__email', 'Email (A → Z)'),
+    ('-user__email', 'Email (Z → A)'),
+    ('verified_last_name', 'Nom (A → Z)'),
+    ('-verified_last_name', 'Nom (Z → A)'),
+    ('service', 'Rôle (A → Z)'),
+    ('-ci_is_verified', 'CI vérifiée en premier'),
+    ('-bvm_is_verified', 'BVM vérifié en premier'),
+    ('-prfl_is_verified', 'Profil vérifié en premier'),
+]
+MEMBER_SORT_VALID_FIELDS = {value for value, _label in MEMBER_SORT_OPTIONS}
+
+MEMBER_FILTER_OPTIONS = [
+    ('all', 'Tous'),
+    ('yaya', 'Yaya'),
+    ('parent', 'Parent'),
+    ('bvm_pending', 'BVM en attente'),
+]
+MEMBER_FILTER_VALID_VALUES = {value for value, _label in MEMBER_FILTER_OPTIONS}
 
 
 @login_required
@@ -45,25 +68,14 @@ def site_stats_view(request):
     week_ago   = now - timedelta(days=7)
     month_ago  = now - timedelta(days=30)
 
-    # Visites filtrées par période
-    anon_qs = SiteVisit.objects.filter(user__isnull=True)
-    auth_qs = SiteVisit.objects.filter(user__isnull=False).select_related('user')
-    if period_start:
-        anon_qs = anon_qs.filter(timestamp__gte=period_start)
-        auth_qs = auth_qs.filter(timestamp__gte=period_start)
-
-    anonymous_visits    = anon_qs.count()
-    authenticated_visits = auth_qs.count()
-    total_visits        = anonymous_visits + authenticated_visits
-
     # KPIs fixes (indépendants de la période)
     kpis = {
         "total_members":    User.objects.count(),
         "new_today":        User.objects.filter(date_joined__gte=today_start).count(),
         "new_week":         User.objects.filter(date_joined__gte=week_ago).count(),
         "new_month":        User.objects.filter(date_joined__gte=month_ago).count(),
-        "active_today":     SiteVisit.objects.filter(user__isnull=False, timestamp__gte=today_start).count(),
-        "active_week":      SiteVisit.objects.filter(user__isnull=False, timestamp__gte=week_ago).count(),
+        "active_today":     SiteVisit.objects.filter(last_seen__gte=today_start).count(),
+        "active_week":      SiteVisit.objects.filter(last_seen__gte=week_ago).count(),
     }
 
     # Nouveaux inscrits selon période (pour la carte)
@@ -78,12 +90,12 @@ def site_stats_view(request):
     else:
         new_members = kpis["total_members"]
 
-    # Table des visites paginée
-    all_visits = SiteVisit.objects.select_related('user')
+    # Membres actifs récemment, paginé
+    active_members = SiteVisit.objects.select_related('user')
     if period_start:
-        all_visits = all_visits.filter(timestamp__gte=period_start)
-    all_visits = all_visits.order_by('-timestamp')
-    paginator = Paginator(all_visits, 10)
+        active_members = active_members.filter(last_seen__gte=period_start)
+    active_members = active_members.order_by('-last_seen')
+    paginator = Paginator(active_members, 10)
     visits = paginator.get_page(request.GET.get("page"))
 
     context = {
@@ -95,9 +107,6 @@ def site_stats_view(request):
             ("month",  "Ce mois"),
             ("year",   "Cette année"),
         ],
-        "anonymous_visits":     anonymous_visits,
-        "authenticated_visits": authenticated_visits,
-        "total_visits":         total_visits,
         "new_members":          new_members,
         "kpis":                 kpis,
         "visits":               visits,
@@ -109,9 +118,58 @@ def site_stats_view(request):
 def validate_members(request):
     if not request.user.is_superuser:
         raise PermissionDenied
-    context = {}
-    profiles = Profile.objects.all()
-    context.update({'profiles': profiles})
+
+    sort = request.GET.get('sort', '-user__date_joined')
+    if sort not in MEMBER_SORT_VALID_FIELDS:
+        sort = '-user__date_joined'
+
+    member_filter = request.GET.get('filter', 'all')
+    if member_filter not in MEMBER_FILTER_VALID_VALUES:
+        member_filter = 'all'
+
+    query = request.GET.get('q', '').strip()
+
+    profiles = (
+        Profile.objects
+        .select_related('user')
+        .prefetch_related(
+            'languages',
+            Prefetch(
+                'user__subscription_set',
+                queryset=Subscription.objects.order_by('-created_at'),
+                to_attr='subscriptions_list',
+            ),
+        )
+    )
+
+    if member_filter == 'yaya':
+        profiles = profiles.filter(service='Yaya')
+    elif member_filter == 'parent':
+        profiles = profiles.filter(service='Parent')
+    elif member_filter == 'bvm_pending':
+        profiles = profiles.filter(bvm_is_verified=False).exclude(document_bvm__in=['', None])
+
+    if query:
+        profiles = profiles.filter(
+            Q(user__email__icontains=query) |
+            Q(user__first_name__icontains=query) |
+            Q(user__last_name__icontains=query) |
+            Q(verified_first_name__icontains=query) |
+            Q(verified_last_name__icontains=query)
+        )
+
+    profiles = profiles.order_by(sort)
+
+    context = {
+        'profiles': profiles,
+        'sort': sort,
+        'sort_options': MEMBER_SORT_OPTIONS,
+        'member_filter': member_filter,
+        'filter_options': MEMBER_FILTER_OPTIONS,
+        'query': query,
+    }
+    if request.htmx:
+        return render(request, 'bana_admin/partials/members_panel.html', context)
     return render(request, 'bana_admin/validate_members.html', context)
 
 @login_required
@@ -133,32 +191,28 @@ def verify_bvm_prfl(request, profile_id):
 
     messages.error(request, 'Méthode de requête non autorisée.')
     return redirect('admin_panel')
-    
 
 
 @login_required
-def verify_profile_prfl(request, profile_id):
+def reject_bvm_prfl(request, profile_id):
     if not request.user.is_superuser:
         raise PermissionDenied
     if request.method == 'POST':
         profile = get_object_or_404(Profile, id=profile_id)
 
-        if profile.prfl_is_verified:
-            messages.warning(request, f'Le profil de {profile.user.username} était déjà vérifié (PRFL).')
-        else:
+        if profile.document_bvm:
+            profile.document_bvm.delete(save=False)
+            profile.bvm_is_verified = False
+            profile.save(update_fields=['document_bvm', 'bvm_is_verified'])
             profile.update_profile_verified()
-            if profile.prfl_is_verified:
-                messages.success(request, f'Le statut de vérification PRFL pour {profile.user.username} a été mis à jour avec succès.')
-            else:
-                messages.error(request, f'Le profil de {profile.user.username} ne remplit pas encore toutes les conditions (profil complet, CI et BVM vérifiés).')
+            messages.warning(request, f'Le document BVM de {profile.user.username} a été refusé et supprimé. L\'utilisateur devra en soumettre un nouveau.')
+        else:
+            messages.warning(request, f'{profile.user.username} n\'a pas de document BVM à refuser.')
 
-        # Rediriger l'utilisateur vers la page de liste des profils après la modification
-        #return redirect('admin_panel') # Assurez-vous que c'est le nom de votre URL pour admin_views
         return redirect('bana_admin:validate_members')
 
-    # Si la requête n'est pas POST, rediriger ou afficher une erreur
     messages.error(request, 'Méthode de requête non autorisée.')
-    return redirect('admin_panel') # Rediriger même en cas de méthode incorrecte
+    return redirect('bana_admin:validate_members')
 
 
 class SuperuserRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):

@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse, HttpResponse
 from django.core.paginator import Paginator
 from django.db.models import Q
@@ -19,6 +20,8 @@ import json
 
 @login_required
 def bug_list(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     bugs = Bug.objects.select_related(
         'component', 'assigned_to', 'reported_by', 'affected_version', 'environment'
     ).all()
@@ -60,6 +63,8 @@ def bug_list(request):
 
 @login_required
 def bug_detail(request, pk):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     bug = get_object_or_404(Bug, pk=pk)
     comments = bug.comments.select_related('author').all()
     attachments = bug.attachments.select_related('uploaded_by').all()
@@ -75,6 +80,8 @@ def bug_detail(request, pk):
 
 @login_required
 def bug_create(request):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     if request.method == 'POST':
         form = BugForm(request.POST)
         if form.is_valid():
@@ -105,6 +112,8 @@ def bug_create(request):
 
 @login_required
 def bug_edit(request, pk):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     bug = get_object_or_404(Bug, pk=pk)
     old_values = {}
     
@@ -150,6 +159,8 @@ def bug_edit(request, pk):
 @login_required
 @require_POST
 def bug_status_update(request, pk):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     bug = get_object_or_404(Bug, pk=pk)
     new_status = request.POST.get('status')
     
@@ -177,6 +188,8 @@ def bug_status_update(request, pk):
 @login_required
 @require_POST
 def add_comment(request, pk):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     bug = get_object_or_404(Bug, pk=pk)
     form = BugCommentForm(request.POST)
     
@@ -207,6 +220,8 @@ def add_comment(request, pk):
 @login_required
 @require_POST
 def upload_attachment(request, pk):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     bug = get_object_or_404(Bug, pk=pk)
     form = BugAttachmentForm(request.POST, request.FILES)
     
@@ -236,6 +251,8 @@ def upload_attachment(request, pk):
 
 @login_required
 def bug_assign(request, pk):
+    if not request.user.is_superuser:
+        raise PermissionDenied
     bug = get_object_or_404(Bug, pk=pk)
     
     if request.method == 'POST':
@@ -268,10 +285,13 @@ def bug_assign(request, pk):
     
     return JsonResponse({'success': False})
 
+@login_required
 def bug_stats(request):
     """Statistiques pour le dashboard"""
+    if not request.user.is_superuser:
+        raise PermissionDenied
     from django.db.models import Count
-    
+
     stats = {
         'total': Bug.objects.count(),
         'open': Bug.objects.filter(status='open').count(),

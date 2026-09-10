@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.utils import timezone
 from .models import InscriptionValidation, SiteVisit
-from .utils import get_site_stats
 
 @admin.register(InscriptionValidation)
 class InscriptionValidationAdmin(admin.ModelAdmin):
@@ -23,14 +22,6 @@ class InscriptionValidationAdmin(admin.ModelAdmin):
 
 @admin.register(SiteVisit)
 class SiteVisitAdmin(admin.ModelAdmin):
-    list_display = ('timestamp', 'ip_address', 'device_type', 'user')
-    list_filter = ('timestamp', 'device_type', 'user')
-    ordering = ('-timestamp',)
-
-    #change_list_template = "admin/site_visit_changelist.html"
-
-    #def changelist_view(self, request, extra_context=None):
-    #    stats = get_site_stats()
-    #    extra_context = extra_context or {}
-    #    extra_context['stats'] = stats
-    #    return super().changelist_view(request, extra_context=extra_context)
+    list_display = ('user', 'last_seen')
+    list_filter = ('last_seen',)
+    ordering = ('-last_seen',)

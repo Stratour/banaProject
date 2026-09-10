@@ -52,21 +52,25 @@
 
         <!-- Mini carte profil parent -->
         <div class="flex items-center gap-3 px-5 py-4 bg-[#FAFAF8] border-b border-[#F0EFEA]">
-          <div class="h-10 w-10 rounded-full bg-brand-50 ring-2 ring-[#E9F5F1] overflow-hidden shrink-0">
-            {% if parent_group.user.profile.profile_picture %}
-              <a href="{% url 'accounts:profile_user' user_id=parent_group.user.id %}">
-                <img src="{{ parent_group.user.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="">
-              </a>
-            {% else %}
-              <a href="{% url 'accounts:profile_user' user_id=parent_group.user.id %}" class="flex items-center justify-center w-full h-full">
-                <span class="text-sm font-extrabold text-brand">
-                  {% if parent_group.user.profile.ci_is_verified %}
-                    {{ parent_group.user.profile.verified_first_name|slice:":1" }}.{{ parent_group.user.profile.verified_last_name|slice:":1" }}
-                  {% else %}
-                    {{ parent_group.user.first_name|slice:":1" }}.{{ parent_group.user.last_name|slice:":1" }}
-                  {% endif %}
-                </span>
-              </a>
+          <div class="relative h-10 w-10 shrink-0">
+            <div class="h-full w-full rounded-full bg-brand-50 ring-2 ring-[#E9F5F1] overflow-hidden">
+              {% if parent_group.user.profile.profile_picture %}
+                <a href="{% url 'accounts:profile_user' user_id=parent_group.user.id %}">
+                  <img src="{{ parent_group.user.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="">
+                </a>
+              {% else %}
+                <a href="{% url 'accounts:profile_user' user_id=parent_group.user.id %}" class="flex items-center justify-center w-full h-full">
+                  <img src="{% static 'bana/img/icon/Icon_bana.png' %}" alt="" class="h-full w-full object-cover">
+                </a>
+              {% endif %}
+            </div>
+            {% if parent_group.user.profile.prfl_is_verified %}
+              <span class="absolute -top-1 -left-1 inline-flex h-4 w-4 rounded-full bg-white ring-2 ring-white shadow">
+                <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+                  <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
+                  <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
             {% endif %}
           </div>
           <div class="min-w-0 flex-1">

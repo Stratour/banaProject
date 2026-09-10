@@ -23,22 +23,14 @@ class InscriptionValidation(models.Model):
 
 
 class SiteVisit(models.Model):
-    DEVICE_CHOICES = [
-        ('mobile', 'Mobile'),
-        ('tablet', 'Tablette'),
-        ('desktop', 'Desktop'),
-        ('unknown', 'Inconnu'),
-    ]
+    """Dernière activité connue d'un membre connecté (pour le KPI 'membres actifs').
+    Le trafic anonyme / global est laissé à un outil dédié (Google Analytics, Plausible…)."""
 
-    ip_address = models.GenericIPAddressField()
-    user = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
-    timestamp = models.DateTimeField(auto_now=True)
-    device_type = models.CharField(max_length=10, choices=DEVICE_CHOICES, default='unknown')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='site_visit')
+    last_seen = models.DateTimeField(auto_now=True)
 
     class Meta:
-        unique_together = ('ip_address', 'user')
-        ordering = ['-timestamp']
+        ordering = ['-last_seen']
 
     def __str__(self):
-        user_str = self.user.username if self.user else "Anonyme"
-        return f"{user_str} @ {self.ip_address} ({self.device_type}) — {self.timestamp}"
+        return f"{self.user.username} — {self.last_seen}"

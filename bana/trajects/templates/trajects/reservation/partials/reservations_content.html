@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 
 <div id="reservations-content" data-tj-resa-app class="flex flex-col gap-7">
 
@@ -56,19 +56,23 @@
             {% with pt=group.proposed_traject %}
             <details {% if forloop.first %}open{% endif %} class="group bg-white rounded-[18px] border border-[#E5E4DF] shadow-[0_1px_4px_rgba(0,0,0,0.05)] overflow-hidden">
               <summary class="list-none cursor-pointer flex items-center gap-3 p-4 sm:p-5 select-none [&::-webkit-details-marker]:hidden">
-                <div class="h-11 w-11 rounded-full bg-brand-50 ring-2 ring-[#E9F5F1] overflow-hidden shrink-0 flex items-center justify-center">
-                  {% if group.yaya %}
-                    {% if group.yaya.profile.profile_picture %}
-                      <img src="{{ group.yaya.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="">
-                    {% else %}
-                      <span class="text-sm font-extrabold text-brand">
-                        {% if group.yaya.profile.ci_is_verified %}
-                          {{ group.yaya.profile.verified_first_name|slice:":1" }}.{{ group.yaya.profile.verified_last_name|slice:":1" }}
-                        {% else %}
-                          {{ group.yaya.first_name|slice:":1" }}.{{ group.yaya.last_name|slice:":1" }}
-                        {% endif %}
-                      </span>
+                <div class="relative h-11 w-11 shrink-0">
+                  <div class="h-full w-full rounded-full bg-brand-50 ring-2 ring-[#E9F5F1] overflow-hidden flex items-center justify-center">
+                    {% if group.yaya %}
+                      {% if group.yaya.profile.profile_picture %}
+                        <img src="{{ group.yaya.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="">
+                      {% else %}
+                        <img src="{% static 'bana/img/icon/Icon_bana.png' %}" alt="" class="h-full w-full object-cover">
+                      {% endif %}
                     {% endif %}
+                  </div>
+                  {% if group.yaya.profile.prfl_is_verified %}
+                    <span class="absolute -top-1 -left-1 inline-flex h-4 w-4 rounded-full bg-white ring-2 ring-white shadow">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
+                        <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                      </svg>
+                    </span>
                   {% endif %}
                 </div>
 
