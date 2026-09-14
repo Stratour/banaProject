@@ -32,6 +32,7 @@ class Profile(models.Model):
     languages = models.ManyToManyField('Languages', blank=True)
     transport_modes = models.JSONField(default=list, blank=True, null=True)
     bio = models.TextField(blank=True, null=True, default="")
+    ecole = models.ForeignKey('Ecole', on_delete=models.SET_NULL, null=True, blank=True, related_name='profiles')
 
     # ✅ Champs liés à Stripe Identity
     verified_first_name = models.CharField(max_length=100, blank=True, null=True)
@@ -89,6 +90,26 @@ class Profile(models.Model):
 
     def __str__(self):
         return self.user.username
+
+
+class Ecole(models.Model):
+    """École référencée dans l'export ODWB de la Fédération Wallonie-Bruxelles (FASE)."""
+    fase_etablissement = models.PositiveIntegerField()
+    fase_implantation = models.PositiveIntegerField()
+    numero_bce = models.CharField(max_length=20, blank=True)
+    nom = models.CharField(max_length=255)
+    niveau = models.CharField(max_length=50, blank=True)
+    reseau = models.CharField(max_length=100, blank=True)
+    adresse = models.CharField(max_length=255, blank=True)
+    code_postal = models.CharField(max_length=10, blank=True)
+    commune = models.CharField(max_length=100, blank=True)
+
+    class Meta:
+        ordering = ["nom"]
+        unique_together = [("fase_etablissement", "fase_implantation")]
+
+    def __str__(self):
+        return f"{self.nom} ({self.commune})" if self.commune else self.nom
 
 
 class Languages(models.Model):

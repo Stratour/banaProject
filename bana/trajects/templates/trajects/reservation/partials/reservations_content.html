@@ -119,51 +119,53 @@
                 </div>
               </summary>
 
-              <table class="w-full text-sm border-t border-[#F3F4F6]">
-                <thead class="bg-[#FAFAF8] text-[#9CA3AF] uppercase text-xs">
-                  <tr>
-                    <th class="px-4 py-2 text-left font-semibold">{% trans "Date" %}</th>
-                    <th class="px-4 py-2 text-left font-semibold">{% trans "Heure" %}</th>
-                    <th class="px-4 py-2 text-left font-semibold">{% trans "Enfants" %}</th>
-                    {% if tab == 'active' %}<th class="px-4 py-2 text-center font-semibold">{% trans "Places" %}</th>{% endif %}
-                    <th class="px-4 py-2 text-right font-semibold">{% trans "Statut" %}</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-[#F3F4F6]">
-                  {% for row in group.rows %}
-                    {% with r=row.reservation %}
-                    {% with rt=r.researched_traject %}
-                    <tr class="hover:bg-[#FAFAF8]">
-                      <td class="px-4 py-3 font-semibold text-[#1C1C1C]">{{ r.proposed_traject.date|date:"d/m/Y" }}</td>
-                      <td class="px-4 py-3 text-[#9CA3AF]">
-                        {% if r.proposed_traject.departure_time %}{{ r.proposed_traject.departure_time|time:"H\hi" }}{% elif rt %}{{ rt.departure_time|time:"H\hi" }}{% else %}—{% endif %}
-                        → {% if r.proposed_traject.arrival_time %}{{ r.proposed_traject.arrival_time|time:"H\hi" }}{% elif rt %}{{ rt.arrival_time|time:"H\hi" }}{% else %}—{% endif %}
-                      </td>
-                      <td class="px-4 py-3">
-                        <div class="flex flex-wrap gap-1">
-                          {% for child in rt.children.all %}
-                            {% include "trajects/partials/child_badge.html" with child=child modal_scope=r.id %}
-                          {% empty %}
-                            <span class="text-[#C0BFBA]">—</span>
-                          {% endfor %}
-                        </div>
-                      </td>
-                      {% if tab == 'active' %}<td class="px-4 py-3 text-center text-[#374151] font-semibold">{{ row.remaining_places }}</td>{% endif %}
-                      <td class="px-4 py-3 text-right">
-                        {% if r.status == 'confirmed' %}
-                          <span class="inline-flex items-center rounded-full bg-[#D1FAE5] text-[#065F46] px-2.5 py-1 text-xs font-bold">{% trans "Confirmée" %}</span>
-                        {% elif r.status == 'pending' %}
-                          <span class="inline-flex items-center rounded-full bg-[#FEF3C7] text-[#92400E] px-2.5 py-1 text-xs font-bold">{% trans "En attente" %}</span>
-                        {% else %}
-                          <span class="inline-flex items-center rounded-full bg-[#FEE2E2] text-[#991B1B] px-2.5 py-1 text-xs font-bold">{% trans "Annulée" %}</span>
-                        {% endif %}
-                      </td>
+              <div class="overflow-x-auto">
+                <table class="w-full min-w-[560px] text-sm border-t border-[#F3F4F6]">
+                  <thead class="bg-[#FAFAF8] text-[#9CA3AF] uppercase text-xs">
+                    <tr>
+                      <th class="px-4 py-2 text-left font-semibold">{% trans "Date" %}</th>
+                      <th class="px-4 py-2 text-left font-semibold">{% trans "Heure" %}</th>
+                      <th class="px-4 py-2 text-left font-semibold">{% trans "Enfants" %}</th>
+                      {% if tab == 'active' %}<th class="px-4 py-2 text-center font-semibold">{% trans "Places" %}</th>{% endif %}
+                      <th class="px-4 py-2 text-right font-semibold">{% trans "Statut" %}</th>
                     </tr>
-                    {% endwith %}
-                    {% endwith %}
-                  {% endfor %}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody class="divide-y divide-[#F3F4F6]">
+                    {% for row in group.rows %}
+                      {% with r=row.reservation %}
+                      {% with rt=r.researched_traject %}
+                      <tr class="hover:bg-[#FAFAF8]">
+                        <td class="px-4 py-3 font-semibold text-[#1C1C1C] whitespace-nowrap">{{ r.proposed_traject.date|date:"d/m/Y" }}</td>
+                        <td class="px-4 py-3 text-[#9CA3AF] whitespace-nowrap">
+                          {% if r.proposed_traject.departure_time %}{{ r.proposed_traject.departure_time|time:"H\hi" }}{% elif rt %}{{ rt.departure_time|time:"H\hi" }}{% else %}—{% endif %}
+                          → {% if r.proposed_traject.arrival_time %}{{ r.proposed_traject.arrival_time|time:"H\hi" }}{% elif rt %}{{ rt.arrival_time|time:"H\hi" }}{% else %}—{% endif %}
+                        </td>
+                        <td class="px-4 py-3">
+                          <div class="flex flex-wrap gap-1">
+                            {% for child in rt.children.all %}
+                              {% include "trajects/partials/child_badge.html" with child=child modal_scope=r.id %}
+                            {% empty %}
+                              <span class="text-[#C0BFBA]">—</span>
+                            {% endfor %}
+                          </div>
+                        </td>
+                        {% if tab == 'active' %}<td class="px-4 py-3 text-center text-[#374151] font-semibold">{{ row.remaining_places }}</td>{% endif %}
+                        <td class="px-4 py-3 text-right">
+                          {% if r.status == 'confirmed' %}
+                            <span class="inline-flex items-center rounded-full bg-[#D1FAE5] text-[#065F46] px-2.5 py-1 text-xs font-bold">{% trans "Confirmée" %}</span>
+                          {% elif r.status == 'pending' %}
+                            <span class="inline-flex items-center rounded-full bg-[#FEF3C7] text-[#92400E] px-2.5 py-1 text-xs font-bold">{% trans "En attente" %}</span>
+                          {% else %}
+                            <span class="inline-flex items-center rounded-full bg-[#FEE2E2] text-[#991B1B] px-2.5 py-1 text-xs font-bold">{% trans "Annulée" %}</span>
+                          {% endif %}
+                        </td>
+                      </tr>
+                      {% endwith %}
+                      {% endwith %}
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             </details>
             {% endwith %}
           {% empty %}

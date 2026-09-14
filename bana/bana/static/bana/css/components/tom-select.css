@@ -1,0 +1,7 @@
+.ts-wrapper .ts-control, .ts-wrapper .ts-control input, .ts-dropdown { font-size: 1rem; line-height: 1.5rem; }
+.ts-wrapper .ts-control { border-color: #007F73; border-radius: 0.75rem; padding: 0.5rem 1rem; }
+.ts-wrapper.single .ts-control, .ts-wrapper.single .ts-control input { cursor: text; }
+.ts-wrapper.focus .ts-control { outline: none; box-shadow: 0 0 0 2px #007F7333; border-color: #007F73; }
+.ts-wrapper.multi .ts-control .item { background: #007F73; color: white; border-radius: 999px; padding: 2px 10px; font-size: 0.75rem; }
+.ts-dropdown .option.selected, .ts-dropdown .option:hover { background: #007F7320; color: #007F73; }
+.ts-dropdown .option.active { background: #007F73; color: white; }

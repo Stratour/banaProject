@@ -5,11 +5,11 @@
     <nav class="px-6 bg-brand-gradient-br text-white xl:px-24 py-4 flex items-center justify-between">
 
         <!-- ===== 1. Logo et branding ===== -->
-        <div class="flex items-center space-x-3">
+        <div class="flex-shrink-0 flex items-center space-x-3">
             <a href="{% url 'home' %}">
                 <img class="w-12 h-12 md:w-20 md:h-20" src="{% static 'bana/img/logo/Bana_logo_lime.svg' %}" alt="Logo Bana">
             </a>
-            <p class="hidden xl:block text-sm w-65">
+            <p class="hidden 2xl:block text-sm w-65">
                 {% blocktrans trimmed %}
                 Plateforme de <span class="text-brand-50 font-bold">mobilité partagée</span>
                 <br>
@@ -19,7 +19,7 @@
         </div>
 
         <!-- ======== 2. Actions mobile ======== -->
-        <div class="md:hidden flex justify-center items-center gap-4">
+        <div class="xl:hidden flex justify-center items-center gap-4">
 
             {% if user.is_authenticated %}
             <!-- 2.1 Avatar mobile -->
@@ -80,7 +80,7 @@
 
         <!-- ===== 3. Navigation desktop ===== -->
         {% with url_name=request.resolver_match.url_name %}
-        <div id="nav-links" class="hidden md:flex items-center space-x-8 font-bold">
+        <div id="nav-links" class="hidden xl:flex flex-1 justify-center items-center space-x-8 font-bold">
 
             <a href="{% url 'home' %}"
                class="inline-block pb-0.5 group {% if url_name == 'home' %}border-b-2 border-brand-50{% endif %}">
@@ -112,17 +112,17 @@
                 {% trans "Notre mission" %}
             </a>
 
-            <a href="{% url 'contact' %}"
+            {% comment %}<a href="{% url 'contact' %}"
                class="relative transition-colors duration-150 {% if url_name == 'contact' %}text-brand-50 after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-0.5 after:bg-brand-50{% else %}hover:text-brand-50{% endif %}">
                 {% trans "Contact" %}
             </a>
-
+            {% endcomment %}
         </div>
         {% endwith %}
 
         <!-- ===== 4. Authentification desktop ===== -->
-        <div class="hidden md:flex flex-row gap-8 items-center">
-            <div id="auth-buttons" class="md:flex items-center space-x-4">
+        <div class="hidden xl:flex flex-shrink-0 flex-row gap-8 items-center">
+            <div id="auth-buttons" class="flex items-center space-x-4">
 
                 {% if user.is_staff %}
                 <a href="{% url 'bana_admin:validate_members' %}"
@@ -243,7 +243,7 @@
     </nav>
 
     <!-- ===== 5. Menu mobile (drawer) ===== -->
-    <div id="mobile-menu" class="absolute top-full left-0 right-0 bg-brand text-white md:hidden opacity-0 -translate-y-2 pointer-events-none transition-all duration-300 ease-out max-h-[calc(100vh-5rem)] overflow-y-auto">
+    <div id="mobile-menu" class="absolute top-full left-0 right-0 bg-brand text-white xl:hidden opacity-0 -translate-y-2 pointer-events-none transition-all duration-300 ease-out max-h-[calc(100vh-5rem)] overflow-y-auto">
         {% with url_name=request.resolver_match.url_name %}
 
         <!-- 5.1 Liens de navigation -->
@@ -424,7 +424,7 @@
 
 <!-- ===== 6. Overlay mobile ===== -->
 <div id="mobile-overlay"
-     class="fixed inset-0 z-[45] bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden">
+     class="fixed inset-0 z-[45] bg-black/40 opacity-0 pointer-events-none transition-opacity duration-300 xl:hidden">
 </div>
 
 <!-- ===== 7. Modal déconnexion ===== -->

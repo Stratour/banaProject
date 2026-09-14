@@ -61,7 +61,7 @@
         <!-- Side navigation (desktop) -->
         <!-- top/max-height calés sur --app-header-h (voir header.js) : le header vitrine est
              lui aussi "sticky top-0", donc un top-0 fixe ici ferait chevaucher les deux. -->
-        <aside class="hidden md:flex md:flex-col md:w-64 bg-white shadow-lg rounded-r-2xl shrink-0 sticky overflow-y-auto"
+        <aside class="hidden xl:flex xl:flex-col xl:w-64 bg-white shadow-lg rounded-r-2xl shrink-0 sticky overflow-y-auto"
                style="top: var(--app-header-h, 0px); max-height: calc(100vh - var(--app-header-h, 0px));">
             {% include 'allauth/layouts/admin-side-nav.html' %}
         </aside>
@@ -69,7 +69,7 @@
         <!-- Colonne de contenu -->
         <div class="flex-1 flex flex-col min-w-0">
 
-            <main class="flex-1 p-4 md:p-6 pb-24 md:pb-6">
+            <main class="flex-1 p-2 xl:p-6 pb-24 xl:pb-6">
 
                 {% if messages %}
                 <div class="fixed top-28 right-6 z-[9999] flex flex-col gap-2 w-72 pointer-events-none">

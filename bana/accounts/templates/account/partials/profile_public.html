@@ -1,48 +1,48 @@
 {% load i18n static %}
 
-<div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
-  <h2 class="text-xl font-semibold text-brand">{% trans "Mon profil" %}</h2>
+<div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-5 sm:space-y-8 md:space-y-10">
+  <h2 class="text-xl font-semibold text-brand mb-6">{% trans "Mon profil" %}</h2>
 
   <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-    <!-- Left: avatar + identity -->
-<div class="flex items-start gap-5 relative">
-  <!-- Cercle avatar -->
-  <div class="z-0 shrink-0 h-24 w-24 sm:h-28 sm:w-28 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] flex items-center justify-center overflow-hidden">
-    {% if user.profile.profile_picture %}
-      <img src="{{ user.profile.profile_picture.url }}" alt="{% trans 'Photo de profil' %}"
-           class="block h-full w-full object-cover" />
-    {% else %}
-      <img src="{% static 'bana/img/icon/Icon_bana.png' %}" alt="{% trans 'Photo de profil par défaut' %}"
-           class="block h-full w-full object-cover" />
+    <!-- Left: avatar + identity — centré en mobile (photo en haut, nom, note), en ligne à partir de md -->
+<div class="flex flex-col items-center text-center gap-4 md:flex-row md:items-start md:text-left">
+  <!-- Cercle avatar (+ badge, conteneur relatif dédié) -->
+  <div class="relative shrink-0">
+    <div class="z-0 h-20 w-20 md:h-28 md:w-28 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] flex items-center justify-center overflow-hidden">
+      {% if user.profile.profile_picture %}
+        <img src="{{ user.profile.profile_picture.url }}" alt="{% trans 'Photo de profil' %}"
+             class="block h-full w-full object-cover" />
+      {% else %}
+        <img src="{% static 'bana/img/icon/Icon_bana.png' %}" alt="{% trans 'Photo de profil par défaut' %}"
+             class="block h-full w-full object-cover" />
+      {% endif %}
+    </div>
+
+    <!-- Badge profil vérifié -->
+    {% if user.profile.prfl_is_verified %}
+    <span class="absolute z-10 -top-1 -left-1 inline-flex h-6 w-6 md:h-8 md:w-8 rounded-full bg-white ring-2 md:ring-4 ring-white shadow">
+      <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
+        <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </span>
     {% endif %}
   </div>
 
-      <!-- Badge profil vérifié -->
-      {% if user.profile.prfl_is_verified %}
-      <span class="absolute z-10 -top-1 -left-1 inline-flex h-8 w-8 rounded-full bg-white ring-4 ring-white shadow">
-        <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
-          <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
-          <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </span>
-      {% endif %}
-
-
-
-      <div class="min-w-0">
+      <div class="min-w-0 w-full">
         <!-- Nom + rating -->
-        <div class="flex items-center gap-3 flex-wrap">
+        <div class="flex flex-col items-center gap-1.5 md:flex-row md:items-center md:gap-3">
           <p class="text-xl sm:text-2xl font-extrabold text-gray-800 leading-tight truncate">
             {% if user.profile.ci_is_verified %}
-            {{ user.profile.verified_first_name|capfirst }}
+            {{ user.profile.verified_first_name|default:user.first_name|default:user.username|capfirst }}
             {% if user.profile.verified_last_name %} {{ user.profile.verified_last_name|slice:":1"|upper }}.{% endif %}
             {% elif user.first_name %}
-            {{ user.first_name }} {{ user.last_name|slice:":1" }}
+            {{ user.first_name }}{% if user.last_name %} {{ user.last_name|slice:":1"|upper }}.{% endif %}
             {% else %}
             {{ user.get_full_name|default:user.username }}
             {% endif %}
           </p>
-          
+
         <div class="flex items-center gap-1" aria-label="{% trans 'Note utilisateur' %}">
           {% for i in "12345" %}
             {% if forloop.counter <= full_stars %}
@@ -82,14 +82,14 @@
         </div>
 
         <!-- Rôle + localisation -->
-        <p class="text-gray-500 -mt-1">
+        <p class="text-gray-500 mt-1">
           {{ user.profile.service }}
           <span class="mx-2 text-gray-300">|</span>
           {{ user.profile.address|default:"—" }}
         </p>
 
         <!-- Tags: langues & transports -->
-        <div class="flex items-center gap-3 mt-3 flex-wrap">
+        <div class="flex items-center justify-center md:justify-start gap-3 mt-3 flex-wrap">
           {% if user.profile.languages.exists %}
           {% for l in user.profile.languages.all %}
           <span
@@ -102,7 +102,7 @@
 
         <div class="border-t border-gray-100 my-4"></div>
 
-        <div class="flex items-center gap-3 mt-3 flex-wrap">
+        <div class="flex items-center justify-center md:justify-start gap-3 mt-3 flex-wrap">
           {% if user.profile.transport_modes %}
             {% for mode in user.profile.transport_modes %}
               {% with key=mode|lower %}
@@ -164,16 +164,17 @@
     </div>
 
     <!-- Right: stats -->
-    <div class="min-w-[220px] md:text-right">
-      <p class="text-gray-700 text-sm">
+    <div class="min-w-[220px] text-center md:text-right">
+      <p class="text-gray-700 text-sm mb-2">
         <span class="text-brand font-extrabold text-lg">{{ user.profile.trips_count }}</span>
         {% trans "trajet(s) effectué(s)" %}
       </p>
       <p class="text-gray-500">
-        {% trans "Membre depuis le" %} {{ user.date_joined|date:"d F Y" }}
+        <strong>{% trans "Membre depuis le" %}</strong> {{ user.date_joined|date:"d F Y" }}
       </p>
 
-      <p class="text-gray-500">{% trans "Dernière connexion" %} :
+      <p class="text-gray-500">
+        <strong>{% trans "Dernière connexion" %} le </strong>
         {{ user.last_login|date:"d M Y H:i" }}
       </p>
 

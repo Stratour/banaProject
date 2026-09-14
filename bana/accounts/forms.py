@@ -2,7 +2,7 @@ from django import forms
 from allauth.account.forms import SignupForm
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
-from accounts.models import Profile, Languages, Child, Review, FavoriteAddress
+from accounts.models import Profile, Languages, Child, Review, FavoriteAddress, Ecole
 from django.utils.translation import gettext_lazy as _
 
 
@@ -28,8 +28,8 @@ PHONE_PREFIX_CHOICES = [
 class TailwindFormMixin:
     """
     Règles:
-      - Inputs (Text/Email/Password/Date/Time/Number...)  -> rounded-full
-      - Select / SelectMultiple / Textarea                 -> rounded-none
+      - Inputs (Text/Email/Password/Date/Time/Number...)  -> rounded-xl
+      - Select / SelectMultiple / Textarea                 -> rounded-xl
       - Checkbox / CheckboxSelectMultiple                  -> form-checkbox h-5 w-5 text-brand (pas de w-full)
     Si un widget a déjà 'class', on le respecte (pas d'écrasement).
     """
@@ -37,8 +37,8 @@ class TailwindFormMixin:
         super().__init__(*args, **kwargs)
 
         base_input = "mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand"
-        base_select = "mt-1 w-full border border-brand px-4 py-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-none"
-        base_textarea = "mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-none"
+        base_select = "mt-1 w-full border border-brand px-4 py-2 bg-white shadow-sm focus:ring-brand focus:border-brand rounded-xl"
+        base_textarea = "mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-xl"
         base_checkbox = "form-checkbox h-5 w-5 text-brand"
 
         for name, field in self.fields.items():
@@ -70,7 +70,7 @@ class TailwindFormMixin:
                 continue
 
             # Autres (inputs classiques)
-            w.attrs["class"] = f"{base_input} rounded-full"
+            w.attrs["class"] = f"{base_input} rounded-xl"
 
 
 # ---------- Signup ----------
@@ -119,7 +119,7 @@ class UserUpdateForm(TailwindFormMixin, forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
-        # Mixin applique rounded-full aux inputs, pas d'arrondi aux select/textarea (si un jour tu en ajoutes)
+        # Mixin applique rounded-xl aux inputs, selects et textarea (si un jour tu en ajoutes)
 
 
 # ---------- Profile update ----------
@@ -152,9 +152,26 @@ class ProfileUpdateForm(TailwindFormMixin, forms.ModelForm):
         })
     )
 
+    ecole = forms.ModelChoiceField(
+        queryset=Ecole.objects.none(),
+        required=False,
+        label="École",
+        widget=forms.Select(attrs={'id': 'id_ecole', 'class': 'w-full'}), 
+    )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Ecole.objects contient ~5800 lignes : on évite de tout charger en HTML,
+        # Tom Select interroge accounts:ecole_search en AJAX. Le queryset ne porte
+        # que l'école déjà sélectionnée (affichage) ou, en POST, toutes (validation).
+        if self.is_bound:
+            self.fields['ecole'].queryset = Ecole.objects.all()
+        elif self.instance and self.instance.ecole_id:
+            self.fields['ecole'].queryset = Ecole.objects.filter(pk=self.instance.ecole_id)
+
     class Meta:
         model = Profile
-        fields = ['profile_picture', 'address', 'phone_prefix', 'phone_number', 'languages', 'transport_modes', 'bio', 'document_bvm']
+        fields = ['profile_picture', 'address', 'phone_prefix', 'phone_number', 'languages', 'transport_modes', 'bio', 'document_bvm', 'ecole']
         widgets = {
             'phone_number': forms.TextInput(attrs={
                 'class': 'flex-1 min-w-0 border-0 px-3 py-2 focus:ring-0 focus:outline-none',
@@ -162,7 +179,7 @@ class ProfileUpdateForm(TailwindFormMixin, forms.ModelForm):
             }),
             # TEXTAREA => no rounded
             'bio': forms.Textarea(attrs={
-                'class': 'mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-none',
+                'class': 'mt-1 w-full border border-brand px-4 py-2 shadow-sm focus:ring-brand focus:border-brand rounded-xl',
                 'rows': 5,
                 'placeholder': "Présente-toi en quelques lignes..."
             }),

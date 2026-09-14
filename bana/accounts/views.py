@@ -4,7 +4,8 @@ from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Avg
+from django.db.models import Avg, Q
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -21,7 +22,7 @@ from allauth.account.internal import flows
 from allauth.account.views import PasswordChangeView
 
 from .forms import ProfileUpdateForm, ChildForm, ReviewForm, UserUpdateForm, FavoriteAddressForm
-from accounts.models import Profile, Child, Review, FavoriteAddress
+from accounts.models import Profile, Child, Review, FavoriteAddress, Ecole
 from stripe_sub.models import Subscription
 
 logger = logging.getLogger(__name__)
@@ -240,6 +241,19 @@ def profile_edit(request):
         "account/profile/profile_edit.html",
         {"form": form, "user_form": user_form, "profile": profile},
     )
+
+
+@login_required
+def ecole_search(request):
+    """Recherche AJAX (Tom Select) dans les ~5800 écoles FWB importées via `import_ecoles`."""
+    query = request.GET.get('q', '').strip()
+    results = []
+    if len(query) >= 2:
+        ecoles = Ecole.objects.filter(
+            Q(nom__icontains=query) | Q(commune__icontains=query)
+        ).order_by('nom')[:20]
+        results = [{'id': e.pk, 'text': str(e)} for e in ecoles]
+    return JsonResponse(results, safe=False)
 
 
 @login_required

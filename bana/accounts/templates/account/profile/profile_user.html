@@ -2,10 +2,10 @@
 {% extends "allauth/layouts/base.html" %}
 {% load allauth i18n static %}
 {% block head_title %}
-{% trans "Profil de" %}  
+{% trans "Profil de" %}
 {% if user.profile.ci_is_verified %}
-  {{ user.profile.verified_first_name }}
-  {{ user.profile.verified_last_name|slice:"1" }}.
+  {{ user.profile.verified_first_name|default:user.first_name|default:user.username }}
+  {{ user.profile.verified_last_name|default:user.last_name|slice:":1" }}.
 {% else %}
   {{ user.first_name }} {{ user.last_name }}
 {% endif %}
@@ -28,7 +28,7 @@
     <span>{% trans "Retour" %}</span>
   </a>
 
-<div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+<div class="max-w-6xl mx-auto px-2 py-8 space-y-8">
 
   {% if messages %}
     <ul class="mb-6 space-y-2">
@@ -40,24 +40,31 @@
 
   <!-- 🧍 Profil utilisateur -->
   <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
-    <h2 class="text-3xl font-bold text-brand mb-6">
+    <h2 class="text-3xl font-bold text-brand mb-1">
       {% trans "Profil de " %}
       {% if user.profile.ci_is_verified %}
-        {{ user.profile.verified_first_name }} {{ user.profile.verified_last_name|slice:"1" }}.
+        {{ user.profile.verified_first_name|default:user.first_name|default:user.username|capfirst }}
+        {% if user.profile.verified_last_name %}{{ user.profile.verified_last_name|slice:":1"|upper }}.{% endif %}
       {% else %}
-        {{ user.first_name }} {{ user.last_name|slice:"1" }}.
+        {{ user.first_name }}{% if user.last_name %} {{ user.last_name|slice:":1"|upper }}.{% endif %}
       {% endif %}
-      | {{ user.profile.service|title }}
     </h2>
 
-    <div class="flex flex-col sm:flex-row items-center sm:items-start gap-6">
+    <!-- Rôle + localisation : remonté en sous-titre, juste sous le nom -->
+    <p class="text-gray-500 text-lg !mt-0 mb-6">
+      {{ user.profile.service }}
+      <span class="mx-2 text-gray-300">|</span>
+      {{ user.profile.address|default:"—" }}
+    </p>
+
+    <div class="flex flex-col items-center text-center md:flex-row md:items-start md:text-left gap-6">
       <!-- 🖼️ Avatar -->
       <div class="relative shrink-0 h-28 w-28 rounded-full bg-brand-50 ring-4 ring-[#E9F5F1] flex items-center justify-center">
         {% if user.profile.profile_picture %}
-          <img src="{{ user.profile.profile_picture.url }}" alt="Photo de profil"
+          <img src="{{ user.profile.profile_picture.url }}" alt="{% trans 'Photo de profil' %}"
                class="h-full w-full rounded-full object-cover"/>
         {% else %}
-          <img src="{% static 'bana/img/icon/Icon_bana.png' %}" alt="Photo de profil par défaut"
+          <img src="{% static 'bana/img/icon/Icon_bana.png' %}" alt="{% trans 'Photo de profil par défaut' %}"
                class="h-full w-full rounded-full object-cover"/>
         {% endif %}
         {% if user.profile.prfl_is_verified %}
@@ -71,16 +78,40 @@
       </div>
 
       <!-- ℹ️ Infos utilisateur principales -->
-  <div class="flex-1 max-w-[500px] sm:ml-6 space-y-2">
-    <p class="text-lg"><strong>{% trans "Contact" %} :</strong> {{ user.email }}</p>
-    <p class="text-lg"><strong>{% trans "Ville" %} :</strong> {{ user.profile.address }}</p>
+  <div class="flex-1 max-w-[500px] md:ml-6 space-y-4">
 
+    <!-- Détails : carte compacte en mobile, lignes simples en desktop -->
+    <div class="rounded-xl border border-gray-200 divide-y divide-gray-100 md:rounded-none md:border-0 md:divide-y-0 md:space-y-2 text-left">
+      <div class="px-4 py-3 md:px-0 md:py-0">
+        <p class="text-xs font-bold uppercase text-brand mb-0.5 md:hidden">{% trans "Contact" %}</p>
+        <p class="text-gray-800 break-words md:text-lg">
+          <strong class="hidden md:inline text-brand">{% trans "Contact" %} :</strong>
+          {{ user.email }}
+        </p>
+      </div>
 
-    {% if user.profile.bio %}
-      <p class="text-lg"><strong>{% trans "Bio" %} :</strong> {{ user.profile.bio }}</p>
-    {% endif %}
-  
-  <div class="flex items-center gap-3 mt-3 flex-wrap">
+      {% if user.profile.service == "Yaya" and user.profile.ecole %}
+      <div class="px-4 py-3 md:px-0 md:py-0">
+        <p class="text-xs font-bold uppercase text-brand mb-0.5 md:hidden">{% trans "École" %}</p>
+        <p class="text-gray-800 md:text-lg">
+          <strong class="hidden md:inline text-brand">{% trans "École" %} :</strong>
+          {{ user.profile.ecole }}
+        </p>
+      </div>
+      {% endif %}
+
+      {% if user.profile.bio %}
+      <div class="px-4 py-3 md:px-0 md:py-0">
+        <p class="text-xs font-bold uppercase text-brand mb-0.5 md:hidden">{% trans "Bio" %}</p>
+        <p class="text-gray-800 leading-relaxed md:text-lg">
+          <strong class="hidden md:inline text-brand">{% trans "Bio" %} :</strong>
+          {{ user.profile.bio }}
+        </p>
+      </div>
+      {% endif %}
+    </div>
+
+  <div class="flex items-center justify-center md:justify-start gap-3 flex-wrap">
           {% if user.profile.languages.exists %}
           {% for l in user.profile.languages.all %}
           <span
@@ -91,9 +122,9 @@
           {% endif %}
         </div>
 
-  <div class="border-t border-gray-100 my-4"></div>
+  <div class="border-t border-gray-100"></div>
 
-    <div class="flex items-center gap-3 mt-3 flex-wrap">
+    <div class="flex items-center justify-center md:justify-start gap-3 flex-wrap">
           {% if user.profile.transport_modes %}
             {% for mode in user.profile.transport_modes %}
               {% with key=mode|lower %}
@@ -154,7 +185,7 @@
 
   <!-- 📅 Infos de compte -->
   <div class="min-w-[220px] md:text-right">
-      <p class="text-gray-700 text-sm">
+      <p class="text-gray-700 text-sm mb-2">
         <span class="text-brand font-extrabold text-lg">{{ user.profile.trips_count }}</span>
         <strong>{% trans "trajet(s) effectué(s)" %}</strong>
       </p>
@@ -163,7 +194,7 @@
       </p>
 
       <p class="text-gray-500">
-        <strong>{% trans "Dernière connexion" %} :</strong>
+        <strong>{% trans "Dernière connexion" %} le </strong>
         {{ user.last_login|date:"d M Y H:i" }}
       </p>
 
@@ -262,9 +293,10 @@
                   <div class="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
                     <a href="{% url 'accounts:profile_user' user_id=review.reviewer.id %}" class="font-semibold text-gray-800 hover:text-brand">
                       {% if review.reviewer.profile.ci_is_verified %}
-                        {{ review.reviewer.profile.verified_first_name }} {{ review.reviewer.profile.verified_last_name|slice:'1' }}.
+                        {{ review.reviewer.profile.verified_first_name|default:review.reviewer.first_name|default:review.reviewer.username|capfirst }}
+                        {% if review.reviewer.profile.verified_last_name %}{{ review.reviewer.profile.verified_last_name|slice:":1"|upper }}.{% endif %}
                       {% else %}
-                        {{ review.reviewer.first_name }} {{ review.reviewer.last_name|slice:'1' }}.
+                        {{ review.reviewer.first_name }}{% if review.reviewer.last_name %} {{ review.reviewer.last_name|slice:":1"|upper }}.{% endif %}
                       {% endif %}
                     </a>
                     <span class="text-xs text-gray-600">{{ review.created_at|date:"d F Y" }}</span>

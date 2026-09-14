@@ -22,6 +22,7 @@ urlpatterns = [
     ### HTMX ###
     path('profil/public/', views.profile_public, name='profile_public'),
     path('profil/info/', views.profile_info, name='profile_info'),
+    path('profil/ecoles/recherche/', views.ecole_search, name='ecole_search'),
     
     path('profil/securité&connexion/', views.profile_security, name='profile_security'),
     path('profil/securité&connexion/password/', CustomPasswordChangeView.as_view(), name='account_change_password'),

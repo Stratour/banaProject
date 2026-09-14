@@ -99,55 +99,57 @@
         </div>
 
         <!-- Dates de ce parent (tableau compact) -->
-        <table class="w-full text-sm">
-          <thead class="bg-white text-[#9CA3AF] uppercase text-xs border-b border-[#F3F4F6]">
-            <tr>
-              <th class="px-5 py-2.5 text-left font-semibold">{% trans "Date" %}</th>
-              <th class="px-5 py-2.5 text-left font-semibold">{% trans "Enfants" %}</th>
-              <th class="px-5 py-2.5 text-center font-semibold">{% trans "Places" %}</th>
-              <th class="px-5 py-2.5 text-right font-semibold">{% trans "Statut" %}</th>
-            </tr>
-          </thead>
-          <tbody class="divide-y divide-[#F3F4F6]">
-            {% for row in parent_group.rows %}
-              {% with r=row.reservation research=row.research %}
-                <tr class="hover:bg-[#FAFAF8]">
-                  <td class="px-5 py-3">
-                    <p class="font-semibold text-[#1C1C1C]">{{ research.date|date:"d/m/Y" }}</p>
-                  </td>
-                  <td class="px-5 py-3">
-                    <div class="flex flex-wrap gap-1">
-                      {% for child in research.children.all %}
-                        {% include "trajects/partials/child_badge.html" with child=child modal_scope=research.id %}
-                      {% empty %}
-                        <span class="text-[#C0BFBA]">—</span>
-                      {% endfor %}
-                    </div>
-                  </td>
-                  <td class="px-5 py-3 text-center text-[#374151] font-semibold">{{ row.remaining_places }}</td>
-                  <td class="px-5 py-3 text-right">
-                    {% if r.status == 'pending' %}
-                      <div class="flex justify-end gap-1.5">
-                        <a href="{% url 'manage_reservation' r.id 'accept' %}?next={{ request.path }}%3Ftab%3D{{ tab }}"
-                           class="px-3 py-1.5 rounded-[7px] bg-brand text-white font-bold hover:bg-brand-dark">
-                          {% trans "Confirmer" %}
-                        </a>
-                        <a href="{% url 'manage_reservation' r.id 'reject' %}?next={{ request.path }}%3Ftab%3D{{ tab }}"
-                           class="px-3 py-1.5 rounded-[7px] border-[1.5px] border-red-300 text-red-600 hover:bg-red-50 font-bold">
-                          {% trans "Refuser" %}
-                        </a>
+        <div class="overflow-x-auto">
+          <table class="w-full min-w-[600px] text-sm">
+            <thead class="bg-white text-[#9CA3AF] uppercase text-xs border-b border-[#F3F4F6]">
+              <tr>
+                <th class="px-5 py-2.5 text-left font-semibold">{% trans "Date" %}</th>
+                <th class="px-5 py-2.5 text-left font-semibold">{% trans "Enfants" %}</th>
+                <th class="px-5 py-2.5 text-center font-semibold">{% trans "Places" %}</th>
+                <th class="px-5 py-2.5 text-right font-semibold">{% trans "Statut" %}</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#F3F4F6]">
+              {% for row in parent_group.rows %}
+                {% with r=row.reservation research=row.research %}
+                  <tr class="hover:bg-[#FAFAF8]">
+                    <td class="px-5 py-3 whitespace-nowrap">
+                      <p class="font-semibold text-[#1C1C1C]">{{ research.date|date:"d/m/Y" }}</p>
+                    </td>
+                    <td class="px-5 py-3">
+                      <div class="flex flex-wrap gap-1">
+                        {% for child in research.children.all %}
+                          {% include "trajects/partials/child_badge.html" with child=child modal_scope=research.id %}
+                        {% empty %}
+                          <span class="text-[#C0BFBA]">—</span>
+                        {% endfor %}
                       </div>
-                    {% elif r.status == 'confirmed' %}
-                      <span class="inline-flex items-center rounded-full bg-[#D1FAE5] text-[#065F46] px-2.5 py-1 text-xs font-bold">{% trans "Confirmé" %}</span>
-                    {% else %}
-                      <span class="inline-flex items-center rounded-full bg-[#FEE2E2] text-[#991B1B] px-2.5 py-1 text-xs font-bold">{% trans "Annulé" %}</span>
-                    {% endif %}
-                  </td>
-                </tr>
-              {% endwith %}
-            {% endfor %}
-          </tbody>
-        </table>
+                    </td>
+                    <td class="px-5 py-3 text-center text-[#374151] font-semibold">{{ row.remaining_places }}</td>
+                    <td class="px-5 py-3 text-right">
+                      {% if r.status == 'pending' %}
+                        <div class="flex justify-end gap-1.5">
+                          <a href="{% url 'manage_reservation' r.id 'accept' %}?next={{ request.path }}%3Ftab%3D{{ tab }}"
+                             class="px-3 py-1.5 rounded-[7px] bg-brand text-white font-bold hover:bg-brand-dark whitespace-nowrap">
+                            {% trans "Confirmer" %}
+                          </a>
+                          <a href="{% url 'manage_reservation' r.id 'reject' %}?next={{ request.path }}%3Ftab%3D{{ tab }}"
+                             class="px-3 py-1.5 rounded-[7px] border-[1.5px] border-red-300 text-red-600 hover:bg-red-50 font-bold whitespace-nowrap">
+                            {% trans "Refuser" %}
+                          </a>
+                        </div>
+                      {% elif r.status == 'confirmed' %}
+                        <span class="inline-flex items-center rounded-full bg-[#D1FAE5] text-[#065F46] px-2.5 py-1 text-xs font-bold">{% trans "Confirmé" %}</span>
+                      {% else %}
+                        <span class="inline-flex items-center rounded-full bg-[#FEE2E2] text-[#991B1B] px-2.5 py-1 text-xs font-bold">{% trans "Annulé" %}</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endwith %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     {% empty %}
       <div class="rounded-[18px] border border-dashed border-[#D8D7D2] bg-white p-8 text-center text-[#ABABAB]">

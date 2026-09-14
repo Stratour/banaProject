@@ -7,6 +7,10 @@
 <div class="fixed inset-0 -z-10 opacity-50 pointer-events-none" style="background-image:url('{% static 'bana/img/background/bg-bana-2.png' %}'); background-size:cover; background-repeat:no-repeat; background-position:center;"></div>
 {% endblock %}
 
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'bana/css/components/dialog.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="max-w-5xl mx-auto px-4 py-10">
 
@@ -152,7 +156,7 @@
 </div>
 
 {# ========= Modal désactivation ========= #}
-<dialog id="deactivate-modal" class="rounded-xl p-0 w-full max-w-md">
+<dialog id="deactivate-modal" class="dialog-backdrop-soft rounded-xl p-0 w-full max-w-md">
   <form method="post" action="{% url 'accounts:deactivate_account' %}" class="p-6 space-y-5">
     {% csrf_token %}
     <header class="space-y-1">
@@ -173,8 +177,4 @@
     </div>
   </form>
 </dialog>
-
-<style>
-  #deactivate-modal::backdrop { background: rgba(0,0,0,.4); }
-</style>
 {% endblock content %}
