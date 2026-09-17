@@ -9,17 +9,14 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
 from django.utils.http import url_has_allowed_host_and_scheme
-from allauth.account.adapter import get_adapter
 from allauth.account.models import EmailAddress, EmailConfirmation
 from django.utils.translation import gettext as _
 from .utils import send_change_email_confirmation
 from django.views.decorators.http import require_http_methods
 import logging
-from django.conf import settings
-from django.db import transaction
 
 from allauth.account.internal import flows
-from allauth.account.views import PasswordChangeView
+from allauth.account.views import PasswordChangeView, PasswordSetView
 
 from .forms import ProfileUpdateForm, ChildForm, ReviewForm, UserUpdateForm, FavoriteAddressForm
 from accounts.models import Profile, Child, Review, FavoriteAddress, Ecole
@@ -83,7 +80,7 @@ def get_onboarding_steps(user, profile):
 
     return steps
 
-@login_required(login_url="/accounts/login/")
+@login_required
 def profile_view(request):
     """Page profil (tableau de bord). S’assure qu’un Profile existe et le passe au template."""
     profile, _created = Profile.objects.get_or_create(user=request.user)
@@ -266,25 +263,30 @@ def profile_security(request):
     return render(request, "account/profile/profile_security.html", {
         "pending_email": pending,
         "password_errors": password_errors,
+        # False pour les comptes créés via Google : le formulaire passe alors en
+        # mode « définir un mot de passe » (pas de champ « mot de passe actuel »)
+        "has_password": request.user.has_usable_password(),
         "page_title": _("Sécurité & connexion"),
     })
 
 
 @login_required
+@require_http_methods(["POST"])
 def deactivate_account(request):
     """Désactive le compte puis déconnecte l’utilisateur."""
-    if request.method == "POST":
-        user = request.user
-        user.is_active = False
-        user.save()
-        messages.success(request, "Votre compte a été désactivé avec succès.")
-        return redirect("accounts:logout")
-    return redirect("accounts:profile_security")
+    user = request.user
+    user.is_active = False
+    user.save(update_fields=["is_active"])
+    logout(request)
+    messages.success(request, _("Votre compte a été désactivé avec succès."))
+    return redirect("home")
+
 
 @login_required
+@require_http_methods(["POST"])
 def logout_user(request):
     logout(request)
-    messages.info(request, "Vous êtes déconnecté !")
+    messages.info(request, _("Vous êtes déconnecté !"))
     return redirect("home")
 
 
@@ -296,8 +298,9 @@ class CustomPasswordChangeView(PasswordChangeView):
 
     def form_valid(self, form):
         form.save()
+        # finalize_password_change émet déjà le message account/messages/password_changed.txt :
+        # ne pas en ajouter un second ici.
         flows.password_change.finalize_password_change(self.request, form.user)
-        messages.success(self.request, "Mot de passe mis à jour.")
         return redirect(self.get_success_url())
 
     def form_invalid(self, form):
@@ -307,15 +310,26 @@ class CustomPasswordChangeView(PasswordChangeView):
         return redirect(reverse_lazy("accounts:profile_security"))
 
 
-# ==================== EMAIL (affichage / modification) ==================== #
+class CustomPasswordSetView(PasswordSetView):
+    """Définition d'un mot de passe pour les comptes sans mot de passe utilisable
+    (inscription via Google). Allauth redirige automatiquement entre cette vue et
+    CustomPasswordChangeView selon `user.has_usable_password()`."""
+    success_url = reverse_lazy("accounts:profile_security")
 
-@login_required
-def email_display(request):
-    """Ancienne page/email (utile si référencée)."""
-    user = request.user
-    email = user.email if user.email else "Aucun email associé"
-    return render(request, "account/email_display.html", {"email": email})
+    def form_valid(self, form):
+        form.save()
+        # finalize_password_set émet déjà account/messages/password_set.txt.
+        flows.password_change.finalize_password_set(self.request, form.user)
+        return redirect(self.get_success_url())
 
+    def form_invalid(self, form):
+        self.request.session['password_form_errors'] = {
+            field: list(errors) for field, errors in form.errors.items()
+        }
+        return redirect(reverse_lazy("accounts:profile_security"))
+
+
+# ==================== EMAIL (modification) ==================== #
 
 @login_required
 @require_http_methods(["POST"])
@@ -359,45 +373,46 @@ def email_edit(request):
     
     return redirect('accounts:profile_security')
 
-@login_required
 def email_change_confirm(request, key):
+    """Confirme un changement d'adresse email.
+
+    Volontairement sans @login_required : le lien est ouvert depuis la NOUVELLE
+    boîte mail, souvent sur un autre appareil. La possession de la clé (valable
+    ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS jours) fait foi.
+
+    La promotion en adresse principale est faite par le signal `email_confirmed`
+    (accounts/signals.py) — ne pas la dupliquer ici.
+    """
+    def _done():
+        if request.user.is_authenticated:
+            return redirect("accounts:profile_security")
+        return redirect("account_login")
+
     try:
         confirmation = EmailConfirmation.objects.get(key=key)
-        email_address = confirmation.email_address
-
-        if request.user != email_address.user:
-            messages.error(request, _("Ce lien n'est pas valide pour cet utilisateur."))
-            return redirect("accounts:profile_security")
-
-        # Confirme l'email
-        confirmation.confirm(request)
-
-        # Allauth ne met pas automatiquement à jour user.email quand primary=False
-        # On force la promotion du nouvel email en adresse principale
-        email_address.refresh_from_db()
-        if email_address.verified:
-            with transaction.atomic():
-                request.user.emailaddress_set.exclude(pk=email_address.pk).update(primary=False)
-                email_address.primary = True
-                email_address.save(update_fields=["primary"])
-                request.user.email = email_address.email
-                request.user.save(update_fields=["email"])
-            messages.success(request, _("Votre adresse e-mail a été mise à jour."))
-        else:
-            messages.error(request, _("La confirmation a échoué. Veuillez réessayer."))
-
-        return redirect("accounts:profile_security")
-
     except EmailConfirmation.DoesNotExist:
         messages.error(request, _("Ce lien de confirmation n'est plus valide."))
-        return redirect("accounts:profile_security")
+        return _done()
 
-def redirect_after_email_confirmation(request):
-    # Récupère l'URL de redirection stockée dans la session
-    redirect_url = request.session.pop('redirect_after_confirmation', None)
-    if redirect_url:
-        return redirect(redirect_url)
-    return redirect(settings.LOGIN_REDIRECT_URL)
+    if confirmation.key_expired():
+        messages.error(request, _("Ce lien de confirmation a expiré. Relancez la demande depuis votre compte."))
+        return _done()
+
+    # Lien déjà utilisé : le signal ne se redéclencherait pas (l'adresse est déjà primary),
+    # l'utilisateur serait redirigé sans aucun message.
+    if confirmation.email_address.verified and confirmation.email_address.primary:
+        messages.info(request, _("Cette adresse e-mail est déjà confirmée."))
+        return _done()
+
+    # Déclenche le signal email_confirmed, qui promeut l'adresse et met à jour user.email
+    confirmation.confirm(request)
+
+    confirmation.email_address.refresh_from_db()
+    if not confirmation.email_address.verified:
+        messages.error(request, _("La confirmation a échoué. Veuillez réessayer."))
+
+    return _done()
+
 
 @login_required
 def profile_children_view(request):

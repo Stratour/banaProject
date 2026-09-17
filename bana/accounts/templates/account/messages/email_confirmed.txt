@@ -1,2 +1,4 @@
-{% load i18n %}
-{% blocktrans %}You have confirmed {{email}}.{% endblocktrans %}
+{% comment %}
+  Volontairement vide : redondant avec « Bienvenue sur Bana » à l'inscription, et avec le
+  message du signal email_confirmed lors d'un changement d'adresse (accounts/signals.py).
+{% endcomment %}

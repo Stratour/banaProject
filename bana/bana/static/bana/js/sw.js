@@ -1,4 +1,6 @@
-const CACHE_VERSION = 'bana-v11';
+// Incrémenter à CHAQUE modification d'un fichier de PRECACHE_ASSETS : sans ça, le service
+// worker continue de servir l'ancienne version depuis son cache (v12 : refonte des toasts).
+const CACHE_VERSION = 'bana-v13';
 const STATIC_CACHE = `${CACHE_VERSION}-static`;
 const PAGE_CACHE = `${CACHE_VERSION}-pages`;
 

@@ -1,4 +1,9 @@
 {% load allauth %}
+{% comment %}
+  Bouton allauth à la charte Bana. Les tags portés par {% element button tags="..." %}
+  choisissent la variante : « danger » pour une action destructrice, « secondary » ou
+  « minor » pour une action de second plan, sinon le bouton principal plein brand.
+{% endcomment %}
 {% comment %} djlint:off {% endcomment %}
 <{% if attrs.href %}a href="{{ attrs.href }}"{% else %}button{% endif %}
 {% if attrs.form %}form="{{ attrs.form }}"{% endif %}
@@ -6,6 +11,10 @@
 {% if attrs.name %}name="{{ attrs.name }}"{% endif %}
 {% if attrs.value %}value="{{ attrs.value }}"{% endif %}
 {% if attrs.type %}type="{{ attrs.type }}"{% endif %}
+class="inline-flex items-center justify-center gap-2 rounded-full px-5 py-2 text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1
+{% if "danger" in attrs.tags %}border border-red-300 text-red-700 hover:bg-red-50 focus-visible:ring-red-300
+{% elif "secondary" in attrs.tags or "minor" in attrs.tags %}border border-gray-300 text-gray-700 hover:bg-gray-50 focus-visible:ring-brand
+{% else %}bg-brand text-white hover:bg-brand-dark focus-visible:ring-brand{% endif %}"
 >
 {% slot %}
 {% endslot %}

@@ -1,47 +1,69 @@
 {% load allauth %}
-{{ attrs.errors }}
-<p>
-    {% if attrs.type == "textarea" %}
-        <label for="{{ attrs.id }}">
-            {% slot label %}
-            {% endslot %}
-        </label>
-        <textarea {% if attrs.required %}required{% endif %}
-                  {% if attrs.rows %}rows="{{ attrs.rows }}"{% endif %}
-                  {% if attrs.disabled %}disabled{% endif %}
-                  {% if attrs.readonly %}readonly{% endif %}
-                  {% if attrs.checked %}checked{% endif %}
-                  {% if attrs.name %}name="{{ attrs.name }}"{% endif %}
-                  {% if attrs.id %}id="{{ attrs.id }}"{% endif %}
-                  {% if attrs.placeholder %}placeholder="{{ attrs.placeholder }}"{% endif %}>{% slot value %}{% endslot %}</textarea>
-    {% else %}
-        {% if attrs.type != "checkbox" and attrs.type != "radio" %}
-            <label for="{{ attrs.id }}">
-                {% slot label %}
-                {% endslot %}
-            </label>
-        {% endif %}
-        <input {% if attrs.required %}required{% endif %}
-               {% if attrs.disabled %}disabled{% endif %}
-               {% if attrs.readonly %}readonly{% endif %}
-               {% if attrs.checked %}checked{% endif %}
-               {% if attrs.name %}name="{{ attrs.name }}"{% endif %}
-               {% if attrs.id %}id="{{ attrs.id }}"{% endif %}
-               {% if attrs.placeholder %}placeholder="{{ attrs.placeholder }}"{% endif %}
-               {% if attrs.autocomplete %}autocomplete="{{ attrs.autocomplete }}"{% endif %}
-               {% if attrs.value is not None %}value="{{ attrs.value }}"{% endif %}
-               type="{{ attrs.type }}">
-        {% if attrs.type == "checkbox" or attrs.type == "radio" %}
-            <label for="{{ attrs.id }}">
-                {% slot label %}
-                {% endslot %}
-            </label>
-        {% endif %}
-    {% endif %}
-    {% if slots.help_text %}
-        <span>
-            {% slot help_text %}
-            {% endslot %}
-        </span>
-    {% endif %}
-</p>
+
+{% comment %}
+  Champ de formulaire allauth à la charte Bana : label en brand majuscules, input arrondi,
+  aide et erreurs sous le champ — même rendu que les formulaires écrits à la main
+  (inscription, connexion, account/partials/password_field.html).
+
+  Utilisé par les pages qui passent encore par {% element field %}, principalement
+  account/email.html.
+{% endcomment %}
+
+<div class="form-group mb-6">
+  {% if attrs.type == "textarea" %}
+    <label for="{{ attrs.id }}" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">
+      {% slot label %}{% endslot %}
+    </label>
+    <textarea {% if attrs.required %}required{% endif %}
+              {% if attrs.rows %}rows="{{ attrs.rows }}"{% endif %}
+              {% if attrs.disabled %}disabled{% endif %}
+              {% if attrs.readonly %}readonly{% endif %}
+              {% if attrs.name %}name="{{ attrs.name }}"{% endif %}
+              {% if attrs.id %}id="{{ attrs.id }}"{% endif %}
+              {% if attrs.placeholder %}placeholder="{{ attrs.placeholder }}"{% endif %}
+              class="w-full rounded-2xl border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand disabled:bg-gray-100 disabled:text-gray-500">{% slot value %}{% endslot %}</textarea>
+
+  {% elif attrs.type == "checkbox" or attrs.type == "radio" %}
+    <label class="flex items-start gap-3 cursor-pointer text-sm text-gray-700">
+      <input {% if attrs.required %}required{% endif %}
+             {% if attrs.disabled %}disabled{% endif %}
+             {% if attrs.readonly %}readonly{% endif %}
+             {% if attrs.checked %}checked{% endif %}
+             {% if attrs.name %}name="{{ attrs.name }}"{% endif %}
+             {% if attrs.id %}id="{{ attrs.id }}"{% endif %}
+             {% if attrs.value is not None %}value="{{ attrs.value }}"{% endif %}
+             type="{{ attrs.type }}"
+             class="h-5 w-5 text-brand mt-0.5 shrink-0 border-gray-300 focus:ring-brand">
+      <span>{% slot label %}{% endslot %}</span>
+    </label>
+
+  {% else %}
+    <label for="{{ attrs.id }}" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">
+      {% slot label %}{% endslot %}
+    </label>
+    <input {% if attrs.required %}required{% endif %}
+           {% if attrs.disabled %}disabled{% endif %}
+           {% if attrs.readonly %}readonly{% endif %}
+           {% if attrs.name %}name="{{ attrs.name }}"{% endif %}
+           {% if attrs.id %}id="{{ attrs.id }}"{% endif %}
+           {% if attrs.placeholder %}placeholder="{{ attrs.placeholder }}"{% endif %}
+           {% if attrs.autocomplete %}autocomplete="{{ attrs.autocomplete }}"{% endif %}
+           {% if attrs.value is not None %}value="{{ attrs.value }}"{% endif %}
+           type="{{ attrs.type }}"
+           class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand disabled:bg-gray-100 disabled:text-gray-500">
+  {% endif %}
+
+  {% if attrs.errors %}
+    <div class="mt-1 space-y-0.5">
+      {% for error in attrs.errors %}
+        <p class="text-xs font-medium text-red-500">{{ error }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {% if slots.help_text %}
+    <div class="mt-1 text-xs text-gray-500">
+      {% slot help_text %}{% endslot %}
+    </div>
+  {% endif %}
+</div>

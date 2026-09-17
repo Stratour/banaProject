@@ -1,5 +1,6 @@
-{% load account %}
-{% load i18n %}
-{% comment "" %}{% user_display user as name %}
-{% blocktrans %}Successfully signed in as {{name}}.{% endblocktrans %}{% endcomment %}
-{% blocktrans %}Connexion réussie en tant que {% endblocktrans %}{% if user.profile.verified_first_name %}{{ user.profile.verified_first_name }} !{% elif user.first_name %}{{ user.first_name }} !{% else %}{{ user.username }} !{% endif %}
+{% comment %}
+  Volontairement vide : au retour de la confirmation d'email, ce message s'ajoutait à
+  « Bienvenue sur Bana » (accounts.views.profile_view), ce qui faisait trois toasts d'affilée.
+  Un template de message vide n'ajoute aucun toast — allauth ignore un rendu vide
+  (voir allauth.account.adapter.add_message).
+{% endcomment %}

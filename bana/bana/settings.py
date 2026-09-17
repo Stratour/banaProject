@@ -33,8 +33,13 @@ INSTALLED_APPS = [
     'accounts',
     'allauth',
     'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.google',
+    # Connexion Google désactivée pour l'instant.
+    # Pour la réactiver : décommenter ces 2 lignes + SOCIALACCOUNT_PROVIDERS plus bas,
+    # remettre les {% include "socialaccount/snippets/login.html" %} dans
+    # account/login.html et account/signup.html, puis créer une SocialApp
+    # (client_id / secret) depuis l'admin Django.
+    # 'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.google',
 
     # Extensions
     'django_extensions',
@@ -47,8 +52,8 @@ INSTALLED_APPS = [
     # Apps métier
     'bana',
     'bana_admin',
-    'bug_tracker',
-    'chat',
+    # 'bug_tracker',
+    # 'chat',
     'stripe_sub',
     'trajects.apps.TrajectsConfig',
 ]
@@ -209,12 +214,13 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
-SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'SCOPE': ['profile', 'email'],
-        'AUTH_PARAMS': {'prompt': 'select_account'},
-    }
-}
+# Connexion Google désactivée pour l'instant (voir INSTALLED_APPS).
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'SCOPE': ['profile', 'email'],
+#         'AUTH_PARAMS': {'prompt': 'select_account'},
+#     }
+# }
 
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
@@ -224,12 +230,10 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_EMAIL_SUBJECT_PREFIX = ''
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 3
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = 'account_login'  # nom d'URL : évite un aller-retour via LocaleMiddleware (allauth est sous i18n_patterns)
 LOGIN_REDIRECT_URL = 'accounts:profile'
-ACCOUNT_LOGIN_REDIRECT_URL = 'accounts:profile'
 ACCOUNT_PREVENT_ENUMERATION = True
 ACCOUNT_EMAIL_CONFIRMATION_HMAC = True
-ACCOUNT_INACTIVE_USER_ERROR = 'Ce compte est désactivé. Contacte un admin pour le réactiver.'
 ACCOUNT_FORMS = {'signup': 'accounts.forms.CustomSignupForm'}
 
 # ================================

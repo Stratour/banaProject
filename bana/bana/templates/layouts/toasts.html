@@ -1,0 +1,41 @@
+{% load i18n %}
+
+{% comment %}
+  Notifications toast — source unique pour les deux layouts (vitrine et app).
+
+  Positionnement : centré en haut de la zone de contenu. Le conteneur est en `absolute`,
+  il faut donc que le <main> qui l'inclut porte `relative` — sinon le toast se calerait
+  sur le premier ancêtre positionné, généralement le <body>.
+
+  Le JS (bana/js/core/toast.js) pose --toast-timeout sur chaque toast à partir de
+  data-toast-timeout ; la barre de progression consomme cette variable.
+{% endcomment %}
+
+{% if messages %}
+<div class="absolute top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-md px-4
+            flex flex-col items-center gap-2 pointer-events-none">
+  {% for message in messages %}
+  {% with tags=message.tags %}
+
+  {% if 'success' in tags %}
+    {% with accent="bg-brand" wash="bg-brand/10" ink="text-brand" %}
+    {% include "layouts/partials/toast_item.html" %}
+    {% endwith %}
+  {% elif 'error' in tags or 'danger' in tags %}
+    {% with accent="bg-red-500" wash="bg-red-50" ink="text-red-600" %}
+    {% include "layouts/partials/toast_item.html" %}
+    {% endwith %}
+  {% elif 'warning' in tags %}
+    {% with accent="bg-amber-500" wash="bg-amber-50" ink="text-amber-600" %}
+    {% include "layouts/partials/toast_item.html" %}
+    {% endwith %}
+  {% else %}
+    {% with accent="bg-brand-200" wash="bg-brand/5" ink="text-brand-200" %}
+    {% include "layouts/partials/toast_item.html" %}
+    {% endwith %}
+  {% endif %}
+
+  {% endwith %}
+  {% endfor %}
+</div>
+{% endif %}

@@ -8,10 +8,12 @@
 
 {% block content %}
 
-<!-- 🔙 Bouton retour -->
-  <a href="{% url 'accounts:profile_addresses' %}" 
-     class="inline-flex items-center gap-2 mb-6 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand group transition">
-    <svg class="h-4 w-4 transition-transform group-hover:-translate-x-0.5" 
+<div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
+  <!-- 🔙 Bouton retour -->
+  <a href="{% url 'accounts:profile_addresses' %}"
+     class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand group transition">
+    <svg class="h-4 w-4 transition-transform group-hover:-translate-x-0.5"
          viewBox="0 0 24 24" fill="none" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M15 19l-7-7 7-7" />
@@ -19,19 +21,18 @@
     <span>{% trans "Retour" %}</span>
   </a>
 
-<div class="max-w-4xl mx-auto px-4 py-8">
-  <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 space-y-8">
+  <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-8">
 
-    <h2 class="text-2xl font-bold text-brand">
+    <h1 class="text-2xl font-bold text-brand">
       {% trans "Ajouter une adresse favorite" %}
-    </h2>
+    </h1>
 
     <form method="POST" class="space-y-6">
       {% csrf_token %}
 
       <!-- Nom de l'adresse -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
+        <label class="block text-sm font-medium text-gray-700 mb-2" for="{{ form.label.id_for_label }}">
           {% trans "Nom de l'adresse" %}
         </label>
         {{ form.label }}
@@ -39,7 +40,7 @@
 
       <!-- Adresse -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">
+        <label class="block text-sm font-medium text-gray-700 mb-2" for="{{ form.address.id_for_label }}">
           {% trans "Adresse" %}
         </label>
 

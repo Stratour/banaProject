@@ -1,1 +1,20 @@
-{% extends "allauth/layouts/entrance.html" %}
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% comment %}
+  Base des pages d'entrée allauth NON surchargées par le projet (login par code, passkey,
+  téléphone, inscription fermée…). Toutes inatteignables avec la configuration actuelle
+  (ACCOUNT_LOGIN_METHODS={'email'}, MFA désinstallé), mais on garantit ici le layout
+  vitrine et le fond de page plutôt que le layout app avec sidebar.
+
+  Les pages d'auth réelles du projet n'utilisent PAS ce fichier : elles étendent
+  account/base_auth.html, qui ajoute en plus la carte blanche centrée. On ne peut pas
+  envelopper automatiquement les templates du package dans cette carte : ils surchargent
+  {% block content %}, le bloc même qui porterait la structure.
+{% endcomment %}
+
+{% block meta_robots %}<meta name="robots" content="noindex,follow">{% endblock %}
+
+{% block page_background %}
+<div class="fixed inset-0 -z-10 opacity-50 pointer-events-none" style="background-image:url('{% static 'bana/img/background/bg-bana-2.png' %}'); background-size:cover; background-repeat:no-repeat; background-position:center;"></div>
+{% endblock %}

@@ -1,1 +1,7 @@
-{% extends "allauth/layouts/manage.html" %}
+{% extends 'account/base_entrance.html' %}
+
+{% comment %}
+  Base des pages de gestion de compte allauth non surchargées par le projet.
+  Même traitement que base_entrance : layout vitrine + fond de page.
+  Les pages réelles du projet étendent account/base_auth.html.
+{% endcomment %}

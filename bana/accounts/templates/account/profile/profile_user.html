@@ -17,10 +17,12 @@
 
 {% block content %}
 
+<div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
+
   <!-- 🔙 Bouton retour -->
-  <a href="javascript:history.back()" 
-     class="inline-flex items-center gap-2 mb-6 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand group transition">
-    <svg class="h-4 w-4 transition-transform group-hover:-translate-x-0.5" 
+  <a href="javascript:history.back()"
+     class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand group transition">
+    <svg class="h-4 w-4 transition-transform group-hover:-translate-x-0.5"
          viewBox="0 0 24 24" fill="none" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
             d="M15 19l-7-7 7-7" />
@@ -28,19 +30,9 @@
     <span>{% trans "Retour" %}</span>
   </a>
 
-<div class="max-w-6xl mx-auto px-2 py-8 space-y-8">
-
-  {% if messages %}
-    <ul class="mb-6 space-y-2">
-      {% for message in messages %}
-        <li class="text-sm p-2 rounded bg-yellow-100 text-yellow-900">{{ message }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-
   <!-- 🧍 Profil utilisateur -->
   <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
-    <h2 class="text-3xl font-bold text-brand mb-1">
+    <h1 class="text-3xl font-bold text-brand mb-1">
       {% trans "Profil de " %}
       {% if user.profile.ci_is_verified %}
         {{ user.profile.verified_first_name|default:user.first_name|default:user.username|capfirst }}
@@ -48,7 +40,7 @@
       {% else %}
         {{ user.first_name }}{% if user.last_name %} {{ user.last_name|slice:":1"|upper }}.{% endif %}
       {% endif %}
-    </h2>
+    </h1>
 
     <!-- Rôle + localisation : remonté en sous-titre, juste sous le nom -->
     <p class="text-gray-500 text-lg !mt-0 mb-6">
@@ -203,7 +195,7 @@
   </div>
 
   <!-- ⭐ Section Avis -->
-  <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
+  <section class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16 space-y-10">
     <div class="flex items-center gap-3">
       <svg class="h-7 w-7 text-brand" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
         <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z" />
@@ -270,7 +262,7 @@
       {% if reviews %}
         <div class="grid gap-3">
           {% for review in reviews %}
-            <div class="bg-gray-50 border border-gray-100 rounded-xl p-5 transition hover:border-brand/30 hover:bg-white hover:shadow-sm">
+            <article class="bg-gray-50 border border-gray-100 rounded-xl p-5 transition hover:border-brand/30 hover:bg-white hover:shadow-sm">
               <div class="flex items-start gap-3">
                 <div class="relative h-10 w-10 shrink-0">
                   <div class="h-full w-full rounded-full bg-brand-50 ring-2 ring-[#E9F5F1] overflow-hidden">
@@ -326,7 +318,7 @@
                   {% endif %}
                 </div>
               </div>
-            </div>
+            </article>
           {% endfor %}
         </div>
       {% else %}
@@ -338,7 +330,7 @@
     {% if not is_own_profile %}
       {% include "account/partials/formulaire_avis.html" %}
     {% endif %}
-  </div>
+  </section>
 
 </div>
 {% endblock content %}

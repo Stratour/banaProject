@@ -1,7 +1,6 @@
-from django.urls import path, include
-from django.conf.urls.i18n import i18n_patterns
+from django.urls import path
 from . import views
-from .views import CustomPasswordChangeView
+from .views import CustomPasswordChangeView, CustomPasswordSetView
 
 app_name='accounts'
 
@@ -26,12 +25,9 @@ urlpatterns = [
     
     path('profil/securité&connexion/', views.profile_security, name='profile_security'),
     path('profil/securité&connexion/password/', CustomPasswordChangeView.as_view(), name='account_change_password'),
+    path('profil/securité&connexion/password/set/', CustomPasswordSetView.as_view(), name='account_set_password'),
     path('profil/securité&connexion/deactivate/', views.deactivate_account, name='deactivate_account'),
-    
-    path('email/display/', views.email_display, name='email_display'),
-    path('email/edit/', views.email_edit, name='email_edit'), 
+
+    path('email/edit/', views.email_edit, name='email_edit'),
     path('email/change/confirm/<str:key>/', views.email_change_confirm, name='email_change_confirm'),
-    path('email/confirm-redirect/', views.redirect_after_email_confirmation, name='email_confirm_redirect'),
-
-
 ]

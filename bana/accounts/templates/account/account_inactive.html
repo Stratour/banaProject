@@ -1,14 +1,27 @@
-{% extends "allauth/layouts/entrance.html" %}
-{% load i18n %}
-{% load allauth %}
-{% block head_title %}
-    {% translate "Account Inactive" %}
-{% endblock head_title %}
-{% block content %}
-    {% element h1 %}
-        {% translate "Account Inactive" %}
-    {% endelement %}
-    {% element p %}
-        {% translate "This account is inactive." %}
-    {% endelement %}
-{% endblock content %}
+{% extends 'account/base_auth.html' %}
+{% load i18n allauth static %}
+
+{% block title %}{% trans "Compte désactivé" %}{% endblock title %}
+{% block head_title %}{% trans "Compte désactivé" %}{% endblock head_title %}
+
+{% block auth_title %}{% trans "Compte désactivé" %}{% endblock %}
+
+{% block auth_content %}
+<p class="text-gray-600 text-center">
+  {% blocktrans %}Ce compte est désactivé. Un administrateur doit le réactiver pour que vous puissiez vous reconnecter.{% endblocktrans %}
+</p>
+{% endblock auth_content %}
+
+{% block auth_footer %}
+<div class="text-center mt-8 space-y-3">
+  <a href="{% url 'contact' %}"
+     class="inline-flex items-center gap-2 rounded-full bg-brand text-white px-6 py-2 text-sm font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+    {% trans "Nous contacter" %}
+  </a>
+  <p>
+    <a href="{% url 'home' %}" class="text-sm text-brand hover:underline font-semibold">
+      {% trans "Retour à l'accueil" %}
+    </a>
+  </p>
+</div>
+{% endblock %}

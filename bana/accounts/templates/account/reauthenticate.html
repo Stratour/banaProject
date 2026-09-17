@@ -1,22 +1,55 @@
-{% extends 'layouts/base.html' %}
-{% load allauth %}
-{% load i18n %}
-{% block reauthenticate_content %}
-    {% element p %}
-        {% blocktranslate %}Enter your password:{% endblocktranslate %}
-    {% endelement %}
-    {% url 'account_reauthenticate' as action_url %}
-    {% element form form=form method="post" action=action_url %}
-        {% slot body %}
-            {% csrf_token %}
-            {% element fields form=form unlabeled=True %}
-            {% endelement %}
-            {{ redirect_field }}
-        {% endslot %}
-        {% slot actions %}
-            {% element button type="submit" tags="primary,reauthenticate" %}
-                {% trans "Confirm" %}
-            {% endelement %}
-        {% endslot %}
-    {% endelement %}
+{% extends 'account/base_auth.html' %}
+{% load allauth i18n static %}
+
+{% comment %}
+  Confirmation du mot de passe avant une action sensible. L'ancienne version définissait
+  un bloc « reauthenticate_content » absent du layout : la page se rendait vide.
+{% endcomment %}
+
+{% block title %}{% trans "Confirmez votre mot de passe" %}{% endblock title %}
+{% block head_title %}{% trans "Confirmez votre mot de passe" %}{% endblock head_title %}
+
+{% block auth_title %}{% trans "Confirmez votre mot de passe" %}{% endblock %}
+{% block auth_subtitle %}
+  <p class="text-gray-500 text-sm mt-2">
+    {% trans "Pour votre sécurité, saisissez à nouveau votre mot de passe avant de continuer." %}
+  </p>
 {% endblock %}
+
+{% block auth_content %}
+<form method="post" action="{% url 'account_reauthenticate' %}" class="w-full max-w-sm mx-auto space-y-5">
+  {% csrf_token %}
+  {{ redirect_field }}
+
+  {% for field in form %}
+    {% include "account/partials/password_field.html" with field=field autocomplete="current-password" %}
+  {% endfor %}
+
+  {% if form.non_field_errors %}
+    <div class="space-y-1">
+      {% for error in form.non_field_errors %}
+        <p class="text-xs text-red-600">{{ error }}</p>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <div class="flex justify-center pt-2">
+    <button type="submit"
+            class="w-60 px-6 py-3 font-semibold text-white bg-brand rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+      {% trans "Confirmer" %}
+    </button>
+  </div>
+</form>
+{% endblock auth_content %}
+
+{% block auth_footer %}
+<div class="text-center mt-6">
+  <a href="{% url 'account_reset_password' %}" class="text-sm text-brand hover:underline font-semibold">
+    {% trans "Mot de passe oublié ?" %}
+  </a>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'bana/js/components/password-strength.js' %}"></script>
+{% endblock extra_js %}

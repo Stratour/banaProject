@@ -8,7 +8,6 @@ from django.views.generic.base import RedirectView
 from stripe_sub.views import stripe_webhook
 from . import views
 from .sitemaps import StaticViewSitemap
-from accounts import views as account_views
 
 sitemaps = {
     'static': StaticViewSitemap,

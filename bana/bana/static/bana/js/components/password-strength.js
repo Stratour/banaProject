@@ -11,7 +11,9 @@ function togglePassword(inputId, btn) {
 }
 
 (function () {
-  const input = document.getElementById('password');
+  // [data-password-strength] est posé par account/partials/password_field.html ;
+  // #password reste reconnu pour le formulaire d'inscription, qui nomme son champ ainsi.
+  const input = document.querySelector('[data-password-strength]') || document.getElementById('password');
   const bar = document.getElementById('password-strength-bar');
   const fill = document.getElementById('password-strength-fill');
   const label = document.getElementById('password-strength-label');

@@ -1,26 +1,45 @@
-/* —— Soft: fade + tiny translate —— */
+/* —— Toasts : entrée descendante depuis le haut du contenu —— */
 :root{
   --toast-enter-ms: 380ms;
   --toast-leave-ms: 260ms;
-  --toast-shift: 2px;  /* seulement 2px */
+  --toast-shift: 10px;          /* les toasts sont centrés en haut : ils descendent */
+  --toast-timeout: 5s;          /* surchargé par toast.js depuis data-toast-timeout */
 }
 
+/* Le conteneur centre les toasts avec -translate-x-1/2 : les animations doivent
+   conserver ce décalage horizontal, sinon la carte saute à droite pendant l'animation. */
 @keyframes toast-soft-in  {
+  from { opacity: 0; transform: translate(-50%, calc(var(--toast-shift) * -1)); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+@keyframes toast-soft-out {
+  from { opacity: 1; transform: translate(-50%, 0); }
+  to   { opacity: 0; transform: translate(-50%, calc(var(--toast-shift) * -1)); }
+}
+
+/* Les cartes sont empilées par le conteneur (déjà centré) : elles ne portent pas
+   le -50% elles-mêmes et s'animent donc sans décalage horizontal. */
+@keyframes toast-item-in  {
   from { opacity: 0; transform: translateY(calc(var(--toast-shift) * -1)); }
   to   { opacity: 1; transform: translateY(0); }
 }
-@keyframes toast-soft-out {
+@keyframes toast-item-out {
   to { opacity: 0; transform: translateY(calc(var(--toast-shift) * -1)); }
 }
 
-.animate-toast-enter { animation: toast-soft-in  var(--toast-enter-ms) cubic-bezier(.2,.7,.2,1) !important; }
-.animate-toast-leave { animation: toast-soft-out var(--toast-leave-ms) ease-in forwards !important; }
+.animate-toast-enter { animation: toast-item-in  var(--toast-enter-ms) cubic-bezier(.2,.7,.2,1) !important; }
+.animate-toast-leave { animation: toast-item-out var(--toast-leave-ms) ease-in forwards !important; }
 .animate-toast-shake { animation: none !important; }
 
+/* La barre de progression est animée par toast.js (Web Animations API), pas ici : ce fichier
+   est pré-caché par le service worker et une version périmée la laissait figée. Le JS gère
+   aussi la pause au survol, en même temps que le minuteur de fermeture. */
+
 @media (prefers-reduced-motion: reduce){
+  /* Seules les animations décoratives sont neutralisées. La barre de progression porte une
+     information — le temps restant — et continue donc de décroître. */
   .animate-toast-enter,
-  .animate-toast-leave,
-  .animate-toast-progress { animation: none !important; }
+  .animate-toast-leave { animation: none !important; }
 }
 
 /* état initial */

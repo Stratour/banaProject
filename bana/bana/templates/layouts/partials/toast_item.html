@@ -1,0 +1,62 @@
+{% load i18n %}
+
+{% comment %}
+  Une notification. Inclus par layouts/toasts.html, qui fournit par {% with %} :
+    message  le message Django
+    tags     ses tags
+    accent   classe de fond de la pastille et de la barre de progression
+    wash     fond très clair derrière l'icône
+    ink      couleur du texte de l'icône
+{% endcomment %}
+
+<div class="toast-item relative pointer-events-auto w-full overflow-hidden
+            flex items-start gap-3 rounded-2xl bg-white pl-4 pr-10 py-3.5
+            shadow-lg shadow-gray-900/5 ring-1 ring-gray-200/80 animate-toast-enter"
+     data-toast data-toast-timeout="{% if 'error' in tags or 'danger' in tags %}7000{% else %}5000{% endif %}"
+     role="{% if 'error' in tags or 'danger' in tags %}alert{% else %}status{% endif %}"
+     aria-live="{% if 'error' in tags or 'danger' in tags %}assertive{% else %}polite{% endif %}">
+
+  <span class="shrink-0 mt-0.5 flex items-center justify-center h-7 w-7 rounded-full {{ wash }} {{ ink }}">
+    {% if 'success' in tags %}
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    {% elif 'error' in tags or 'danger' in tags %}
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round"/>
+      </svg>
+    {% elif 'warning' in tags %}
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M12 9v4M12 17h.01" stroke-linecap="round"/>
+        <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" stroke-linejoin="round"/>
+      </svg>
+    {% else %}
+      <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <circle cx="12" cy="12" r="9"/>
+        <path d="M12 8h.01M11 11h2v5h-2z" stroke-linecap="round"/>
+      </svg>
+    {% endif %}
+  </span>
+
+  <p class="text-sm font-medium leading-snug text-gray-800 pt-1">{{ message }}</p>
+
+  {% comment "Pas utile étant donné qu'il y a un timer de notif" %}
+  <button type="button" data-toast-close
+          class="absolute right-2.5 top-2.5 flex items-center justify-center h-6 w-6 rounded-full
+                 leading-none text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors
+                 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+          aria-label="{% trans 'Fermer la notification' %}">
+    <svg class="block h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+      <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round"/>
+    </svg>
+  </button>
+  {% endcomment %}
+
+  {% comment %}
+    La décroissance est pilotée par toast.js (Web Animations API), pas par une animation CSS :
+    toast.css est pré-caché par le service worker, et une version périmée laissait la barre
+    figée. w-full reste nécessaire — un absolute sans largeur mesure 0.
+  {% endcomment %}
+  <span data-toast-progress
+        class="toast-progress absolute bottom-0 left-0 h-0.5 w-full {{ accent }}" aria-hidden="true"></span>
+</div>

@@ -1,0 +1,29 @@
+{% extends 'account/base_auth.html' %}
+{% load i18n allauth account static %}
+
+{% comment %}
+  Filet de sécurité : le parcours normal passe par la modale de déconnexion du
+  header / footer, qui POSTe vers accounts:logout. Ce template ne sert qu'en cas
+  d'accès direct à l'URL allauth /accounts/logout/.
+{% endcomment %}
+
+{% block title %}{% trans "Déconnexion" %}{% endblock title %}
+
+{% block auth_title %}{% trans "Déconnexion" %}{% endblock %}
+
+{% block auth_content %}
+<p class="text-gray-600 text-center mb-8">{% trans "Êtes-vous sûr de vouloir vous déconnecter ?" %}</p>
+
+<form method="post" action="{% url 'account_logout' %}" class="flex items-center justify-center gap-3 flex-wrap">
+  {% csrf_token %}
+  {{ redirect_field }}
+  <a href="{% url 'home' %}"
+     class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-5 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+    {% trans "Annuler" %}
+  </a>
+  <button type="submit"
+          class="inline-flex items-center gap-2 rounded-full bg-brand text-white px-5 py-2 text-sm font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+    {% trans "Se déconnecter" %}
+  </button>
+</form>
+{% endblock auth_content %}

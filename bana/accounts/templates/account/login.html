@@ -1,120 +1,101 @@
-{% extends 'layouts/base.html' %}
+{% extends 'account/base_auth.html' %}
 {% load allauth i18n account static %}
 
-{% block title %}
-{% trans "Connexion" %}
-{% endblock title %}
+{% block title %}{% trans "Connexion" %}{% endblock title %}
 
-{% block meta_robots %}<meta name="robots" content="noindex,follow">{% endblock %}
+{% block auth_title %}{% trans "Connexion" %}{% endblock %}
+{% block auth_subtitle %}
+  <h2 class="text-brand-200 text-lg font-bold mt-1">{% trans "Bienvenue" %}</h2>
+{% endblock %}
 
-{% block content %}
-<div class="bg-gray-100 md:min-h-screen flex items-center justify-center">
-  <div class="flex flex-col items-center justify-center bg-white shadow-md rounded-lg p-8 w-full md:mx-12 lg:w-1/2">
-    <h1 class="text-brand text-3xl font-bold text-center">{% trans 'Connexion' %}</h1>
-    <h2 class="text-brand-200 text-lg font-bold mb-12 text-center">{% trans "Bienvenue" %}</h2>
+{% block auth_content %}
+{% url 'account_login' as login_url %}
+<form method="post" action="{{ login_url }}" class="w-full max-w-sm mx-auto">
+  {% csrf_token %}
 
-    {% url 'account_login' as login_url %}
-    <form method="post" class="w-full lg:w-1/2" action="{{ login_url }}">
-      {% csrf_token %}
-
-      {# Non-field errors #}
-      {% if form.non_field_errors %}
-        <div class="mb-6 space-y-0.5">
-          {% for error in form.non_field_errors %}
-            <p class="text-xs font-medium text-red-500">{{ error }}</p>
-          {% endfor %}
-        </div>
-      {% endif %}
-      
-      {# Username / Email #}
-      <div class="form-group mb-8">
-        <label for="login" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">
-          {% trans 'E-mail' %}
-        </label>
-        <input type="email" name="login" id="login"
-               value="{{ form.login.value|default_if_none:'' }}"
-               autocomplete="email"
-               class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
-        {% if form.login.errors %}
-          <div class="mt-1 space-y-0.5">
-            {% for error in form.login.errors %}
-              <p class="text-xs font-medium text-red-500">{{ error }}</p>
-            {% endfor %}
-          </div>
-        {% endif %}
-      </div>
-
-      {# Password #}
-      <div class="form-group mb-6">
-        <label for="password" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">
-          {% trans 'Mot de passe' %}
-        </label>
-        <div class="relative">
-          <input type="password" name="password" id="password" autocomplete="current-password"
-                 class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 pr-10 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
-          <button type="button" onclick="togglePassword('password', this)"
-                  class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-brand focus:outline-none"
-                  aria-label="{% trans 'Afficher le mot de passe' %}">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-            </svg>
-          </button>
-        </div>
-        {% if form.password.errors %}
-          <div class="mt-1 space-y-0.5">
-            {% for error in form.password.errors %}
-              <p class="text-xs font-medium text-red-500">{{ error }}</p>
-            {% endfor %}
-          </div>
-        {% endif %}
-      </div>
-
-      {# Remember me + hidden redirect #}
-      <div class="mb-6 flex items-center justify-between">
-        <label class="inline-flex items-center gap-2 text-sm text-gray-700">
-          <input type="checkbox" name="remember" class="h-4 w-4 rounded border-gray-300">
-          <span>{% trans "Se souvenir de moi" %}</span>
-        </label>
-        <a href="{% url 'account_reset_password' %}" class="text-sm text-brand font-semibold hover:underline">
-          {% trans "Mot de passe oublié ?" %}
-        </a>
-      </div>
-
-      {% if redirect_field_value %}
-        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
-      {% endif %}
-
-      {# Submit #}
-      <div class="w-full mt-8 flex justify-center items-center">
-        <button type="submit" id="login-submit"
-                data-loading="{% trans 'Connexion en cours…' %}"
-                class="w-60 px-6 py-3 font-semibold text-white bg-brand rounded-full focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2">
-          {% trans 'Connexion' %}
-        </button>
-      </div>
-    </form>
-
-    <div class="text-center mt-6">
-      {% url 'account_signup' as signup_url %}
-      <p class="text-brand-200 text-lg mb-4">
-        {% trans "Pas encore de compte ?" %}
-          <a class="font-bold" href="{{ signup_url }}">{% trans "S'inscrire" %}</a>
-      </p>
+  {% if form.non_field_errors %}
+    <div class="mb-6 space-y-0.5">
+      {% for error in form.non_field_errors %}
+        <p class="text-xs font-medium text-red-500">{{ error }}</p>
+      {% endfor %}
     </div>
+  {% endif %}
 
-      {% comment "" %}
-      {% if SOCIALACCOUNT_ENABLED %}
-      <div class="text-center">
-        <p>{% trans 'Or sign in with:' %}</p>
-        {% include "socialaccount/snippets/login.html" with page_layout="entrance" %}
+  <div class="form-group mb-8">
+    <label for="login" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">
+      {% trans 'E-mail' %}
+    </label>
+    <input type="email" name="login" id="login"
+           value="{{ form.login.value|default_if_none:'' }}"
+           autocomplete="email"
+           class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
+    {% if form.login.errors %}
+      <div class="mt-1 space-y-0.5">
+        {% for error in form.login.errors %}
+          <p class="text-xs font-medium text-red-500">{{ error }}</p>
+        {% endfor %}
       </div>
     {% endif %}
-      {% endcomment %}
-    {# Optionnel : social login #}
-    
   </div>
+
+  <div class="form-group mb-6">
+    <label for="password" class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase">
+      {% trans 'Mot de passe' %}
+    </label>
+    <div class="relative">
+      <input type="password" name="password" id="password" autocomplete="current-password"
+             class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 pr-10 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand"/>
+      <button type="button" onclick="togglePassword('password', this)"
+              class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-brand focus:outline-none"
+              aria-label="{% trans 'Afficher le mot de passe' %}">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+      </button>
+    </div>
+    {% if form.password.errors %}
+      <div class="mt-1 space-y-0.5">
+        {% for error in form.password.errors %}
+          <p class="text-xs font-medium text-red-500">{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  <div class="mb-6 flex items-center justify-between gap-3 flex-wrap">
+    <label class="inline-flex items-center gap-2 text-sm text-gray-700">
+      <input type="checkbox" name="remember" class="h-4 w-4 rounded border-gray-300">
+      <span>{% trans "Se souvenir de moi" %}</span>
+    </label>
+    <a href="{% url 'account_reset_password' %}" class="text-sm text-brand font-semibold hover:underline">
+      {% trans "Mot de passe oublié ?" %}
+    </a>
+  </div>
+
+  {% if redirect_field_value %}
+    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}">
+  {% endif %}
+
+  <div class="w-full mt-8 flex justify-center items-center">
+    <button type="submit" id="login-submit"
+            data-loading="{% trans 'Connexion en cours…' %}"
+            class="w-60 px-6 py-3 font-semibold text-white bg-brand rounded-full focus:outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2">
+      {% trans 'Connexion' %}
+    </button>
+  </div>
+</form>
+{% endblock auth_content %}
+
+{% block auth_footer %}
+<div class="text-center mt-6">
+  <p class="text-brand-200 text-lg">
+    {% trans "Pas encore de compte ?" %}
+    <a class="font-bold hover:underline" href="{% url 'account_signup' %}">{% trans "S'inscrire" %}</a>
+  </p>
 </div>
+{% endblock %}
+
 {% block extra_js %}
 <script src="{% static 'bana/js/components/password-strength.js' %}"></script>
 <script>
@@ -125,4 +106,3 @@
   });
 </script>
 {% endblock extra_js %}
-{% endblock content %}

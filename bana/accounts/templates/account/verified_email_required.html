@@ -1,35 +1,22 @@
-{% extends "account/base_manage.html" %}
-{% load i18n static %}
-{% load allauth %}
-{% block head_title %}
-    {% trans "Verify Your Email Address" %}
-{% endblock head_title %}
-{% block content %}
+{% extends 'account/base_auth.html' %}
+{% load i18n static allauth %}
 
-<section id="email" class="email section">
-    <header class="container section-title" data-aos="fade">
-                <h1>{% trans 'Verify Your Email Address' %}</h1>               
-    </header>
-    
-    <div class="container text-center" data-aos="fade-up" data-aos-delay="100">
-    {% element h1 %}
-        {% trans "" %}
-    {% endelement %}
-    {% url 'account_email' as email_url %}
-    {% element p %}
-        {% blocktrans %}This part of the site requires us to verify that
-you are who you claim to be. For this purpose, we require that you
-verify ownership of your email address. {% endblocktrans %}
-    {% endelement %}
-    {% element p %}
-        {% blocktrans %}We have sent an email to you for
-verification. Please click on the link inside that email. If you do not see the verification email in your main inbox, check your spam folder. Otherwise
-contact us if you do not receive it within a few minutes.{% endblocktrans %}
-    {% endelement %}
-    {% element p %}
-        {% blocktrans %}<strong>Note:</strong> you can still <a href="{{ email_url }}">change your email address</a>.{% endblocktrans %}
-    {% endelement %}
+{% block title %}{% trans "Vérifiez votre adresse e-mail" %}{% endblock title %}
+{% block head_title %}{% trans "Vérifiez votre adresse e-mail" %}{% endblock head_title %}
 
-    </div>
-</section>
-{% endblock content %}
+{% block auth_title %}{% trans "Vérifiez votre adresse e-mail" %}{% endblock %}
+
+{% block auth_content %}
+{% url 'account_email' as email_url %}
+<div class="space-y-4 text-gray-600 text-center">
+  <p>
+    {% blocktrans %}Cette partie du site nécessite de vérifier votre identité. Nous avons donc besoin que vous confirmiez être bien le propriétaire de votre adresse e-mail.{% endblocktrans %}
+  </p>
+  <p>
+    {% blocktrans %}Nous vous avons envoyé un e-mail de vérification. Cliquez sur le lien qu'il contient. Si vous ne le voyez pas dans votre boîte de réception, pensez à vérifier vos spams. Contactez-nous si vous ne le recevez pas dans les prochaines minutes.{% endblocktrans %}
+  </p>
+  <p class="text-sm">
+    {% blocktrans %}<strong>Note :</strong> vous pouvez toujours <a href="{{ email_url }}" class="text-brand font-semibold hover:underline">changer d'adresse e-mail</a>.{% endblocktrans %}
+  </p>
+</div>
+{% endblock auth_content %}

@@ -12,7 +12,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto px-4 py-10">
+<div class="max-w-6xl mx-auto px-4 py-8 space-y-8">
 
   {# A voir avec le title du header #}
   <header class="mb-6">
@@ -21,7 +21,7 @@
     </h1>
   </header>
 
-  <article class="group rounded-2xl border border-gray-200 bg-white p-6 sm:p-8 md:p-10 shadow-sm hover:shadow-md transition-all ring-1 ring-transparent hover:ring-brand/10">
+  <div class="bg-white shadow-lg rounded-xl px-4 py-8 sm:p-8 md:p-12 lg:p-16">
 
     {# ========= Adresse e-mail ========= #}
 <section class="space-y-4">
@@ -58,14 +58,13 @@
 
   <form method="post" action="{% url 'accounts:email_edit' %}" class="space-y-3 max-w-md">
     {% csrf_token %}
-    <label class="block text-sm font-semibold text-gray-900">{% trans "Changer d’e-mail" %}</label>
-    
-    {# Champ pour saisir le nouvel email #}
-    <input type="email" name="email" required
+    <label class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase" for="id_new_email">{% trans "Changer d’e-mail" %}</label>
+
+    <input type="email" name="email" id="id_new_email" required
+           autocomplete="email"
            placeholder="{% trans 'nouvelle adresse e-mail' %}"
-           class="mt-1 w-full border border-brand px-4 py-2 shadow-sm rounded-full focus:ring-brand focus:border-brand" />
-    
-    {# Bouton soumettre #}
+           class="w-full rounded-full border border-gray-300 bg-white/60 px-4 py-2 text-sm placeholder-gray-500 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand" />
+
     <div class="flex items-center gap-3 pt-1">
       <button type="submit"
               class="inline-flex items-center gap-2 rounded-full bg-brand text-white px-5 py-2 text-sm font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
@@ -91,49 +90,110 @@
 
     {# ========= Mot de passe ========= #}
     <section class="space-y-4">
-      <h2 class="text-sm font-bold uppercase text-brand tracking-wider">{% trans "Mot de passe" %}</h2>
 
-      {# NB: CustomPasswordChangeView (allauth) attend oldpassword/password1/password2 #}
-      <form method="post" action="{% url 'accounts:account_change_password' %}" class="space-y-4 max-w-md">
+
+      {% if not has_password %}
+        <p class="text-sm text-gray-600 max-w-md">
+          {% trans "Votre compte a été créé via Google. Définissez un mot de passe pour pouvoir aussi vous connecter avec votre adresse email." %}
+        </p>
+      {% endif %}
+
+      {% comment %}
+        NB: CustomPasswordChangeView attend oldpassword/password1/password2 ;
+        CustomPasswordSetView (comptes Google) n'attend que password1/password2.
+      {% endcomment %}
+      <form method="post"
+            action="{% if has_password %}{% url 'accounts:account_change_password' %}{% else %}{% url 'accounts:account_set_password' %}{% endif %}"
+            class="space-y-4 max-w-md">
         {% csrf_token %}
 
-        <div>
-          <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Mot de passe actuel" %}</label>
-          <input type="password" name="oldpassword" autocomplete="current-password" required
-                 class="w-full border {% if password_errors.oldpassword %}border-red-400{% else %}border-brand{% endif %} px-4 py-2 shadow-sm rounded-full focus:ring-brand focus:border-brand" />
+        {% comment %}
+          Champs saisis à la main : la vue ne passe pas de form au contexte, les erreurs
+          transitent par la session (voir CustomPasswordChangeView.form_invalid).
+          L'œil appelle togglePassword() de password-strength.js, chargé en bas de page.
+        {% endcomment %}
+
+        {% if has_password %}
+        <div class="form-group">
+          <label class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase" for="id_oldpassword">{% trans "Mot de passe actuel" %}</label>
+          <div class="relative">
+            <input type="password" name="oldpassword" id="id_oldpassword" autocomplete="current-password" required
+                   class="w-full rounded-full border {% if password_errors.oldpassword %}border-red-400{% else %}border-gray-300{% endif %} bg-white/60 px-4 py-2 pr-10 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand" />
+            <button type="button" onclick="togglePassword('id_oldpassword', this)"
+                    class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-brand focus:outline-none"
+                    aria-label="{% trans 'Afficher le mot de passe' %}">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </button>
+          </div>
           {% for error in password_errors.oldpassword %}
-            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+            <p class="mt-1 text-xs font-medium text-red-500">{{ error }}</p>
           {% endfor %}
         </div>
+        {% endif %}
 
-        <div>
-          <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Nouveau mot de passe" %}</label>
-          <input type="password" name="password1" autocomplete="new-password" required
-                 class="w-full border {% if password_errors.password1 %}border-red-400{% else %}border-brand{% endif %} px-4 py-2 shadow-sm rounded-full focus:ring-brand focus:border-brand" />
+        <div class="form-group">
+          <label class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase" for="id_password1">
+            {% if has_password %}{% trans "Nouveau mot de passe" %}{% else %}{% trans "Mot de passe" %}{% endif %}
+          </label>
+          <div class="relative">
+            <input type="password" name="password1" id="id_password1" autocomplete="new-password" required data-password-strength
+                   class="w-full rounded-full border {% if password_errors.password1 %}border-red-400{% else %}border-gray-300{% endif %} bg-white/60 px-4 py-2 pr-10 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand" />
+            <button type="button" onclick="togglePassword('id_password1', this)"
+                    class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-brand focus:outline-none"
+                    aria-label="{% trans 'Afficher le mot de passe' %}">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </button>
+          </div>
           {% for error in password_errors.password1 %}
-            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+            <p class="mt-1 text-xs font-medium text-red-500">{{ error }}</p>
           {% endfor %}
           {% if not password_errors.password1 %}
-            <p class="mt-1 text-xs text-gray-500">{% trans "8 caractères minimum, mélangez lettres/chiffres/symboles." %}</p>
+            <p class="mt-1 text-xs text-gray-400">{% trans "Au moins 8 caractères, non entièrement numérique." %}</p>
           {% endif %}
+          <div id="password-strength-bar" class="mt-2 h-1.5 w-full rounded-full bg-gray-200 overflow-hidden hidden">
+            <div id="password-strength-fill" class="h-full rounded-full transition-all duration-300 w-0"></div>
+          </div>
+          <p id="password-strength-label" class="mt-1 text-xs hidden"></p>
         </div>
 
-        <div>
-          <label class="block text-sm font-semibold text-gray-900 mb-1">{% trans "Confirmer le nouveau mot de passe" %}</label>
-          <input type="password" name="password2" autocomplete="new-password" required
-                 class="w-full border {% if password_errors.password2 %}border-red-400{% else %}border-brand{% endif %} px-4 py-2 shadow-sm rounded-full focus:ring-brand focus:border-brand" />
+        <div class="form-group">
+          <label class="block mb-1 text-sm font-bold tracking-wide text-brand uppercase" for="id_password2">
+            {% if has_password %}{% trans "Confirmer le nouveau mot de passe" %}{% else %}{% trans "Confirmer le mot de passe" %}{% endif %}
+          </label>
+          <div class="relative">
+            <input type="password" name="password2" id="id_password2" autocomplete="new-password" required
+                   class="w-full rounded-full border {% if password_errors.password2 %}border-red-400{% else %}border-gray-300{% endif %} bg-white/60 px-4 py-2 pr-10 text-sm focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand" />
+            <button type="button" onclick="togglePassword('id_password2', this)"
+                    class="absolute inset-y-0 right-3 flex items-center text-gray-400 hover:text-brand focus:outline-none"
+                    aria-label="{% trans 'Afficher le mot de passe' %}">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+            </button>
+          </div>
           {% for error in password_errors.password2 %}
-            <p class="mt-1 text-xs text-red-600">{{ error }}</p>
+            <p class="mt-1 text-xs font-medium text-red-500">{{ error }}</p>
           {% endfor %}
         </div>
 
         <div class="flex items-center justify-between pt-2">
-          <a href="{% url 'account_reset_password' %}" class="text-sm text-brand hover:underline">
-            {% trans "Mot de passe oublié ?" %}
-          </a>
+          {% if has_password %}
+            <a href="{% url 'account_reset_password' %}" class="text-sm text-brand hover:underline">
+              {% trans "Mot de passe oublié ?" %}
+            </a>
+          {% else %}
+            <span></span>
+          {% endif %}
           <button type="submit"
                   class="inline-flex items-center gap-2 rounded-full bg-brand text-white px-5 py-2 text-sm font-semibold hover:bg-brand-dark focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
-            {% trans "Mettre à jour" %}
+            {% if has_password %}{% trans "Mettre à jour" %}{% else %}{% trans "Définir" %}{% endif %}
           </button>
         </div>
       </form>
@@ -152,7 +212,7 @@
         {% trans "Désactiver mon compte" %}
       </button>
     </section>
-  </article>
+  </div>
 </div>
 
 {# ========= Modal désactivation ========= #}
@@ -178,3 +238,7 @@
   </form>
 </dialog>
 {% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'bana/js/components/password-strength.js' %}"></script>
+{% endblock extra_js %}

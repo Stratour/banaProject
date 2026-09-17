@@ -1,0 +1,35 @@
+{% extends 'layouts/base.html' %}
+{% load static i18n %}
+
+{% comment %}
+  Socle commun à TOUTES les pages du tunnel d'authentification (connexion, inscription,
+  vérification d'email, mot de passe oublié, etc.).
+
+  Structure unique : fond bg-bana-2 + carte blanche centrée. Une page d'auth ne doit pas
+  redéfinir {% block content %} : elle remplit auth_title / auth_subtitle / auth_content,
+  et la structure reste identique partout.
+
+  Pour élargir la carte sur une page dense (inscription), surcharger auth_card_width.
+{% endcomment %}
+
+{% block meta_robots %}<meta name="robots" content="noindex,follow">{% endblock %}
+
+{% block page_background %}
+<div class="fixed inset-0 -z-10 opacity-50 pointer-events-none" style="background-image:url('{% static 'bana/img/background/bg-bana-2.png' %}'); background-size:cover; background-repeat:no-repeat; background-position:center;"></div>
+{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center px-4 py-10 sm:py-16 md:min-h-[calc(100vh-6rem)]">
+  <div class="w-full {% block auth_card_width %}max-w-xl{% endblock %} bg-white shadow-md rounded-lg p-6 sm:p-8 md:p-10">
+
+    <header class="text-center mb-8">
+      <h1 class="text-brand text-2xl sm:text-3xl font-bold">{% block auth_title %}{% endblock %}</h1>
+      {% block auth_subtitle %}{% endblock %}
+    </header>
+
+    {% block auth_content %}{% endblock %}
+
+    {% block auth_footer %}{% endblock %}
+  </div>
+</div>
+{% endblock content %}
