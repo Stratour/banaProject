@@ -1,22 +1,39 @@
 import re
+from itertools import groupby
 from django.core.paginator import Paginator
 from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
+from django.templatetags.static import static as static_url
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 from django.http import JsonResponse
 from .utils.geocoding import get_autocomplete_suggestions, get_place_details
+from .utils.display import (
+    display_name_and_initials,
+    display_name,
+    child_labels,
+    cancellation_label,
+)
 from .utils.mail import (
-    send_reservation_confirmed_email,
-    send_reservation_rejected_email,
-    send_new_reservation_request_email,
+    send_reservation_confirmed_emails,
+    send_reservation_rejected_emails,
+    send_reservation_canceled_emails,
+    send_new_reservation_request_emails,
     send_help_proposed_email,
     send_help_proposed_bulk_email,
+    send_member_contact_email,
 )
 from django.contrib import messages
 from accounts.models import Child, FavoriteAddress, Review
 from stripe_sub.models import Subscription
-from .models import Traject, ProposedTraject, ResearchedTraject, TransportMode, Reservation
-from .forms import TrajectForm, ProposedTrajectForm, ResearchedTrajectForm, SimpleProposedTrajectForm
+from .models import (
+    Traject, ProposedTraject, ResearchedTraject, TransportMode, Reservation,
+    ContactMessage,
+)
+from .forms import (
+    TrajectForm, ProposedTrajectForm, ResearchedTrajectForm,
+    SimpleProposedTrajectForm, MemberContactForm,
+)
 from django.db.models import Q, Min, Max, Count, Avg, Case, When, DateField
 from datetime import datetime, timedelta, date
 from django.contrib.gis.geos import Point
@@ -24,8 +41,10 @@ from django.contrib.gis.measure import D
 from django.contrib.gis.db.models.functions import Distance
 import uuid
 from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.utils.text import slugify
 from django.db import transaction
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, ngettext
 
 from django.contrib.auth import get_user_model
 from functools import wraps
@@ -73,9 +92,29 @@ def subscription_complete_required(view_func):
         return view_func(request, *args, **kwargs)
     return wrapper
 
+# Le nom de la série est ce qui identifie un trajet dans toutes les listes
+# (« Mes trajets », « Mes matchings », « Mes réservations »). Sans lui, les
+# cartes s'affichaient toutes sous « Mon trajet » / « Ma recherche » et
+# devenaient impossibles à distinguer — d'où l'obligation à la création.
+GROUPE_NAME_REQUIRED = (
+    "Donnez un nom à ce trajet : c'est ce qui vous permet de le reconnaître "
+    "dans vos listes (ex : École Charleroi (matin))."
+)
+
+
+class _NotEnoughPlaces(Exception):
+    """Sortie de la transaction de confirmation sans écrire (voir manage_reservation)."""
+
+
 def _available_places(proposal):
     """Places restantes — number_of_places est décrémenté à chaque confirmation."""
     return max(0, proposal.number_of_places)
+
+# Définis dans utils/display.py : les emails en ont besoin et ne peuvent pas
+# importer depuis ce module (import circulaire). Alias conservés pour ne pas
+# toucher aux call sites existants.
+_display_name_and_initials = display_name_and_initials
+
 
 def _normalized_service(user):
     service = getattr(getattr(user, "profile", None), "service", None)
@@ -136,6 +175,9 @@ def _aggregate_groupes(queryset, today=None):
 
     next_date = prochaine date à venir (>= today) pour ce groupe.
     Si None, toutes les occurrences sont passées.
+
+    `dates_count` porte le nom attendu par own_traject_modal.html, la fiche
+    de trajet partagée entre les réservations et les matchings.
     """
     _today = today or timezone.now().date()
     return (
@@ -145,10 +187,25 @@ def _aggregate_groupes(queryset, today=None):
             first_date=Min('date'),
             last_date=Max('date'),
             next_date=Min(Case(When(date__gte=_today, then='date'), output_field=DateField())),
-            count=Count('id'),
+            dates_count=Count('id'),
         )
         .order_by('-last_date')
     )
+
+
+def _distinct_children(researches):
+    """Enfants concernés par un groupe de recherches, sans doublon.
+
+    Les occurrences d'un même groupe portent presque toujours les mêmes
+    enfants ; on dédoublonne pour ne pas répéter la même pastille.
+    """
+    seen, children = set(), []
+    for research in researches:
+        for child in research.children.all():
+            if child.id not in seen:
+                seen.add(child.id)
+                children.append(child)
+    return children
 
 
 def _collect_matches(queryset):
@@ -183,13 +240,49 @@ def _delete_single(request, model, filters, redirect_name, success_msg):
     return redirect(redirect_name)
 
 
-def _match_row_status(research, proposal, today, parent_confirmed_ids, parent_pending_ids):
+def _parent_reservation_state(user):
+    """
+    État des réservations portant sur les trajets proposés par `user` (Yaya),
+    en une seule requête.
+
+    Retourne (confirmed_ids, pending_ids, canceled_by) où les deux premiers
+    sont des ensembles d'ids de ResearchedTraject et le troisième mappe
+    l'id du ResearchedTraject vers `Reservation.canceled_by` — la dernière
+    annulation en date fait foi si la même date a été réservée puis annulée
+    plusieurs fois.
+    """
+    confirmed_ids, pending_ids, canceled_by = set(), set(), {}
+
+    rows = (
+        Reservation.objects
+        .filter(proposed_traject__user=user)
+        .order_by("reservation_date")
+        .values_list("researched_traject_id", "status", "canceled_by")
+    )
+
+    for research_id, status, cancel_origin in rows:
+        if status == "confirmed":
+            confirmed_ids.add(research_id)
+        elif status == "pending":
+            pending_ids.add(research_id)
+        elif status == "canceled":
+            canceled_by[research_id] = cancel_origin
+
+    return confirmed_ids, pending_ids, canceled_by
+
+
+def _match_row_status(research, proposal, today, parent_confirmed_ids, parent_pending_ids, parent_canceled_by=None):
     """
     Statut d'une date de matching côté Yaya, réutilisé à la fois pour
     l'affichage (pastille) et pour savoir si une date est "proposable"
     (cf. propose_help_match). Une réservation n'est jamais créée par le
     Yaya : "confirmed"/"pending" reflètent une réservation déjà initiée
     par le PARENT (via auto_reserve).
+
+    "canceled" est terminal : une date refusée ou annulée n'est plus
+    proposable, symétriquement au `is_reservable` du côté parent. Le détail
+    de l'annulation (qui, pourquoi) vit dans `parent_canceled_by` et est
+    rendu par canceled_badge.html.
     """
     if research.date and research.date < today:
         return "past"
@@ -197,6 +290,8 @@ def _match_row_status(research, proposal, today, parent_confirmed_ids, parent_pe
         return "confirmed"
     if research.id in parent_pending_ids:
         return "pending"
+    if parent_canceled_by and research.id in parent_canceled_by:
+        return "canceled"
     avail = _available_places(proposal) if proposal else 0
     required = len(research.children.all()) or 1
     if avail <= 0:
@@ -373,7 +468,7 @@ def find_matches_for_precise_offer(proposal, default_radius_km=5, time_tolerance
         ResearchedTraject.objects
         .filter(pk__in=valid_pks)
         .select_related("traject", "user", "user__profile")
-        .prefetch_related("transport_modes", "children")
+        .prefetch_related("transport_modes", "children", "children__chld_languages")
         .order_by("date", "departure_time")
     )
     
@@ -430,7 +525,7 @@ def find_matches_for_simple_offer(simple_proposal, time_tolerance_minutes=45):
         ResearchedTraject.objects
         .filter(pk__in=valid_pks)
         .select_related("traject", "user", "user__profile")
-        .prefetch_related("transport_modes", "children")
+        .prefetch_related("transport_modes", "children", "children__chld_languages")
         .order_by("date", "departure_time")
     )
     
@@ -498,16 +593,20 @@ def proposed_traject(request, researchesTraject_id=None):
         traject_form = TrajectForm(request.POST)
         proposed_form = ProposedTrajectForm(request.POST)
 
-        groupe_name = (request.POST.get("groupe_name") or "").strip() or "Mon trajet"
+        groupe_name = (request.POST.get("groupe_name") or "").strip()
         groupe_uid = uuid.uuid4()
 
-        proposed_trajects, success = save_proposed_traject(
-            request=request,
-            traject_form=traject_form,
-            proposed_form=proposed_form,
-            groupe_name=groupe_name,
-            groupe_uid=groupe_uid,
-        )
+        if not groupe_name:
+            messages.error(request, _(GROUPE_NAME_REQUIRED))
+            proposed_trajects, success = [], False
+        else:
+            proposed_trajects, success = save_proposed_traject(
+                request=request,
+                traject_form=traject_form,
+                proposed_form=proposed_form,
+                groupe_name=groupe_name,
+                groupe_uid=groupe_uid,
+            )
 
         if success:
             proposed_trajects = proposed_trajects or []
@@ -578,15 +677,19 @@ def simple_proposed_traject(request):
         form = SimpleProposedTrajectForm(request.POST)
 
         if form.is_valid():
-            groupe_name = (request.POST.get("groupe_name") or "").strip() or "Mon trajet"
+            groupe_name = (request.POST.get("groupe_name") or "").strip()
             groupe_uid = uuid.uuid4()
 
-            proposed_trajects, success = save_simple_proposed_traject(
-                request=request,
-                form=form,
-                groupe_name=groupe_name,
-                groupe_uid=groupe_uid,
-            )
+            if not groupe_name:
+                messages.error(request, _(GROUPE_NAME_REQUIRED))
+                proposed_trajects, success = [], False
+            else:
+                proposed_trajects, success = save_simple_proposed_traject(
+                    request=request,
+                    form=form,
+                    groupe_name=groupe_name,
+                    groupe_uid=groupe_uid,
+                )
 
             if success:
                 proposed_trajects = proposed_trajects or []
@@ -681,16 +784,20 @@ def researched_traject(request):
         traject_form = TrajectForm(request.POST)
         researched_form = ResearchedTrajectForm(request.POST, user=request.user)
 
-        groupe_name = (request.POST.get("groupe_name") or "").strip() or "Ma recherche"
+        groupe_name = (request.POST.get("groupe_name") or "").strip()
         groupe_uid = uuid.uuid4()
 
-        researched_trajects, success = save_researched_traject(
-            request=request,
-            traject_form=traject_form,
-            researched_form=researched_form,
-            groupe_name=groupe_name,
-            groupe_uid=groupe_uid,
-        )
+        if not groupe_name:
+            messages.error(request, _(GROUPE_NAME_REQUIRED))
+            researched_trajects, success = [], False
+        else:
+            researched_trajects, success = save_researched_traject(
+                request=request,
+                traject_form=traject_form,
+                researched_form=researched_form,
+                groupe_name=groupe_name,
+                groupe_uid=groupe_uid,
+            )
 
         if success:
             researched_trajects = researched_trajects or []
@@ -933,7 +1040,9 @@ def _resolve_recurrent_dates(request, recurrence_type, date_debut, date_fin, sel
       transmise via le champ caché POST "selected_dates" (CSV de dates ISO) ;
       si présente, elle prime sur le calcul jour(s)-de-semaine + plage ;
     - des dates explicitement exclues par l'utilisateur (POST "excluded_dates",
-      CSV de dates ISO), applicable à tous les modes de récurrence.
+      CSV de dates ISO), applicable à tous les modes de récurrence ;
+    - des dates déjà passées, silencieusement ignorées (l'utilisateur n'a pas
+      à revenir corriger son formulaire : on ne crée que les dates à venir).
     """
     selected_raw = (request.POST.get("selected_dates") or "").strip()
     excluded_raw = (request.POST.get("excluded_dates") or "").strip()
@@ -955,7 +1064,27 @@ def _resolve_recurrent_dates(request, recurrence_type, date_debut, date_fin, sel
     if excluded_set:
         recurrent_dates = [d for d in recurrent_dates if d.isoformat() not in excluded_set]
 
-    return recurrent_dates
+    today = date.today()
+    upcoming_dates = [d for d in recurrent_dates if d >= today]
+
+    skipped_count = len(recurrent_dates) - len(upcoming_dates)
+
+    if skipped_count and not upcoming_dates:
+        messages.error(
+            request,
+            _("Toutes les dates choisies sont déjà passées : aucun trajet n’a été créé.")
+        )
+    elif skipped_count:
+        messages.info(
+            request,
+            ngettext(
+                "%(count)s date déjà passée a été ignorée.",
+                "%(count)s dates déjà passées ont été ignorées.",
+                skipped_count,
+            ) % {"count": skipped_count}
+        )
+
+    return upcoming_dates
 
 
 # ============================================================
@@ -1006,6 +1135,10 @@ def save_proposed_traject(request, traject_form, proposed_form, groupe_name=None
 
     if not recurrent_dates:
         return None, False
+
+    # Les dates passées ayant pu être écartées, on recale la métadonnée de
+    # récurrence sur la première occurrence réellement créée.
+    date_debut = recurrent_dates[0]
 
     proposed_trajects = generate_recurrent_proposals(
         request=request,
@@ -1073,6 +1206,10 @@ def save_researched_traject(request, traject_form, researched_form, groupe_name=
     if not recurrent_dates:
         return None, False
 
+    # Les dates passées ayant pu être écartées, on recale la métadonnée de
+    # récurrence sur la première occurrence réellement créée.
+    date_debut = recurrent_dates[0]
+
     researched_trajects = generate_recurrent_researches(
         request=request,
         recurrent_dates=recurrent_dates,
@@ -1122,6 +1259,10 @@ def save_simple_proposed_traject(request, form, groupe_name=None, groupe_uid=Non
 
     if not recurrent_dates:
         return None, False
+
+    # Les dates passées ayant pu être écartées, on recale la métadonnée de
+    # récurrence sur la première occurrence réellement créée.
+    date_debut = recurrent_dates[0]
 
     traject = Traject.objects.create(
         start_adress=start_adress,
@@ -1191,7 +1332,7 @@ def my_proposed_trajects(request):
         if not occurrences:
             continue
         header = occurrences[0]
-        header.groupe_count = g["count"]
+        header.groupe_count = g["dates_count"]
         header.groupe_first_date = g["first_date"]
         header.groupe_last_date = g["last_date"]
         header.occurrences = occurrences  # chaque occurrence expose déjà .is_past (property du modèle)
@@ -1223,7 +1364,7 @@ def my_simple_trajects(request):
             continue
 
         header = occurrences[0]
-        header.groupe_count = g['count']
+        header.groupe_count = g['dates_count']
         header.groupe_first_date = g['first_date']
         header.groupe_last_date = g['last_date']
         header.occurrences = occurrences  # chaque occurrence expose déjà .is_past (property du modèle)
@@ -1262,7 +1403,7 @@ def my_researched_trajects(request):
 
         header = occurrences[0]
         # ✅ On “colle” des infos de groupe sur l’objet pour le template
-        header.groupe_count = g['count']
+        header.groupe_count = g['dates_count']
         header.groupe_first_date = g['first_date']
         header.groupe_last_date = g['last_date']
         header.occurrences = occurrences
@@ -1293,17 +1434,10 @@ def my_matchings_proposed(request):
         profile.ci_is_verified and profile.document_bvm and profile.profile_picture
     )
 
-    # "confirmed"/"pending" reflètent des réservations déjà initiées par le
-    # PARENT (auto_reserve) — le Yaya ne crée jamais de Reservation lui-même,
-    # voir _match_row_status.
-    parent_pending_ids = set(
-        Reservation.objects.filter(proposed_traject__user=user, status="pending")
-        .values_list("researched_traject_id", flat=True)
-    )
-    parent_confirmed_ids = set(
-        Reservation.objects.filter(proposed_traject__user=user, status="confirmed")
-        .values_list("researched_traject_id", flat=True)
-    )
+    # "confirmed"/"pending"/"canceled" reflètent des réservations déjà initiées
+    # par le PARENT (auto_reserve) — le Yaya ne crée jamais de Reservation
+    # lui-même, voir _match_row_status.
+    parent_confirmed_ids, parent_pending_ids, parent_canceled_by = _parent_reservation_state(user)
 
     groupes = _aggregate_groupes(
         ProposedTraject.objects.filter(user=user, is_active=True, is_simple=False),
@@ -1353,7 +1487,11 @@ def my_matchings_proposed(request):
             rows = _build_match_rows(
                 researches_sorted, proposed_by_date, today,
                 extra_fields_fn=lambda research, proposal: {
-                    "status": _match_row_status(research, proposal, today, parent_confirmed_ids, parent_pending_ids),
+                    "status": _match_row_status(
+                        research, proposal, today,
+                        parent_confirmed_ids, parent_pending_ids, parent_canceled_by,
+                    ),
+                    "canceled_by": parent_canceled_by.get(research.id),
                 },
             )
             ratings = Review.objects.filter(reviewed_user=representative.user).aggregate(
@@ -1362,6 +1500,11 @@ def my_matchings_proposed(request):
             matches.append({
                 "user": representative.user,
                 "groupe_uid": researched_groupe_uid,
+                # Unique par carte de la page : un même groupe de recherche peut
+                # correspondre à plusieurs de mes trajets, et les <dialog> des
+                # pastilles enfant se disputeraient alors le même id HTML.
+                "scope": f"{g['groupe_uid']}-{researched_groupe_uid}",
+                "children": _distinct_children(researches_sorted),
                 "traject": representative.traject,
                 "departure_time": representative.departure_time,
                 "arrival_time": representative.arrival_time,
@@ -1403,14 +1546,7 @@ def my_matchings_simple(request):
         profile.ci_is_verified and profile.document_bvm and profile.profile_picture
     )
 
-    parent_pending_ids = set(
-        Reservation.objects.filter(proposed_traject__user=user, status="pending")
-        .values_list("researched_traject_id", flat=True)
-    )
-    parent_confirmed_ids = set(
-        Reservation.objects.filter(proposed_traject__user=user, status="confirmed")
-        .values_list("researched_traject_id", flat=True)
-    )
+    parent_confirmed_ids, parent_pending_ids, parent_canceled_by = _parent_reservation_state(user)
 
     groupes = _aggregate_groupes(
         ProposedTraject.objects.filter(user=user, is_active=True, is_simple=True),
@@ -1460,7 +1596,11 @@ def my_matchings_simple(request):
             rows = _build_match_rows(
                 researches_sorted, proposed_by_date, today,
                 extra_fields_fn=lambda research, proposal: {
-                    "status": _match_row_status(research, proposal, today, parent_confirmed_ids, parent_pending_ids),
+                    "status": _match_row_status(
+                        research, proposal, today,
+                        parent_confirmed_ids, parent_pending_ids, parent_canceled_by,
+                    ),
+                    "canceled_by": parent_canceled_by.get(research.id),
                 },
             )
             ratings = Review.objects.filter(reviewed_user=representative.user).aggregate(
@@ -1469,6 +1609,11 @@ def my_matchings_simple(request):
             matches.append({
                 "user": representative.user,
                 "groupe_uid": researched_groupe_uid,
+                # Unique par carte de la page : un même groupe de recherche peut
+                # correspondre à plusieurs de mes trajets, et les <dialog> des
+                # pastilles enfant se disputeraient alors le même id HTML.
+                "scope": f"{g['groupe_uid']}-{researched_groupe_uid}",
+                "children": _distinct_children(researches_sorted),
                 "traject": representative.traject,
                 "departure_time": representative.departure_time,
                 "arrival_time": representative.arrival_time,
@@ -1526,11 +1671,18 @@ def my_matchings_researched(request):
         for proposal_id, research_id in Reservation.objects.filter(user=user, status="confirmed")
         .values_list("proposed_traject_id", "researched_traject_id")
     )
-    my_canceled_keys = set(
-        f"{proposal_id}_{research_id}"
-        for proposal_id, research_id in Reservation.objects.filter(user=user, status="canceled")
-        .values_list("proposed_traject_id", "researched_traject_id")
-    )
+    # Pour une annulation, on garde aussi l'origine (`canceled_by`) : le parent
+    # doit pouvoir distinguer « annulée par vous » d'un refus du conducteur ou
+    # d'une annulation automatique (cf. canceled_badge.html). La dernière
+    # annulation en date fait foi.
+    my_canceled_by = {
+        f"{proposal_id}_{research_id}": canceled_by
+        for proposal_id, research_id, canceled_by in Reservation.objects
+        .filter(user=user, status="canceled")
+        .order_by("reservation_date")
+        .values_list("proposed_traject_id", "researched_traject_id", "canceled_by")
+    }
+    my_canceled_keys = set(my_canceled_by)
 
     groupes = _aggregate_groupes(
         ResearchedTraject.objects.filter(user=user, is_active=True),
@@ -1583,6 +1735,7 @@ def my_matchings_researched(request):
                 extra_fields_fn=lambda research, proposal: {
                     "proposal": proposal,
                     "reservation_key": f"{proposal.id}_{research.id}",
+                    "canceled_by": my_canceled_by.get(f"{proposal.id}_{research.id}"),
                     "is_simple": proposal.is_simple,
                     "radius_km": proposal.search_radius_km if proposal.is_simple else None,
                     "is_reservable": (
@@ -1783,15 +1936,248 @@ def place_details_view(request):
 # ============================================================
 
 
+def _accept_reservation(reservation):
+    """Confirme une demande et annule celles que le parent a faites ailleurs
+    pour la même date. Lève _NotEnoughPlaces sans rien écrire s'il ne reste
+    pas assez de places. Renvoie la liste des demandes annulées en cascade.
+
+    Partagé par manage_reservation (unitaire) et manage_reservations_bulk.
+    """
+    requested_places = int(reservation.number_of_places or 0)
+    superseded = []
+
+    # Le décompte des places est un lire-puis-écrire : sans verrou, deux
+    # confirmations concurrentes sur le même trajet liraient le même stock
+    # et le sur-vendraient. On relit la ligne sous select_for_update.
+    with transaction.atomic():
+        proposal = (
+            ProposedTraject.objects
+            .select_for_update()
+            .get(pk=reservation.proposed_traject_id)
+        )
+
+        # IMPORTANT :
+        # _available_places() doit être la seule source de vérité pour savoir
+        # combien de places sont encore disponibles sur le trajet proposé.
+        remaining_places = _available_places(proposal)
+
+        if requested_places > remaining_places:
+            raise _NotEnoughPlaces
+
+        reservation.status = "confirmed"
+        reservation.canceled_by = None
+        reservation.save(update_fields=["status", "canceled_by"])
+
+        proposal.confirmed_users.add(reservation.user)
+
+        # number_of_places représente les places DISPONIBLES : on décrémente.
+        proposal.number_of_places = remaining_places - requested_places
+        proposal.save(update_fields=["number_of_places"])
+
+        # Le parent a pu solliciter plusieurs personnes pour cette même date :
+        # sans cette cascade, chacune pourrait confirmer de son côté et
+        # l'enfant se retrouverait accompagné deux fois.
+        if reservation.researched_traject_id:
+            superseded = list(
+                Reservation.objects
+                .filter(
+                    user=reservation.user,
+                    researched_traject_id=reservation.researched_traject_id,
+                    status="pending",
+                )
+                .exclude(pk=reservation.pk)
+                .select_related(
+                    "proposed_traject", "proposed_traject__user",
+                    "proposed_traject__traject",
+                )
+            )
+            for other in superseded:
+                other.status = "canceled"
+                other.canceled_by = "auto"
+                other.save(update_fields=["status", "canceled_by"])
+
+    return superseded
+
+
+def _research_already_confirmed(user, researched_traject):
+    """Cette date de recherche est-elle déjà couverte par un accompagnateur confirmé ?"""
+    return Reservation.objects.filter(
+        user=user,
+        researched_traject=researched_traject,
+        status="confirmed",
+    ).exists()
+
+
+def _reservation_action_response(request, open_key, next_url):
+    """Réponse commune aux actions sur une réservation.
+
+    En HTMX on renvoie le partial complet re-calculé (la liste, les compteurs et
+    le calendrier changent tous en même temps) ; `open_key` garde le volet
+    concerné déplié. Sans HTMX, redirection classique — les formulaires restent
+    donc fonctionnels sans JavaScript.
+    """
+    if request.htmx:
+        return render(request, RESERVATIONS_PARTIAL, _reservations_context(request, open_key))
+    if next_url and not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        next_url = None
+    return redirect(next_url or "my_reservations")
+
+
+# Quotas du formulaire de contact, comptés en base : le cache du projet est un
+# LocMemCache propre à chaque worker, il compterait donc autant de fois qu'il y
+# a de process gunicorn.
+CONTACT_MAX_PER_HOUR = 10
+CONTACT_MAX_PER_RECIPIENT_PER_HOUR = 3
+CONTACT_FORM_PARTIAL = "trajects/reservation/partials/contact_form.html"
+
+
+def _contact_form_for(open_key, data=None):
+    """Formulaire de contact d'une carte.
+
+    L'auto_id est préfixé par la clé de la carte : la page affiche autant de
+    formulaires que de personnes, sans ça tous les <textarea> partageraient le
+    même id et les <label> pointeraient tous vers le premier.
+    """
+    return MemberContactForm(data, auto_id=f"id-{slugify(open_key)}-%s")
+
+
+def _can_contact(sender, recipient):
+    """Même règle que l'affichage du bouton : au moins une réservation confirmée
+    entre les deux, dans un sens ou dans l'autre. Avant ça, il n'y a rien à
+    convenir — et aucune raison d'ouvrir un canal d'écriture."""
+    if sender == recipient:
+        return False
+    return Reservation.objects.filter(status="confirmed").filter(
+        Q(user=sender, proposed_traject__user=recipient)
+        | Q(user=recipient, proposed_traject__user=sender)
+    ).exists()
+
+
+def _contact_sender_name(user):
+    """Nom affiché comme expéditeur du message.
+
+    Jamais l'adresse email en repli : elle n'apparaîtrait alors dans l'objet du
+    mail, alors qu'elle ne doit se découvrir qu'au moment de répondre.
+    """
+    return display_name(user, fallback="Un membre")
+
+
+def _contact_quota_error(sender, recipient):
+    """Libellé de l'erreur si un quota horaire est dépassé, None sinon."""
+    cutoff = timezone.now() - timedelta(hours=1)
+    recent = ContactMessage.objects.filter(sender=sender, created_at__gte=cutoff)
+    if recent.count() >= CONTACT_MAX_PER_HOUR:
+        return "Vous avez envoyé trop de messages dans la dernière heure. Réessayez plus tard."
+    if recent.filter(recipient=recipient).count() >= CONTACT_MAX_PER_RECIPIENT_PER_HOUR:
+        return (
+            "Vous avez déjà écrit plusieurs fois à cette personne dans la dernière "
+            "heure. Laissez-lui le temps de vous répondre."
+        )
+    return None
+
+
+def _contact_response(request, recipient, form, open_key, label, next_url, sent=False):
+    """Réponse du formulaire de contact.
+
+    On ne re-rend que le corps de la modale, pas toute la liste : aucune donnée
+    de réservation ne change, et un re-rendu global ferait perdre le message
+    saisi en cas d'erreur de validation. Sans HTMX, redirection classique — le
+    formulaire reste utilisable sans JavaScript.
+    """
+    if request.htmx:
+        return render(request, CONTACT_FORM_PARTIAL, {
+            "contact_form": form,
+            "contact_open_key": open_key,
+            "contact_recipient_id": recipient.id,
+            "contact_recipient_name": _display_name_and_initials(recipient)[0],
+            "contact_label": label,
+            "contact_sent": sent,
+            # Les toasts sont rendus hors du fragment swappé : sans ce drapeau,
+            # le message n'apparaîtrait qu'au chargement suivant. Il n'est posé
+            # que par cette vue — person_card.html inclut le même partial pour
+            # le rendu initial et dupliquerait sinon #toast-host à chaque carte.
+            "contact_toast": True,
+        })
+    if next_url and not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        next_url = None
+    return redirect(next_url or "my_reservations")
+
+
+@login_required
+@require_http_methods(["POST"])
+def contact_member(request, user_id):
+    """Message libre à l'autre partie d'une réservation confirmée.
+
+    Remplace l'ancien lien mailto: : celui-ci dépendait du client mail déclaré
+    dans le navigateur et n'ouvrait rien chez une partie des membres (Brave,
+    Firefox sans handler, mobile sans compte configuré), les bloquant au moment
+    précis où ils devaient convenir de l'heure et du point de rendez-vous.
+    """
+    recipient = get_object_or_404(User.objects.select_related("profile"), id=user_id)
+    next_url = request.POST.get("next")
+    open_key = request.POST.get("open_key") or f"contact-{recipient.id}"
+    # Libellé purement indicatif : tronqué et mis sur une ligne, il ne sert que
+    # de contexte dans le corps du mail — jamais dans le sujet, où il ouvrirait
+    # une injection d'en-tête.
+    label = " ".join(request.POST.get("context_label", "").split())[:120]
+
+    form = _contact_form_for(open_key, request.POST)
+
+    def refuse(message):
+        messages.error(request, message)
+        return _contact_response(request, recipient, form, open_key, label, next_url)
+
+    # Le bouton n'est affiché qu'aux abonnés : la condition est rejouée ici, où
+    # elle est opposable. `subscription_complete_required` serait plus strict
+    # que l'affichage (il exige CI + BVM + photo) et rendrait le bouton mort
+    # pour une partie des abonnés.
+    if not Subscription.is_user_abonned(request.user):
+        return refuse("Vous devez être abonné pour contacter un membre.")
+
+    if not _can_contact(request.user, recipient):
+        return refuse("Vous ne pouvez contacter cette personne qu'après une réservation confirmée.")
+
+    if not form.is_valid():
+        return _contact_response(request, recipient, form, open_key, label, next_url)
+
+    quota_error = _contact_quota_error(request.user, recipient)
+    if quota_error:
+        return refuse(quota_error)
+
+    contact_message = ContactMessage.objects.create(
+        sender=request.user,
+        recipient=recipient,
+        context_label=label,
+        body=form.cleaned_data["body"],
+    )
+
+    # Le message reste en base même si le SMTP tombe : on ne le perd pas, et le
+    # quota reste juste.
+    if send_member_contact_email(contact_message, _contact_sender_name(request.user)):
+        contact_message.email_sent = True
+        contact_message.save(update_fields=["email_sent"])
+        messages.success(
+            request,
+            f"Message envoyé à {_display_name_and_initials(recipient)[0]}.",
+        )
+        return _contact_response(request, recipient, None, open_key, label, next_url, sent=True)
+
+    return refuse("L'envoi a échoué. Réessayez dans quelques instants.")
+
+
 @subscription_complete_required
+@require_http_methods(["POST"])
 def manage_reservation(request, reservation_id, action):
-    next_url = request.GET.get("next")
+    """Confirmation / refus d'une demande, côté propriétaire du trajet proposé."""
+    next_url = request.POST.get("next")
+    open_key = request.POST.get("open_key")
     reservation = get_object_or_404(
         Reservation.objects.select_related(
             "user",
             "user__profile",
             "proposed_traject",
             "proposed_traject__user",
+            "proposed_traject__traject",
             "researched_traject",
         ),
         id=reservation_id,
@@ -1801,7 +2187,7 @@ def manage_reservation(request, reservation_id, action):
     # Sécurité : on n'accepte que deux actions possibles
     if action not in ["accept", "reject"]:
         messages.error(request, "Action invalide.")
-        return redirect(next_url or "my_reservations")
+        return _reservation_action_response(request, open_key, next_url)
 
     # =========================
     # ACCEPTATION
@@ -1810,78 +2196,199 @@ def manage_reservation(request, reservation_id, action):
         # Évite de reconfirmer une réservation déjà confirmée
         if reservation.status == "confirmed":
             messages.warning(request, "Cette réservation est déjà confirmée.")
-            return redirect(next_url or "my_reservations")
+            return _reservation_action_response(request, open_key, next_url)
 
         # Évite de confirmer une réservation déjà annulée
         if reservation.status == "canceled":
             messages.warning(request, "Cette réservation a déjà été annulée.")
-            return redirect(next_url or "my_reservations")
+            return _reservation_action_response(request, open_key, next_url)
 
         # Nombre de places demandées par cette réservation
         requested_places = int(reservation.number_of_places or 0)
 
         if requested_places <= 0:
             messages.error(request, "Le nombre de places demandé est invalide.")
-            return redirect(next_url or "my_reservations")
+            return _reservation_action_response(request, open_key, next_url)
 
-        # IMPORTANT :
-        # _available_places() doit être la seule source de vérité pour savoir
-        # combien de places sont encore disponibles sur le trajet proposé.
-        remaining_places = _available_places(reservation.proposed_traject)
-
-        if requested_places > remaining_places:
+        try:
+            superseded = _accept_reservation(reservation)
+        except _NotEnoughPlaces:
             messages.error(
                 request,
                 "Pas assez de places restantes pour confirmer cette réservation.",
             )
-            return redirect(next_url or "my_reservations")
+            return _reservation_action_response(request, open_key, next_url)
 
-        # On confirme la réservation
-        reservation.status = "confirmed"
-        reservation.save(update_fields=["status"])
+        # Emails après commit. Les demandes supplantées peuvent concerner
+        # plusieurs yayas : l'envoi groupé les regroupe par destinataire.
+        send_reservation_confirmed_emails([reservation])
+        send_reservation_canceled_emails(superseded)
 
-        # On garde éventuellement la relation utilisateur confirmé
-        # si elle t'est utile ailleurs dans l'app
-        reservation.proposed_traject.confirmed_users.add(reservation.user)
-
-        # On décrémente le nombre de places restantes sur le trajet
-        # seulement si chez toi number_of_places représente les places DISPONIBLES
-        reservation.proposed_traject.number_of_places = (
-            remaining_places - requested_places
-        )
-        reservation.proposed_traject.save(update_fields=["number_of_places"])
-
-        # Envoi de mail si une adresse email existe
-        send_reservation_confirmed_email(reservation)
-
-        messages.success(request, "Réservation confirmée.")
-        return redirect(next_url or "my_reservations")
+        if superseded:
+            messages.success(
+                request,
+                f"Réservation confirmée. {len(superseded)} autre(s) demande(s) du parent "
+                "pour cette date ont été annulées automatiquement.",
+            )
+        else:
+            messages.success(request, "Réservation confirmée.")
+        return _reservation_action_response(request, open_key, next_url)
 
     # =========================
     # REFUS
     # =========================
-    elif action == "reject":
-        # Si déjà annulée, inutile de refaire l'action
-        if reservation.status == "canceled":
-            messages.warning(request, "Cette réservation est déjà annulée.")
-            return redirect(next_url or "my_reservations")
+    # Si déjà annulée, inutile de refaire l'action
+    if reservation.status == "canceled":
+        messages.warning(request, "Cette réservation est déjà annulée.")
+        return _reservation_action_response(request, open_key, next_url)
 
-        # Si déjà confirmée, on évite de la refuser ici sans logique métier claire
-        # car sinon il faudrait potentiellement remettre les places disponibles
-        if reservation.status == "confirmed":
-            messages.warning(
-                request,
-                "Cette réservation est déjà confirmée. "
-            )
-            return redirect(next_url or "my_reservations")
+    # Si déjà confirmée, on évite de la refuser ici sans logique métier claire
+    # car sinon il faudrait potentiellement remettre les places disponibles
+    if reservation.status == "confirmed":
+        messages.warning(request, "Cette réservation est déjà confirmée.")
+        return _reservation_action_response(request, open_key, next_url)
 
-        reservation.status = "canceled"
-        reservation.save(update_fields=["status"])
+    reservation.status = "canceled"
+    reservation.canceled_by = "yaya"
+    reservation.save(update_fields=["status", "canceled_by"])
 
-        send_reservation_rejected_email(reservation)
+    send_reservation_rejected_emails([reservation])
 
-        messages.success(request, "Réservation refusée.")
-        return redirect(next_url or "my_reservations")
+    messages.success(request, "Réservation refusée.")
+    return _reservation_action_response(request, open_key, next_url)
+
+
+@subscription_complete_required
+@require_http_methods(["POST"])
+def manage_reservations_bulk(request):
+    """Confirme ou refuse plusieurs dates cochées en une fois.
+
+    Miroir de auto_reserve_bulk côté parent : le yaya coche les dates d'un
+    demandeur (ou clique « Tout sélectionner ») et répond d'un coup, au lieu
+    d'un aller-retour par date.
+
+    Chaque acceptation est atomique de son côté : si les places viennent à
+    manquer en cours de lot, les dates déjà confirmées le restent et les
+    autres sont simplement comptées comme non traitées.
+    """
+    next_url = request.POST.get("next")
+    open_key = request.POST.get("open_key")
+    action = request.POST.get("action")
+
+    if action not in ("accept", "reject"):
+        messages.error(request, "Action invalide.")
+        return _reservation_action_response(request, open_key, next_url)
+
+    ids = [i for i in request.POST.getlist("reservation_ids") if i.isdigit()]
+    if not ids:
+        messages.warning(request, "Veuillez sélectionner au moins une date.")
+        return _reservation_action_response(request, open_key, next_url)
+
+    reservations = list(
+        Reservation.objects
+        .filter(
+            id__in=ids,
+            proposed_traject__user=request.user,
+            status="pending",
+        )
+        .select_related(
+            "user", "proposed_traject", "proposed_traject__user",
+            "proposed_traject__traject", "researched_traject",
+        )
+        .order_by("researched_traject__date")
+    )
+
+    if not reservations:
+        messages.warning(request, "Aucune demande en attente dans votre sélection.")
+        return _reservation_action_response(request, open_key, next_url)
+
+    done = 0
+    skipped = 0
+    to_notify = []
+    superseded_all = []
+
+    for reservation in reservations:
+        if action == "accept":
+            try:
+                superseded_all.extend(_accept_reservation(reservation))
+            except _NotEnoughPlaces:
+                skipped += 1
+                continue
+            to_notify.append(reservation)
+            done += 1
+        else:
+            reservation.status = "canceled"
+            reservation.canceled_by = "yaya"
+            reservation.save(update_fields=["status", "canceled_by"])
+            to_notify.append(reservation)
+            done += 1
+
+    # Emails après écriture, jamais dans la transaction. Un seul message par
+    # parent pour tout le lot : répondre à dix dates d'un clic ne doit pas
+    # remplir sa boîte de dix messages identiques à une date près.
+    if action == "accept":
+        send_reservation_confirmed_emails(to_notify)
+    else:
+        send_reservation_rejected_emails(to_notify)
+    send_reservation_canceled_emails(superseded_all)
+
+    verb = "confirmée" if action == "accept" else "refusée"
+    parts = [f"{done} date(s) {verb}(s)."]
+    if skipped:
+        parts.append(f"{skipped} non confirmée(s), faute de places restantes.")
+    if superseded_all:
+        parts.append(
+            f"{len(superseded_all)} demande(s) du parent ailleurs pour ces dates "
+            "ont été annulées automatiquement."
+        )
+    if done:
+        messages.success(request, " ".join(parts))
+    else:
+        messages.error(request, " ".join(parts))
+
+    return _reservation_action_response(request, open_key, next_url)
+
+
+@name_required
+@require_http_methods(["POST"])
+def cancel_reservation(request, reservation_id):
+    """Annulation par le PARENT de sa propre demande.
+
+    Limitée aux demandes encore "pending" : les places ne sont décrémentées
+    qu'à la confirmation (voir manage_reservation), il n'y a donc rien à
+    restituer. Une réservation déjà confirmée doit se régler avec le yaya.
+    """
+    next_url = request.POST.get("next")
+    open_key = request.POST.get("open_key")
+    reservation = get_object_or_404(
+        Reservation.objects.select_related(
+            "proposed_traject",
+            "proposed_traject__user",
+            "proposed_traject__traject",
+        ),
+        id=reservation_id,
+        user=request.user,
+    )
+
+    if reservation.status == "canceled":
+        messages.warning(request, "Cette demande est déjà annulée.")
+        return _reservation_action_response(request, open_key, next_url)
+
+    if reservation.status != "pending":
+        messages.error(
+            request,
+            "Cette demande est déjà confirmée : contactez le conducteur pour l'annuler.",
+        )
+        return _reservation_action_response(request, open_key, next_url)
+
+    reservation.status = "canceled"
+    reservation.canceled_by = "parent"
+    reservation.save(update_fields=["status", "canceled_by"])
+
+    send_reservation_canceled_emails([reservation])
+
+    messages.success(request, "Votre demande de réservation a été annulée.")
+    return _reservation_action_response(request, open_key, next_url)
 
 @subscription_complete_required
 def auto_reserve(request, proposed_id, researched_id):
@@ -1903,6 +2410,16 @@ def auto_reserve(request, proposed_id, researched_id):
         messages.warning(request, "Vous avez déjà une réservation en cours pour cette date.")
         return redirect(next_url or 'my_matchings_researched')
 
+    # Une date déjà confirmée auprès de quelqu'un d'autre : solliciter un
+    # second accompagnateur recréerait la double réservation que la cascade
+    # de manage_reservation vient justement d'éviter.
+    if _research_already_confirmed(request.user, researched_traject):
+        messages.warning(
+            request,
+            "Cette date est déjà confirmée avec un autre accompagnateur.",
+        )
+        return redirect(next_url or 'my_matchings_researched')
+
     requested_places = researched_traject.children.count()
 
     reservation = Reservation.objects.create(
@@ -1914,7 +2431,7 @@ def auto_reserve(request, proposed_id, researched_id):
     )
     reservation.transport_modes.set(researched_traject.transport_modes.all())
 
-    send_new_reservation_request_email(proposed_traject, requested_places)
+    send_new_reservation_request_emails([reservation])
 
     messages.success(request, "Votre demande de réservation a été envoyée.")
     return redirect(next_url or 'my_matchings_researched')
@@ -1937,7 +2454,7 @@ def auto_reserve_bulk(request):
         messages.warning(request, "Veuillez sélectionner au moins une date.")
         return redirect(next_url or 'my_matchings_researched')
 
-    created_count = 0
+    created_reservations = []
     skipped_count = 0
 
     for pair in pairs:
@@ -1961,7 +2478,7 @@ def auto_reserve_bulk(request):
             researched_traject=researched_traject
         ).exclude(status="canceled").exists()
 
-        if existing:
+        if existing or _research_already_confirmed(request.user, researched_traject):
             skipped_count += 1
             continue
 
@@ -1974,8 +2491,18 @@ def auto_reserve_bulk(request):
             status='pending'
         )
         reservation.transport_modes.set(researched_traject.transport_modes.all())
-        send_new_reservation_request_email(proposed_traject, requested_places)
-        created_count += 1
+        created_reservations.append(reservation)
+
+    # Un seul email au yaya pour tout le lot : une sélection de dix dates lui
+    # envoyait dix messages identiques à une date près.
+    # send_new_reservation_request_emails regroupe par destinataire, et
+    # on_commit évite de prévenir pour des réservations qu'un rollback de
+    # cette vue atomique effacerait.
+    created_count = len(created_reservations)
+    if created_reservations:
+        transaction.on_commit(
+            lambda: send_new_reservation_request_emails(created_reservations)
+        )
 
     if created_count:
         messages.success(
@@ -1999,7 +2526,7 @@ def propose_help(request, researched_id):
         return redirect(next_url or 'my_matchings_proposed')
     request.session[session_key] = True
 
-    send_help_proposed_email(research)
+    send_help_proposed_email(research, request.user)
 
     messages.success(request, "Votre aide a été proposée et le parent a été informé par email.")
     return redirect(next_url or 'my_matchings_proposed')
@@ -2039,18 +2566,14 @@ def propose_help_match(request, proposed_groupe_uid, researched_groupe_uid, pare
         messages.error(request, "Aucune date correspondante trouvée pour ce matching.")
         return redirect(next_url or fallback_url)
 
-    parent_pending_ids = set(
-        Reservation.objects.filter(proposed_traject__user=user, status="pending")
-        .values_list("researched_traject_id", flat=True)
-    )
-    parent_confirmed_ids = set(
-        Reservation.objects.filter(proposed_traject__user=user, status="confirmed")
-        .values_list("researched_traject_id", flat=True)
-    )
+    parent_confirmed_ids, parent_pending_ids, parent_canceled_by = _parent_reservation_state(user)
 
     available = [
         r for r in matched_researches
-        if _match_row_status(r, proposed_by_date.get(r.date), today, parent_confirmed_ids, parent_pending_ids) == "available"
+        if _match_row_status(
+            r, proposed_by_date.get(r.date), today,
+            parent_confirmed_ids, parent_pending_ids, parent_canceled_by,
+        ) == "available"
     ]
 
     session_key = f"help_notified_group_{user.id}_{researched_groupe_uid}_{parent_user_id}"
@@ -2061,76 +2584,111 @@ def propose_help_match(request, proposed_groupe_uid, researched_groupe_uid, pare
     else:
         request.session[session_key] = True
         representative = sorted(available, key=lambda r: r.date or today)[0]
-        send_help_proposed_bulk_email(representative, len(available))
+        send_help_proposed_bulk_email(representative, [r.date for r in available], user)
         messages.success(request, "Votre aide a été proposée et le parent a été informé par email.")
 
     return redirect(next_url or fallback_url)
 
-@name_required
-def my_reservations(request):
-    user = request.user
-    is_abonned = Subscription.is_user_abonned(user)
-    today = date.today()
+RESERVATIONS_PARTIAL = 'trajects/reservation/partials/reservations_content.html'
 
-    tab = request.GET.get('tab', 'active')
-    if tab not in ('active', 'history'):
-        tab = 'active'
+_EMPTY_RATING = {'avg': 0, 'count': 0}
 
-    # =========================
-    # Compteurs d'onglets (requêtes légères)
-    # =========================
-    active_count = (
-        Reservation.objects.filter(user=user, proposed_traject__date__gte=today)
-        .values('researched_traject__groupe_uid', 'proposed_traject__groupe_uid', 'proposed_traject__user_id')
-        .distinct().count()
-        + Reservation.objects.filter(proposed_traject__user=user, researched_traject__date__gte=today)
-        .values('proposed_traject__groupe_uid')
-        .distinct().count()
+
+def _reservations_param(request, name, default):
+    """Lit un paramètre d'écran (onglet, page) en POST d'abord, puis en GET.
+
+    Les actions (confirmer / refuser / annuler) sont des POST HTMX qui repostent
+    l'onglet et la pagination en champs cachés : sans ça, le partial re-rendu
+    après l'action retomberait sur l'onglet "active", page 1.
+    """
+    return request.POST.get(name) or request.GET.get(name) or default
+
+
+def _ratings_by_user(user_ids):
+    """Note moyenne + nombre d'avis pour plusieurs utilisateurs, en UNE requête.
+
+    (Les vues de matching font encore un aggregate par match — voir
+    my_matchings_proposed ; à factoriser ici le jour où on y touche.)
+    """
+    ids = {uid for uid in user_ids if uid}
+    if not ids:
+        return {}
+    rows = (
+        Review.objects.filter(reviewed_user_id__in=ids)
+        .values('reviewed_user_id')
+        .annotate(avg=Avg('rating'), count=Count('id'))
     )
-    history_count = (
-        Reservation.objects.filter(user=user, proposed_traject__date__lt=today)
-        .values('researched_traject__groupe_uid', 'proposed_traject__groupe_uid', 'proposed_traject__user_id')
-        .distinct().count()
-        + Reservation.objects.filter(proposed_traject__user=user, researched_traject__date__lt=today)
-        .values('proposed_traject__groupe_uid')
-        .distinct().count()
+    return {
+        row['reviewed_user_id']: {
+            'avg': round(row['avg'] or 0, 1),
+            'count': row['count'] or 0,
+        }
+        for row in rows
+    }
+
+
+def _user_languages(person):
+    profile = getattr(person, 'profile', None)
+    return profile.languages.all() if profile else []
+
+
+def _days_since(dt, today):
+    """Ancienneté en jours d'une demande — « Demandé il y a 4 jours »."""
+    if not dt:
+        return None
+    return max(0, (today - timezone.localtime(dt).date()).days)
+
+
+def _coverage_by_research(reservations):
+    """Pour chaque date de recherche, qui la couvre et combien de monde est sollicité.
+
+    Un parent peut solliciter plusieurs personnes pour une même date (auto_reserve
+    ne dédoublonne que par trajet proposé). Cette carte sert à l'afficher au lieu
+    de le laisser invisible : « 3 personnes sollicitées », « déjà couvert par X ».
+    """
+    coverage = {}
+    for r in reservations:
+        if not r.researched_traject_id:
+            continue
+        entry = coverage.setdefault(
+            r.researched_traject_id,
+            {'confirmed_by_id': None, 'confirmed_name': '', 'pending_count': 0, 'active_count': 0},
+        )
+        if r.status == 'canceled':
+            continue
+        entry['active_count'] += 1
+        if r.status == 'pending':
+            entry['pending_count'] += 1
+        elif r.status == 'confirmed' and r.proposed_traject:
+            entry['confirmed_by_id'] = r.proposed_traject.user_id
+            entry['confirmed_name'] = _display_name_and_initials(r.proposed_traject.user)[0]
+    return coverage
+
+
+def _build_made_reservations(user, today, tab):
+    """Demandes envoyées par l'utilisateur (il est le demandeur).
+
+    Groupées par **sa propre recherche** puis par personne sollicitée — le miroir
+    exact de _build_received_groups, et le même axe que la page "Mes matchings"
+    (my_matchings_researched) d'où partent ces demandes. Regrouper par trajet du
+    yaya, comme avant, cassait ce modèle mental d'un écran à l'autre.
+
+    Renvoie (groupes, réservations à plat) — les secondes alimentent le calendrier.
+    """
+    # Filtre sur la date de la RECHERCHE : l'en-tête du groupe est désormais la
+    # recherche, sa plage « Du X au Y » doit correspondre aux lignes affichées.
+    # Sans effet pratique : une réservation apparie toujours une proposition et
+    # une recherche de même date (cf. _build_match_rows).
+    date_filter = (
+        {'researched_traject__date__gte': today} if tab == 'active'
+        else {'researched_traject__date__lt': today}
     )
 
-    # =========================
-    # Groupement selon l'onglet
-    # =========================
-    if tab == 'active':
-        made_qs_filter = dict(user=user, proposed_traject__date__gte=today)
-        made_order = 'proposed_traject__date'
-
-        received_qs_filter = dict(proposed_traject__user=user, researched_traject__date__gte=today)
-        received_exclude = {}
-        received_date_field = 'researched_traject__date'
-        received_group_keys = ['proposed_traject__groupe_uid']
-        received_header_filter = lambda item: dict(
-            proposed_traject__user=user,
-            proposed_traject__groupe_uid=item['proposed_traject__groupe_uid'],
-        )
-        received_date_filter = {}
-    else:
-        made_qs_filter = dict(user=user, proposed_traject__date__lt=today)
-        made_order = '-proposed_traject__date'
-
-        received_qs_filter = dict(proposed_traject__user=user, researched_traject__date__lt=today)
-        received_exclude = {}
-        received_date_field = 'researched_traject__date'
-        received_group_keys = ['proposed_traject__groupe_uid']
-        received_header_filter = lambda item: dict(
-            proposed_traject__user=user,
-            proposed_traject__groupe_uid=item['proposed_traject__groupe_uid'],
-        )
-        received_date_filter = {}
-
-    # =========================
-    # Réservations faites (parent) — groupées par (proposed_groupe_uid, yaya)
-    # =========================
-    made_reservations_qs = (
-        Reservation.objects.filter(**made_qs_filter)
+    reservations = list(
+        # proposed_traject est nullable et, contrairement à researched_traject,
+        # n'est pas contraint par le filtre de date : on l'exclut explicitement
+        # puisque tout le regroupement déréférence son yaya.
+        Reservation.objects.filter(user=user, proposed_traject__isnull=False, **date_filter)
         .select_related(
             'proposed_traject', 'proposed_traject__user', 'proposed_traject__user__profile',
             'proposed_traject__traject',
@@ -2139,228 +2697,447 @@ def my_reservations(request):
         .prefetch_related(
             'researched_traject__children',
             'researched_traject__children__chld_languages',
+            'researched_traject__transport_modes',
+            'proposed_traject__transport_modes',
+            'proposed_traject__user__profile__languages',
         )
-        .order_by(made_order, 'proposed_traject__departure_time')
+        .order_by('researched_traject__groupe_uid', 'proposed_traject__user_id',
+                  'researched_traject__date')
     )
 
-    from itertools import groupby as _groupby
-    _key_fn = lambda r: (str(r.proposed_traject.groupe_uid), r.proposed_traject.user_id)
-    _sorted_qs = sorted(made_reservations_qs, key=_key_fn)
+    ratings = _ratings_by_user(r.proposed_traject.user_id for r in reservations)
+    coverage = _coverage_by_research(reservations)
 
-    made_reservations = []
-    for _group_key, _group_iter in _groupby(_sorted_qs, _key_fn):
-        rows_raw = list(_group_iter)
-        first_r = rows_raw[0]
-        pt = first_r.proposed_traject
-        dates = [r.proposed_traject.date for r in rows_raw if r.proposed_traject.date]
-        made_reservations.append({
-            'yaya': pt.user,
-            'proposed_traject': pt,
-            'rows': [
-                {'reservation': r, 'remaining_places': _available_places(r.proposed_traject)}
-                for r in rows_raw
-            ],
-            'first_date': min(dates) if dates else None,
-            'last_date': max(dates) if dates else None,
-            'pending_count': sum(1 for r in rows_raw if r.status == 'pending'),
-            'confirmed_count': sum(1 for r in rows_raw if r.status == 'confirmed'),
+    groups = []
+    for groupe_uid, group_iter in groupby(reservations, lambda r: str(r.researched_traject.groupe_uid)):
+        group_rows = list(group_iter)
+
+        # Représentante du groupe : la recherche de date la plus tôt. Déjà en
+        # mémoire via select_related — pas de requête supplémentaire.
+        header = min(
+            (r.researched_traject for r in group_rows if r.researched_traject.date),
+            key=lambda x: x.date,
+            default=group_rows[0].researched_traject,
+        )
+
+        providers = []
+        for yaya_id, provider_iter in groupby(group_rows, lambda r: r.proposed_traject.user_id):
+            provider_rows = list(provider_iter)
+            proposals = [r.proposed_traject for r in provider_rows if r.proposed_traject.date]
+            repr_proposal = (
+                min(proposals, key=lambda p: p.date) if proposals
+                else provider_rows[0].proposed_traject
+            )
+            rating = ratings.get(yaya_id, _EMPTY_RATING)
+
+            rows = []
+            for r in provider_rows:
+                cover = coverage.get(r.researched_traject_id, {})
+                # « Déjà couvert » ne concerne que les demandes encore en attente
+                # dont la date a été confirmée auprès de quelqu'un d'autre.
+                covered_by = (
+                    cover.get('confirmed_name')
+                    if r.status == 'pending' and cover.get('confirmed_by_id') not in (None, yaya_id)
+                    else ''
+                )
+                rows.append({
+                    'reservation': r,
+                    'research': r.researched_traject,
+                    'proposal': r.proposed_traject,
+                    'remaining_places': _available_places(r.proposed_traject),
+                    'covered_by': covered_by,
+                    'same_date_requests': cover.get('active_count', 1),
+                    'requested_days_ago': _days_since(r.reservation_date, today),
+                })
+
+            confirmed_count = sum(1 for r in provider_rows if r.status == 'confirmed')
+            open_key = f"made:{groupe_uid}:{yaya_id}"
+            providers.append({
+                'user': repr_proposal.user,
+                'display_name': _display_name_and_initials(repr_proposal.user)[0],
+                'open_key': open_key,
+                'proposed_traject': repr_proposal,
+                'traject': repr_proposal.traject,
+                # Pas de repli sur les heures de MA recherche : ce sont mes
+                # critères, pas l'horaire de la personne. Une offre en rayon
+                # n'a ni heure ni destination — on n'affiche alors rien.
+                'departure_time': repr_proposal.departure_time,
+                'arrival_time': repr_proposal.arrival_time,
+                'is_simple': repr_proposal.is_simple,
+                'radius_km': repr_proposal.search_radius_km if repr_proposal.is_simple else None,
+                'languages': _user_languages(repr_proposal.user),
+                'average_rating': rating['avg'],
+                'reviews_count': rating['count'],
+                'dates_count': len(provider_rows),
+                'pending_count': sum(1 for r in provider_rows if r.status == 'pending'),
+                'confirmed_count': confirmed_count,
+                # L'accord sur l'heure et le lieu exacts se règle par message :
+                # on n'ouvre le contact qu'une fois au moins une date confirmée,
+                # sinon il n'y a rien à convenir.
+                'can_contact': bool(confirmed_count),
+                'contact_form': _contact_form_for(open_key) if confirmed_count else None,
+                # Le nom du trajet du DESTINATAIRE, pas le mien : c'est lui qui
+                # lira le message, et seul son propre nom de série lui permet de
+                # situer la conversation dans ses listes.
+                'contact_label': repr_proposal.groupe_name or '',
+                'rows': rows,
+            })
+
+        dates = [r.researched_traject.date for r in group_rows if r.researched_traject.date]
+        research_ids = {r.researched_traject_id for r in group_rows}
+
+        groups.append({
+            'header': header,
+            'stats': {
+                'first_date': min(dates) if dates else None,
+                'last_date': max(dates) if dates else None,
+                'dates_count': len(research_ids),
+            },
+            'providers': providers,
+            'provider_count': len(providers),
+            'pending_count': sum(1 for r in group_rows if r.status == 'pending'),
+            'confirmed_count': sum(1 for r in group_rows if r.status == 'confirmed'),
+            'conflict_dates_count': sum(
+                1 for rid in research_ids
+                if coverage.get(rid, {}).get('pending_count', 0) > 1
+            ),
         })
 
-    # =========================
-    # Données pour la vue calendrier (réservations effectuées, non paginées)
-    # =========================
-    def _display_name_and_initials(person):
-        if not person:
-            return "", "?"
-        profile = getattr(person, "profile", None)
-        if profile and profile.ci_is_verified and profile.verified_first_name and profile.verified_last_name:
-            first, last = profile.verified_first_name, profile.verified_last_name
-        else:
-            first, last = person.first_name, person.last_name
-        display = f"{first} {(last or '')[:1]}.".strip()
-        initials = f"{(first or '?')[:1]}{(last or '')[:1]}".upper()
-        return display, initials
+    groups.sort(key=lambda g: g['stats']['first_date'] or date.min, reverse=(tab == 'history'))
+    return groups, reservations
 
-    calendar_entries = []
-    for r in _sorted_qs:
+
+def _build_received_groups(user, today, tab):
+    """Demandes reçues sur les trajets proposés par l'utilisateur.
+
+    Deux niveaux, calqués sur les vues de matching pour partager le markup :
+    un groupe par trajet proposé (`header` + `stats`), et dans chaque groupe un
+    `requester` par parent demandeur (≡ un `match`), porteur de ses dates.
+    """
+    date_filter = (
+        {'researched_traject__date__gte': today} if tab == 'active'
+        else {'researched_traject__date__lt': today}
+    )
+
+    reservations = list(
+        Reservation.objects.filter(proposed_traject__user=user, **date_filter)
+        .select_related(
+            'user', 'user__profile',
+            'proposed_traject', 'proposed_traject__traject',
+            'researched_traject', 'researched_traject__traject',
+        )
+        .prefetch_related(
+            'researched_traject__children',
+            'researched_traject__children__chld_languages',
+            'researched_traject__transport_modes',
+            'proposed_traject__transport_modes',
+            'user__profile__languages',
+        )
+        .order_by('proposed_traject__groupe_uid', 'user_id', 'researched_traject__date')
+    )
+
+    ratings = _ratings_by_user(r.user_id for r in reservations)
+
+    groups = []
+    for groupe_uid, group_iter in groupby(reservations, lambda r: str(r.proposed_traject.groupe_uid)):
+        group_rows = list(group_iter)
+
+        # Représentant du groupe : l'occurrence de date la plus tôt. Elle est
+        # déjà en mémoire (select_related) — pas de requête supplémentaire.
+        header = min(
+            (r.proposed_traject for r in group_rows if r.proposed_traject.date),
+            key=lambda p: p.date,
+            default=group_rows[0].proposed_traject,
+        )
+
+        requesters = []
+        for parent_id, parent_iter in groupby(group_rows, lambda r: r.user_id):
+            parent_rows = list(parent_iter)
+            researches = [r.researched_traject for r in parent_rows if r.researched_traject]
+            repr_research = min(researches, key=lambda x: x.date or today) if researches else None
+            rating = ratings.get(parent_id, _EMPTY_RATING)
+            confirmed_count = sum(1 for r in parent_rows if r.status == 'confirmed')
+            open_key = f"recv:{groupe_uid}:{parent_id}"
+            requesters.append({
+                'user': parent_rows[0].user,
+                'display_name': _display_name_and_initials(parent_rows[0].user)[0],
+                'open_key': open_key,
+                'traject': repr_research.traject if repr_research else None,
+                # Les heures d'une recherche sont requises en base : pas de repli.
+                'departure_time': repr_research.departure_time if repr_research else None,
+                'arrival_time': repr_research.arrival_time if repr_research else None,
+                'is_simple': False,
+                'radius_km': None,
+                'languages': _user_languages(parent_rows[0].user),
+                'average_rating': rating['avg'],
+                'reviews_count': rating['count'],
+                'dates_count': len(parent_rows),
+                'pending_count': sum(1 for r in parent_rows if r.status == 'pending'),
+                'confirmed_count': confirmed_count,
+                # Les mêmes enfants reviennent à chaque date : on dédoublonne
+                # pour n'afficher la liste qu'une fois sur la carte du parent
+                # (même helper que les cartes de matching).
+                'children': _distinct_children(
+                    r.researched_traject for r in parent_rows if r.researched_traject
+                ),
+                # Symétrique du côté « envoyées » : le contact ne s'ouvre qu'une
+                # fois au moins une date confirmée.
+                'can_contact': bool(confirmed_count),
+                'contact_form': _contact_form_for(open_key) if confirmed_count else None,
+                # Idem : le nom de la recherche du parent, qui est le destinataire.
+                'contact_label': (repr_research.groupe_name or '') if repr_research else '',
+                'rows': [
+                    {
+                        'reservation': r,
+                        'research': r.researched_traject,
+                        'proposal': r.proposed_traject,
+                        'remaining_places': _available_places(r.proposed_traject),
+                        'requested_days_ago': _days_since(r.reservation_date, today),
+                    }
+                    for r in parent_rows
+                ],
+            })
+
+        dates = [r.researched_traject.date for r in group_rows
+                 if r.researched_traject and r.researched_traject.date]
+        # Une date = une occurrence de ProposedTraject ; on dédoublonne avant de
+        # compter les dates complètes / encore ouvertes.
+        proposals = {r.proposed_traject_id: r.proposed_traject for r in group_rows}
+
+        groups.append({
+            'header': header,
+            'stats': {
+                'first_date': min(dates) if dates else None,
+                'last_date': max(dates) if dates else None,
+                'dates_count': len(group_rows),
+            },
+            'requesters': requesters,
+            'requester_count': len(requesters),
+            'pending_count': sum(1 for r in group_rows if r.status == 'pending'),
+            'confirmed_count': sum(1 for r in group_rows if r.status == 'confirmed'),
+            'available_dates_count': sum(1 for p in proposals.values() if _available_places(p) > 0),
+            'full_dates_count': sum(1 for p in proposals.values() if _available_places(p) == 0),
+        })
+
+    groups.sort(key=lambda g: g['stats']['first_date'] or date.min, reverse=(tab == 'history'))
+    return groups, reservations
+
+
+def _hm(value):
+    """Heure au format d'affichage du projet ("08h05"), vide si absente."""
+    return value.strftime('%Hh%M') if value else ""
+
+
+def _avatar_url(person):
+    """Photo de profil, ou l'icône générique quand il n'y en a pas."""
+    profile = getattr(person, "profile", None)
+    picture = getattr(profile, "profile_picture", None)
+    if picture:
+        try:
+            return picture.url
+        except ValueError:
+            pass
+    return static_url('bana/img/icon/Icon_bana.png')
+
+
+_BADGE_GREY = ("#F3F4F6", "#6B7280")
+
+
+def _status_badge(reservation, side):
+    """Libellé et couleurs du badge de statut, pour le calendrier.
+
+    ⚠ Doit rester aligné sur reservation/partials/status_badge.html, qui fait
+    la même chose pour la vue liste. Le calendrier est rendu en JavaScript et
+    ne peut pas inclure ce gabarit ; on calcule donc ici plutôt que de
+    redéployer la logique une troisième fois en JS.
+
+    `side` vaut "made" (je suis le demandeur) ou "received" (on me sollicite) :
+    un refus du conducteur et une annulation du parent valent tous deux
+    status='canceled', seul `canceled_by` les distingue.
+    """
+    if reservation.status == 'confirmed':
+        return str(_("Confirmée")), "#D1FAE5", "#065F46"
+    if reservation.status == 'pending':
+        return str(_("En attente")), "#FEF3C7", "#92400E"
+
+    # Le libellé vient de utils/display.py, partagé avec les emails d'annulation.
+    by = reservation.canceled_by
+    label = str(cancellation_label(by, side))
+    if by == 'yaya' and side == 'made':
+        return label, "#FEE2E2", "#991B1B"
+    return label, *_BADGE_GREY
+
+
+_child_labels = child_labels
+
+
+def _calendar_entries(made_reservations, received_reservations, tab):
+    """Entrées du calendrier unifié.
+
+    Les deux flux y cohabitent : une réservation effectuée (la personne affichée
+    est le yaya) et une demande reçue (c'est le parent demandeur). Le JS
+    (reservations_calendar.js) distingue les deux via la clé `role`.
+
+    Le panneau du jour est actionnable : une date sélectionnée ne porte qu'une
+    réservation par personne, donc les réponses y sont unitaires — pas de
+    sélection multiple comme dans la vue liste. Les URLs sont calculées ici
+    plutôt qu'assemblées en JS : le JS n'a pas à connaître le routage.
+    """
+    entries = []
+
+    for r in made_reservations:
         pt = r.proposed_traject
         if not pt or not pt.date:
             continue
-        yaya_display, yaya_initials = _display_name_and_initials(pt.user)
-        calendar_entries.append({
+        person, initials = _display_name_and_initials(pt.user)
+        can_act = tab == 'active' and r.status == 'pending'
+        badge = _status_badge(r, 'made')
+        entries.append({
+            "id": r.id,
             "iso": pt.date.isoformat(),
+            "role": "made",
             "status": r.status,
             "trip": pt.groupe_name or pt.traject.start_adress,
             "depart": pt.traject.start_adress,
-            "arrivee": pt.traject.end_adress,
-            "heure": (
-                f"{pt.departure_time.strftime('%H:%M')} → {pt.arrival_time.strftime('%H:%M')}"
-                if pt.departure_time and pt.arrival_time else "—"
-            ),
-            "yaya": yaya_display,
-            "initials": yaya_initials,
+            # Pas de repli sur les heures de MA recherche : ce sont mes critères,
+            # pas l'horaire de la personne (même règle que la vue liste).
+            "depart_time": _hm(pt.departure_time),
+            "arrivee": "" if pt.is_simple else (pt.traject.end_adress or ""),
+            "arrivee_time": "" if pt.is_simple else _hm(pt.arrival_time),
+            "is_simple": bool(pt.is_simple),
+            "radius_km": pt.search_radius_km if pt.is_simple else None,
+            # Les enfants d'une demande envoyée sont les siens : rien à apprendre.
+            "children": [],
+            "person": person,
+            "initials": initials,
+            "avatar": _avatar_url(pt.user),
+            "verified": bool(getattr(getattr(pt.user, 'profile', None), 'prfl_is_verified', False)),
+            "can_act": can_act,
+            "status_label": badge[0],
+            "status_bg": badge[1],
+            "status_fg": badge[2],
+            "cancel_url": reverse('cancel_reservation', args=[r.id]) if can_act else "",
         })
 
-    # =========================
-    # Réservations reçues (yaya)
-    # =========================
-    received_base = (
-        Reservation.objects.filter(**received_qs_filter)
-        .select_related(
-            'user', 'user__profile',
-            'proposed_traject', 'researched_traject',
-            'proposed_traject__traject', 'researched_traject__traject'
-        )
-        .prefetch_related('researched_traject__children', 'researched_traject__children__chld_languages')
-    )
-    if received_exclude:
-        received_base = received_base.exclude(**received_exclude)
-
-    received_grouped = (
-        received_base
-        .values(*received_group_keys)
-        .annotate(
-            first_date=Min(received_date_field),
-            last_date=Max(received_date_field),
-            count=Count('id'),
-            requester_count=Count('user_id', distinct=True),
-            pending_count=Count('id', filter=Q(status='pending')),
-            full_dates_count=Count('proposed_traject', distinct=True, filter=Q(proposed_traject__number_of_places=0)),
-            available_dates_count=Count('proposed_traject', distinct=True, filter=Q(proposed_traject__number_of_places__gt=0)),
-        )
-        .order_by('-last_date')
-    )
-    if received_date_filter:
-        received_grouped = received_grouped.filter(**received_date_filter)
-
-    received_reservations = []
-    for item in received_grouped:
-        header = (
-            Reservation.objects
-            .filter(**received_header_filter(item))
-            .select_related(
-                'user', 'user__profile',
-                'proposed_traject', 'researched_traject',
-                'proposed_traject__traject', 'researched_traject__traject'
-            )
-            .prefetch_related(
-                'researched_traject__children', 'researched_traject__children__chld_languages',
-                'proposed_traject__transport_modes',
-            )
-            .first()
-        )
-        if not header:
+    for r in received_reservations:
+        rt = r.researched_traject
+        if not rt or not rt.date:
             continue
-        received_reservations.append({
-            "header": header,
-            "first_date": item["first_date"],
-            "last_date": item["last_date"],
-            "count": item["count"],
-            "requester_count": item["requester_count"],
-            "pending_count": item["pending_count"],
-            "full_dates_count": item["full_dates_count"],
-            "available_dates_count": item["available_dates_count"],
+        pt = r.proposed_traject
+        person, initials = _display_name_and_initials(r.user)
+        can_act = tab == 'active' and r.status == 'pending'
+        badge = _status_badge(r, 'received')
+        entries.append({
+            "id": r.id,
+            "iso": rt.date.isoformat(),
+            "role": "received",
+            "status": r.status,
+            "trip": (pt.groupe_name or pt.traject.start_adress) if pt else "",
+            "depart": rt.traject.start_adress,
+            "depart_time": _hm(rt.departure_time),
+            "arrivee": rt.traject.end_adress or "",
+            "arrivee_time": _hm(rt.arrival_time),
+            "is_simple": False,
+            "radius_km": None,
+            "children": _child_labels(rt),
+            "person": person,
+            "initials": initials,
+            "avatar": _avatar_url(r.user),
+            "verified": bool(getattr(getattr(r.user, 'profile', None), 'prfl_is_verified', False)),
+            "can_act": can_act,
+            "status_label": badge[0],
+            "status_bg": badge[1],
+            "status_fg": badge[2],
+            "accept_url": reverse('manage_reservation', args=[r.id, 'accept']) if can_act else "",
+            "reject_url": reverse('manage_reservation', args=[r.id, 'reject']) if can_act else "",
         })
 
-    made_page_obj = Paginator(made_reservations, 10).get_page(request.GET.get('made_page', 1))
-    received_page_obj = Paginator(received_reservations, 10).get_page(request.GET.get('received_page', 1))
+    entries.sort(key=lambda e: e["iso"])
+    return entries
 
-    context = {
-        'made_reservations': made_page_obj,
-        'received_reservations': received_page_obj,
-        'calendar_entries': calendar_entries,
-        'is_abonned': is_abonned,
+
+def _reservations_context(request, open_key=None):
+    """Contexte complet de la page "Mes réservations".
+
+    Partagé par my_reservations et par les actions (manage_reservation,
+    cancel_reservation) qui re-rendent le partial en réponse à un POST HTMX.
+    `open_key` est la clé du volet à laisser déplié après l'action.
+    """
+    user = request.user
+    today = date.today()
+
+    tab = _reservations_param(request, 'tab', 'active')
+    if tab not in ('active', 'history'):
+        tab = 'active'
+
+    # Compteurs d'onglets — les deux rôles confondus, un utilisateur pouvant à
+    # la fois demander et recevoir. On compte les CARTES effectivement affichées :
+    # un groupe de recherche côté demandes envoyées, un groupe de trajet côté reçues.
+    def _counts_for(comparison):
+        made = (
+            Reservation.objects
+            .filter(user=user, **{f'researched_traject__date__{comparison}': today})
+            .values('researched_traject__groupe_uid').distinct().count()
+        )
+        received = (
+            Reservation.objects
+            .filter(proposed_traject__user=user, **{f'researched_traject__date__{comparison}': today})
+            .values('proposed_traject__groupe_uid').distinct().count()
+        )
+        return made + received
+
+    active_count = _counts_for('gte')
+    history_count = _counts_for('lt')
+
+    made_groups, made_flat = _build_made_reservations(user, today, tab)
+    received_groups, received_flat = _build_received_groups(user, today, tab)
+
+    # Les sections ne dépendent PAS du service : "Proposer un trajet" est ouvert
+    # à tout le monde, donc un Parent qui propose reçoit aussi des demandes.
+    service = getattr(getattr(user, 'profile', None), 'service', None)
+    has_researches = ResearchedTraject.objects.filter(user=user).exists()
+    has_proposals = ProposedTraject.objects.filter(user=user).exists()
+
+    show_made = bool(made_groups) or service == 'Parent'
+    show_received = bool(received_groups) or service == 'Yaya' or has_proposals
+
+    # États vides actionnables : on pointe vers l'étape suivante réelle de
+    # l'utilisateur plutôt que de le laisser sur un cul-de-sac.
+    made_empty_cta = (
+        {'label': _("Voir mes correspondances"), 'url': reverse('my_matchings_researched')}
+        if has_researches
+        else {'label': _("Créer une recherche"), 'url': reverse('researched_traject')}
+    )
+    received_empty_cta = (
+        {'label': _("Voir mes trajets proposés"), 'url': reverse('my_proposed_trajects')}
+        if has_proposals
+        else {'label': _("Proposer un trajet"), 'url': reverse('proposed_traject')}
+    )
+
+    return {
+        'made_empty_cta': made_empty_cta,
+        'received_empty_cta': received_empty_cta,
+        'made_reservations': Paginator(made_groups, 10).get_page(
+            _reservations_param(request, 'made_page', 1)
+        ),
+        'received_reservations': Paginator(received_groups, 10).get_page(
+            _reservations_param(request, 'received_page', 1)
+        ),
+        'calendar_entries': _calendar_entries(made_flat, received_flat, tab),
+        'show_made': show_made,
+        'show_received': show_received,
+        'open_key': open_key,
+        'is_abonned': Subscription.is_user_abonned(user),
         'tab': tab,
         'active_count': active_count,
         'history_count': history_count,
         'page_title': _("Mes réservations"),
     }
 
-    if request.htmx:
-        return render(request, 'trajects/reservation/partials/reservations_content.html', context)
 
-    return render(request, 'trajects/reservation/trajets_liste.html', context)
-    
 @name_required
-def my_reservations_received_detail(request, proposed_groupe_uid):
-    user = request.user
-    is_abonned = Subscription.is_user_abonned(user)
-    today = date.today()
-
-    tab = request.GET.get('tab', 'active')
-    if tab not in ('active', 'history'):
-        tab = 'active'
-
-    proposed_traject = (
-        ProposedTraject.objects
-        .filter(user=user, groupe_uid=proposed_groupe_uid)
-        .select_related('traject')
-        .first()
-    )
-    if not proposed_traject:
-        messages.error(request, "Trajet introuvable.")
-        return redirect("my_reservations")
-
-    reservations_qs = (
-        Reservation.objects.filter(
-            proposed_traject__user=user,
-            proposed_traject__groupe_uid=proposed_groupe_uid,
-        )
-        .select_related(
-            "user", "user__profile",
-            "proposed_traject", "researched_traject",
-            "proposed_traject__traject", "researched_traject__traject",
-        )
-        .prefetch_related(
-            "researched_traject__children",
-            "researched_traject__children__chld_languages",
-            "researched_traject__transport_modes",
-        )
-    )
-
-    if tab == 'active':
-        reservations_qs = reservations_qs.filter(researched_traject__date__gte=today)
-    else:
-        reservations_qs = reservations_qs.filter(researched_traject__date__lt=today)
-
-    parents_dict = {}
-    for r in reservations_qs.order_by('user_id', 'researched_traject__date'):
-        uid = r.user_id
-        if uid not in parents_dict:
-            parents_dict[uid] = {'user': r.user, 'rows': []}
-        parents_dict[uid]['rows'].append({
-            'reservation': r,
-            'proposal': r.proposed_traject,
-            'research': r.researched_traject,
-            'remaining_places': _available_places(r.proposed_traject),
-        })
-
-    parents = list(parents_dict.values())
-
-    all_dates = [row['research'].date for p in parents for row in p['rows']]
-
-    # Heure depuis proposed_traject, fallback sur la première recherche (ResearchedTraject a des heures requises)
-    first_research = next(
-        (row['research'] for p in parents for row in p['rows'] if row['research']),
-        None
-    )
-    stats = {
-        'first_date': min(all_dates) if all_dates else None,
-        'last_date': max(all_dates) if all_dates else None,
-        'count': len(all_dates),
-        'departure_time': proposed_traject.departure_time or (first_research.departure_time if first_research else None),
-        'arrival_time': proposed_traject.arrival_time or (first_research.arrival_time if first_research else None),
-    }
-
-    return render(
-        request,
-        "trajects/reservation/recues_detail.html",
-        {
-            "proposed_traject": proposed_traject,
-            "parents": parents,
-            "stats": stats,
-            "is_abonned": is_abonned,
-            "tab": tab,
-            "page_title": _("Mes réservations"),
-        },
-    )
+def my_reservations(request):
+    context = _reservations_context(request)
+    if request.htmx:
+        return render(request, RESERVATIONS_PARTIAL, context)
+    return render(request, 'trajects/reservation/trajets_liste.html', context)

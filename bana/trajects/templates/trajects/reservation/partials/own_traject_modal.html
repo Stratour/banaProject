@@ -1,0 +1,138 @@
+{% load i18n %}
+{% comment %}
+  Le nom du trajet, cliquable, et la fiche complète de MON trajet derrière.
+
+  L'en-tête de groupe ne porte plus que le nom et les dates : l'itinéraire et
+  les heures de l'utilisateur l'encombraient sans rien lui apprendre. Ils
+  restent néanmoins consultables d'un clic, pour les fois où la mémoire manque
+  — d'où cette fiche, jamais affichée d'emblée.
+
+  Attend : obj (la ResearchedTraject ou la ProposedTraject représentative du
+           groupe), scope (chaîne unique par carte), stats (group.stats),
+           side ("made" côté parent, "received" côté yaya).
+
+  Les enfants sont rendus en pastilles simples, pas via child_badge.html :
+  celui-ci ouvre son propre <dialog>, et imbriquer deux dialogues modaux les
+  empile sans moyen de revenir au premier.
+{% endcomment %}
+{% comment %} Le titre de la carte reste un titre : le bouton est à l'intérieur. {% endcomment %}
+<h3>
+  <button type="button"
+          onclick="document.getElementById('own-traject-{{ scope }}').showModal()"
+          class="group inline-flex items-start gap-1.5 text-left cursor-pointer">
+    <span class="text-[17px] font-extrabold text-[#0F0F0F] tracking-tight group-hover:underline underline-offset-2">
+      {% if side == 'received' %}{{ obj.groupe_name|default:_("Mon trajet") }}{% else %}{{ obj.groupe_name|default:_("Ma recherche") }}{% endif %}
+    </span>
+    <svg class="w-4 h-4 mt-1 shrink-0 text-[#9CA3AF] group-hover:text-brand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="12" cy="12" r="9"/><path d="M12 11v5" stroke-linecap="round"/><path d="M12 8h.01" stroke-linecap="round"/>
+    </svg>
+    <span class="sr-only">{% trans "Voir vos informations de trajet" %}</span>
+  </button>
+</h3>
+
+<dialog id="own-traject-{{ scope }}" class="rounded-2xl p-0 w-full max-w-lg backdrop:bg-black/40">
+  <div class="p-6 space-y-5">
+
+    <div class="flex items-start justify-between gap-4">
+      <div class="min-w-0">
+        <h3 class="text-lg font-semibold text-gray-900">{% trans "Vos informations de trajet" %}</h3>
+        <p class="text-sm text-gray-500 truncate">
+          {% if side == 'received' %}{{ obj.groupe_name|default:_("Mon trajet") }}{% else %}{{ obj.groupe_name|default:_("Ma recherche") }}{% endif %}
+        </p>
+      </div>
+      <button type="button"
+              onclick="document.getElementById('own-traject-{{ scope }}').close()"
+              class="rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition shrink-0"
+              aria-label="{% trans 'Fermer' %}">✕</button>
+    </div>
+
+    <div class="rounded-xl border border-[#E5E4DF] divide-y divide-[#F3F4F6]">
+      <div class="px-4 py-3">
+        <p class="text-xs font-bold uppercase tracking-wide text-[#9CA3AF] mb-1">{% trans "Départ" %}</p>
+        <p class="text-sm font-semibold text-[#1C1C1C]">{{ obj.traject.start_adress }}</p>
+        {% if obj.departure_time %}
+          <p class="text-xs text-[#4B5563] mt-0.5">{{ obj.departure_time|time:"H\hi" }}</p>
+        {% endif %}
+      </div>
+
+      {% comment %}
+        Une offre en rayon n'a pas de destination : le yaya se déplace dans un
+        périmètre. Afficher « Arrivée — » laisserait croire à une donnée
+        manquante.
+      {% endcomment %}
+      {% if obj.is_simple %}
+        <div class="px-4 py-3">
+          <p class="text-xs font-bold uppercase tracking-wide text-[#9CA3AF] mb-1">{% trans "Zone couverte" %}</p>
+          <p class="text-sm font-semibold text-brand">{% trans "Dans un rayon de" %} {{ obj.search_radius_km|default:5 }} km</p>
+        </div>
+      {% else %}
+        <div class="px-4 py-3">
+          <p class="text-xs font-bold uppercase tracking-wide text-[#9CA3AF] mb-1">{% trans "Arrivée" %}</p>
+          <p class="text-sm font-semibold text-[#1C1C1C]">{{ obj.traject.end_adress|default:"—" }}</p>
+          {% if obj.arrival_time %}
+            <p class="text-xs text-[#4B5563] mt-0.5">{{ obj.arrival_time|time:"H\hi" }}</p>
+          {% endif %}
+        </div>
+      {% endif %}
+
+      <div class="px-4 py-3">
+        <p class="text-xs font-bold uppercase tracking-wide text-[#9CA3AF] mb-1">{% trans "Période" %}</p>
+        <p class="text-sm font-semibold text-[#1C1C1C]">
+          {% trans "Du" %} {{ stats.first_date|date:"d/m/Y" }} {% trans "au" %} {{ stats.last_date|date:"d/m/Y" }}
+        </p>
+        {% if stats.dates_count %}
+          <p class="text-xs text-[#4B5563] mt-0.5">{{ stats.dates_count }} {% trans "date(s)" %}</p>
+        {% endif %}
+        {% if obj.recurrence_type and obj.recurrence_type != 'none' %}
+          <p class="text-xs text-[#4B5563] mt-0.5">{{ obj.get_recurrence_type_display }}</p>
+        {% endif %}
+      </div>
+
+      {% if obj.details %}
+        <div class="px-4 py-3">
+          <p class="text-xs font-bold uppercase tracking-wide text-[#9CA3AF] mb-1">{% trans "Précisions" %}</p>
+          <p class="text-sm text-[#374151] whitespace-pre-line">{{ obj.details }}</p>
+        </div>
+      {% endif %}
+    </div>
+
+    {% with modes=obj.transport_modes.all %}
+      {% if modes %}
+        <div class="space-y-2">
+          <p class="text-xs font-bold uppercase tracking-wide text-brand">{% trans "Modes de transport" %}</p>
+          <div class="flex flex-wrap gap-2">
+            {% for mode in modes %}
+              {% include "trajects/partials/transport_badge.html" with mode=mode %}
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% if side == 'made' %}
+      {% with children=obj.children.all %}
+        {% if children %}
+          <div class="space-y-2">
+            <p class="text-xs font-bold uppercase tracking-wide text-brand">{% trans "Enfants concernés" %}</p>
+            <div class="flex flex-wrap gap-2">
+              {% for child in children %}
+                <span class="inline-flex items-center rounded-full border-[1.5px] border-[#E5E7EB] px-3 py-1 text-xs font-semibold text-[#374151]">
+                  {{ child.chld_name }} {{ child.chld_surname|slice:":1" }}.
+                  {% if child.age %}<span class="ml-1 text-[#6B7280] font-normal">- {{ child.age }} {% trans "ans" %}</span>{% endif %}
+                </span>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+      {% endwith %}
+    {% endif %}
+
+    <div class="flex justify-end pt-2">
+      <button type="button"
+              onclick="document.getElementById('own-traject-{{ scope }}').close()"
+              class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 cursor-pointer">
+        {% trans "Fermer" %}
+      </button>
+    </div>
+  </div>
+</dialog>

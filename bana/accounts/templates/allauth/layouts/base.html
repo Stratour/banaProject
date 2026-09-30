@@ -74,7 +74,13 @@
         {% endcomment %}
         <main class="relative flex-1 min-w-0 p-2 xl:p-6 pb-24 xl:pb-6">
 
-            {% include "layouts/toasts.html" %}
+            {% comment %}
+              #toast-host est la cible des swaps out-of-band : les vues qui
+              répondent à une action HTMX par un fragment (réservations, p.ex.)
+              y réinjectent les messages, qui sinon n'apparaîtraient qu'au
+              chargement de page suivant.
+            {% endcomment %}
+            <div id="toast-host">{% include "layouts/toasts.html" %}</div>
 
             {% block content %}
             {% endblock %}

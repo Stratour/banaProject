@@ -1,0 +1,30 @@
+{% extends "account/email/base_message.html" %}
+{% load i18n %}
+{% comment %}
+  Pendant HTML de bvm_rejected_message.txt. Envoyé par
+  accounts.utils.send_bvm_rejected_email, hors allauth : le .html n'est pas
+  attaché automatiquement, la fonction passe `html_message` elle-même.
+
+  Le lien mène à l'ancre #bvm de l'édition du profil, pour ne pas laisser le
+  membre chercher le champ au milieu du formulaire.
+{% endcomment %}
+{% block subject %}{% trans "Votre certificat de bonne vie et mœurs n'a pas été validé" %}{% endblock subject %}
+
+{% block preheader %}{% trans "Le document a été retiré de votre profil. Vous pouvez en déposer un nouveau." %}{% endblock preheader %}
+
+{% block eyebrow %}{% trans "Vérification" %}<br>{% trans "du profil" %}{% endblock eyebrow %}
+
+{% block title %}{% trans "Votre certificat n'a pas été validé" %}{% endblock title %}
+
+{% block content %}<p class="m-txt" style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000">{% blocktrans %}Nous n'avons pas pu valider le <strong style="color:#007F73">certificat de bonne vie et mœurs</strong> que vous avez déposé sur Bana. Le document a été retiré de votre profil.{% endblocktrans %}</p>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:separate;border-spacing:0;background-color:#FFFFFF;border:1px solid #D5D5D5;border-radius:10px;margin:6px 0 4px">
+  <tr><td class="m-card" style="padding:16px 18px">
+    <p style="margin:0 0 10px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#007F73">{% trans "Avant d'en déposer un nouveau, vérifiez que" %}</p>
+    <p class="m-txt-s" style="margin:0 0 8px;font:400 14px/1.6 Arial,Helvetica,sans-serif;color:#000000">&bull;&nbsp; {% blocktrans %}il s'agit bien d'un <strong style="color:#007F73">extrait modèle 596.2</strong>, délivré pour l'encadrement de mineurs ;{% endblocktrans %}</p>
+    <p class="m-txt-s" style="margin:0;font:400 14px/1.6 Arial,Helvetica,sans-serif;color:#000000">&bull;&nbsp; {% trans "le document est complet et lisible." %}</p>
+  </td></tr>
+</table>{% endblock content %}
+
+{% block cta %}{% include "emails/_cta.html" with url=bvm_url label=_("Déposer un nouveau certificat") %}{% endblock cta %}
+
+{% block closing %}<p class="m-txt-s" style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#000000">{% trans "Tant qu'un certificat n'est pas validé, votre profil ne peut pas être marqué comme vérifié." %}</p>{% endblock closing %}

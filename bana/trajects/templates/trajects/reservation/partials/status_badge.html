@@ -1,0 +1,28 @@
+{% load i18n %}
+{% comment %}
+  Badge de statut d'une réservation.
+
+  Attend :
+    - reservation
+    - side : "made" (je suis le demandeur) ou "received" (on me sollicite)
+
+  Les états d'annulation (refus du conducteur, annulation du parent,
+  annulation automatique) sont délégués à canceled_badge.html, partagé avec
+  les pages de matching pour que le même événement porte partout le même
+  libellé et la même couleur.
+{% endcomment %}
+{% if reservation.status == 'confirmed' %}
+  <span class="inline-flex items-center gap-1.5 rounded-full bg-[#D1FAE5] text-[#065F46] px-2.5 py-1 text-xs font-bold whitespace-nowrap">
+    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    {% trans "Confirmée" %}
+  </span>
+
+{% elif reservation.status == 'pending' %}
+  <span class="inline-flex items-center gap-1.5 rounded-full bg-[#FEF3C7] text-[#92400E] px-2.5 py-1 text-xs font-bold whitespace-nowrap">
+    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><polyline points="12 7 12 12 15 14"></polyline></svg>
+    {% trans "En attente" %}
+  </span>
+
+{% else %}
+  {% include "trajects/reservation/partials/canceled_badge.html" with canceled_by=reservation.canceled_by side=side %}
+{% endif %}

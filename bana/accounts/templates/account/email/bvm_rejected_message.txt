@@ -1,0 +1,23 @@
+{% extends "account/email/base_message.txt" %}
+{% load i18n %}
+{% comment %}
+  Envoyé par accounts.utils.send_bvm_rejected_email quand un administrateur
+  refuse le certificat BVM depuis bana_admin (reject_bvm_prfl). Le refus
+  SUPPRIME le document : le membre doit en redéposer un, d'où le lien direct
+  vers la section BVM de l'édition du profil.
+
+  Pas de motif de refus : l'administrateur n'en saisit aucun. Les points à
+  vérifier restent donc génériques et ne citent que ce que le formulaire exige
+  déjà (modèle 596.2, libellé du champ document_bvm).
+{% endcomment %}
+{% block content %}{% trans "Nous n'avons pas pu valider le certificat de bonne vie et mœurs que vous avez déposé sur Bana. Le document a été retiré de votre profil." %}
+
+{% trans "Avant d'en déposer un nouveau, vérifiez que :" %}
+- {% trans "il s'agit bien d'un extrait modèle 596.2, délivré pour l'encadrement de mineurs ;" %}
+- {% trans "le document est complet et lisible." %}
+
+{% trans "Déposez votre nouveau certificat depuis votre profil :" %}
+
+{{ bvm_url }}
+
+{% trans "Tant qu'un certificat n'est pas validé, votre profil ne peut pas être marqué comme vérifié." %}{% endblock content %}

@@ -164,10 +164,19 @@
                 {% for pack in parent_packs %}
 
                     {% if pack.highlight %}
-                    <div class="animate-on-scroll relative flex flex-col gap-4 rounded-2xl px-6 pb-6 pt-10 bg-brand-gradient-bl text-white shadow-xl ring-2 ring-brand md:scale-105 md:-translate-y-4" data-delay="200">
+                    <div class="animate-on-scroll relative flex flex-col gap-4 rounded-2xl px-6 pb-6 pt-10 bg-brand-gradient-bl text-white shadow-xl ring-2 ring-brand md:scale-105 md:-translate-y-4" data-delay="{% if forloop.first %}150{% else %}200{% endif %}">
+                        {% if pack.badge %}
                         <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <span class="bg-brand-50 text-brand text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide whitespace-nowrap">Le plus populaire</span>
+                            <span class="bg-brand-50 text-brand text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide whitespace-nowrap">{{ pack.badge }}</span>
                         </div>
+                        {% endif %}
+                    {% elif not pack.available %}
+                    <div class="animate-on-scroll relative flex flex-col gap-4 rounded-2xl px-6 pb-6 pt-10 bg-gray-100 border border-gray-200 shadow-sm grayscale opacity-75 select-none" data-delay="{% if forloop.first %}150{% else %}250{% endif %}" aria-disabled="true">
+                        {% if pack.badge %}
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                            <span class="bg-gray-300 text-gray-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide whitespace-nowrap">{{ pack.badge }}</span>
+                        </div>
+                        {% endif %}
                     {% else %}
                     <div class="step-card animate-on-scroll flex flex-col gap-4 rounded-2xl p-6 bg-white border border-gray-200 shadow-sm" data-delay="{% if forloop.first %}150{% else %}250{% endif %}">
                     {% endif %}
@@ -213,11 +222,24 @@
                             {% endfor %}
                         </ul>
 
+                        {% if pack.available %}
                         <a href="{% url 'account_signup' %}"
                             class="mt-4 inline-flex items-center justify-center px-6 py-2.5 rounded-full font-semibold text-sm transition
                             {% if pack.highlight %}bg-white text-brand hover:bg-brand-50{% else %}bg-brand text-white hover:bg-brand-300{% endif %}">
                             Choisir cette formule
                         </a>
+                        {% else %}
+                        <div class="group relative mt-4 flex cursor-not-allowed">
+                            <button type="button" aria-disabled="true" tabindex="-1"
+                                class="pointer-events-none w-full inline-flex items-center justify-center px-6 py-2.5 rounded-full font-semibold text-sm bg-gray-300 text-gray-600">
+                                Bientôt disponible
+                            </button>
+                            <span role="tooltip"
+                                class="pointer-events-none absolute bottom-full left-1/2 mb-2 -translate-x-1/2 whitespace-nowrap rounded-md bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white shadow-lg opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                                Disponible prochainement
+                            </span>
+                        </div>
+                        {% endif %}
 
                     </div>
                 {% endfor %}

@@ -34,6 +34,12 @@
  *                        [data-tj-excluded-input] (input hidden, CSV de dates ISO)
  *  - panneau d'exclusion : [data-tj-excluded-panel] / [data-tj-excluded-summary] /
  *                        [data-tj-excluded-counter] / [data-tj-excluded-list]
+ *
+ *  Brouillon : l'état du formulaire (tous les champs nommés + l'étape courante)
+ *  est mis en cache dans sessionStorage à chaque modification, et réappliqué
+ *  uniquement lors d'un RECHARGEMENT de la page — un refresh ne renvoie plus à
+ *  l'étape 1 avec un formulaire vide, mais quitter la page puis y revenir
+ *  redonne bien un formulaire vierge.
  */
 (function () {
   "use strict";
@@ -133,12 +139,167 @@
     return refresh;
   }
 
-  function initWizard(root) {
+  // ── Brouillon local ──────────────────────────────────────────────────────
+  // Un rechargement (F5, Ctrl+R, reload PWA) ne doit ni vider le formulaire ni
+  // renvoyer à l'étape 1 : on miroite l'état du wizard dans sessionStorage à
+  // chaque frappe / clic calendrier et on le réapplique — mais uniquement si la
+  // page a bien été rechargée (cf. isPageReload()), jamais sur une navigation.
+  // sessionStorage (et non localStorage) volontairement : le brouillon vit le
+  // temps de l'onglet, donc aucun vieux brouillon ne ressuscite des jours plus
+  // tard. Il est effacé au submit — après une erreur de validation c'est le
+  // rendu serveur (formulaire lié au POST) qui fait foi.
+  const DRAFT_PREFIX = "tj-draft:";
+  const DRAFT_VERSION = 1;
+  const DRAFT_TTL_MS = 24 * 3600 * 1000;
+
+  // Le brouillon ne doit être réappliqué QUE sur un rechargement de la même
+  // page (F5, Ctrl+R, reload.). Quitter la page puis y revenir par un lien
+  // (onglets "Mes trajets", retour arrière…) doit repartir d'un formulaire
+  // vierge — sinon on ressert des données que l'utilisateur pensait abandonner.
+  // En l'absence de l'API (très vieux navigateurs) on choisit de NE PAS
+  // restaurer : perdre un brouillon est moins gênant qu'en ressusciter un.
+  function isPageReload() {
+    try {
+      if (typeof performance !== "undefined" && typeof performance.getEntriesByType === "function") {
+        const nav = performance.getEntriesByType("navigation")[0];
+        if (nav && nav.type) return nav.type === "reload";
+      }
+      // Repli Safari < 15 : API dépréciée, mais encore exposée.
+      if (typeof performance !== "undefined" && performance.navigation) {
+        return performance.navigation.type === 1; // TYPE_RELOAD
+      }
+    } catch (e) {
+      // ignore
+    }
+    return false;
+  }
+
+  function draftStorage() {
+    try {
+      const store = window.sessionStorage;
+      const probe = "__tj_probe";
+      store.setItem(probe, "1");
+      store.removeItem(probe);
+      return store;
+    } catch (e) {
+      // Navigation privée / cookies bloqués : on se passe simplement du brouillon.
+      return null;
+    }
+  }
+
+  function draftFields(root) {
+    return Array.from(root.querySelectorAll("input[name], select[name], textarea[name]"))
+      .filter((el) => el.name && el.name !== "csrfmiddlewaretoken" && el.type !== "file");
+  }
+
+  function collectFields(root) {
+    const data = {};
+    draftFields(root).forEach((el) => {
+      if (el.tagName === "SELECT" && el.multiple) {
+        data[el.name] = Array.from(el.selectedOptions).map((o) => o.value);
+      } else if (el.type === "checkbox" || el.type === "radio") {
+        if (!Array.isArray(data[el.name])) data[el.name] = [];
+        if (el.checked) data[el.name].push(el.value);
+      } else {
+        data[el.name] = el.value;
+      }
+    });
+    return data;
+  }
+
+  function applyFields(root, data) {
+    if (!data) return;
+    draftFields(root).forEach((el) => {
+      if (!Object.prototype.hasOwnProperty.call(data, el.name)) return;
+      const val = data[el.name];
+      if (el.tagName === "SELECT" && el.multiple) {
+        const set = new Set(Array.isArray(val) ? val : [val]);
+        Array.from(el.options).forEach((o) => { o.selected = set.has(o.value); });
+      } else if (el.type === "checkbox" || el.type === "radio") {
+        el.checked = Array.isArray(val) && val.indexOf(el.value) >= 0;
+      } else if (typeof val === "string") {
+        el.value = val;
+      }
+    });
+  }
+
+  function initDraft(root) {
+    const store = draftStorage();
+    const key = DRAFT_PREFIX + (root.getAttribute("action") || window.location.pathname);
+    let step = 1;
+    let timer = null;
+
+    if (store) {
+      try {
+        const raw = store.getItem(key);
+        const saved = raw && isPageReload() ? JSON.parse(raw) : null;
+        if (saved && saved.v === DRAFT_VERSION && Date.now() - (saved.at || 0) < DRAFT_TTL_MS) {
+          applyFields(root, saved.fields);
+          if (saved.step >= 1) step = saved.step;
+        } else if (raw) {
+          // Arrivée par navigation, brouillon périmé ou illisible : on repart
+          // du formulaire rendu par le serveur.
+          store.removeItem(key);
+        }
+      } catch (e) {
+        try { store.removeItem(key); } catch (e2) { /* ignore */ }
+      }
+    }
+
+    function write() {
+      if (!store) return;
+      try {
+        store.setItem(key, JSON.stringify({
+          v: DRAFT_VERSION,
+          at: Date.now(),
+          step: step,
+          fields: collectFields(root),
+        }));
+      } catch (e) {
+        // Quota dépassé : le formulaire reste utilisable sans brouillon.
+      }
+    }
+
+    const draft = {
+      step: step,
+      // Appelé à chaque changement d'état (frappe, clic calendrier, étape).
+      save() {
+        if (!store) return;
+        if (timer) clearTimeout(timer);
+        timer = setTimeout(write, 200);
+      },
+      setStep(n) {
+        step = n;
+        draft.save();
+      },
+      clear() {
+        if (timer) clearTimeout(timer);
+        if (!store) return;
+        try { store.removeItem(key); } catch (e) { /* ignore */ }
+      },
+    };
+
+    root.addEventListener("input", draft.save);
+    root.addEventListener("change", draft.save);
+    // `click` en plus : choisir une suggestion d'adresse remplit start_adress /
+    // start_place_id par programmation (cf. address_autocomplete.js), sans
+    // émettre d'événement `input`. Le listener du <li> s'exécute avant la
+    // remontée jusqu'au formulaire, donc on lit bien les valeurs à jour.
+    root.addEventListener("click", draft.save);
+    root.addEventListener("submit", draft.clear);
+    // Le formulaire peut être re-rendu par le serveur avec des erreurs : on
+    // capture cet état tout de suite pour qu'un refresh ne le perde pas.
+    write();
+
+    return draft;
+  }
+
+  function initWizard(root, draft) {
     const steps = Array.from(root.querySelectorAll("[data-tj-step]"));
     if (!steps.length) return;
 
-    let current = 1;
     const total = steps.length;
+    let current = draft ? Math.min(total, Math.max(1, draft.step)) : 1;
 
     function circleFor(n) {
       return root.querySelector(`[data-tj-step-circle="${n}"]`);
@@ -221,6 +382,7 @@
       btn.addEventListener("click", () => {
         if (!stepIsValid(current)) return;
         current = Math.min(total, current + 1);
+        if (draft) draft.setStep(current);
         render();
         // scroll tout en haut de la PAGE (pas juste vers le formulaire) : un
         // root.scrollIntoView() atterrit sous le header sticky et masque une
@@ -231,6 +393,7 @@
     root.querySelectorAll("[data-tj-prev]").forEach((btn) => {
       btn.addEventListener("click", () => {
         current = Math.max(1, current - 1);
+        if (draft) draft.setStep(current);
         render();
         window.scrollTo({ top: 0, behavior: "smooth" });
       });
@@ -239,7 +402,7 @@
     render();
   }
 
-  function initRecurrence(root) {
+  function initRecurrence(root, draft) {
     const radios = Array.from(root.querySelectorAll('input[name="recurrence_type"]'));
     if (!radios.length) return;
 
@@ -264,11 +427,19 @@
     // hérité : aperçu lecture-seule piloté par date_debut/date_fin.
     const advanced = !!(selectedInput && excludedInput && dateRangeContainer);
 
+    // Les deux champs cachés portent déjà l'état du calendrier : on repart de
+    // leur contenu plutôt que d'un tableau vide, pour que les dates survivent
+    // à un refresh (brouillon) comme à un re-rendu serveur après erreur.
+    function parseIsoCsv(input) {
+      if (!input || !input.value) return [];
+      return input.value.split(",").map((s) => s.trim()).filter((s) => !!parseIso(s));
+    }
+
     let calYear = new Date().getFullYear();
     let calMonth = new Date().getMonth();
     let activeField = "debut";
-    let selectedDates = []; // mode one_week (libre) — ISO triés
-    let excludedDates = []; // modes weekly/biweekly — ISO
+    let selectedDates = parseIsoCsv(selectedInput).sort(); // mode one_week (libre) — ISO triés
+    let excludedDates = parseIsoCsv(excludedInput); // modes weekly/biweekly — ISO
 
     function selectedRecurrence() {
       const checked = root.querySelector('input[name="recurrence_type"]:checked');
@@ -529,6 +700,11 @@
 
       renderRecap(generated);
       renderExcludedPanel(generated);
+
+      // Les clics calendrier modifient les champs par programmation (aucun
+      // événement `input`/`change` n'est émis) : on notifie le brouillon ici,
+      // point de passage obligé de toutes les mutations d'état du calendrier.
+      if (draft) draft.save();
     }
 
     radios.forEach((r) => r.addEventListener("change", () => {
@@ -546,9 +722,15 @@
       dateFinInput.addEventListener("change", renderCalendar);
     }
 
-    // État initial : si une date de début existe déjà (réaffichage après erreur),
-    // on centre le calendrier dessus.
-    if (dateDebutInput && dateDebutInput.value) jumpToIso(dateDebutInput.value);
+    // État initial : si une date de début existe déjà (brouillon restauré ou
+    // réaffichage après erreur), on centre le calendrier dessus et on reprend
+    // la saisie de plage là où elle s'était arrêtée.
+    if (dateDebutInput && dateDebutInput.value) {
+      jumpToIso(dateDebutInput.value);
+      if (advanced && dateFinInput && !dateFinInput.value) activeField = "fin";
+    } else if (selectedDates.length) {
+      jumpToIso(selectedDates[0]);
+    }
 
     updateVisibility();
     updateActiveFieldStyles();
@@ -577,8 +759,12 @@
 
   function initAll() {
     document.querySelectorAll("[data-tj-wizard]").forEach((root) => {
-      initWizard(root);
-      initRecurrence(root);
+      // initDraft() en premier : il réapplique les valeurs sauvegardées dans le
+      // DOM, sur lequel tous les autres init (pills, calendrier, slider) se
+      // basent pour leur rendu initial.
+      const draft = initDraft(root);
+      initWizard(root, draft);
+      initRecurrence(root, draft);
       initRadiusSlider(root);
 
       const weekdaySelector = root.querySelector("#weekday-selector");

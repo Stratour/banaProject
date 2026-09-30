@@ -298,7 +298,13 @@
       </section>
 
       <!-- BONNE VIE ET MŒURS -->
-      <section class="rounded-xl border border-gray-200 overflow-hidden">
+      {% comment %}
+        `id="bvm"` : cible du lien de l'email de refus BVM
+        (account/email/bvm_rejected_message.*). Le membre arrive directement sur
+        le champ au lieu de le chercher dans le formulaire. `scroll-mt-28` évite
+        que l'en-tête fixe ne recouvre le haut de la section.
+      {% endcomment %}
+      <section id="bvm" class="scroll-mt-28 rounded-xl border border-gray-200 overflow-hidden">
         <div class="flex items-center gap-3 bg-gray-50 border-b border-gray-200 px-6 py-4">
           <span class="flex items-center justify-center w-8 h-8 rounded-full bg-brand/10 text-brand">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">

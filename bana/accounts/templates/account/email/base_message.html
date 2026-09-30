@@ -1,0 +1,24 @@
+{% extends "emails/base_email.html" %}
+{% load i18n %}
+{% comment %}
+  Pendant HTML de base_message.txt : même trame, mêmes variables, même prénom.
+
+  allauth attache automatiquement ce rendu en alternative HTML dès qu'un
+  `<nom>_message.html` existe à côté du `.txt` (DefaultAccountAdapter.render_mail) —
+  aucun code d'envoi à modifier. Seul le changement d'adresse échappe à cette
+  règle : il part par accounts/utils.py, qui doit passer `html_message`.
+
+  Le prénom suit exactement la priorité du gabarit texte : identité vérifiée par
+  Stripe Identity, puis prénom du compte, puis « Bonjour, » tout court. `firstof`
+  et non `default:` — un argument de filtre introuvable lève VariableDoesNotExist
+  au lieu de valoir vide, et les deux emails sans `user` en contexte (compte
+  inconnu, compte déjà existant) plantaient.
+
+  Ces emails sont transactionnels et indispensables au compte : ils ne relèvent
+  pas du consentement marketing, d'où l'absence de lien de désinscription.
+{% endcomment %}
+{% block eyebrow %}{% trans "Sécurité" %}<br>{% trans "du compte" %}{% endblock eyebrow %}
+
+{% block body_padding %}34px 32px 6px{% endblock body_padding %}
+
+{% block greeting %}{% firstof user.profile.verified_first_name user.first_name as prenom %}{% if prenom %}{% blocktrans %}Bonjour {{ prenom }},{% endblocktrans %}{% else %}{% trans "Bonjour," %}{% endif %}{% endblock greeting %}

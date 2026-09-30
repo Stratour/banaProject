@@ -1,1 +1,1 @@
-{% autoescape off %}Votre réservation a été refusée{% endautoescape %}
+{% autoescape off %}{% if dates_count > 1 %}{{ dates_count }} de vos réservations n'ont pas été retenues{% else %}Votre réservation n'a pas été retenue{% endif %}{% endautoescape %}

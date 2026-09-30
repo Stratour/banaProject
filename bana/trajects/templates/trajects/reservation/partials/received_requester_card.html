@@ -1,0 +1,107 @@
+{% load i18n %}
+{% comment %}
+  Un parent demandeur sur mon trajet, avec le volet de ses dates.
+  Attend : requester, is_open, open_key, tab, made_reservations,
+           received_reservations, is_abonned, proposed (l'en-tête du groupe).
+
+  Les dates en attente se cochent et se traitent en une fois — même motif que
+  la réservation groupée côté parent (data-tj-bulk-form, trajects_list.js) :
+  répondre date par date sur une série récurrente était le geste le plus coûteux
+  de l'écran. Sans JavaScript, les cases et le bouton fonctionnent quand même ;
+  le JS n'ajoute que le compteur et « Tout sélectionner ».
+
+  Le <article> est requis : trajects_list.js remonte au plus proche <article>
+  pour associer le bouton [data-tj-toggle-dates] à son [data-tj-dates-panel].
+{% endcomment %}
+<article class="bg-white rounded-[14px] border border-[#EDEDEA] shadow-[0_1px_3px_rgba(0,0,0,0.04)] overflow-hidden">
+
+  {% include "trajects/reservation/partials/person_card.html" with entry=requester toggle_open=is_open %}
+
+  <div data-tj-dates-panel class="{% if not is_open %}hidden{% endif %} border-t border-[#F3F4F6] bg-white">
+
+    <form data-tj-bulk-form method="post" action="{% url 'manage_reservations_bulk' %}"
+          hx-post="{% url 'manage_reservations_bulk' %}"
+          hx-target="#reservations-content" hx-swap="outerHTML">
+      {% include "trajects/reservation/partials/action_state_fields.html" with card_key=requester.open_key %}
+
+      <div class="px-4 sm:px-6 py-2">
+        {% for row in requester.rows %}
+          {% with r=row.reservation research=row.research %}
+          <div class="flex items-start justify-between gap-3 py-3 {% if not forloop.first %}border-t border-[#EDEDEA]{% endif %}">
+
+            <div class="flex items-start gap-3 min-w-0">
+              {% if r.status == 'pending' and tab == 'active' %}
+                <input type="checkbox" data-tj-bulk-checkbox
+                       name="reservation_ids" value="{{ r.id }}"
+                       id="resa-{{ r.id }}"
+                       class="mt-0.5 h-5 w-5 shrink-0 rounded border-[1.5px] border-[#D8D7D2] text-brand accent-[#007F73] cursor-pointer">
+              {% endif %}
+              <div class="min-w-0">
+                <label {% if r.status == 'pending' and tab == 'active' %}for="resa-{{ r.id }}" class="cursor-pointer"{% endif %}>
+                  <span class="block text-sm font-bold text-[#1C1C1C]">{{ research.date|date:"D d/m/Y"|capfirst }}</span>
+                  {% comment %}
+                    Plus d'horaire par date : il est identique sur toutes les
+                    dates d'une même demande, et il est déjà sur la carte de la
+                    personne. Répété par ligne, il noyait la seule donnée qui
+                    varie vraiment — les places restantes.
+
+                    Et ces places ne s'affichent que sur une demande en attente :
+                    elles servent à décider si l'on peut encore accepter. Une
+                    fois la date confirmée ou refusée, il n'y a plus rien à
+                    décider et le compte devient un chiffre en trop.
+                  {% endcomment %}
+                  {% if r.status == 'pending' %}
+                    <span class="block text-xs font-medium text-[#4B5563] mt-0.5">
+                      {% blocktrans count n=row.remaining_places %}{{ n }} place restante{% plural %}{{ n }} places restantes{% endblocktrans %}
+                    </span>
+                  {% endif %}
+                </label>
+              </div>
+            </div>
+
+            {% comment %}
+              L'ancienneté de la demande est sous le badge, pas sous la date :
+              elle qualifie l'attente, pas le jour du trajet. À gauche, elle se
+              lisait comme une seconde propriété de la date.
+              0 est falsy : sans le repli, une demande du jour n'affiche rien.
+            {% endcomment %}
+            <div class="shrink-0 flex flex-col items-end gap-1">
+              {% include "trajects/reservation/partials/status_badge.html" with reservation=r side="received" %}
+              {% if r.status == 'pending' %}
+                <p class="text-xs font-medium text-[#4B5563] text-right">
+                  {% if row.requested_days_ago %}
+                    {% blocktrans count n=row.requested_days_ago %}Reçue il y a {{ n }} jour{% plural %}Reçue il y a {{ n }} jours{% endblocktrans %}
+                  {% else %}
+                    {% trans "Reçue aujourd'hui" %}
+                  {% endif %}
+                </p>
+              {% endif %}
+            </div>
+          </div>
+          {% endwith %}
+        {% endfor %}
+      </div>
+
+      {% if requester.pending_count and tab == 'active' %}
+        <div class="flex items-center justify-between gap-3 flex-wrap border-t border-[#EDEDEA] bg-white px-4 sm:px-6 py-3">
+          <button type="button" data-tj-select-all
+                  class="text-sm font-semibold text-brand underline underline-offset-2 hover:opacity-80 cursor-pointer">
+            {% trans "Tout sélectionner" %}
+          </button>
+
+          <div class="flex items-center gap-2 flex-wrap justify-end">
+            <button type="submit" name="action" value="reject" data-tj-bulk-submit
+                    class="inline-flex items-center gap-1.5 min-h-[44px] px-4 rounded-[10px] border-[1.5px] border-red-300 text-red-600 text-sm font-bold hover:bg-red-50 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">
+              {% trans "Refuser" %} (<span data-tj-bulk-count>0</span>)
+            </button>
+            <button type="submit" name="action" value="accept" data-tj-bulk-submit
+                    class="inline-flex items-center gap-1.5 min-h-[44px] px-5 rounded-[10px] bg-brand text-white text-sm font-extrabold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer">
+              {% trans "Confirmer" %} (<span data-tj-bulk-count>0</span>)
+            </button>
+          </div>
+        </div>
+      {% endif %}
+    </form>
+  </div>
+
+</article>

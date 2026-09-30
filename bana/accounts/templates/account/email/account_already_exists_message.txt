@@ -1,10 +1,14 @@
 {% extends "account/email/base_message.txt" %}
 {% load i18n %}
+{% comment %}
+  Inscription tentée avec une adresse déjà enregistrée. Même raison d'être que
+  unknown_account : ACCOUNT_PREVENT_ENUMERATION empêche le formulaire de le
+  dire. Pas de `user` en contexte.
+{% endcomment %}
+{% block content %}{% blocktrans %}Quelqu'un, probablement vous, a tenté de créer un compte Bana avec l'adresse {{ email }}, mais un compte existe déjà avec cette adresse.{% endblocktrans %}
 
-{% block content %}{% autoescape off %}{% blocktrans %}Vous recevez cet email parce que vous ou quelqu'un d'autre a tenté de créer un compte avec l'adresse e-mail :
+{% trans "Si vous avez oublié votre mot de passe, vous pouvez en choisir un nouveau ici :" %}
 
-{{ email }}
+{{ password_reset_url }}
 
-Cependant, un compte avec cette adresse existe déjà. Si vous avez oublié votre mot de passe, vous pouvez le réinitialiser via le lien suivant :
-
-{{ password_reset_url }}{% endblocktrans %}{% endautoescape %}{% endblock content %}
+{% trans "Si vous n'êtes pas à l'origine de cette tentative, ignorez cet e-mail : aucun compte n'a été créé et votre mot de passe n'a pas changé." %}{% endblock content %}

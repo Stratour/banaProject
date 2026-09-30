@@ -12,6 +12,45 @@
   cursor: pointer;
 }
 
+/* Champs "heure" (Départ / Arrivée).
+   Le px-4 du design system ne laisse pas la place à l'icône horloge native dès
+   que la locale affiche AM/PM (en) : le padding horizontal est réduit ici, et
+   un min-width garantit que l'icône n'est jamais rognée. */
+.trajects-app input[type="time"] {
+  padding-left: 0.75rem;
+  padding-right: 0.5rem;
+  min-width: 0;
+}
+.trajects-app input[type="time"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.5;
+  padding: 0;
+  margin-left: 2px;
+  transition: opacity 0.15s ease;
+}
+.trajects-app input[type="time"]::-webkit-calendar-picker-indicator:hover,
+.trajects-app input[type="time"]:focus::-webkit-calendar-picker-indicator {
+  opacity: 1;
+}
+
+/* Mobile : iOS rend un champ heure vide tant qu'aucune valeur n'est saisie —
+   ni « --:-- », ni icône — le champ passe donc pour une case vide sans usage.
+   On pose notre propre horloge et on masque l'indicateur natif (Android) pour
+   ne pas en afficher deux. Taper dans le champ ouvre le sélecteur natif sur
+   mobile, l'indicateur n'est donc pas nécessaire à l'ouverture. */
+@media (max-width: 639px) {
+  .trajects-app input[type="time"]::-webkit-calendar-picker-indicator {
+    display: none;
+  }
+  .trajects-app input[type="time"] {
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 20px 20px;
+  }
+}
+
 /* Slider "Rayon de recherche" */
 .trajects-app input[type="range"].tj-range {
   -webkit-appearance: none;
@@ -56,4 +95,107 @@
 /* Grille calendrier : transition douce sur le fond des cellules */
 .trajects-app .tj-cal-cell {
   transition: background-color 0.1s ease, color 0.1s ease;
+}
+
+/* En-tête d'une sous-carte personne (person_card.html) : photo, identité,
+   adresse et badges.
+
+   Sous 640px, photo + nom + avis tiennent la première ligne ; l'adresse et les
+   badges passent en dessous sur toute la largeur. Dans une colonne étroite à
+   côté d'un avatar de 44px, l'adresse s'étalait sur deux ou trois lignes et
+   laissait un vide sous la photo.
+
+   À partir de 640px la photo occupe les trois rangées et les blocs de texte
+   s'empilent à sa droite : l'affichage d'origine. Un flex ne peut pas basculer
+   entre ces deux compositions, d'où la grille ici plutôt que des utilitaires. */
+.trajects-app .tj-person-head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: 12px;
+  row-gap: 8px;
+}
+
+.trajects-app .tj-person-head > .tj-person-wide {
+  grid-column: 1 / -1;
+}
+
+@media (min-width: 640px) {
+  .trajects-app .tj-person-head {
+    column-gap: 16px;
+  }
+
+  /* Deux rangées seulement : l'identité, puis un bloc qui empile itinéraire,
+     enfants et compteurs. Ce bloc unique évite d'avoir à ajuster le span
+     chaque fois qu'une ligne apparaît ou disparaît. */
+  .trajects-app .tj-person-head > .tj-person-avatar {
+    grid-row: span 2;
+  }
+
+  .trajects-app .tj-person-head > .tj-person-wide {
+    grid-column: 2;
+  }
+}
+
+/* Tableaux de dates des réservations : chaque ligne devient une carte sous md.
+   Ces tableaux vivent dans un volet déroulant et font 5 colonnes — en scroll
+   horizontal, les boutons d'action de la dernière colonne étaient hors écran
+   sur téléphone. Le libellé de colonne est restitué par ::before à partir de
+   data-label, ce qui évite de maintenir un second balisage "cartes mobile".
+   Tailwind ne peut pas exprimer ce genre de recomposition, d'où sa place ici. */
+@media (max-width: 767px) {
+  .trajects-app .tj-resp-table,
+  .trajects-app .tj-resp-table tbody,
+  .trajects-app .tj-resp-table tr,
+  .trajects-app .tj-resp-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .trajects-app .tj-resp-table thead {
+    display: none;
+  }
+
+  .trajects-app .tj-resp-table tr {
+    background: #fff;
+    border: 1px solid #ededea;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    padding: 4px 0;
+  }
+
+  .trajects-app .tj-resp-table tr:last-child {
+    margin-bottom: 0;
+  }
+
+  .trajects-app .tj-resp-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    text-align: left;
+    padding: 8px 14px;
+  }
+
+  .trajects-app .tj-resp-table td::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: #9ca3af;
+  }
+
+  /* Une cellule sans data-label (colonne d'actions) occupe toute la largeur. */
+  .trajects-app .tj-resp-table td[data-label=""]::before {
+    content: none;
+  }
+
+  /* Informations qui servent à CHOISIR (note, avis, langues, modes de
+     transport) : utiles avant de réserver, encombrantes après. Elles restent
+     accessibles d'un tap sur le profil. */
+  .trajects-app .tj-choice-only {
+    display: none !important;
+  }
 }

@@ -1,0 +1,27 @@
+{% extends "account/email/base_message.html" %}
+{% load i18n %}
+{% comment %}
+  Premier email reçu d'un membre : c'est lui qui pose le ton de la marque. La
+  vérification est obligatoire (ACCOUNT_EMAIL_VERIFICATION = 'mandatory'), donc
+  une seule action proposée, rien qui détourne du clic.
+
+  Gabarit distinct de email_confirmation_message.html, qui accompagne l'ajout
+  d'une adresse sur un compte déjà actif : celui-là ne souhaite pas la bienvenue.
+
+  La validité du lien (3 jours) n'est pas annoncée : allauth ne met pas
+  ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS en contexte. L'afficher demanderait un
+  ACCOUNT_ADAPTER qui l'injecte.
+{% endcomment %}
+{% block subject %}{% trans "Bienvenue sur Bana : confirmez votre adresse e-mail" %}{% endblock subject %}
+
+{% block preheader %}{% trans "Il reste une étape : confirmez cette adresse e-mail pour activer votre compte." %}{% endblock preheader %}
+
+{% block eyebrow %}{% trans "Bienvenue" %}<br>{% trans "sur Bana" %}{% endblock eyebrow %}
+
+{% block title %}{% trans "Merci pour votre inscription sur Bana !" %}{% endblock title %}
+
+{% block content %}<p class="m-txt" style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000">{% trans "Il reste une étape : confirmez cette adresse e-mail pour activer votre compte." %}</p>{% endblock content %}
+
+{% block cta %}{% include "emails/_cta.html" with url=activate_url label=_("Confirmer mon adresse e-mail") cta_padding="14px 32px 4px" %}{% endblock cta %}
+
+{% block closing %}<p class="m-txt-s" style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#000000">{% trans "Si vous n'êtes pas à l'origine de cette inscription, ignorez simplement cet e-mail." %}</p>{% endblock closing %}

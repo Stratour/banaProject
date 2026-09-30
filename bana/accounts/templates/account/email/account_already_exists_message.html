@@ -1,0 +1,24 @@
+{% extends "account/email/base_message.html" %}
+{% load i18n %}
+{% comment %}
+  Inscription tentée avec une adresse déjà enregistrée. Même raison d'être que
+  unknown_account : ACCOUNT_PREVENT_ENUMERATION empêche le formulaire de le
+  dire, c'est l'email qui fait la distinction. Pas de `user` en contexte, donc
+  « Bonjour, » tout court.
+
+  Le cas courant est un membre qui a oublié qu'il avait un compte : le CTA est
+  donc la réinitialisation. `signup_url` est bien en contexte, mais proposer de
+  s'inscrire à quelqu'un qui est déjà inscrit n'aurait pas de sens.
+{% endcomment %}
+{% block subject %}{% trans "Un compte Bana existe déjà avec cette adresse" %}{% endblock subject %}
+
+{% block preheader %}{% trans "Cette adresse est déjà associée à un compte Bana." %}{% endblock preheader %}
+
+{% block title %}{% trans "Vous avez déjà un compte Bana" %}{% endblock title %}
+
+{% block content %}<p class="m-txt" style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000">{% blocktrans %}Quelqu'un, probablement vous, a tenté de créer un compte Bana avec l'adresse <strong style="color:#007F73">{{ email }}</strong>, mais un compte existe déjà avec cette adresse.{% endblocktrans %}</p>
+<p class="m-txt" style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000">{% trans "Si vous avez oublié votre mot de passe, vous pouvez en choisir un nouveau." %}</p>{% endblock content %}
+
+{% block cta %}{% include "emails/_cta.html" with url=password_reset_url label=_("Réinitialiser mon mot de passe") cta_padding="14px 32px 4px" %}{% endblock cta %}
+
+{% block closing %}<p class="m-txt-s" style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#000000">{% trans "Si vous n'êtes pas à l'origine de cette tentative, ignorez cet e-mail : aucun compte n'a été créé et votre mot de passe n'a pas changé." %}</p>{% endblock closing %}

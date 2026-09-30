@@ -11,6 +11,7 @@ from django.utils import timezone
 from .models import InscriptionValidation, SiteVisit
 from django.contrib.auth.models import User
 from accounts.models import Profile
+from accounts.utils import send_bvm_rejected_email
 from datetime import timedelta
 from django.db.models import Count, Prefetch, Q
 from django.core.paginator import Paginator
@@ -205,7 +206,14 @@ def reject_bvm_prfl(request, profile_id):
             profile.bvm_is_verified = False
             profile.save(update_fields=['document_bvm', 'bvm_is_verified'])
             profile.update_profile_verified()
-            messages.warning(request, f'Le document BVM de {profile.user.username} a été refusé et supprimé. L\'utilisateur devra en soumettre un nouveau.')
+            # Le membre est prévenu par email, avec un lien direct vers le
+            # dépôt d'un nouveau certificat. Un échec d'envoi n'annule pas le
+            # refus : il est signalé à l'administrateur, qui peut le relancer
+            # lui-même.
+            if send_bvm_rejected_email(profile.user):
+                messages.warning(request, f'Le document BVM de {profile.user.username} a été refusé et supprimé. Un email l\'invite à en déposer un nouveau.')
+            else:
+                messages.error(request, f'Le document BVM de {profile.user.username} a été refusé et supprimé, mais l\'email de notification n\'a pas pu être envoyé. Prévenez l\'utilisateur manuellement.')
         else:
             messages.warning(request, f'{profile.user.username} n\'a pas de document BVM à refuser.')
 

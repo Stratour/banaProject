@@ -1,6 +1,26 @@
-{% load i18n %}{% autoescape off %}
-{# ---- HEADER ---- #}{% blocktrans with site_name=current_site.name %}
-Bonjour {% endblocktrans %}{% if user.profile.verified_first_name %}{{ user.profile.verified_first_name }}{% elif user.profile.first_name %}{{ user.profile.first_name }}{% endif %},
+{% load i18n %}{% autoescape off %}{% comment %}
+  Squelette commun à tous les emails d'authentification (allauth).
+
+  Même forme que les emails de trajet (trajects/templates/trajects/email/) :
+  « Bonjour <prénom>, » — ce qui s'est passé — le lien d'action seul sur sa
+  ligne — une phrase pour qui n'est pas à l'origine de la demande.
+
+  Le prénom vient de l'identité vérifiée par Stripe Identity quand elle existe,
+  sinon du compte. Le profil ne porte QUE `verified_first_name` : l'ancien
+  `user.profile.first_name` ne désignait aucun champ, et tout membre sans
+  identité vérifiée recevait « Bonjour , ». Jamais l'adresse email en repli —
+  elle n'apprendrait rien au destinataire, qui la lit déjà dans l'en-tête.
+
+  Les emails sans `user` en contexte (compte inconnu, compte déjà existant)
+  tombent sur « Bonjour, » tout court — allauth n'y expose que l'adresse visée.
+  D'où `{% templatetag openblock %} firstof {% templatetag closeblock %}` plutôt
+  qu'un `default:user.first_name` : un argument de filtre introuvable lève
+  VariableDoesNotExist au lieu de valoir vide, et ces deux emails plantaient.
+
+  Les enfants remplissent `content` sans saut de ligne au début ni à la fin :
+  les lignes vides autour sont posées ici.
+{% endcomment %}{% firstof user.profile.verified_first_name user.first_name as prenom %}{% if prenom %}{% blocktrans %}Bonjour {{ prenom }},{% endblocktrans %}{% else %}{% trans "Bonjour," %}{% endif %}
+
 {% block content %}{% endblock content %}
-{% blocktrans with site_domain=current_site.domain %}L’équipe de {{ site_domain }}{% endblocktrans %}
-{% endautoescape %}
+
+{% trans "L'équipe Bana" %}{% endautoescape %}

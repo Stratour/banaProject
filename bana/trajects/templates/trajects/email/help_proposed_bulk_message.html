@@ -1,0 +1,23 @@
+{% extends "trajects/email/base_message.html" %}
+{% comment %}
+  Proposition groupée : un clic du yaya couvre toutes les dates disponibles de
+  son groupe de trajets, et le PARENT reçoit un seul email pour le lot.
+
+  `dates` contient ici toutes les dates réellement disponibles : on les liste au
+  lieu d'annoncer un simple décompte, le parent doit pouvoir choisir sans
+  ouvrir l'app.
+{% endcomment %}
+{% block subject %}{{ yaya_name|capfirst }} est disponible pour {{ dates_count }} date{{ dates_count|pluralize }} de votre recherche{% endblock subject %}
+
+{% block preheader %}{{ dates_count }} date{{ dates_count|pluralize }} disponible{{ dates_count|pluralize }} sur votre recherche de trajet.{% endblock preheader %}
+
+{% block eyebrow %}Nouveau<br>matching{% endblock eyebrow %}
+
+{% block title %}{{ yaya_name|capfirst }} est disponible pour {{ dates_count }} date{{ dates_count|pluralize }}{% endblock title %}
+
+{% block content %}<p class="m-txt" style="margin:0 0 22px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000">Bonne nouvelle ! Un accompagnateur couvre <strong style="color:#007F73">{{ dates_count }} date{{ dates_count|pluralize }}</strong> de votre recherche de trajet.</p>
+{% include "emails/_traject_recap.html" with dates_label=dates_count|pluralize:"Date disponible,Dates disponibles" %}{% endblock content %}
+
+{% block cta %}{% include "emails/_cta.html" with url=cta_url label="Voir mes matchings" %}{% endblock cta %}
+
+{% block closing %}<p class="m-txt-s" style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#000000">Réservez les dates qui vous arrangent : vous n'êtes pas obligé de prendre tout le lot.</p>{% endblock closing %}

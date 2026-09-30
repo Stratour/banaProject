@@ -1,0 +1,18 @@
+{% extends "emails/base_email.html" %}
+{% comment %}
+  Pendant HTML des emails de trajet — même trame et mêmes variables que les
+  gabarits texte de ce dossier.
+
+  Contrairement aux emails de compte, ceux-ci ne partent pas par allauth :
+  trajects/utils/mail.py doit attacher le rendu HTML en alternative
+  (EmailMultiAlternatives). Un gabarit déposé seul ici ne serait jamais envoyé.
+
+  Ces gabarits sont en français en dur, sans {% templatetag openblock %} trans {% templatetag closeblock %}, comme leurs
+  équivalents texte : LANGUAGES ne déclare que `fr`. Le squelette partagé
+  emails/base_email.html, lui, est traduit — il sert aussi aux emails de compte.
+
+  `recipient_name` est vide quand le profil n'a ni identité vérifiée ni
+  prénom/nom : la salutation retombe alors sur « Bonjour, » tout court, jamais
+  sur l'adresse email.
+{% endcomment %}
+{% block greeting %}Bonjour{% if recipient_name %} {{ recipient_name }}{% endif %},{% endblock greeting %}

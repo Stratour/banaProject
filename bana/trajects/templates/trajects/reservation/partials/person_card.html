@@ -1,0 +1,245 @@
+{% load i18n static %}
+{% comment %}
+  En-tête d'une sous-carte « l'autre partie » : le conducteur sollicité côté
+  demandes envoyées, le parent demandeur côté demandes reçues. Les deux sections
+  de la page sont symétriques, ce bloc est donc rendu à l'identique des deux
+  côtés — seul le contenu du volet de dates diffère.
+
+  Attend : entry (un dict `provider` ou `requester` de la vue), is_abonned,
+           toggle_open (booléen).
+
+  .tj-choice-only marque ce qui sert à CHOISIR (note, avis, langues) : masqué
+  sur mobile, où seule la coordination compte une fois la demande envoyée.
+
+  Les deux actions de la carte — ouvrir les dates, écrire à la personne — sont
+  sur une seule ligne sous l'identité, à toutes les tailles. La bascule était
+  auparavant à droite de l'en-tête : sur téléphone elle prenait la moitié de la
+  largeur et écrasait le nom et l'adresse.
+{% endcomment %}
+<div class="px-4 sm:px-6 py-4 sm:py-5 flex flex-col gap-4">
+
+  {% comment %}
+    Grille .tj-person-head (trajects.css) plutôt qu'un flex : la recomposition
+    diffère entre les tailles d'écran, ce qu'un flex ne sait pas exprimer ici.
+
+    Sous sm : photo + nom + avis sur la première ligne, puis l'adresse et les
+    badges sur toute la largeur (.tj-person-wide), sous la photo. L'adresse
+    faisait deux à trois lignes dans une colonne étroite à côté d'un avatar de
+    44px, laissant un vide sous la photo.
+
+    À partir de sm : la photo occupe les trois rangées et les trois blocs de
+    texte s'empilent dans la colonne de droite — l'affichage d'origine, inchangé.
+
+    L'avatar est réduit sous sm : à 50px + ring-4 il mangeait 58px des ~300px
+    disponibles pour le texte.
+  {% endcomment %}
+  <div class="tj-person-head">
+
+    <div class="tj-person-avatar relative h-11 w-11 sm:h-[50px] sm:w-[50px] shrink-0">
+      <div class="h-full w-full rounded-full bg-brand-50 ring-2 sm:ring-4 ring-[#E9F5F1] overflow-hidden">
+        {% if entry.user.profile.profile_picture %}
+          <a {% if is_abonned %}href="{% url 'accounts:profile_user' user_id=entry.user.id %}"{% endif %}>
+            <img src="{{ entry.user.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="">
+          </a>
+        {% else %}
+          <a {% if is_abonned %}href="{% url 'accounts:profile_user' user_id=entry.user.id %}"{% endif %}
+             class="flex items-center justify-center w-full h-full">
+            <img src="{% static 'bana/img/icon/Icon_bana.png' %}" alt="" class="h-full w-full object-cover">
+          </a>
+        {% endif %}
+      </div>
+      {% if entry.user.profile.prfl_is_verified %}
+        <span class="absolute -top-1 -left-1 inline-flex h-4 w-4 rounded-full bg-white ring-2 ring-white shadow">
+          <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
+            <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+      {% endif %}
+    </div>
+
+    <div class="min-w-0 flex items-center gap-2 flex-wrap">
+        <p class="text-[15px] font-extrabold text-[#0F0F0F] tracking-tight">
+          {% if is_abonned %}
+            <a href="{% url 'accounts:profile_user' user_id=entry.user.id %}" class="hover:underline">{{ entry.display_name }}</a>
+          {% else %}
+            <span class="text-red-600 text-sm font-semibold">{% trans "Abonnement requis pour voir le profil" %}</span>
+          {% endif %}
+        </p>
+        {% comment %}
+          La note reste affichée sur mobile, contrairement aux autres repères de
+          choix : elle tient sur la même ligne que le nom et c'est le seul
+          indice de confiance de la carte.
+        {% endcomment %}
+        {% if entry.reviews_count %}
+          <a href="{% url 'accounts:profile_user' user_id=entry.user.id %}#avis-recus"
+             class="inline-flex items-center gap-1 text-xs font-bold text-brand bg-brand-50 border border-brand/30 px-2 py-0.5 rounded-md hover:opacity-80 whitespace-nowrap">
+            ★ {{ entry.average_rating }}
+            <span class="font-normal text-[#414140]">({{ entry.reviews_count }} {% trans "avis" %})</span>
+          </a>
+        {% endif %}
+      </div>
+
+      {% comment %}
+        L'itinéraire de L'AUTRE partie — la seule information de trajet que
+        l'utilisateur ne connaît pas déjà.
+
+        Une ligne par point sur mobile : la flèche « départ → arrivée » d'une
+        seule coulée produisait un pavé de trois ou quatre lignes où l'on ne
+        voyait plus où finissait une adresse. Les deux pictogrammes (épingle,
+        drapeau) sont ceux des pages « Mes trajets », sans les libellés
+        Départ/Arrivée qui n'apprennent rien à cet endroit.
+
+        Une offre en rayon n'a ni destination ni horaire : on affiche la zone
+        couverte plutôt qu'un « — ».
+      {% endcomment %}
+      {% comment %}
+        Filet de séparation entre l'identité et les informations de trajet.
+        Sur mobile il court sur toute la largeur, sous la photo ; à partir de
+        sm il ne couvre que la colonne de droite, la photo occupant les deux
+        rangées.
+      {% endcomment %}
+      <div class="tj-person-wide min-w-0 flex flex-col gap-3 border-t border-[#F3F4F6] pt-2.5">
+
+        <div class="min-w-0 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-y-2 sm:gap-x-3 text-[13px] sm:text-sm font-medium text-[#374151] leading-snug">
+        <span class="flex items-start gap-1.5 min-w-0">
+          <svg class="h-4 w-4 mt-0.5 text-brand shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"></path>
+          </svg>
+          {% comment %}
+            La flèche est dans le flux du texte, pas à côté du bloc : elle doit
+            suivre le dernier mot de l'adresse, même quand celle-ci passe à la
+            ligne. Pas de flèche pour une offre en rayon — il n'y a pas de
+            destination vers laquelle pointer.
+          {% endcomment %}
+          <span class="min-w-0">
+            {{ entry.traject.start_adress }}
+            {% if entry.departure_time %}<span class="text-xs text-[#4B5563] whitespace-nowrap">( {{ entry.departure_time|time:"H\hi" }} )</span>{% endif %}
+            {% if not entry.is_simple %}
+              <svg class="inline-block h-4 w-4 align-middle text-brand" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M16.3153 16.6681C15.9247 17.0587 15.9247 17.6918 16.3153 18.0824C16.7058 18.4729 17.339 18.4729 17.7295 18.0824L22.3951 13.4168C23.1761 12.6357 23.1761 11.3694 22.3951 10.5883L17.7266 5.9199C17.3361 5.52938 16.703 5.52938 16.3124 5.91991C15.9219 6.31043 15.9219 6.9436 16.3124 7.33412L19.9785 11.0002L2 11.0002C1.44772 11.0002 1 11.4479 1 12.0002C1 12.5524 1.44772 13.0002 2 13.0002L19.9832 13.0002L16.3153 16.6681Z"/>
+              </svg>
+            {% endif %}
+          </span>
+        </span>
+
+        {% if entry.is_simple %}
+          <span class="flex items-start gap-1.5 min-w-0 text-brand font-semibold">
+            <svg class="h-4 w-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <circle cx="12" cy="12" r="8" stroke-width="2"></circle>
+              <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"></circle>
+            </svg>
+            <span class="min-w-0">{% trans "Dans un rayon de" %} {{ entry.radius_km|default:5 }} km</span>
+          </span>
+        {% else %}
+          <span class="flex items-start gap-1.5 min-w-0">
+            <svg class="h-4 w-4 mt-0.5 text-brand shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5v14M5 5h10l-2 4 2 4H5"></path>
+            </svg>
+            <span class="min-w-0">
+              {{ entry.traject.end_adress|default:"—" }}
+              {% if entry.arrival_time %}<span class="text-xs text-[#4B5563] whitespace-nowrap">( {{ entry.arrival_time|time:"H\hi" }} )</span>{% endif %}
+            </span>
+          </span>
+        {% endif %}
+      </div>
+
+        {% comment %}
+          Les enfants ont leur propre ligne, avec le libellé des pages « Mes
+          trajets ». Mêlés aux compteurs de statut, ils se lisaient comme un
+          badge d'état de plus : ce sont deux natures d'information, qui on
+          transporte et où en est la demande.
+
+          Les langues ne sont plus affichées : elles servent à choisir
+          quelqu'un, pas à suivre une demande déjà envoyée, et elles restent
+          sur le profil, à un clic du nom.
+        {% endcomment %}
+        {% if entry.children %}
+          {% comment %}
+            Le pictogramme du projet (celui de « Mes enfants » dans la barre
+            latérale) remplace le libellé : la ligne commence par une icône
+            comme les deux lignes d'itinéraire au-dessus. Servi en <img>, comme
+            partout ailleurs — l'inliner dupliquerait 1,5 Ko de tracé par carte.
+
+            Icon_child_brand.svg est la déclinaison verte du fichier gris,
+            suivant le couple gris/vert-lime déjà en place pour la barre
+            latérale : une couleur de tracé ne se pilote pas depuis un <img>.
+
+            Le libellé reste pour les lecteurs d'écran, qu'une image décorative
+            laisserait sans contexte.
+          {% endcomment %}
+          <div class="min-w-0 flex items-center gap-2 flex-wrap">
+            <img src="{% static 'bana/img/icon/Icon_child_brand.svg' %}" alt="" class="h-4 w-5 shrink-0">
+            <span class="sr-only">{% trans "Enfant(s)" %} :</span>
+            {% for child in entry.children %}
+              {% include "trajects/partials/child_badge.html" with child=child modal_scope=entry.open_key %}
+            {% endfor %}
+          </div>
+        {% endif %}
+
+        {% if entry.pending_count or entry.confirmed_count %}
+          <div class="min-w-0 flex items-center gap-2 flex-wrap py-2">
+            {% if entry.pending_count %}
+              <span class="inline-flex items-center rounded-full bg-[#FEF3C7] text-[#92400E] px-2 py-0.5 text-xs font-bold">{{ entry.pending_count }} {% trans "en attente" %}</span>
+            {% endif %}
+            {% if entry.confirmed_count %}
+              <span class="inline-flex items-center rounded-full bg-[#D1FAE5] text-[#065F46] px-2 py-0.5 text-xs font-bold">{{ entry.confirmed_count }} {% trans "confirmée(s)" %}</span>
+            {% endif %}
+          </div>
+        {% endif %}
+
+      </div>
+
+  </div>
+
+  {% comment %}
+    Ligne d'actions. La bascule est à droite, à sa largeur naturelle : son
+    libellé change de longueur en s'inversant, le tronquer le rendrait
+    illisible. Le ml-auto la tient à droite même seule, c'est-à-dire tant
+    qu'aucune date n'est confirmée. Le bouton de contact prend la place
+    restante sur téléphone et se tronque au besoin, les prénoms longs étant
+    fréquents.
+
+    L'accord sur l'heure et le point de rendez-vous exacts se règle par
+    message. Ce fut longtemps un lien mailto:, abandonné parce qu'il dépend du
+    client mail déclaré dans le navigateur : sur Brave, Firefox sans handler ou
+    mobile sans compte configuré, le clic n'ouvrait rien et bloquait le membre.
+    On ouvre donc une modale avec un formulaire, dont l'envoi passe par le
+    serveur. Affiché seulement quand au moins une date est confirmée — avant,
+    il n'y a rien à convenir.
+  {% endcomment %}
+  <div class="flex items-center gap-2">
+    {% if entry.can_contact and is_abonned %}
+      <button type="button"
+              onclick="document.getElementById('contact-modal-{{ entry.open_key|slugify }}').showModal()"
+              class="inline-flex items-center justify-center gap-2 flex-1 min-w-0 sm:flex-none min-h-[44px] px-3 sm:px-4 rounded-[11px] bg-brand text-white text-[13px] sm:text-sm font-extrabold hover:opacity-90 cursor-pointer">
+        <svg class="w-[17px] h-[17px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="5" width="18" height="14" rx="2"></rect><polyline points="3 7.5 12 13.5 21 7.5"></polyline>
+        </svg>
+        <span class="truncate">{% blocktrans with name=entry.display_name %}Contacter {{ name }}{% endblocktrans %}</span>
+      </button>
+
+      {% comment %}
+        La modale est sœur du bouton, jamais imbriquée dans une autre <dialog> :
+        deux dialogues modaux s'empilent sans moyen de revenir au premier.
+        L'open_key ("made:<uuid>:<id>" / "recv:<uuid>:<id>") est déjà unique par
+        carte, le slugify en fait un id HTML valide.
+      {% endcomment %}
+      <dialog id="contact-modal-{{ entry.open_key|slugify }}"
+              class="rounded-2xl p-0 w-full max-w-lg backdrop:bg-black/40">
+        <div id="contact-modal-body-{{ entry.open_key|slugify }}" class="p-6 space-y-5">
+          {% include "trajects/reservation/partials/contact_form.html" with contact_form=entry.contact_form contact_open_key=entry.open_key contact_recipient_id=entry.user.id contact_recipient_name=entry.display_name contact_label=entry.contact_label contact_sent=False contact_toast=False %}
+        </div>
+      </dialog>
+    {% endif %}
+
+    <button type="button" data-tj-toggle-dates
+            data-tj-label-show="{% trans 'Voir les dates' %} ↓"
+            data-tj-label-hide="{% trans 'Masquer les dates' %} ↑"
+            class="inline-flex items-center justify-center gap-1.5 shrink-0 ml-auto min-h-[44px] px-3 sm:px-4 rounded-[11px] border-[1.5px] border-[#E5E7EB] bg-white text-[13px] sm:text-sm font-semibold text-[#374151] hover:bg-gray-50 whitespace-nowrap cursor-pointer">
+      <span data-tj-toggle-label>{% if toggle_open %}{% trans "Masquer les dates" %} ↑{% else %}{% trans "Voir les dates" %} ↓{% endif %}</span>
+      <span><span class="text-brand">( </span><span class="text-[#1C1C1C]">{{ entry.dates_count }}</span><span class="text-brand"> )</span></span>
+    </button>
+  </div>
+</div>

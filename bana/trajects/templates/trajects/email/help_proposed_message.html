@@ -1,0 +1,23 @@
+{% extends "trajects/email/base_message.html" %}
+{% comment %}
+  Un yaya s'est signalé sur une date précise : le PARENT est prévenu.
+  `dates` ne contient qu'une seule date — la version groupée est
+  help_proposed_bulk_message.html.
+
+  Rien n'est réservé à ce stade : la phrase de clôture le dit, sinon le parent
+  croit sa place acquise et ne valide jamais depuis ses matchings.
+{% endcomment %}
+{% block subject %}{{ yaya_name|capfirst }} est disponible pour votre trajet{% if dates %} du {{ dates|first|date:"j F" }}{% endif %}{% endblock subject %}
+
+{% block preheader %}{{ yaya_name|capfirst }} propose son aide{% if dates %} pour le {{ dates|first|date:"l j F" }}{% endif %}.{% endblock preheader %}
+
+{% block eyebrow %}Nouveau<br>matching{% endblock eyebrow %}
+
+{% block title %}{{ yaya_name|capfirst }} est disponible{% endblock title %}
+
+{% block content %}<p class="m-txt" style="margin:0 0 22px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000">Un accompagnateur propose son aide sur <strong style="color:#007F73">une date</strong> de votre recherche.</p>
+{% include "emails/_traject_recap.html" with dates_label="Date proposée" %}{% endblock content %}
+
+{% block cta %}{% include "emails/_cta.html" with url=cta_url label="Voir mes matchings" %}{% endblock cta %}
+
+{% block closing %}<p class="m-txt-s" style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#000000">La place n'est pas réservée tant que vous n'avez pas validé depuis vos matchings.</p>{% endblock closing %}

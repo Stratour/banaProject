@@ -46,14 +46,19 @@
 
         <div class="mb-6">
           <label for="groupe_name" class="block text-xs font-bold uppercase tracking-wider text-brand mb-2">
-            {% trans "Nom du trajet" %}
+            {% trans "Nom du trajet" %} <span aria-hidden="true" class="text-red-500">*</span>
           </label>
+          {% comment %}
+            Requis : ce nom est le seul identifiant de la série dans « Mes
+            trajets », « Mes matchings » et « Mes réservations ». Sans lui,
+            plusieurs trajets s'affichaient sous le même libellé par défaut.
+          {% endcomment %}
           <input type="text" id="groupe_name" name="groupe_name"
                  value="{{ request.POST.groupe_name|default_if_none:'' }}"
-                 maxlength="80"
+                 maxlength="80" required
                  placeholder="{% trans 'Ex : École Charleroi (matin)' %}"
                  class="w-full px-4 py-3 border-[1.5px] border-[#E5E7EB] rounded-[10px] text-base text-[#1C1C1C] outline-none focus:border-brand transition">
-          <p class="text-sm text-[#ABABAB] mt-1.5">{% trans "Ce nom servira à regrouper vos trajets." %}</p>
+          <p class="text-sm text-[#4B5563] mt-1.5">{% trans "Ce nom vous servira à reconnaître ce trajet dans vos listes." %}</p>
         </div>
 
         <div class="mb-7">
@@ -91,7 +96,7 @@
           <label class="block text-xs font-bold uppercase tracking-wider text-brand mb-3">{% trans "Moyens de transport" %}</label>
           <div class="flex flex-wrap gap-2" data-tj-pill-group>
             {% for cb in form.transport_modes %}
-              <label data-tj-pill class="px-4.5 py-2 rounded-full border-[1.5px] border-[#E5E7EB] text-[#374151] text-base font-medium cursor-pointer transition" style="padding-left:18px;padding-right:18px">
+              <label data-tj-pill class="px-4 py-2 rounded-full border-[1.5px] border-[#E5E7EB] text-[#374151] text-base font-medium cursor-pointer transition" style="padding-left:18px;padding-right:18px">
                 {{ cb.tag }}
                 {{ cb.choice_label }}
               </label>
@@ -161,9 +166,9 @@
 
         <div data-tj-recap class="hidden bg-[#E6F5F3] border border-[#B4D9D5] rounded-[10px] px-4 py-3.5 text-sm font-semibold text-[#005A52] mb-5"></div>
 
-        <div data-tj-excluded-panel class="hidden bg-[#E6F5F3] rounded-[10px] border border-[#B4D9D5] px-4.5 py-4">
+        <div data-tj-excluded-panel class="hidden bg-[#E6F5F3] rounded-[10px] border border-[#B4D9D5] px-4 py-4">
           <div class="flex justify-between items-center mb-2.5 flex-wrap gap-1">
-            <p class="text-sm font-bold text-[#005A52]">✅ <span data-tj-excluded-summary></span></p>
+            <p class="text-sm font-bold text-[#005A52]"><span data-tj-excluded-summary></span></p>
             <span data-tj-excluded-counter class="text-xs text-[#4d8f88] font-semibold"></span>
           </div>
           <p class="text-xs text-[#6b9994] mb-2.5">{% trans "Cliquez sur le ✕ d'une date pour l'exclure si elle ne vous convient pas." %}</p>

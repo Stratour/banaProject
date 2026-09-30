@@ -1,35 +1,11 @@
 {% extends "account/email/base_message.txt" %}
-{% load account %}
 {% load i18n %}
-
-{% block content %}
-{% blocktranslate with site_name=current_site.name %}Merci pour votre inscription sur {{ site_name }} !
-Afin de finaliser votre inscription et de confirmer votre adresse e-mail, veuillez cliquer sur le lien ci-dessous :
-{% endblocktranslate %}
-{{ activate_url }}
-{% endblock content %}
-
 {% comment %}
-{% block content %}
-{% autoescape off %}
-
-{% user_display user as user_display %}
-
-{% blocktranslate with site_name=current_site.name site_domain=current_site.domain %}
-You're receiving this email because user {{ user_display }} has given your email address to register an account on {{ site_domain }}.
-{% endblocktranslate %}
-
-{% if code %}
-{% blocktranslate %}
-Your email verification code is listed below. Please enter it in your open browser window.
-{% endblocktranslate %}
-
-{{ code }}
-{% else %}
-{% blocktranslate %}
-To confirm this is correct, go to {{ activate_url }}
-{% endblocktranslate %}
-{% endif %}
-{% endautoescape %}
-{% endblock content %}
+  Adresse ajoutée à un compte existant. L'inscription, elle, passe par
+  email_confirmation_signup_message.txt.
 {% endcomment %}
+{% block content %}{% trans "Cette adresse e-mail vient d'être ajoutée à votre compte Bana. Confirmez-la pour pouvoir l'utiliser :" %}
+
+{{ activate_url }}
+
+{% trans "Si vous n'êtes pas à l'origine de cet ajout, ignorez cet e-mail : l'adresse ne sera pas activée." %}{% endblock content %}

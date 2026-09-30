@@ -1,0 +1,30 @@
+{% extends "trajects/email/base_message.html" %}
+{% comment %}
+  Annulation du côté PARENT : c'est le Yaya qui est prévenu. Ne pas confondre
+  avec reservation_rejected, qui prévient le parent d'un refus du Yaya.
+
+  `canceled_by` sépare trois situations très différentes : le parent s'est
+  désisté ('parent'), il a confirmé un autre accompagnateur et Bana a libéré les
+  places ('auto'), ou la réservation est antérieure à l'ajout du champ (vide, et
+  la formulation reste alors neutre, sans attribution). Sans cette distinction
+  le yaya lisait « un parent a annulé sa demande » alors que le parent n'avait
+  rien annulé.
+
+  Le regroupement de mail.py inclut `canceled_by` : un lot mixte produit deux
+  emails, pas un seul mélangeant deux motifs opposés. La pastille reprend
+  `cancel_reason`, libellé partagé avec les badges de l'app.
+{% endcomment %}
+{% block subject %}{% if canceled_by == 'auto' %}{{ counterpart_name|capfirst }} a confirmé un autre trajet : {% if dates_count > 1 %}{{ dates_count }} demandes annulées{% else %}demande annulée{% endif %}{% elif canceled_by == 'parent' %}{{ counterpart_name|capfirst }} a annulé {% if dates_count > 1 %}{{ dates_count }} demandes de réservation{% else %}sa demande de réservation{% endif %}{% else %}{% if dates_count > 1 %}{{ dates_count }} demandes de réservation annulées{% else %}Une demande de réservation a été annulée{% endif %}{% endif %}{% endblock subject %}
+
+{% block preheader %}{% if canceled_by == 'auto' %}{{ counterpart_name|capfirst }} a confirmé un autre trajet : vos places sont à nouveau disponibles.{% else %}Vos places sont à nouveau disponibles. Aucune action n'est requise.{% endif %}{% endblock preheader %}
+
+{% block eyebrow %}Demande<br>annulée{% endblock eyebrow %}
+
+{% block title %}{% if dates_count > 1 %}Des demandes ont été annulées{% else %}Une demande a été annulée{% endif %}{% endblock title %}
+
+{% block content %}<p class="m-txt" style="margin:0 0 22px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000">{% if canceled_by == 'auto' %}<strong style="color:#007F73">{{ counterpart_name|capfirst }}</strong> a confirmé un autre trajet pour {% if dates_count > 1 %}{{ dates_count }} des dates qu'il vous avait demandées. Ses demandes ont donc été annulées automatiquement et vos places sont à nouveau disponibles.{% else %}cette date. Sa demande a donc été annulée automatiquement et votre place est à nouveau disponible.{% endif %}{% elif canceled_by == 'parent' %}<strong style="color:#007F73">{{ counterpart_name|capfirst }}</strong> a annulé {% if dates_count > 1 %}{{ dates_count }} de ses demandes de réservation{% else %}sa demande de réservation{% endif %} pour votre trajet.{% else %}{% if dates_count > 1 %}{{ dates_count }} demandes de réservation ont été annulées{% else %}Une demande de réservation a été annulée{% endif %} pour votre trajet.{% endif %}</p>
+{% include "emails/_traject_recap.html" with dates_label=dates_count|pluralize:"Date libérée,Dates libérées" muted=True badge=cancel_reason %}{% endblock content %}
+
+{% block cta %}{% include "emails/_cta.html" with url=cta_url label="Voir mes réservations" %}{% endblock cta %}
+
+{% block closing %}<p class="m-txt-s" style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#000000"><strong style="color:#007F73">Aucune action n'est requise de votre part.</strong> {% if dates_count > 1 %}Les places sont{% else %}La place est{% endif %} de nouveau proposée{{ dates_count|pluralize:"s" }} aux autres parents.</p>{% endblock closing %}

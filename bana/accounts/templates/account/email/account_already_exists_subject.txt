@@ -1,4 +1,1 @@
-{% load i18n %}
-{% autoescape off %}
-{% blocktrans %}Un compte existe déjà avec cette adresse{% endblocktrans %}
-{% endautoescape %}
+{% load i18n %}{% autoescape off %}{% trans "Un compte Bana existe déjà avec cette adresse" %}{% endautoescape %}

@@ -1,8 +1,11 @@
-{% autoescape off %}Bonjour,
+{% autoescape off %}Bonjour{% if recipient_name %} {{ recipient_name }}{% endif %},
 
-Vous avez reçu une nouvelle demande de réservation.
+{{ counterpart_name|capfirst }} vous a envoyé {% if dates_count > 1 %}{{ dates_count }} demandes de réservation{% else %}une demande de réservation{% endif %} pour votre trajet.
 
-Détails du trajet : {{ trajet_info }}
-Nombre d'enfant(s) demandé(s) : {{ requested_places }}
-
-Connectez-vous à Bana pour accepter ou refuser la demande.{% endautoescape %}
+{% include "trajects/email/_recap.txt" %}
+{% if dates_count > 1 %}Dates demandées :
+{% for date_obj in dates %}- {{ date_obj|date:"D j b"|capfirst }}
+{% endfor %}{% else %}Date demandée : {{ dates|first|date:"D j b"|capfirst }}
+{% endif %}
+{% if dates_count > 1 %}Acceptez ou refusez ces demandes depuis votre espace Bana :{% else %}Acceptez ou refusez cette demande depuis votre espace Bana :{% endif %}
+{{ cta_url }}{% endautoescape %}

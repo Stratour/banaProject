@@ -96,7 +96,7 @@
           <!-- Transport / Enfants -->
           <div class="grid gap-5 sm:grid-cols-2 mb-4">
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#0F0F0F]">{% trans "Transport" %} :</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-brand">{% trans "Transport" %} :</span>
               {% for mode in researched.transport_modes.all %}
                 {% include "trajects/partials/transport_badge.html" with mode=mode %}
               {% empty %}
@@ -104,7 +104,7 @@
               {% endfor %}
             </div>
             <div class="flex items-center gap-2 flex-wrap">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#0F0F0F]">{% trans "Enfant(s)" %} :</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-brand">{% trans "Enfant(s)" %} :</span>
               {% for child in researched.children.all %}
                 <span class="inline-flex items-center rounded-full border-[1.5px] border-[#E5E7EB] px-3 py-1 text-sm font-semibold text-[#374151]">
                   {{ child.chld_name }} {{ child.chld_surname }}
@@ -115,7 +115,6 @@
             </div>
           </div>
 
-          <div class="h-px bg-[#F3F4F6] mb-3.5"></div>
 
           <div class="flex justify-end">
             <button type="button" data-tj-toggle-dates

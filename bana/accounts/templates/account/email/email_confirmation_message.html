@@ -1,0 +1,18 @@
+{% extends "account/email/base_message.html" %}
+{% load i18n %}
+{% comment %}
+  Adresse ajoutée à un compte existant. L'inscription, elle, passe par
+  email_confirmation_signup_message.html : les deux gabarits partageaient jadis
+  le même texte, qui souhaitait la bienvenue à quelqu'un déjà inscrit.
+{% endcomment %}
+{% block subject %}{% trans "Confirmez votre adresse e-mail" %}{% endblock subject %}
+
+{% block preheader %}{% trans "Cette adresse e-mail vient d'être ajoutée à votre compte Bana." %}{% endblock preheader %}
+
+{% block title %}{% trans "Confirmez cette adresse e-mail" %}{% endblock title %}
+
+{% block content %}<p class="m-txt" style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000">{% trans "Cette adresse e-mail vient d'être ajoutée à votre compte Bana. Confirmez-la pour pouvoir l'utiliser." %}</p>{% endblock content %}
+
+{% block cta %}{% include "emails/_cta.html" with url=activate_url label=_("Confirmer cette adresse") cta_padding="14px 32px 4px" %}{% endblock cta %}
+
+{% block closing %}<p class="m-txt-s" style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#000000">{% trans "Si vous n'êtes pas à l'origine de cet ajout, ignorez cet e-mail : l'adresse ne sera pas activée." %}</p>{% endblock closing %}

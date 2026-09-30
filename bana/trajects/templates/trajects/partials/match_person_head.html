@@ -1,0 +1,168 @@
+{% load i18n static %}
+{% comment %}
+  En-tête d'une carte de matching : la personne dont le trajet correspond au
+  mien. Même disposition que la carte « personne » des réservations
+  (reservation/partials/person_card.html), dont il reprend la grille
+  .tj-person-head (trajects.css) :
+
+  - sous sm : photo + nom + note sur la première ligne, puis l'itinéraire et
+    les badges sur toute la largeur (.tj-person-wide), sous la photo. Une
+    adresse tenait sur trois lignes dans la colonne étroite laissée par un
+    avatar de 50px, qui lui restait seul en haut ;
+  - à partir de sm : la photo occupe les deux rangées, le texte s'empile dans
+    la colonne de droite.
+
+  L'avatar est réduit sous sm, pour la même raison qu'en réservation.
+
+  Une différence assumée avec person_card.html : rien n'est masqué sur mobile
+  ici (pas de .tj-choice-only). Note, avis, enfants et langues servent
+  précisément à décider s'il faut proposer son aide ou réserver — c'est le
+  moment du choix, pas le suivi d'une demande déjà envoyée.
+
+  Attend : match (un dict des vues de matching), is_abonned.
+{% endcomment %}
+<div class="tj-person-head">
+
+  <div class="tj-person-avatar relative h-11 w-11 sm:h-[50px] sm:w-[50px] shrink-0">
+    <div class="h-full w-full rounded-full bg-brand-50 ring-2 sm:ring-4 ring-[#E9F5F1] overflow-hidden">
+      {% if match.user.profile.profile_picture %}
+        <a {% if is_abonned %}href="{% url 'accounts:profile_user' user_id=match.user.id %}"{% endif %}>
+          <img src="{{ match.user.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="">
+        </a>
+      {% else %}
+        <a {% if is_abonned %}href="{% url 'accounts:profile_user' user_id=match.user.id %}"{% endif %}
+           class="flex items-center justify-center w-full h-full">
+          <img src="{% static 'bana/img/icon/Icon_bana.png' %}" alt="" class="h-full w-full object-cover">
+        </a>
+      {% endif %}
+    </div>
+    {% if match.user.profile.prfl_is_verified %}
+      <span class="absolute -top-1 -left-1 inline-flex h-4 w-4 rounded-full bg-white ring-2 ring-white shadow">
+        <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
+          <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
+          <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </span>
+    {% endif %}
+  </div>
+
+  <div class="min-w-0 flex items-center gap-2 flex-wrap">
+    <p class="text-[15px] font-extrabold text-[#0F0F0F] tracking-tight">
+      {% if is_abonned %}
+        <a href="{% url 'accounts:profile_user' user_id=match.user.id %}" class="hover:underline">
+          {% if match.user.profile.ci_is_verified %}
+            {{ match.user.profile.verified_first_name }} {{ match.user.profile.verified_last_name|slice:":1" }}.
+          {% else %}
+            {{ match.user.first_name }} {{ match.user.last_name|slice:":1" }}.
+          {% endif %}
+        </a>
+      {% else %}
+        <span class="text-red-600 text-sm font-semibold">{% trans "Abonnement requis pour voir le profil" %}</span>
+      {% endif %}
+    </p>
+    {% if match.reviews_count %}
+      <a href="{% url 'accounts:profile_user' user_id=match.user.id %}#avis-recus"
+         class="inline-flex items-center gap-1 text-xs font-bold text-brand bg-brand-50 border border-brand/30 px-2 py-0.5 rounded-md hover:opacity-80 whitespace-nowrap">
+        ★ {{ match.average_rating }}
+        <span class="font-normal text-[#414140]">({{ match.reviews_count }} {% trans "avis" %})</span>
+      </a>
+    {% else %}
+      <span class="text-xs text-[#C0BFBA] whitespace-nowrap">{% trans "Aucun avis" %}</span>
+    {% endif %}
+  </div>
+
+  {% comment %}
+    Filet de séparation entre l'identité et les informations de trajet : sur
+    mobile il court sur toute la largeur, sous la photo ; à partir de sm il ne
+    couvre que la colonne de droite.
+  {% endcomment %}
+  <div class="tj-person-wide min-w-0 flex flex-col gap-3 border-t border-[#F3F4F6] pt-2.5">
+
+    {% comment %}
+      Une ligne par point sur mobile : la flèche « départ → arrivée » d'une
+      seule coulée produisait un pavé où l'on ne voyait plus où finissait une
+      adresse. Pictogrammes (épingle, drapeau) des pages « Mes trajets ».
+
+      Une offre en rayon n'a pas de destination — un trajet rayon est créé
+      avec une adresse d'arrivée vide : on affiche la zone couverte plutôt
+      qu'un « — », et pas de flèche vers laquelle pointer.
+    {% endcomment %}
+    <div class="min-w-0 flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-y-2 sm:gap-x-3 text-[13px] sm:text-sm font-medium text-[#374151] leading-snug">
+      <span class="flex items-start gap-1.5 min-w-0">
+        <svg class="h-4 w-4 mt-0.5 text-brand shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"></path>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"></path>
+        </svg>
+        <span class="min-w-0 break-words">
+          {{ match.traject.start_adress }}
+          {% if match.departure_time %}<span class="text-xs text-[#4B5563] whitespace-nowrap">( {{ match.departure_time|time:"H\hi" }} )</span>{% endif %}
+          {% if match.traject.end_adress %}
+            <svg class="inline-block h-4 w-4 align-middle text-brand" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M16.3153 16.6681C15.9247 17.0587 15.9247 17.6918 16.3153 18.0824C16.7058 18.4729 17.339 18.4729 17.7295 18.0824L22.3951 13.4168C23.1761 12.6357 23.1761 11.3694 22.3951 10.5883L17.7266 5.9199C17.3361 5.52938 16.703 5.52938 16.3124 5.91991C15.9219 6.31043 15.9219 6.9436 16.3124 7.33412L19.9785 11.0002L2 11.0002C1.44772 11.0002 1 11.4479 1 12.0002C1 12.5524 1.44772 13.0002 2 13.0002L19.9832 13.0002L16.3153 16.6681Z"/>
+            </svg>
+          {% endif %}
+        </span>
+      </span>
+
+      {% if match.traject.end_adress %}
+        <span class="flex items-start gap-1.5 min-w-0">
+          <svg class="h-4 w-4 mt-0.5 text-brand shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5v14M5 5h10l-2 4 2 4H5"></path>
+          </svg>
+          <span class="min-w-0 break-words">
+            {{ match.traject.end_adress }}
+            {% if match.arrival_time %}<span class="text-xs text-[#4B5563] whitespace-nowrap">( {{ match.arrival_time|time:"H\hi" }} )</span>{% endif %}
+          </span>
+        </span>
+      {% else %}
+        <span class="flex items-start gap-1.5 min-w-0 text-brand font-semibold">
+          <svg class="h-4 w-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+            <circle cx="12" cy="12" r="8" stroke-width="2"></circle>
+            <circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"></circle>
+          </svg>
+          <span class="min-w-0">{% trans "Dans un rayon de" %} {{ match.search_radius_km|default:5 }} km</span>
+        </span>
+      {% endif %}
+    </div>
+
+    {% comment %}
+      Enfants et langues sur la même ligne. Les enfants ne concernent que les
+      cartes vues par un yaya : c'est lui qui a besoin de savoir qui il
+      transporterait. Chaque pastille ouvre la fiche de l'enfant (siège,
+      handicap, besoins spécifiques, langues) — jamais imbriquée dans un autre
+      <dialog>, deux modales s'empilant sans retour possible à la première.
+    {% endcomment %}
+    {% if match.children %}
+      <div class="min-w-0 flex items-center gap-2 flex-wrap">
+        {% if match.children %}
+          <img src="{% static 'bana/img/icon/Icon_child_brand.svg' %}" alt="" class="h-4 w-5 shrink-0">
+          <span class="sr-only">{% trans "Enfant(s)" %} :</span>
+          {% for child in match.children %}
+            {% include "trajects/partials/child_badge.html" with child=child modal_scope=match.scope %}
+          {% endfor %}
+        {% endif %}
+        
+      </div>
+    {% endif %}
+
+    {% comment "si il faut ajouter le badge langue" %}
+    {% if match.children or match.languages %}
+      <div class="min-w-0 flex items-center gap-2 flex-wrap">
+        {% if match.children %}
+          <img src="{% static 'bana/img/icon/Icon_child_brand.svg' %}" alt="" class="h-4 w-5 shrink-0">
+          <span class="sr-only">{% trans "Enfant(s)" %} :</span>
+          {% for child in match.children %}
+            {% include "trajects/partials/child_badge.html" with child=child modal_scope=match.scope %}
+          {% endfor %}
+        {% endif %}
+        {% if match.languages %}
+          <span class="text-xs text-brand bg-[#E6F5F3] px-2 py-0.5 rounded-md font-semibold">
+            🌐 {% for lang in match.languages %}{{ lang.lang_name }}{% if not forloop.last %}, {% endif %}{% endfor %}
+          </span>
+        {% endif %}
+      </div>
+    {% endif %}
+    {% endcomment %}
+
+  </div>
+</div>

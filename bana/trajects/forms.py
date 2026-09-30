@@ -4,6 +4,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+from accounts.forms import TailwindFormMixin
 from accounts.models import Languages, Child
 from .models import (
     Traject,
@@ -35,14 +36,6 @@ class RecurrenceValidationMixin:
     """
 
     one_week_label = _("Trajets occasionnels")
-
-    def clean_date_debut(self):
-        date_debut = self.cleaned_data.get("date_debut")
-        if date_debut and date_debut < date.today():
-            raise ValidationError(
-                _("La date de début ne peut pas être antérieure à la date d'aujourd'hui.")
-            )
-        return date_debut
 
     def clean_tr_weekdays(self):
         days = self.cleaned_data.get("tr_weekdays") or []
@@ -84,6 +77,16 @@ class RecurrenceValidationMixin:
                     "date_fin",
                     _("Pour une récurrence occasionnelle, la période ne peut pas dépasser 7 jours.")
                 )
+
+        # Une date de début passée n'est pas une erreur : les occurrences
+        # antérieures à aujourd'hui sont simplement ignorées à la création
+        # (voir _resolve_recurrent_dates). On ne bloque que si la période
+        # entière est passée, auquel cas il n'y aurait aucun trajet à créer.
+        if date_debut and (date_fin or date_debut) < date.today():
+            self.add_error(
+                "date_debut",
+                _("Cette période est entièrement passée. Veuillez choisir des dates à venir.")
+            )
 
         return cleaned_data
     
@@ -174,6 +177,10 @@ class ProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
             "type": "time",
             "class": TJ_INPUT_CLASS,
             "placeholder": "hh:mm",
+            # Les gabarits de création rendent ce widget seul, sous le libellé
+            # « Départ »/« Arrivée » partagé avec le champ adresse : sans ceci,
+            # le champ heure n'a aucun libellé accessible.
+            "aria-label": _("Heure de départ"),
         }),
         error_messages={
             "required": _("Veuillez renseigner l'heure de départ.")
@@ -186,6 +193,10 @@ class ProposedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
             "type": "time",
             "class": TJ_INPUT_CLASS,
             "placeholder": "hh:mm",
+            # Les gabarits de création rendent ce widget seul, sous le libellé
+            # « Départ »/« Arrivée » partagé avec le champ adresse : sans ceci,
+            # le champ heure n'a aucun libellé accessible.
+            "aria-label": _("Heure d’arrivée"),
         }),
         error_messages={
             "required": _("Veuillez renseigner l'heure d’arrivée.")
@@ -462,6 +473,10 @@ class ResearchedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
             "type": "time",
             "class": TJ_INPUT_CLASS,
             "placeholder": "hh:mm",
+            # Les gabarits de création rendent ce widget seul, sous le libellé
+            # « Départ »/« Arrivée » partagé avec le champ adresse : sans ceci,
+            # le champ heure n'a aucun libellé accessible.
+            "aria-label": _("Heure de départ"),
         }),
         error_messages={
             "required": _("Veuillez renseigner l'heure de départ.")
@@ -474,6 +489,10 @@ class ResearchedTrajectForm(RecurrenceValidationMixin, forms.ModelForm):
             "type": "time",
             "class": TJ_INPUT_CLASS,
             "placeholder": "hh:mm",
+            # Les gabarits de création rendent ce widget seul, sous le libellé
+            # « Départ »/« Arrivée » partagé avec le champ adresse : sans ceci,
+            # le champ heure n'a aucun libellé accessible.
+            "aria-label": _("Heure d’arrivée"),
         }),
         error_messages={
             "required": _("Veuillez renseigner l'heure d’arrivée.")
@@ -550,3 +569,23 @@ class ReservationForm(forms.ModelForm):
     class Meta:
         model = Reservation
         fields = ["number_of_places"]
+
+
+class MemberContactForm(TailwindFormMixin, forms.Form):
+    """Message libre d'un membre à un autre, depuis la page Réservations.
+
+    Le destinataire et le trajet concerné ne sont pas des champs : le premier
+    vient de l'URL et est validé côté vue, le second n'est qu'un libellé repris
+    de la carte. Le formulaire ne porte donc que le message.
+    """
+    body = forms.CharField(
+        label=_("Votre message"),
+        max_length=2000,
+        strip=True,
+        widget=forms.Textarea(attrs={
+            "rows": 6,
+            "maxlength": 2000,
+            "required": True,
+            "placeholder": _("Bonjour, je vous contacte au sujet du trajet…"),
+        }),
+    )

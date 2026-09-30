@@ -1,0 +1,26 @@
+{% extends "trajects/email/base_message.html" %}
+{% comment %}
+  Le Yaya a accepté : c'est le PARENT qui est prévenu. Un seul email par trajet
+  pour tout le lot accepté.
+
+  La ligne « Accompagnateur » et la proposition de le contacter ne s'affichent
+  que si `counterpart_named` est vrai — « Accompagnateur : un accompagnateur »
+  n'apprend rien.
+
+  Pas de badge de vérification d'identité ici : l'information n'est pas dans le
+  contexte de l'email.
+{% endcomment %}
+{% block subject %}{{ counterpart_name|capfirst }} a confirmé {% if dates_count > 1 %}{{ dates_count }} de vos réservations{% else %}votre réservation{% endif %}{% endblock subject %}
+
+{% block preheader %}{{ counterpart_name|capfirst }} accompagnera vos enfants sur {{ dates_count }} date{{ dates_count|pluralize }}.{% endblock preheader %}
+
+{% block eyebrow %}Réservation<br>confirmée{% endblock eyebrow %}
+
+{% block title %}{% if dates_count > 1 %}{{ dates_count }} réservations confirmées{% else %}Réservation confirmée{% endif %}{% endblock title %}
+
+{% block content %}<p class="m-txt" style="margin:0 0 22px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000">Bonne nouvelle ! <strong style="color:#007F73">{{ counterpart_name|capfirst }}</strong> a confirmé <strong style="color:#007F73">{% if dates_count > 1 %}{{ dates_count }} de vos réservations{% else %}votre réservation{% endif %}</strong>.</p>
+{% if counterpart_named %}{% include "emails/_traject_recap.html" with dates_label=dates_count|pluralize:"Date confirmée,Dates confirmées" extra_label="Accompagnateur" extra_value=counterpart_name %}{% else %}{% include "emails/_traject_recap.html" with dates_label=dates_count|pluralize:"Date confirmée,Dates confirmées" %}{% endif %}{% endblock content %}
+
+{% block cta %}{% include "emails/_cta.html" with url=cta_url label="Voir mes réservations" %}{% endblock cta %}
+
+{% block closing %}<p class="m-txt-s" style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#000000">Retrouvez le détail{% if counterpart_named %} et contactez {{ counterpart_name }}{% endif %} depuis votre espace Bana.</p>{% endblock closing %}

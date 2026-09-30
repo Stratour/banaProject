@@ -1,0 +1,40 @@
+{% load i18n %}
+{% comment %}
+  Badge d'une réservation annulée — source unique du libellé et de la couleur.
+
+  Attend :
+    - canceled_by : 'parent' | 'yaya' | 'auto' | vide (annulations antérieures
+                    à l'ajout du champ → libellé générique « Annulée »)
+    - side        : "made" (je suis le demandeur) ou "received" (on me sollicite)
+    - badge_class : classes de taille/forme, pour adapter la pastille au
+                    contexte — les pastilles de date des matchings passent une
+                    version réduite. Par défaut, la taille des cartes de
+                    réservation. La couleur reste pilotée ici.
+
+  Un refus du conducteur et une annulation du parent valent tous deux
+  status='canceled' : c'est `canceled_by` qui les distingue. Seul un refus ou
+  une annulation explicite reste en rouge — une annulation automatique est un
+  état terminal neutre. Les libellés longs ne prennent pas whitespace-nowrap,
+  sans quoi ils débordent de leur carte.
+{% endcomment %}
+{% if canceled_by == 'auto' %}
+  <span class="inline-flex items-center rounded-full font-bold bg-[#F3F4F6] text-[#6B7280] {{ badge_class|default:'px-2.5 py-1 text-xs' }}">
+    {% if side == 'made' %}{% trans "Annulée - date déjà couverte" %}{% else %}{% trans "Annulée - le parent a confirmé ailleurs" %}{% endif %}
+  </span>
+
+{% elif canceled_by == 'yaya' %}
+  <span class="inline-flex items-center gap-1.5 rounded-full font-bold bg-[#FEE2E2] text-[#991B1B] {{ badge_class|default:'px-2.5 py-1 text-xs whitespace-nowrap' }}">
+    <svg class="w-3 h-3 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    {% if side == 'made' %}{% trans "Refusée" %}{% else %}{% trans "Refusée par vous" %}{% endif %}
+  </span>
+
+{% elif canceled_by == 'parent' %}
+  <span class="inline-flex items-center rounded-full font-bold bg-[#FEE2E2] text-[#991B1B] {{ badge_class|default:'px-2.5 py-1 text-xs whitespace-nowrap' }}">
+    {% if side == 'made' %}{% trans "Annulée par vous" %}{% else %}{% trans "Annulée par le parent" %}{% endif %}
+  </span>
+
+{% else %}
+  <span class="inline-flex items-center rounded-full font-bold bg-[#F3F4F6] text-[#6B7280] {{ badge_class|default:'px-2.5 py-1 text-xs whitespace-nowrap' }}">
+    {% trans "Annulée" %}
+  </span>
+{% endif %}

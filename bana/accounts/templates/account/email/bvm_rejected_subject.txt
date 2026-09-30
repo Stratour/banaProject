@@ -1,0 +1,1 @@
+{% load i18n %}{% autoescape off %}{% trans "Votre certificat de bonne vie et mœurs n'a pas été validé" %}{% endautoescape %}

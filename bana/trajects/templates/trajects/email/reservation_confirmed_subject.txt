@@ -1,1 +1,1 @@
-{% autoescape off %}Votre réservation a été confirmée{% endautoescape %}
+{% autoescape off %}{{ counterpart_name|capfirst }} a confirmé {% if dates_count > 1 %}{{ dates_count }} de vos réservations{% else %}votre réservation{% endif %}{% endautoescape %}

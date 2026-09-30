@@ -4,7 +4,7 @@
         onclick="document.getElementById('child-modal-{{ child.id }}-{{ modal_scope }}').showModal()"
         class="inline-flex items-center rounded-full border-[1.5px] border-[#E5E7EB] px-3 py-1 text-xs font-semibold text-[#374151] hover:bg-gray-50 transition">
   {{ child.chld_name }} {{ child.chld_surname|slice:":1" }}.
-  {% if child.age %}<span class="ml-1 text-[#ABABAB] font-normal">— {{ child.age }} {% trans "ans" %}</span>{% endif %}
+  {% if child.age %}<span class="ml-1 text-[#ABABAB] font-normal">- {{ child.age }} {% trans "ans" %}</span>{% endif %}
 </button>
 
 <dialog id="child-modal-{{ child.id }}-{{ modal_scope }}" class="rounded-2xl p-0 w-full max-w-lg backdrop:bg-black/40">

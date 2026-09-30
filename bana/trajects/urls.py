@@ -29,7 +29,6 @@ urlpatterns = [
 
 
     path('réservations/', views.my_reservations, name='my_reservations'),
-    path('réservations/reçue/<uuid:proposed_groupe_uid>/', views.my_reservations_received_detail, name='my_reservations_received_detail'),
 
     #path('modify/<int:id>/<str:type>/', views.modify_traject, name='modify_traject'),
     #path('reserve/<int:id>/', views.reserve_traject, name='reserve_traject'),
@@ -38,6 +37,9 @@ urlpatterns = [
     
     
     path('manage_reservation/<int:reservation_id>/<str:action>/', views.manage_reservation, name='manage_reservation'),
+    path('reservation/<int:reservation_id>/annuler/', views.cancel_reservation, name='cancel_reservation'),
+    path('reservations/repondre-groupe/', views.manage_reservations_bulk, name='manage_reservations_bulk'),
+    path('contacter-membre/<int:user_id>/', views.contact_member, name='contact_member'),
 
     path('propose-help/<int:researched_id>/', views.propose_help, name='propose_help'),
     path('propose-help-groupe/<uuid:proposed_groupe_uid>/<uuid:researched_groupe_uid>/<int:parent_user_id>/', views.propose_help_match, name='propose_help_match'),

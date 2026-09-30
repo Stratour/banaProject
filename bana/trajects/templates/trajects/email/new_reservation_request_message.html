@@ -1,0 +1,24 @@
+{% extends "trajects/email/base_message.html" %}
+{% comment %}
+  Nouvelle(s) demande(s) reçue(s) par le Yaya. Un seul email par trajet, quel
+  que soit le nombre de dates cochées par le parent — d'où la liste de dates
+  plutôt qu'un email par date.
+
+  `counterpart_name` peut valoir le repli « un parent » : `|capfirst` en tête de
+  phrase, et `counterpart_named` masque les tournures où le repli ne veut rien
+  dire.
+{% endcomment %}
+{% block subject %}{{ counterpart_name|capfirst }} vous envoie {% if dates_count > 1 %}{{ dates_count }} nouvelles demandes de réservation{% else %}une nouvelle demande de réservation{% endif %}{% endblock subject %}
+
+{% block preheader %}{{ counterpart_name|capfirst }} demande {% if requested_places %}{{ requested_places }} place{{ requested_places|pluralize }} sur {% endif %}{{ dates_count }} date{{ dates_count|pluralize }} de votre trajet.{% endblock preheader %}
+
+{% block eyebrow %}Demande<br>de réservation{% endblock eyebrow %}
+
+{% block title %}{% if dates_count > 1 %}{{ dates_count }} nouvelles demandes de réservation{% else %}Nouvelle demande de réservation{% endif %}{% endblock title %}
+
+{% block content %}<p class="m-txt" style="margin:0 0 22px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000"><strong style="color:#007F73">{{ counterpart_name|capfirst }}</strong> vous a envoyé <strong style="color:#007F73">{% if dates_count > 1 %}{{ dates_count }} demandes{% else %}une demande{% endif %}</strong> de réservation pour votre trajet{% if requested_places %}, <strong style="color:#007F73">{{ requested_places }} enfant{{ requested_places|pluralize }}</strong> par date{% endif %}.</p>
+{% include "emails/_traject_recap.html" with dates_label=dates_count|pluralize:"Date demandée,Dates demandées" %}{% endblock content %}
+
+{% block cta %}{% include "emails/_cta.html" with url=cta_url label="Consulter les réservations" %}{% endblock cta %}
+
+{% block closing %}<p class="m-txt-s" style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#000000">Acceptez ou refusez {% if dates_count > 1 %}ces demandes{% else %}cette demande{% endif %} depuis votre espace Bana.{% if counterpart_named %} {{ counterpart_name }} attend votre retour pour organiser ses trajets.{% endif %}</p>{% endblock closing %}

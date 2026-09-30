@@ -16,3 +16,20 @@
 .faq-chip-row::-webkit-scrollbar {
     display: none;
 }
+
+/* Mise en forme des réponses — le HTML des réponses vient de la vue (views.py),
+   Tailwind ne peut donc pas y appliquer de classes utilitaires */
+.faq-body p + p,
+.faq-body p + ul,
+.faq-body ul + p {
+    margin-top: 0.75rem;
+}
+
+.faq-body ul {
+    list-style: disc;
+    padding-left: 1.5rem;
+}
+
+.faq-body li + li {
+    margin-top: 0.25rem;
+}

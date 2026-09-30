@@ -1,0 +1,38 @@
+{% comment %}
+  Bouton d'action principal, une ligne complète du tableau du corps.
+
+  Attend `url` et `label`. `outline` rend la variante secondaire, à contour :
+  elle sert quand le message s'adresse à quelqu'un qui n'est pas membre, où un
+  bouton plein ferait de la prospection d'un mécanisme de sécurité.
+
+  Le fond est posé deux fois, en attribut `bgcolor` et en style inline : les
+  vieux Outlook ignorent le second, certains webmails filtrent le premier. Le
+  padding est porté par le <td> et non par le <a>, que Word ne sait pas
+  rembourrer ; le <a> passe en `display:block` pour que toute la surface du
+  bouton reste cliquable.
+
+  `border-collapse:separate` est obligatoire ici : avec `collapse`, le moteur
+  sort les bordures du flux de la cellule et les dessine en angle droit
+  PAR-DESSUS le `border-radius`, ce qui laissait un trait vertical en travers du
+  coin arrondi. Même raison dans _traject_recap.html.
+
+  Pas d'URL recopiée en clair sous le bouton, retirée volontairement : un
+  bouton reste un simple lien, cliquable même sans styles ni images, et la
+  version texte de l'email porte déjà l'adresse complète. Le rappel ne servait
+  qu'à l'email imprimé, pour un bloc gris de plusieurs lignes.
+
+  Sous 480 px le bouton est CENTRÉ, pas étiré. Le forcer en `width:100%`
+  le faisait déborder de sa carte : la largeur d'un <td> se calcule hors
+  padding (`box-sizing:content-box`), si bien qu'un bouton à 100 % plus ses
+  28 px de padding horizontal et ses 2 px de bordure sortait de 60 px. On
+  centre donc la cellule et le bouton reste à sa taille naturelle, qui dépasse
+  déjà largement la cible tactile de 38 px recommandée (45 px de haut).
+{% endcomment %}<tr><td class="m-pad m-btn-cell" style="padding:{{ cta_padding|default:"22px 32px 4px" }}">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" class="m-btn" style="border-collapse:separate;border-spacing:0">
+    {% if outline %}
+    <tr><td align="center" style="border:2px solid #007F73;border-radius:8px;padding:13px 28px"><a href="{{ url }}" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#007F73;text-decoration:none">{{ label }}</a></td></tr>
+    {% else %}
+    <tr><td align="center" bgcolor="{{ cta_color|default:"#007F73" }}" style="background-color:{{ cta_color|default:"#007F73" }};border-radius:8px;padding:15px 30px"><a href="{{ url }}" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#FFFFFF;text-decoration:none">{{ label }}</a></td></tr>
+    {% endif %}
+  </table>
+</td></tr>

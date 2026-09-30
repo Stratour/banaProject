@@ -1,1 +1,1 @@
-{% autoescape off %}Recherche de trajet disponible{% endautoescape %}
+{% autoescape off %}{{ yaya_name|capfirst }} est disponible pour votre trajet{% if dates %} du {{ dates|first|date:"j F" }}{% endif %}{% endautoescape %}

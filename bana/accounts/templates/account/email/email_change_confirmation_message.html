@@ -1,0 +1,36 @@
+{% extends "account/email/base_message.html" %}
+{% load i18n %}
+{% comment %}
+  Envoyé par accounts.utils.send_change_email_confirmation, PAS par allauth :
+  déposer ce fichier ne suffit pas, `send_mail` y reçoit explicitement
+  `html_message`. Toucher à l'un sans l'autre laisse le membre avec l'ancienne
+  facture.
+
+  Seul email du lot à exposer une durée de validité : `expiration_days` vient de
+  ce même module, allauth ne le met nulle part en contexte.
+
+  Le sort de l'ancienne adresse est dit explicitement parce qu'il est
+  irréversible : à la confirmation, le signal `email_confirmed`
+  (accounts/signals.py) SUPPRIME les autres EmailAddress du compte. allauth
+  authentifie sur n'importe quelle adresse liée sans regarder `primary` ni
+  `verified` — une ancienne adresse laissée en base permettrait encore de se
+  connecter. Mieux vaut l'annoncer ici que le découvrir à la prochaine connexion.
+{% endcomment %}
+{% block subject %}{% trans "Confirmez votre nouvelle adresse e-mail" %}{% endblock subject %}
+
+{% block preheader %}{% trans "Confirmez ce changement pour utiliser cette adresse comme identifiant de connexion." %}{% endblock preheader %}
+
+{% block title %}{% trans "Confirmez votre nouvelle adresse" %}{% endblock title %}
+
+{% block content %}<p class="m-txt" style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000">{% if expiration_days %}{% blocktrans %}Vous avez demandé à utiliser cette adresse e-mail pour votre compte Bana. Confirmez ce changement depuis le lien ci-dessous, valable <strong style="color:#007F73">{{ expiration_days }} jour(s)</strong>.{% endblocktrans %}{% else %}{% trans "Vous avez demandé à utiliser cette adresse e-mail pour votre compte Bana. Confirmez ce changement depuis le lien ci-dessous." %}{% endif %}</p>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:separate;border-spacing:0;background-color:#FFFFFF;border:1px solid #D5D5D5;border-radius:10px;margin:6px 0 4px">
+  <tr><td class="m-card" style="padding:16px 18px">
+    <p style="margin:0 0 4px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#007F73">{% trans "Nouvelle adresse de connexion" %}</p>
+    <p style="margin:0 0 12px;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#000000;word-break:break-all">{{ new_email }}</p>
+    <p class="m-txt-s" style="margin:0;padding:12px 0 0;border-top:1px solid #E5E5E5;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#000000">{% blocktrans %}Tant que ce lien n'est pas ouvert, votre ancienne adresse reste celle de connexion. <strong style="color:#007F73">Une fois le changement confirmé, elle est supprimée</strong> et ne permettra plus de vous connecter.{% endblocktrans %}</p>
+  </td></tr>
+</table>{% endblock content %}
+
+{% block cta %}{% include "emails/_cta.html" with url=activate_url label=_("Confirmer le changement") cta_padding="14px 32px 4px" %}{% endblock cta %}
+
+{% block closing %}<p class="m-txt-s" style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#000000">{% trans "Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail : votre adresse actuelle reste inchangée." %}</p>{% endblock closing %}

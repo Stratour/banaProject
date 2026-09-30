@@ -1,177 +1,141 @@
 {% load i18n static %}
 
+{% comment %}
+  Les toasts sont rendus par allauth/layouts/base.html, hors du bloc swappé :
+  après une action HTMX, le message n'apparaîtrait qu'au chargement suivant.
+  On le pousse donc en out-of-band. Le garde request.htmx évite un id dupliqué
+  lors d'un rendu de page complet (base.html a déjà consommé les messages).
+{% endcomment %}
+{% if request.htmx %}
+  <div id="toast-host" hx-swap-oob="true">{% include "layouts/toasts.html" %}</div>
+{% endif %}
+
 <div id="reservations-content" data-tj-resa-app class="flex flex-col gap-7">
 
-  <!-- Tabs + toggle vue -->
+  {% comment %} Onglets + bascule Liste / Calendrier {% endcomment %}
   <div class="flex items-center justify-between flex-wrap gap-3">
     <div class="inline-flex items-center gap-[3px] p-1 bg-white border border-[#E5E4DF] rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
       <a href="?tab=active"
          hx-get="?tab=active" hx-target="#reservations-content" hx-swap="outerHTML" hx-push-url="true"
-         class="flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold tracking-tight transition-all
-                {% if tab == 'active' %}bg-brand text-white{% else %}text-[#A0A09A] hover:text-gray-700{% endif %}">
-        {% trans "Réservations en cours" %}
-        {% if active_count > 0 %}
-          <span class="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-bold {% if tab == 'active' %}bg-white/25 text-white{% else %}bg-gray-100 text-gray-600{% endif %}">{{ active_count }}</span>
-        {% endif %}
+         class="flex items-center gap-2 px-5 py-2.5 rounded-lg text-base font-semibold tracking-tight transition-all cursor-pointer
+                {% if tab == 'active' %}bg-brand text-brand-50{% else %}text-gray-700 hover:text-brand hover:bg-brand-50{% endif %}">
+        {% trans "En cours" %}
       </a>
       <a href="?tab=history"
          hx-get="?tab=history" hx-target="#reservations-content" hx-swap="outerHTML" hx-push-url="true"
-         class="flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-semibold tracking-tight transition-all
-                {% if tab == 'history' %}bg-brand text-white{% else %}text-[#A0A09A] hover:text-gray-700{% endif %}">
+         class="flex items-center gap-2 px-5 py-2.5 rounded-lg text-base font-semibold tracking-tight transition-all cursor-pointer
+                {% if tab == 'history' %}bg-brand text-brand-50{% else %}text-gray-700 hover:text-brand hover:bg-brand-50{% endif %}">
         {% trans "Historique" %}
-        {% if history_count > 0 %}
-          <span class="inline-flex items-center justify-center rounded-full px-2 py-0.5 text-xs font-bold {% if tab == 'history' %}bg-white/25 text-white{% else %}bg-gray-100 text-gray-600{% endif %}">{{ history_count }}</span>
-        {% endif %}
       </a>
     </div>
 
-    {% if request.user.profile.service == 'Parent' %}
-      <div class="inline-flex items-center gap-[3px] p-1 bg-white border border-[#E5E4DF] rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-        <button type="button" data-tj-view-btn="list"
-                style="background:#007F73;color:#fff"
-                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-sm font-semibold">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-          {% trans "Liste" %}
-        </button>
-        <button type="button" data-tj-view-btn="calendar"
-                style="color:#A0A09A"
-                class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-sm font-semibold">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          {% trans "Calendrier" %}
-        </button>
-      </div>
-    {% endif %}
+    <div class="inline-flex items-center gap-[3px] p-1 bg-white border border-[#E5E4DF] rounded-lg shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+      {% comment %}
+        Sous sm, les deux libellés disparaissent : les pictogrammes suffisent
+        pour une bascule à deux états, et la rangée cohabite avec les onglets
+        « En cours / Historique » sur la même ligne. Le titre et le libellé
+        lecteur d'écran restent, eux, à toutes les tailles.
+      {% endcomment %}
+      <button type="button" data-tj-view-btn="list"
+              style="background:#007F73;color:#fff"
+              title="{% trans 'Liste' %}"
+              class="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-md text-sm font-semibold">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        <span class="hidden sm:inline">{% trans "Liste" %}</span>
+        <span class="sr-only sm:hidden">{% trans "Liste" %}</span>
+      </button>
+      <button type="button" data-tj-view-btn="calendar"
+              style="color:#A0A09A"
+              title="{% trans 'Calendrier' %}"
+              class="inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-md text-sm font-semibold">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span class="hidden sm:inline">{% trans "Calendrier" %}</span>
+        <span class="sr-only sm:hidden">{% trans "Calendrier" %}</span>
+      </button>
+    </div>
   </div>
 
-  <!-- ══════════ VUE LISTE ══════════ -->
-  <div data-tj-view="list" class="flex flex-col gap-8">
+  {% comment %} ══════════ VUE LISTE ══════════ {% endcomment %}
+  <div data-tj-view="list" class="flex flex-col gap-10">
 
-    <!-- ===== RÉSERVATIONS EFFECTUÉES (PARENT) ===== -->
-    {% if request.user.profile.service == 'Parent' %}
+    {% comment %}
+      ═════ MES DEMANDES — l'utilisateur est le demandeur ═════
+      Regroupées par SA recherche puis par personne sollicitée : c'est l'axe de
+      la page « Mes matchings » d'où partent ces demandes, et le miroir exact de
+      la section « Demandes reçues » ci-dessous.
+    {% endcomment %}
+    {% if show_made %}
       <section>
-        <h2 class="text-xs font-bold uppercase tracking-wider text-brand mb-4">{% trans "Réservations effectuées" %}</h2>
+        <div class="mb-4">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-brand">{% trans "Mes demandes d'accompagnement" %}</h2>
+        </div>
 
-        <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-5">
           {% for group in made_reservations %}
-            {% with pt=group.proposed_traject %}
-            <details {% if forloop.first %}open{% endif %} class="group bg-white rounded-[18px] border border-[#E5E4DF] shadow-[0_1px_4px_rgba(0,0,0,0.05)] overflow-hidden">
-              <summary class="list-none cursor-pointer flex items-center gap-3 p-4 sm:p-5 select-none [&::-webkit-details-marker]:hidden">
-                <div class="relative h-11 w-11 shrink-0">
-                  <div class="h-full w-full rounded-full bg-brand-50 ring-2 ring-[#E9F5F1] overflow-hidden flex items-center justify-center">
-                    {% if group.yaya %}
-                      {% if group.yaya.profile.profile_picture %}
-                        <img src="{{ group.yaya.profile.profile_picture.url }}" class="h-full w-full object-cover" alt="">
-                      {% else %}
-                        <img src="{% static 'bana/img/icon/Icon_bana.png' %}" alt="" class="h-full w-full object-cover">
-                      {% endif %}
-                    {% endif %}
-                  </div>
-                  {% if group.yaya.profile.prfl_is_verified %}
-                    <span class="absolute -top-1 -left-1 inline-flex h-4 w-4 rounded-full bg-white ring-2 ring-white shadow">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="m-auto" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="10" class="text-brand" fill="currentColor" />
-                        <path d="M7 12l3 3 7-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                      </svg>
-                    </span>
-                  {% endif %}
-                </div>
+            {% with research=group.header %}
+            <article class="bg-white rounded-[20px] border border-[#E5E4DF] shadow-[0_1px_4px_rgba(0,0,0,0.05)] overflow-hidden">
 
-                <div class="min-w-0 flex-1">
-                  <p class="text-sm font-bold text-[#0F0F0F]">
-                    {% if group.yaya %}
-                      {% if is_abonned %}
-                        {% if group.yaya.profile.ci_is_verified %}
-                          {{ group.yaya.profile.verified_first_name }} {{ group.yaya.profile.verified_last_name|slice:":1" }}.
-                        {% else %}
-                          {{ group.yaya.first_name }} {{ group.yaya.last_name|slice:":1" }}.
-                        {% endif %}
-                      {% else %}
-                        <span class="text-red-600 text-sm font-semibold">{% trans "Abonnement requis" %}</span>
-                      {% endif %}
-                    {% else %}
-                      <span class="text-[#C0BFBA]">—</span>
-                    {% endif %}
-                  </p>
-                  <p class="text-sm text-[#ABABAB] truncate">
-                    {{ pt.traject.start_adress }} <span class="text-brand">→</span> {{ pt.traject.end_adress }}
-                  </p>
-                </div>
-
-                <div class="shrink-0 text-right flex items-center gap-3">
-                  <div>
-                    <p class="text-sm text-[#ABABAB]">
-                      {% if group.first_date and group.last_date and group.first_date != group.last_date %}
-                        {% trans "Du" %} {{ group.first_date|date:"d/m/Y" }} {% trans "au" %} {{ group.last_date|date:"d/m/Y" }}
-                      {% elif group.first_date %}
-                        {{ group.first_date|date:"d/m/Y" }}
-                      {% else %}—{% endif %}
-                    </p>
-                    <div class="flex justify-end gap-1 mt-1">
-                      {% if group.confirmed_count %}
-                        <span class="inline-flex items-center rounded-full bg-[#D1FAE5] text-[#065F46] px-2 py-0.5 text-xs font-bold">{{ group.confirmed_count }} {% trans "confirmée(s)" %}</span>
-                      {% endif %}
-                      {% if group.pending_count %}
-                        <span class="inline-flex items-center rounded-full bg-[#FEF3C7] text-[#92400E] px-2 py-0.5 text-xs font-bold">{{ group.pending_count }} {% trans "en attente" %}</span>
-                      {% endif %}
+              {% comment %} En-tête du groupe : ma recherche {% endcomment %}
+              <div class="px-4 sm:px-6 pt-5 pb-4">
+                <div class="flex items-start justify-between gap-4">
+                  <div class="min-w-0">
+                    <div class="mb-2">
+                      {% include "trajects/reservation/partials/own_traject_modal.html" with obj=research scope=group.header.id|stringformat:"s"|add:"-made" stats=group.stats side="made" %}
                     </div>
+                    <p class="text-xs text-[#4f4f4f]">
+                      {% trans "Du" %} {{ group.stats.first_date|date:"d/m/Y" }} {% trans "au" %} {{ group.stats.last_date|date:"d/m/Y" }}
+                      · {{ group.stats.dates_count }} {% trans "date(s)" %}
+                    </p>
                   </div>
-                  <span class="text-[#C0BFBA] text-sm transition-transform group-open:rotate-180">▾</span>
+                  <span class="text-xs font-bold text-brand bg-[#E6F5F3] px-2.5 py-1 rounded-md whitespace-nowrap shrink-0">
+                    {{ group.provider_count }} {% if group.provider_count == 1 %}{% trans "personne sollicitée" %}{% else %}{% trans "personnes sollicitées" %}{% endif %}
+                  </span>
                 </div>
-              </summary>
 
-              <div class="overflow-x-auto">
-                <table class="w-full min-w-[560px] text-sm border-t border-[#F3F4F6]">
-                  <thead class="bg-[#FAFAF8] text-[#9CA3AF] uppercase text-xs">
-                    <tr>
-                      <th class="px-4 py-2 text-left font-semibold">{% trans "Date" %}</th>
-                      <th class="px-4 py-2 text-left font-semibold">{% trans "Heure" %}</th>
-                      <th class="px-4 py-2 text-left font-semibold">{% trans "Enfants" %}</th>
-                      {% if tab == 'active' %}<th class="px-4 py-2 text-center font-semibold">{% trans "Places" %}</th>{% endif %}
-                      <th class="px-4 py-2 text-right font-semibold">{% trans "Statut" %}</th>
-                    </tr>
-                  </thead>
-                  <tbody class="divide-y divide-[#F3F4F6]">
-                    {% for row in group.rows %}
-                      {% with r=row.reservation %}
-                      {% with rt=r.researched_traject %}
-                      <tr class="hover:bg-[#FAFAF8]">
-                        <td class="px-4 py-3 font-semibold text-[#1C1C1C] whitespace-nowrap">{{ r.proposed_traject.date|date:"d/m/Y" }}</td>
-                        <td class="px-4 py-3 text-[#9CA3AF] whitespace-nowrap">
-                          {% if r.proposed_traject.departure_time %}{{ r.proposed_traject.departure_time|time:"H\hi" }}{% elif rt %}{{ rt.departure_time|time:"H\hi" }}{% else %}—{% endif %}
-                          → {% if r.proposed_traject.arrival_time %}{{ r.proposed_traject.arrival_time|time:"H\hi" }}{% elif rt %}{{ rt.arrival_time|time:"H\hi" }}{% else %}—{% endif %}
-                        </td>
-                        <td class="px-4 py-3">
-                          <div class="flex flex-wrap gap-1">
-                            {% for child in rt.children.all %}
-                              {% include "trajects/partials/child_badge.html" with child=child modal_scope=r.id %}
-                            {% empty %}
-                              <span class="text-[#C0BFBA]">—</span>
-                            {% endfor %}
-                          </div>
-                        </td>
-                        {% if tab == 'active' %}<td class="px-4 py-3 text-center text-[#374151] font-semibold">{{ row.remaining_places }}</td>{% endif %}
-                        <td class="px-4 py-3 text-right">
-                          {% if r.status == 'confirmed' %}
-                            <span class="inline-flex items-center rounded-full bg-[#D1FAE5] text-[#065F46] px-2.5 py-1 text-xs font-bold">{% trans "Confirmée" %}</span>
-                          {% elif r.status == 'pending' %}
-                            <span class="inline-flex items-center rounded-full bg-[#FEF3C7] text-[#92400E] px-2.5 py-1 text-xs font-bold">{% trans "En attente" %}</span>
-                          {% else %}
-                            <span class="inline-flex items-center rounded-full bg-[#FEE2E2] text-[#991B1B] px-2.5 py-1 text-xs font-bold">{% trans "Annulée" %}</span>
-                          {% endif %}
-                        </td>
-                      </tr>
-                      {% endwith %}
-                      {% endwith %}
-                    {% endfor %}
-                  </tbody>
-                </table>
+                {% comment %}
+                  Ni itinéraire ni heures ici : c'est SA propre recherche, il
+                  l'a saisie et la reconnaît à son nom — désormais obligatoire
+                  à la création. Les enfants concernés sont dans la fiche
+                  ouverte par le titre.
+
+                  Les compteurs « en attente » et « confirmée(s) » ne sont plus
+                  ici : ils sont déjà sur la carte de chaque personne, qui est
+                  le niveau où l'on agit. Ne reste que l'alerte de conflit,
+                  rare, et invisible ailleurs tant qu'un volet est replié.
+                {% endcomment %}
+                {% if group.conflict_dates_count %}
+                  <div class="flex flex-wrap items-center gap-2 mt-4">
+                    <span class="inline-flex items-center rounded-full bg-[#FEF3C7] text-[#92400E] px-2.5 py-1 text-xs font-bold">
+                      {{ group.conflict_dates_count }} {% trans "date(s) avec plusieurs demandes" %}
+                    </span>
+                  </div>
+                {% endif %}
               </div>
-            </details>
+
+              {% comment %} Un volet par personne sollicitée {% endcomment %}
+              <div class="flex flex-col gap-2.5 px-3 sm:px-4 pb-4">
+                {% for provider in group.providers %}
+                  {% comment %}
+                    Le premier volet de la section est déplié par défaut : un
+                    accordéon entièrement replié ne montre rien d'utile à
+                    quelqu'un qui découvre la page.
+                  {% endcomment %}
+                  {% if provider.open_key == open_key or not open_key and forloop.parentloop.first and forloop.first %}
+                    {% include "trajects/reservation/partials/made_provider_card.html" with provider=provider is_open=True %}
+                  {% else %}
+                    {% include "trajects/reservation/partials/made_provider_card.html" with provider=provider is_open=False %}
+                  {% endif %}
+                {% endfor %}
+              </div>
+
+            </article>
             {% endwith %}
           {% empty %}
-            <div class="rounded-[18px] border border-dashed border-[#D8D7D2] bg-white p-8 text-center text-[#ABABAB]">
-              {% if tab == 'active' %}{% trans "Aucune réservation active" %}{% else %}{% trans "Aucune réservation passée" %}{% endif %}
-            </div>
+            {% if tab == 'active' %}
+              {% include "trajects/reservation/partials/empty_state.html" with message=_("Vous n'avez pas encore demandé d'accompagnement. Consultez les personnes dont le trajet correspond au vôtre pour envoyer une première demande.") cta=made_empty_cta %}
+            {% else %}
+              {% include "trajects/reservation/partials/empty_state.html" with message=_("Aucune demande passée.") %}
+            {% endif %}
           {% endfor %}
 
           {% if made_reservations.has_other_pages %}
@@ -193,121 +157,116 @@
       </section>
     {% endif %}
 
-    <!-- ===== DEMANDES REÇUES (YAYA) ===== -->
-    {% if request.user.profile.service == 'Yaya' %}
+    {% comment %} ═════ DEMANDES REÇUES — sur les trajets proposés par l'utilisateur ═════ {% endcomment %}
+    {% if show_received %}
       <section>
-        <h2 class="text-xs font-bold uppercase tracking-wider text-brand mb-4">{% trans "Demandes reçues" %}</h2>
+        <div class="mb-4">
+          <h2 class="text-xs font-bold uppercase tracking-wider text-brand">{% trans "Demandes reçues" %}</h2>
+        </div>
 
-        {% if received_reservations %}
-          <div class="flex flex-col gap-4">
-            {% for group in received_reservations %}
-              {% with pt=group.header.proposed_traject %}
-              <article class="bg-white rounded-[18px] border border-[#E5E4DF] p-6 sm:p-7 shadow-[0_1px_4px_rgba(0,0,0,0.05)]">
+        <div class="flex flex-col gap-5">
+          {% for group in received_reservations %}
+            {% with proposed=group.header %}
+            <article class="bg-white rounded-[20px] border border-[#E5E4DF] shadow-[0_1px_4px_rgba(0,0,0,0.05)] overflow-hidden">
 
-                <div class="min-w-0 mb-4">
-                  <p class="text-xs font-semibold uppercase tracking-wider text-[#C0BFBA] mb-1">{% trans "Nom du trajet" %}</p>
-                  <h3 class="text-[19px] font-extrabold text-[#0F0F0F] tracking-tight mb-0.5">{{ pt.groupe_name|default:_("Mon trajet") }}</h3>
-                  <p class="text-sm text-[#ABABAB]">{% trans "Du" %} {{ group.first_date|date:"d/m/Y" }} {% trans "au" %} {{ group.last_date|date:"d/m/Y" }}</p>
-                </div>
-
-                <div class="h-px bg-[#F3F4F6] mb-4"></div>
-
-                <div class="grid gap-5 sm:grid-cols-2 mb-4">
-                  <div>
-                    <div class="flex items-center gap-1.5 mb-1.5">
-                      <svg class="h-4 w-4 text-brand shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3-1.343 3-3S13.657 5 12 5 9 6.343 9 8s1.343 3 3 3z"></path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4.5 8-12a8 8 0 10-16 0c0 7.5 8 12 8 12z"></path>
-                      </svg>
-                      <span class="text-xs font-bold uppercase tracking-wider text-brand">{% trans "Départ" %}</span>
+              {% comment %} En-tête du groupe : mon trajet proposé {% endcomment %}
+              <div class="px-4 sm:px-6 pt-5 pb-4">
+                <div class="flex items-start justify-between gap-4">
+                  <div class="min-w-0">
+                    <div class="mb-2">
+                      {% include "trajects/reservation/partials/own_traject_modal.html" with obj=proposed scope=proposed.id|stringformat:"s"|add:"-received" stats=group.stats side="received" %}
                     </div>
-                    {% with dep=pt.departure_time fdep=group.header.researched_traject.departure_time %}
-                    <p class="text-sm font-medium text-[#374151]">
-                      {{ pt.traject.start_adress }}
-                      <span class="text-[#ABABAB]">· {% if dep %}{{ dep|time:"H\hi" }}{% elif fdep %}{{ fdep|time:"H\hi" }}{% else %}—{% endif %}</span>
+                    <p class="text-xs text-[#4f4f4f]">
+                      {% trans "Du" %} {{ group.stats.first_date|date:"d/m/Y" }} {% trans "au" %} {{ group.stats.last_date|date:"d/m/Y" }}
                     </p>
-                    {% endwith %}
                   </div>
-
-                  <div>
-                    {% if pt.is_simple %}
-                      <div class="flex items-center gap-1.5 mb-1.5">
-                        <span class="text-xs font-bold uppercase tracking-wider text-brand">{% trans "Rayon" %}</span>
-                      </div>
-                      <p class="text-sm font-medium text-[#374151]">{{ pt.search_radius_km }} km</p>
-                    {% else %}
-                      <div class="flex items-center gap-1.5 mb-1.5">
-                        <svg class="h-4 w-4 text-brand shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5v14M5 5h10l-2 4 2 4H5"></path>
-                        </svg>
-                        <span class="text-xs font-bold uppercase tracking-wider text-brand">{% trans "Arrivée" %}</span>
-                      </div>
-                      {% with arr=pt.arrival_time farr=group.header.researched_traject.arrival_time %}
-                      <p class="text-sm font-medium text-[#374151]">
-                        {{ pt.traject.end_adress }}
-                        <span class="text-[#ABABAB]">· {% if arr %}{{ arr|time:"H\hi" }}{% elif farr %}{{ farr|time:"H\hi" }}{% else %}—{% endif %}</span>
-                      </p>
-                      {% endwith %}
-                    {% endif %}
-                  </div>
+                  <span class="text-xs font-bold text-brand bg-[#E6F5F3] px-2.5 py-1 rounded-md whitespace-nowrap shrink-0">
+                    {{ group.requester_count }} {% if group.requester_count == 1 %}{% trans "demandeur" %}{% else %}{% trans "demandeurs" %}{% endif %}
+                  </span>
                 </div>
 
-                <div class="flex flex-wrap gap-2 mb-4">
-                  {% if group.pending_count %}
-                    <span class="inline-flex items-center rounded-full bg-[#FEF3C7] text-[#92400E] px-2.5 py-1 text-xs font-bold">{{ group.pending_count }} {% trans "en attente" %}</span>
-                  {% endif %}
-                  {% if group.full_dates_count %}
+                {% comment %}
+                  Son propre trajet : ni itinéraire ni heures — voir la note
+                  équivalente côté « Mes demandes ».
+
+                  Compteurs retirés pour la même raison : « en attente » et
+                  « confirmée(s) » figurent sur la carte de chaque parent, et
+                  « date(s) avec places » n'annonce rien (c'est le cas normal).
+                  Seules les dates complètes restent : elles limitent ce qu'il
+                  peut encore accepter.
+                {% endcomment %}
+                {% if group.full_dates_count %}
+                  <div class="flex flex-wrap gap-2 mt-4">
                     <span class="inline-flex items-center rounded-full bg-[#FEE2E2] text-[#991B1B] px-2.5 py-1 text-xs font-bold">{{ group.full_dates_count }} {% trans "date(s) complète(s)" %}</span>
-                  {% endif %}
-                  {% if group.available_dates_count %}
-                    <span class="inline-flex items-center rounded-full bg-[#E6F5F3] text-[#005A52] px-2.5 py-1 text-xs font-bold">{{ group.available_dates_count }} {% trans "date(s) disponible(s)" %}</span>
-                  {% endif %}
-                </div>
-
-                <div class="h-px bg-[#F3F4F6] mb-3.5"></div>
-
-                <div class="flex justify-end">
-                  <a href="{% url 'my_reservations_received_detail' pt.groupe_uid %}?tab={{ tab }}"
-                     class="inline-flex items-center gap-2 rounded-[9px] border-[1.5px] border-[#E5E7EB] bg-white px-4.5 py-2.5 text-base font-semibold text-[#374151] hover:bg-gray-50">
-                    {% trans "Voir les demandes" %} →
-                  </a>
-                </div>
-              </article>
-              {% endwith %}
-            {% endfor %}
-
-            {% if received_reservations.has_other_pages %}
-              <nav class="flex justify-center items-center gap-2 mt-2">
-                {% if received_reservations.has_previous %}
-                  <a hx-get="?tab={{ tab }}&received_page={{ received_reservations.previous_page_number }}"
-                     hx-target="#reservations-content" hx-swap="outerHTML" hx-push-url="true"
-                     class="px-3 py-1 rounded-lg border border-[#E5E7EB] text-base text-[#374151] hover:bg-gray-50 cursor-pointer">←</a>
+                  </div>
                 {% endif %}
-                <span class="px-3 py-1 text-base text-[#ABABAB]">{{ received_reservations.number }} / {{ received_reservations.paginator.num_pages }}</span>
-                {% if received_reservations.has_next %}
-                  <a hx-get="?tab={{ tab }}&received_page={{ received_reservations.next_page_number }}"
-                     hx-target="#reservations-content" hx-swap="outerHTML" hx-push-url="true"
-                     class="px-3 py-1 rounded-lg border border-[#E5E7EB] text-base text-[#374151] hover:bg-gray-50 cursor-pointer">→</a>
-                {% endif %}
-              </nav>
+              </div>
+
+              {% comment %} Un volet par parent demandeur {% endcomment %}
+              <div class="flex flex-col gap-2.5 px-3 sm:px-4 pb-4">
+                {% for requester in group.requesters %}
+                  {% if requester.open_key == open_key or not open_key and forloop.parentloop.first and forloop.first %}
+                    {% include "trajects/reservation/partials/received_requester_card.html" with requester=requester is_open=True %}
+                  {% else %}
+                    {% include "trajects/reservation/partials/received_requester_card.html" with requester=requester is_open=False %}
+                  {% endif %}
+                {% empty %}
+                  <p class="text-sm text-[#ABABAB] px-2.5 py-2">{% trans "Aucune demande pour ce trajet." %}</p>
+                {% endfor %}
+              </div>
+
+            </article>
+            {% endwith %}
+          {% empty %}
+            {% if tab == 'active' %}
+              {% include "trajects/reservation/partials/empty_state.html" with message=_("Aucun parent ne vous a encore sollicité. Vos trajets proposés apparaissent aux parents dont l'itinéraire correspond au vôtre.") cta=received_empty_cta %}
+            {% else %}
+              {% include "trajects/reservation/partials/empty_state.html" with message=_("Aucune demande reçue passée.") %}
             {% endif %}
-          </div>
-        {% else %}
-          <div class="rounded-[18px] border border-dashed border-[#D8D7D2] bg-white p-8 text-center text-[#ABABAB]">
-            {% if tab == 'active' %}{% trans "Aucune demande reçue active" %}{% else %}{% trans "Aucune demande reçue passée" %}{% endif %}
-          </div>
-        {% endif %}
+          {% endfor %}
+
+          {% if received_reservations.has_other_pages %}
+            <nav class="flex justify-center items-center gap-2 mt-2">
+              {% if received_reservations.has_previous %}
+                <a hx-get="?tab={{ tab }}&received_page={{ received_reservations.previous_page_number }}"
+                   hx-target="#reservations-content" hx-swap="outerHTML" hx-push-url="true"
+                   class="px-3 py-1 rounded-lg border border-[#E5E7EB] text-base text-[#374151] hover:bg-gray-50 cursor-pointer">←</a>
+              {% endif %}
+              <span class="px-3 py-1 text-base text-[#ABABAB]">{{ received_reservations.number }} / {{ received_reservations.paginator.num_pages }}</span>
+              {% if received_reservations.has_next %}
+                <a hx-get="?tab={{ tab }}&received_page={{ received_reservations.next_page_number }}"
+                   hx-target="#reservations-content" hx-swap="outerHTML" hx-push-url="true"
+                   class="px-3 py-1 rounded-lg border border-[#E5E7EB] text-base text-[#374151] hover:bg-gray-50 cursor-pointer">→</a>
+              {% endif %}
+            </nav>
+          {% endif %}
+        </div>
       </section>
     {% endif %}
 
   </div>
 
-  <!-- ══════════ VUE CALENDRIER (Parent uniquement) ══════════ -->
-  {% if request.user.profile.service == 'Parent' %}
-    <div data-tj-view="calendar" class="hidden">
-      <div data-tj-resa-calendar class="bg-white rounded-[20px] border border-[#E5E4DF] p-6 sm:p-8 shadow-[0_1px_4px_rgba(0,0,0,0.05)]"></div>
-    </div>
-    {{ calendar_entries|json_script:"resa-calendar-data" }}
-  {% endif %}
+  {% comment %}
+    ══════════ VUE CALENDRIER ══════════
+    Le json_script doit rester DANS [data-tj-resa-app] : reservations_calendar.js
+    le cherche avec root.querySelector.
+  {% endcomment %}
+  {% comment %}
+    Les data-* portent ce que les formulaires du panneau du jour doivent
+    reposter : ils sont construits en JS, ils n'ont donc pas accès au contexte
+    de gabarit. Mêmes champs que action_state_fields.html, à `open_key` près —
+    une action lancée depuis le calendrier ne désigne aucun volet de la liste.
+  {% endcomment %}
+  <div data-tj-view="calendar" class="hidden">
+    <div data-tj-resa-calendar
+         data-tj-csrf="{{ csrf_token }}"
+         data-tj-tab="{{ tab }}"
+         data-tj-made-page="{{ made_reservations.number }}"
+         data-tj-received-page="{{ received_reservations.number }}"
+         data-tj-next="{{ request.get_full_path }}"
+         data-tj-child-icon="{% static 'bana/img/icon/Icon_child_brand.svg' %}"
+         class="bg-white rounded-[20px] border border-[#E5E4DF] p-4 sm:p-6 shadow-[0_1px_4px_rgba(0,0,0,0.05)]"></div>
+  </div>
+  {{ calendar_entries|json_script:"resa-calendar-data" }}
 
 </div>

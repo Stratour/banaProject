@@ -1,5 +1,11 @@
-{% autoescape off %}Bonjour,
+{% autoescape off %}Bonjour{% if recipient_name %} {{ recipient_name }}{% endif %},
 
-Votre réservation pour le trajet {{ trajet_info }} du {{ date_str }} a été refusée.
+{{ counterpart_name|capfirst }} n'est pas disponible pour ce trajet. {% if dates_count > 1 %}Ces demandes n'ont pas été retenues.{% else %}Cette demande n'a pas été retenue.{% endif %}
 
-Connectez-vous à Bana pour consulter d'autres trajets.{% endautoescape %}
+{% include "trajects/email/_recap.txt" %}
+{% if dates_count > 1 %}Dates concernées :
+{% for date_obj in dates %}- {{ date_obj|date:"D j b"|capfirst }}
+{% endfor %}{% else %}Date concernée : {{ dates|first|date:"D j b"|capfirst }}
+{% endif %}
+D'autres accompagnateurs peuvent correspondre à votre recherche. Consultez vos trajets disponibles :
+{{ cta_url }}{% endautoescape %}

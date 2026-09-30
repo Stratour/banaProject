@@ -1,1 +1,1 @@
-{% autoescape off %}Nouvelle demande de réservation reçue{% endautoescape %}
+{% autoescape off %}{{ counterpart_name|capfirst }} vous envoie {% if dates_count > 1 %}{{ dates_count }} nouvelles demandes de réservation{% else %}une nouvelle demande de réservation{% endif %}{% endautoescape %}

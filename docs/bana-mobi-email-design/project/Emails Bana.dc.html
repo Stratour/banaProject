@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+  body { margin: 0; background-color: #E7ECEA; }
+  a { color: #007F73; }
+  a:hover { color: #0F5F4B; }
+</style>
+</helmet>
+
+<div style="padding:40px;background-color:#E7ECEA;font-family:Helvetica,Arial,sans-serif">
+  <div style="max-width:1320px;margin:0 auto 34px">
+    <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.18em;text-transform:uppercase;color:#4A5E58;margin-bottom:10px">Bana.mobi · maquettes email · round 3</div>
+    <h1 style="margin:0 0 10px;font:700 30px/1.15 Helvetica,Arial,sans-serif;color:#123B34;letter-spacing:-.01em">14 emails transactionnels</h1>
+    <p style="margin:0;max-width:64ch;font:400 15px/1.6 Helvetica,Arial,sans-serif;color:#42564F;text-wrap:pretty">7 emails de compte (allauth) et 7 emails de trajets, alignés sur les variables réelles de <span style="font-family:'Courier New',monospace;font-size:13px">trajects/utils/mail.py</span>. Tables imbriquées, styles 100 % inline, aucune police web, aucun JS. Largeur 600 px, dégradé de marque <span style="font-family:'Courier New',monospace;font-size:13px">#0F5F4B → #0ab092</span>, logo PNG lime.</p>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:44px;align-items:flex-start;max-width:1320px;margin:0 auto">
+
+    <!-- 01 -->
+    <div style="flex:0 0 600px;width:600px">
+      <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0F5F4B;margin-bottom:7px">01 — Confirmation d'inscription</div>
+      <div style="font:400 12px/1.6 'Courier New',monospace;color:#4A5E58;margin-bottom:14px">account/email/email_confirmation_signup_message.html<br>Objet : Bienvenue sur Bana : confirmez votre adresse e-mail</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+        <tr><td style="padding:0">
+          <span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">Il reste une étape : confirmez cette adresse pour activer votre compte.</span>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#FFFFFF">
+            <tr><td style="background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%);padding:24px 32px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td width="52" style="width:52px;vertical-align:middle"><img src="bana/bana/static/bana/img/shared/bana_logo.png" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                  <td align="right" style="vertical-align:middle;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#D7FC19">Bienvenue<br>sur Bana</td>
+                </tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:34px 32px 6px">
+              <p style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonjour,</p>
+              <h1 style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#123B34;mso-line-height-rule:exactly">Merci pour votre inscription sur Bana !</h1>
+              <p style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Il reste une étape : confirmez cette adresse e-mail pour activer votre compte.</p>
+            </td></tr>
+            <tr><td style="padding:14px 32px 4px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                <tr><td align="center" bgcolor="#007F73" style="background-color:#007F73;border-radius:8px;padding:15px 30px"><a href="https://www.bana.mobi/fr/accounts/confirm-email/MjE:1uK2a:9f/" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#FFFFFF;text-decoration:none">Confirmer mon adresse e-mail</a></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:20px 32px 0">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#F3F7F6;border-left:3px solid #C6DCD7">
+                <tr><td style="padding:14px 16px">
+                  <p style="margin:0 0 6px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur :</p>
+                  <p style="margin:0;font:400 12px/1.6 'Courier New',Courier,monospace;color:#123B34;word-break:break-all">https://www.bana.mobi/fr/accounts/confirm-email/MjE:1uK2a:9fXk2LqPz8vR0aTbN3mWc7yHd4sJe6uGo1iQf5lBx/</p>
+                </td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 34px">
+              <p style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Si vous n'êtes pas à l'origine de cette inscription, ignorez simplement cet e-mail.</p>
+              <p style="margin:0;font:700 15px/1.6 Arial,Helvetica,sans-serif;color:#123B34">L'équipe Bana</p>
+            </td></tr>
+          </table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+            <tr><td style="padding:24px 32px 30px;border-top:1px solid #DCE4E2">
+              <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="mailto:contact@bana.mobi" style="color:#0F5F4B;text-decoration:underline">contact@bana.mobi</a> · <a href="tel:+32495283791" style="color:#0F5F4B;text-decoration:underline">+32 495 283 791</a> · <a href="https://www.bana.mobi/fr/faq/" style="color:#0F5F4B;text-decoration:underline">Centre d'aide</a></p>
+              <sc-if value="{{ showSocials }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.facebook.com/BanaCommunity/" style="color:#0F5F4B;text-decoration:underline">Facebook</a> · <a href="https://www.instagram.com/bana_tribus/" style="color:#0F5F4B;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/banamobi/" style="color:#0F5F4B;text-decoration:underline">LinkedIn</a></p>
+              </sc-if>
+              <p style="margin:0 0 12px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.bana.mobi/fr/cgu/" style="color:#0F5F4B;text-decoration:underline">CGU</a> · <a href="https://www.bana.mobi/fr/confidentialite/" style="color:#0F5F4B;text-decoration:underline">Confidentialité</a> · <a href="https://www.bana.mobi/fr/mentions-legales/" style="color:#0F5F4B;text-decoration:underline">Mentions légales</a> · <a href="https://www.bana.mobi/fr/cookies/" style="color:#0F5F4B;text-decoration:underline">Cookies</a></p>
+              <p style="margin:0 0 10px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Vous recevez cet email parce que cette adresse vient d'être utilisée pour créer un compte Bana.</p>
+              <p style="margin:0 0 4px;font:700 11px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Bana Community ASBL</p>
+              <p style="margin:0;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 · RPM Charleroi · <a href="https://www.bana.mobi" style="color:#42564F;text-decoration:underline">www.bana.mobi</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+      <sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:12px;padding:12px 14px;background-color:#DDE5E3;border-radius:8px;font:400 12px/1.7 'Courier New',monospace;color:#42564F">Premier email reçu de Bana : un seul lien, rien d'autre · activate_url · prénom = verified_first_name → first_name → « Bonjour, » · durée de validité (3 j) non affichée : absente du contexte allauth, nécessite un ACCOUNT_ADAPTER · l'URL en clair n'est PAS un lien (&lt;p&gt; simple) : un seul élément cliquable, car ACCOUNT_CONFIRM_EMAIL_ON_GET consomme la clé à la première visite · casser l'auto-lien Gmail avec un &amp;#8203; après « https:// » à l'intégration</div>
+      </sc-if>
+    </div>
+
+    <!-- 02 -->
+    <div style="flex:0 0 600px;width:600px">
+      <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0F5F4B;margin-bottom:7px">02 — Adresse ajoutée à un compte</div>
+      <div style="font:400 12px/1.6 'Courier New',monospace;color:#4A5E58;margin-bottom:14px">account/email/email_confirmation_message.html<br>Objet : Confirmez votre adresse e-mail</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+        <tr><td style="padding:0">
+          <span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">Cette adresse vient d'être ajoutée à votre compte Bana.</span>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#FFFFFF">
+            <tr><td style="background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%);padding:24px 32px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td width="52" style="width:52px;vertical-align:middle"><img src="bana/bana/static/bana/img/shared/bana_logo.png" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                  <td align="right" style="vertical-align:middle;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#D7FC19">Sécurité<br>du compte</td>
+                </tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:34px 32px 6px">
+              <p style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonjour Amina,</p>
+              <h1 style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#123B34;mso-line-height-rule:exactly">Confirmez cette adresse e-mail</h1>
+              <p style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Cette adresse e-mail vient d'être ajoutée à votre compte Bana. Confirmez-la pour pouvoir l'utiliser.</p>
+            </td></tr>
+            <tr><td style="padding:14px 32px 4px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                <tr><td align="center" bgcolor="#007F73" style="background-color:#007F73;border-radius:8px;padding:15px 30px"><a href="https://www.bana.mobi/fr/accounts/confirm-email/key/" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#FFFFFF;text-decoration:none">Confirmer cette adresse</a></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:20px 32px 0">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#F3F7F6;border-left:3px solid #C6DCD7">
+                <tr><td style="padding:14px 16px">
+                  <p style="margin:0 0 6px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur :</p>
+                  <p style="margin:0;font:400 12px/1.6 'Courier New',Courier,monospace;color:#123B34;word-break:break-all">https://www.bana.mobi/fr/accounts/confirm-email/MjI:1uK3b:2cRt8nWq5xZa1pLs4vKd7mHe0jFg3yBo9uNi6tQw/</p>
+                </td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 34px">
+              <p style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Si vous n'êtes pas à l'origine de cet ajout, ignorez cet e-mail : l'adresse ne sera pas activée.</p>
+              <p style="margin:0;font:700 15px/1.6 Arial,Helvetica,sans-serif;color:#123B34">L'équipe Bana</p>
+            </td></tr>
+          </table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+            <tr><td style="padding:24px 32px 30px;border-top:1px solid #DCE4E2">
+              <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="mailto:contact@bana.mobi" style="color:#0F5F4B;text-decoration:underline">contact@bana.mobi</a> · <a href="tel:+32495283791" style="color:#0F5F4B;text-decoration:underline">+32 495 283 791</a> · <a href="https://www.bana.mobi/fr/faq/" style="color:#0F5F4B;text-decoration:underline">Centre d'aide</a></p>
+              <sc-if value="{{ showSocials }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.facebook.com/BanaCommunity/" style="color:#0F5F4B;text-decoration:underline">Facebook</a> · <a href="https://www.instagram.com/bana_tribus/" style="color:#0F5F4B;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/banamobi/" style="color:#0F5F4B;text-decoration:underline">LinkedIn</a></p>
+              </sc-if>
+              <p style="margin:0 0 12px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.bana.mobi/fr/cgu/" style="color:#0F5F4B;text-decoration:underline">CGU</a> · <a href="https://www.bana.mobi/fr/confidentialite/" style="color:#0F5F4B;text-decoration:underline">Confidentialité</a> · <a href="https://www.bana.mobi/fr/mentions-legales/" style="color:#0F5F4B;text-decoration:underline">Mentions légales</a> · <a href="https://www.bana.mobi/fr/cookies/" style="color:#0F5F4B;text-decoration:underline">Cookies</a></p>
+              <p style="margin:0 0 10px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Vous recevez cet email parce qu'une action a été effectuée sur votre compte Bana.</p>
+              <p style="margin:0 0 4px;font:700 11px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Bana Community ASBL</p>
+              <p style="margin:0;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 · RPM Charleroi · <a href="https://www.bana.mobi" style="color:#42564F;text-decoration:underline">www.bana.mobi</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+      <sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:12px;padding:12px 14px;background-color:#DDE5E3;border-radius:8px;font:400 12px/1.7 'Courier New',monospace;color:#42564F">Gabarit distinct de 01 : pas de « bienvenue » pour un membre déjà inscrit · mêmes variables que 01 · l'URL en clair n'est PAS un lien (&lt;p&gt; simple) : un seul élément cliquable, car ACCOUNT_CONFIRM_EMAIL_ON_GET consomme la clé à la première visite · casser l'auto-lien Gmail avec un &amp;#8203; après « https:// » à l'intégration</div>
+      </sc-if>
+    </div>
+
+    <!-- 03 -->
+    <div style="flex:0 0 600px;width:600px">
+      <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0F5F4B;margin-bottom:7px">03 — Réinitialisation du mot de passe</div>
+      <div style="font:400 12px/1.6 'Courier New',monospace;color:#4A5E58;margin-bottom:14px">account/email/password_reset_key_message.html<br>Objet : Réinitialisez votre mot de passe Bana</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+        <tr><td style="padding:0">
+          <span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">Choisissez un nouveau mot de passe depuis le lien de cet e-mail.</span>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#FFFFFF">
+            <tr><td style="background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%);padding:24px 32px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td width="52" style="width:52px;vertical-align:middle"><img src="bana/bana/static/bana/img/shared/bana_logo.png" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                  <td align="right" style="vertical-align:middle;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#D7FC19">Sécurité<br>du compte</td>
+                </tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:34px 32px 6px">
+              <p style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonjour Amina,</p>
+              <h1 style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#123B34;mso-line-height-rule:exactly">Choisissez un nouveau mot de passe</h1>
+              <p style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Vous avez demandé à réinitialiser le mot de passe de votre compte Bana.</p>
+            </td></tr>
+            <tr><td style="padding:14px 32px 4px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                <tr><td align="center" bgcolor="#007F73" style="background-color:#007F73;border-radius:8px;padding:15px 30px"><a href="https://www.bana.mobi/fr/accounts/password/reset/key/MjE-set-password/" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#FFFFFF;text-decoration:none">Réinitialiser mon mot de passe</a></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:20px 32px 0">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#F3F7F6;border-left:3px solid #C6DCD7">
+                <tr><td style="padding:14px 16px">
+                  <p style="margin:0 0 6px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur :</p>
+                  <p style="margin:0;font:400 12px/1.6 'Courier New',Courier,monospace;color:#123B34;word-break:break-all">https://www.bana.mobi/fr/accounts/password/reset/key/MjE-cgj9x8-3f1a7b2c9d4e6f8a0b1c2d3e4f5a6b7c8d9/</p>
+                </td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 34px">
+              <p style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail : votre mot de passe actuel reste valable.</p>
+              <p style="margin:0;font:700 15px/1.6 Arial,Helvetica,sans-serif;color:#123B34">L'équipe Bana</p>
+            </td></tr>
+          </table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+            <tr><td style="padding:24px 32px 30px;border-top:1px solid #DCE4E2">
+              <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="mailto:contact@bana.mobi" style="color:#0F5F4B;text-decoration:underline">contact@bana.mobi</a> · <a href="tel:+32495283791" style="color:#0F5F4B;text-decoration:underline">+32 495 283 791</a> · <a href="https://www.bana.mobi/fr/faq/" style="color:#0F5F4B;text-decoration:underline">Centre d'aide</a></p>
+              <sc-if value="{{ showSocials }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.facebook.com/BanaCommunity/" style="color:#0F5F4B;text-decoration:underline">Facebook</a> · <a href="https://www.instagram.com/bana_tribus/" style="color:#0F5F4B;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/banamobi/" style="color:#0F5F4B;text-decoration:underline">LinkedIn</a></p>
+              </sc-if>
+              <p style="margin:0 0 12px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.bana.mobi/fr/cgu/" style="color:#0F5F4B;text-decoration:underline">CGU</a> · <a href="https://www.bana.mobi/fr/confidentialite/" style="color:#0F5F4B;text-decoration:underline">Confidentialité</a> · <a href="https://www.bana.mobi/fr/mentions-legales/" style="color:#0F5F4B;text-decoration:underline">Mentions légales</a> · <a href="https://www.bana.mobi/fr/cookies/" style="color:#0F5F4B;text-decoration:underline">Cookies</a></p>
+              <p style="margin:0 0 10px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Vous recevez cet email parce qu'une action a été effectuée sur votre compte Bana.</p>
+              <p style="margin:0 0 4px;font:700 11px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Bana Community ASBL</p>
+              <p style="margin:0;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 · RPM Charleroi · <a href="https://www.bana.mobi" style="color:#42564F;text-decoration:underline">www.bana.mobi</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+      <sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:12px;padding:12px 14px;background-color:#DDE5E3;border-radius:8px;font:400 12px/1.7 'Courier New',monospace;color:#42564F">password_reset_url · pas de rappel d'identifiant : username n'existe pas (connexion par email) · validité 3 j non exposée · l'URL en clair n'est PAS un lien (&lt;p&gt; simple) : un seul élément cliquable, car ACCOUNT_CONFIRM_EMAIL_ON_GET consomme la clé à la première visite · casser l'auto-lien Gmail avec un &amp;#8203; après « https:// » à l'intégration</div>
+      </sc-if>
+    </div>
+
+    <!-- 04 -->
+    <div style="flex:0 0 600px;width:600px">
+      <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0F5F4B;margin-bottom:7px">04 — Adresse inconnue (mot de passe oublié)</div>
+      <div style="font:400 12px/1.6 'Courier New',monospace;color:#4A5E58;margin-bottom:14px">account/email/unknown_account_message.html<br>Objet : Aucun compte Bana avec cette adresse</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+        <tr><td style="padding:0">
+          <span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">Une demande de réinitialisation a été faite pour une adresse sans compte Bana.</span>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#FFFFFF">
+            <tr><td style="background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%);padding:24px 32px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td width="52" style="width:52px;vertical-align:middle"><img src="bana/bana/static/bana/img/shared/bana_logo.png" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                  <td align="right" style="vertical-align:middle;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#D7FC19">Demande de<br>réinitialisation</td>
+                </tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:34px 32px 6px">
+              <p style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonjour,</p>
+              <h1 style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#123B34;mso-line-height-rule:exactly">Aucun compte Bana avec cette adresse</h1>
+              <p style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Vous avez demandé à réinitialiser le mot de passe du compte associé à <strong style="color:#123B34">inconnu@example.com</strong>, mais aucun compte Bana n'utilise cette adresse.</p><p style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Vous avez peut-être utilisé une autre adresse lors de votre inscription.</p>
+            </td></tr>
+            <tr><td style="padding:14px 32px 4px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                <tr><td align="center" style="border:2px solid #007F73;border-radius:8px;padding:13px 28px"><a href="https://www.bana.mobi/fr/accounts/signup/" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#0F5F4B;text-decoration:none">Créer un compte</a></td></tr>
+              </table>
+            </td></tr>
+            
+            <tr><td style="padding:22px 32px 34px">
+              <p style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail.</p>
+              <p style="margin:0;font:700 15px/1.6 Arial,Helvetica,sans-serif;color:#123B34">L'équipe Bana</p>
+            </td></tr>
+          </table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+            <tr><td style="padding:24px 32px 30px;border-top:1px solid #DCE4E2">
+              <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="mailto:contact@bana.mobi" style="color:#0F5F4B;text-decoration:underline">contact@bana.mobi</a> · <a href="tel:+32495283791" style="color:#0F5F4B;text-decoration:underline">+32 495 283 791</a> · <a href="https://www.bana.mobi/fr/faq/" style="color:#0F5F4B;text-decoration:underline">Centre d'aide</a></p>
+              <sc-if value="{{ showSocials }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.facebook.com/BanaCommunity/" style="color:#0F5F4B;text-decoration:underline">Facebook</a> · <a href="https://www.instagram.com/bana_tribus/" style="color:#0F5F4B;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/banamobi/" style="color:#0F5F4B;text-decoration:underline">LinkedIn</a></p>
+              </sc-if>
+              <p style="margin:0 0 12px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.bana.mobi/fr/cgu/" style="color:#0F5F4B;text-decoration:underline">CGU</a> · <a href="https://www.bana.mobi/fr/confidentialite/" style="color:#0F5F4B;text-decoration:underline">Confidentialité</a> · <a href="https://www.bana.mobi/fr/mentions-legales/" style="color:#0F5F4B;text-decoration:underline">Mentions légales</a> · <a href="https://www.bana.mobi/fr/cookies/" style="color:#0F5F4B;text-decoration:underline">Cookies</a></p>
+              <p style="margin:0 0 10px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Vous recevez cet email parce qu'une demande de réinitialisation a été faite avec cette adresse sur www.bana.mobi.</p>
+              <p style="margin:0 0 4px;font:700 11px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Bana Community ASBL</p>
+              <p style="margin:0;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 · RPM Charleroi · <a href="https://www.bana.mobi" style="color:#42564F;text-decoration:underline">www.bana.mobi</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+      <sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:12px;padding:12px 14px;background-color:#DDE5E3;border-radius:8px;font:400 12px/1.7 'Courier New',monospace;color:#42564F">Destinataire NON membre : aucun « votre compte », salutation sans nom (pas de user en contexte) · CTA secondaire (contour) : mécanisme anti-énumération, pas de prospection · variables email, signup_url</div>
+      </sc-if>
+    </div>
+
+    <!-- 05 -->
+    <div style="flex:0 0 600px;width:600px">
+      <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0F5F4B;margin-bottom:7px">05 — Inscription sur une adresse déjà prise</div>
+      <div style="font:400 12px/1.6 'Courier New',monospace;color:#4A5E58;margin-bottom:14px">account/email/account_already_exists_message.html<br>Objet : Vous avez déjà un compte Bana</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+        <tr><td style="padding:0">
+          <span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">Cette adresse est déjà associée à un compte Bana.</span>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#FFFFFF">
+            <tr><td style="background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%);padding:24px 32px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td width="52" style="width:52px;vertical-align:middle"><img src="bana/bana/static/bana/img/shared/bana_logo.png" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                  <td align="right" style="vertical-align:middle;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#D7FC19">Sécurité<br>du compte</td>
+                </tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:34px 32px 6px">
+              <p style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonjour,</p>
+              <h1 style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#123B34;mso-line-height-rule:exactly">Vous avez déjà un compte Bana</h1>
+              <p style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Quelqu'un - probablement vous - a essayé de créer un compte avec <strong style="color: rgb(18, 59, 52);" bis_size="{&quot;x&quot;:72,&quot;y&quot;:3720,&quot;w&quot;:139,&quot;h&quot;:16,&quot;abs_x&quot;:409,&quot;abs_y&quot;:3772}">deja@example.com</strong>. Cette adresse est déjà associée à un compte Bana.</p><p style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Si vous avez oublié votre mot de passe, vous pouvez en choisir un nouveau.</p>
+            </td></tr>
+            <tr><td style="padding:14px 32px 4px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                <tr><td align="center" bgcolor="#007F73" style="background-color:#007F73;border-radius:8px;padding:15px 30px"><a href="https://www.bana.mobi/fr/accounts/password/reset/" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#FFFFFF;text-decoration:none">Réinitialiser mon mot de passe</a></td></tr>
+              </table>
+            </td></tr>
+            
+            <tr><td style="padding:22px 32px 34px">
+              <p style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Si vous n'êtes pas à l'origine de cette tentative, ignorez cet e-mail : aucun compte n'a été créé et votre mot de passe n'a pas changé.</p>
+              <p style="margin:0;font:700 15px/1.6 Arial,Helvetica,sans-serif;color:#123B34">L'équipe Bana</p>
+            </td></tr>
+          </table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+            <tr><td style="padding:24px 32px 30px;border-top:1px solid #DCE4E2">
+              <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="mailto:contact@bana.mobi" style="color:#0F5F4B;text-decoration:underline">contact@bana.mobi</a> · <a href="tel:+32495283791" style="color:#0F5F4B;text-decoration:underline">+32 495 283 791</a> · <a href="https://www.bana.mobi/fr/faq/" style="color:#0F5F4B;text-decoration:underline">Centre d'aide</a></p>
+              <sc-if value="{{ showSocials }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.facebook.com/BanaCommunity/" style="color:#0F5F4B;text-decoration:underline">Facebook</a> · <a href="https://www.instagram.com/bana_tribus/" style="color:#0F5F4B;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/banamobi/" style="color:#0F5F4B;text-decoration:underline">LinkedIn</a></p>
+              </sc-if>
+              <p style="margin:0 0 12px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.bana.mobi/fr/cgu/" style="color:#0F5F4B;text-decoration:underline">CGU</a> · <a href="https://www.bana.mobi/fr/confidentialite/" style="color:#0F5F4B;text-decoration:underline">Confidentialité</a> · <a href="https://www.bana.mobi/fr/mentions-legales/" style="color:#0F5F4B;text-decoration:underline">Mentions légales</a> · <a href="https://www.bana.mobi/fr/cookies/" style="color:#0F5F4B;text-decoration:underline">Cookies</a></p>
+              <p style="margin:0 0 10px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Vous recevez cet email parce qu'une action a été effectuée sur votre compte Bana.</p>
+              <p style="margin:0 0 4px;font:700 11px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Bana Community ASBL</p>
+              <p style="margin:0;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 · RPM Charleroi · <a href="https://www.bana.mobi" style="color:#42564F;text-decoration:underline">www.bana.mobi</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+      <sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:12px;padding:12px 14px;background-color:#DDE5E3;border-radius:8px;font:400 12px/1.7 'Courier New',monospace;color:#42564F">Pas de user en contexte → « Bonjour, » · CTA = password_reset_url, jamais signup_url (présent mais inutilisé) · anti-énumération : même réponse côté formulaire</div>
+      </sc-if>
+    </div>
+
+    <!-- 06 -->
+    <div style="flex:0 0 600px;width:600px">
+      <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0F5F4B;margin-bottom:7px">06 — Changement d'adresse e-mail</div>
+      <div style="font:400 12px/1.6 'Courier New',monospace;color:#4A5E58;margin-bottom:14px">account/email/email_change_confirmation_message.html<br>Objet : Confirmez votre nouvelle adresse e-mail</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+        <tr><td style="padding:0">
+          <span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">Confirmez ce changement : le lien est valable 3 jours.</span>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#FFFFFF">
+            <tr><td style="background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%);padding:24px 32px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td width="52" style="width:52px;vertical-align:middle"><img src="bana/bana/static/bana/img/shared/bana_logo.png" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                  <td align="right" style="vertical-align:middle;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#D7FC19">Sécurité<br>du compte</td>
+                </tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:34px 32px 6px">
+              <p style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonjour Amina,</p>
+              <h1 style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#123B34;mso-line-height-rule:exactly">Confirmez votre nouvelle adresse</h1>
+              <p style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Vous avez demandé à utiliser cette adresse e-mail pour votre compte Bana. Confirmez ce changement depuis le lien ci-dessous, valable <strong style="color:#123B34">3 jours</strong>.</p><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#F3F7F6;border:1px solid #DCE8E5;border-radius:10px;margin:6px 0 4px">
+                <tr><td style="padding:16px 18px"><p style="margin:0 0 4px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#0F5F4B">Nouvelle adresse de connexion</p><p style="margin:0 0 12px;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#123B34">amina.nouvelle@example.com</p>
+                  <p style="margin:0;padding:12px 0 0;border-top:1px solid #DCE8E5;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Tant que ce lien n'est pas ouvert, votre ancienne adresse reste celle de connexion. <strong style="color:#123B34">Une fois le changement confirmé, elle est supprimée</strong> et ne permettra plus de vous connecter.</p></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:14px 32px 4px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                <tr><td align="center" bgcolor="#007F73" style="background-color:#007F73;border-radius:8px;padding:15px 30px"><a href="https://www.bana.mobi/fr/email/change/confirm/key/" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#FFFFFF;text-decoration:none">Confirmer le changement</a></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:20px 32px 0">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#F3F7F6;border-left:3px solid #C6DCD7">
+                <tr><td style="padding:14px 16px">
+                  <p style="margin:0 0 6px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Si le bouton ne fonctionne pas, copiez cette adresse dans votre navigateur :</p>
+                  <p style="margin:0;font:400 12px/1.6 'Courier New',Courier,monospace;color:#123B34;word-break:break-all">https://www.bana.mobi/fr/email/change/confirm/Mz:1uK4c:7hYp2kLm9nQr4sTv6wXz8aBc0dEf/</p>
+                </td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 34px">
+              <p style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail : votre adresse actuelle reste inchangée.</p>
+              <p style="margin:0;font:700 15px/1.6 Arial,Helvetica,sans-serif;color:#123B34">L'équipe Bana</p>
+            </td></tr>
+          </table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+            <tr><td style="padding:24px 32px 30px;border-top:1px solid #DCE4E2">
+              <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="mailto:contact@bana.mobi" style="color:#0F5F4B;text-decoration:underline">contact@bana.mobi</a> · <a href="tel:+32495283791" style="color:#0F5F4B;text-decoration:underline">+32 495 283 791</a> · <a href="https://www.bana.mobi/fr/faq/" style="color:#0F5F4B;text-decoration:underline">Centre d'aide</a></p>
+              <sc-if value="{{ showSocials }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.facebook.com/BanaCommunity/" style="color:#0F5F4B;text-decoration:underline">Facebook</a> · <a href="https://www.instagram.com/bana_tribus/" style="color:#0F5F4B;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/banamobi/" style="color:#0F5F4B;text-decoration:underline">LinkedIn</a></p>
+              </sc-if>
+              <p style="margin:0 0 12px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.bana.mobi/fr/cgu/" style="color:#0F5F4B;text-decoration:underline">CGU</a> · <a href="https://www.bana.mobi/fr/confidentialite/" style="color:#0F5F4B;text-decoration:underline">Confidentialité</a> · <a href="https://www.bana.mobi/fr/mentions-legales/" style="color:#0F5F4B;text-decoration:underline">Mentions légales</a> · <a href="https://www.bana.mobi/fr/cookies/" style="color:#0F5F4B;text-decoration:underline">Cookies</a></p>
+              <p style="margin:0 0 10px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Vous recevez cet email parce qu'une action a été effectuée sur votre compte Bana.</p>
+              <p style="margin:0 0 4px;font:700 11px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Bana Community ASBL</p>
+              <p style="margin:0;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 · RPM Charleroi · <a href="https://www.bana.mobi" style="color:#42564F;text-decoration:underline">www.bana.mobi</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+      <sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:12px;padding:12px 14px;background-color:#DDE5E3;border-radius:8px;font:400 12px/1.7 'Courier New',monospace;color:#42564F">Seul email à exposer expiration_days · la suppression de l'ancienne adresse (signal email_confirmed) est dite explicitement, car irréversible · envoyé hors allauth : ajouter html_message dans accounts/utils.py, le .html seul ne suffit pas · l'URL en clair n'est PAS un lien (&lt;p&gt; simple) : un seul élément cliquable, car ACCOUNT_CONFIRM_EMAIL_ON_GET consomme la clé à la première visite · casser l'auto-lien Gmail avec un &amp;#8203; après « https:// » à l'intégration</div>
+      </sc-if>
+    </div>
+
+    <!-- 07 -->
+    <div style="flex:0 0 600px;width:600px">
+      <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0F5F4B;margin-bottom:7px">07 — Notifications de sécurité (inactives)</div>
+      <div style="font:400 12px/1.6 'Courier New',monospace;color:#4A5E58;margin-bottom:14px">account/email/password_changed_message.html<br>Objet : Votre mot de passe Bana a été modifié</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+        <tr><td style="padding:0">
+          <span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">Modification effectuée le 22 septembre 2026 à 14:08.</span>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#FFFFFF">
+            <tr><td style="background-color:#123B34;padding:24px 32px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td width="52" style="width:52px;vertical-align:middle"><img src="bana/bana/static/bana/img/shared/bana_logo.png" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                  <td align="right" style="vertical-align:middle;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#FFFFFF">Alerte<br>sécurité</td>
+                </tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:34px 32px 6px">
+              <p style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonjour Amina,</p>
+              <h1 style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#123B34;mso-line-height-rule:exactly">Votre mot de passe a été modifié</h1>
+              <p style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Le mot de passe de votre compte Bana vient d'être modifié. Si c'est vous, aucune action n'est nécessaire.</p><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#F4F6F5;border:1px solid #E1E7E5;border-radius:12px;margin-top:6px">
+                <tr><td style="padding:14px 20px 16px">
+                  <p style="margin:0 0 4px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Provenance de la modification</p>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;margin-top:6px">
+                    <tr><td width="30%" style="width:30%;padding:9px 0;border-top:1px solid #E1E7E5;font:400 13px/1.5 Arial,Helvetica,sans-serif;color:#4A5E58;vertical-align:top">Date</td><td style="padding:9px 0;border-top:1px solid #E1E7E5;font:700 13px/1.5 Arial,Helvetica,sans-serif;color:#123B34">22 septembre 2026, 14:08</td></tr>
+                    <tr><td width="30%" style="width:30%;padding:9px 0;border-top:1px solid #E1E7E5;font:400 13px/1.5 Arial,Helvetica,sans-serif;color:#4A5E58;vertical-align:top">Adresse IP</td><td style="padding:9px 0;border-top:1px solid #E1E7E5;font:400 13px/1.5 'Courier New',Courier,monospace;color:#123B34">81.2.3.4</td></tr>
+                    <tr><td width="30%" style="width:30%;padding:9px 0;border-top:1px solid #E1E7E5;font:400 13px/1.5 Arial,Helvetica,sans-serif;color:#4A5E58;vertical-align:top">Navigateur</td><td style="padding:9px 0;border-top:1px solid #E1E7E5;font:400 11px/1.5 'Courier New',Courier,monospace;color:#42564F;word-break:break-all">Mozilla/5.0 (iPhone; CPU iPhone OS 17_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Mobile/15E148 Safari/604.1</td></tr>
+                  </table>
+                </td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:14px 32px 4px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                <tr><td align="center" bgcolor="#123B34" style="background-color:#123B34;border-radius:8px;padding:15px 30px"><a href="https://www.bana.mobi/fr/accounts/password/reset/" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#FFFFFF;text-decoration:none">Réinitialiser mon mot de passe</a></td></tr>
+              </table>
+            </td></tr>
+            
+            <tr><td style="padding:22px 32px 34px">
+              <p style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Vous ne reconnaissez pas cette action ? Réinitialisez immédiatement votre mot de passe et écrivez-nous à contact@bana.mobi.</p>
+              <p style="margin:0;font:700 15px/1.6 Arial,Helvetica,sans-serif;color:#123B34">L'équipe Bana</p>
+            </td></tr>
+          </table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+            <tr><td style="padding:24px 32px 30px;border-top:1px solid #DCE4E2">
+              <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="mailto:contact@bana.mobi" style="color:#0F5F4B;text-decoration:underline">contact@bana.mobi</a> · <a href="tel:+32495283791" style="color:#0F5F4B;text-decoration:underline">+32 495 283 791</a> · <a href="https://www.bana.mobi/fr/faq/" style="color:#0F5F4B;text-decoration:underline">Centre d'aide</a></p>
+              <sc-if value="{{ showSocials }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.facebook.com/BanaCommunity/" style="color:#0F5F4B;text-decoration:underline">Facebook</a> · <a href="https://www.instagram.com/bana_tribus/" style="color:#0F5F4B;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/banamobi/" style="color:#0F5F4B;text-decoration:underline">LinkedIn</a></p>
+              </sc-if>
+              <p style="margin:0 0 12px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.bana.mobi/fr/cgu/" style="color:#0F5F4B;text-decoration:underline">CGU</a> · <a href="https://www.bana.mobi/fr/confidentialite/" style="color:#0F5F4B;text-decoration:underline">Confidentialité</a> · <a href="https://www.bana.mobi/fr/mentions-legales/" style="color:#0F5F4B;text-decoration:underline">Mentions légales</a> · <a href="https://www.bana.mobi/fr/cookies/" style="color:#0F5F4B;text-decoration:underline">Cookies</a></p>
+              <p style="margin:0 0 10px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Vous recevez cet email parce qu'une action a été effectuée sur votre compte Bana.</p>
+              <p style="margin:0 0 4px;font:700 11px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Bana Community ASBL</p>
+              <p style="margin:0;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 · RPM Charleroi · <a href="https://www.bana.mobi" style="color:#42564F;text-decoration:underline">www.bana.mobi</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+      <sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:12px;padding:12px 14px;background-color:#DDE5E3;border-radius:8px;font:400 12px/1.7 'Courier New',monospace;color:#42564F">Gabarit commun aux 6 notifications (password_changed, password_set, email_changed, email_deleted, email_confirm, password_reset) — aucune ne part tant que ACCOUNT_EMAIL_NOTIFICATIONS n'est pas à True · bloc provenance : timestamp · ip · user_agent brut en monospace, retour à la ligne forcé · email_changed ajoute from_email / to_email, email_deleted ajoute deleted_email</div>
+      </sc-if>
+    </div>
+
+    <!-- 08 -->
+    <div style="flex:0 0 600px;width:600px">
+      <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0F5F4B;margin-bottom:7px">08 — Nouvelle demande de réservation (Yaya)</div>
+      <div style="font:400 12px/1.6 'Courier New',monospace;color:#4A5E58;margin-bottom:14px">trajects/email/new_reservation_request_message.html<br>Objet : Sophie L. vous envoie 3 nouvelles demandes de réservation</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+        <tr><td style="padding:0">
+          <span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">Sophie L. demande 2 places sur 3 dates de votre trajet Charleroi → Gosselies.</span>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#FFFFFF">
+            <tr><td style="background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%);padding:24px 32px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td width="52" style="width:52px;vertical-align:middle"><img src="bana/bana/static/bana/img/shared/bana_logo.png" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                  <td align="right" style="vertical-align:middle;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#D7FC19">Demande<br>de réservation</td>
+                </tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:34px 32px 8px">
+              <p style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonjour Marie D.,</p>
+              <h1 style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#123B34;mso-line-height-rule:exactly">3 nouvelles demandes de réservation</h1>
+              <p style="margin:0 0 22px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F"><strong style="color:#123B34">Sophie L.</strong> vous a envoyé <strong style="color:#123B34">3 demandes</strong> de réservation pour votre trajet, <strong style="color:#123B34">2 enfants</strong> par date.</p>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#F3F7F6;border:1px solid #DCE8E5;border-radius:12px">
+                <tr><td style="padding:20px 22px"><p style="margin:0 0 14px;padding:0 0 14px;border-bottom:1px solid #DCE8E5;font:700 15px/1.4 Arial,Helvetica,sans-serif;color:#123B34">Trajet : École Charleroi (matin)</p><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                    <tr>
+                      <td width="26" style="width:26px;vertical-align:top;padding:3px 0 0"><img src="assets/email/icon-pin.png" width="16" height="16" alt="" style="display:block;width:16px;height:16px;border:0"></td>
+                      <td style="vertical-align:top">
+                        <p style="margin:0 0 1px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Départ</p>
+                        <p style="margin:0;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#123B34">Rue de la Station 12, Charleroi</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="26" style="width:26px;padding:2px 0"><div style="width:2px;height:20px;margin-left:7px;background-color:#C6DCD7"></div></td>
+                      <td style="font:400 12px/1.4 Arial,Helvetica,sans-serif;color:#42564F;padding:2px 0">07:45 → 08:20</td>
+                    </tr>
+                    <tr>
+                      <td width="26" style="width:26px;vertical-align:top;padding:3px 0 0"><img src="assets/email/icon-flag.png" width="16" height="16" alt="" style="display:block;width:16px;height:16px;border:0"></td>
+                      <td style="vertical-align:top">
+                        <p style="margin:0 0 1px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Arrivée</p>
+                        <p style="margin:0;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#123B34">École Saint-Joseph, Gosselies</p>
+                      </td>
+                    </tr>
+                  </table><div style="height:16px;line-height:16px">&nbsp;</div>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                    <tr>
+                      <td width="34%" style="width:34%;padding:11px 0;border-top:1px solid #DCE8E5;font:400 12px/1.5 Arial,Helvetica,sans-serif;color:#4A5E58">Enfants</td>
+                      <td style="padding:11px 0;border-top:1px solid #DCE8E5;font:700 13px/1.5 Arial,Helvetica,sans-serif;color:#123B34">Léa M. (7 ans), Tom M. (9 ans)</td>
+                    </tr>
+                  </table><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;margin-top:16px;border-top:1px solid #DCE8E5">
+                    <tr><td style="padding:14px 0 0">
+                      <p style="margin:0 0 9px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Dates demandées</p>
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                        <tr><td style="padding:7px 12px;background-color:#FFFFFF;border:1px solid #C6DCD7;border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:#0F5F4B">Lun. 12 oct.</td><td style="width:8px"></td><td style="padding:7px 12px;background-color:#FFFFFF;border:1px solid #C6DCD7;border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:#0F5F4B">Mar. 13 oct.</td><td style="width:8px"></td><td style="padding:7px 12px;background-color:#FFFFFF;border:1px solid #C6DCD7;border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:#0F5F4B">Mer. 14 oct.</td></tr>
+                      </table>
+                    </td></tr>
+                  </table></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 4px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                <tr><td align="center" bgcolor="#007F73" style="background-color:#007F73;border-radius:8px;padding:15px 30px"><a href="https://www.bana.mobi/fr/trajets/r%C3%A9servations/" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#FFFFFF;text-decoration:none">Consulter les réservations</a></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 34px">
+              <p style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Acceptez ou refusez ces demandes depuis votre espace Bana — Sophie attend votre retour pour organiser ses trajets.</p>
+              <p style="margin:0;font:400 15px/1.6 Arial,Helvetica,sans-serif;color:#42564F">À très vite,<br><strong style="color:#123B34">L'équipe Bana</strong></p>
+            </td></tr>
+          </table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+            <tr><td style="padding:24px 32px 30px;border-top:1px solid #DCE4E2">
+              <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="mailto:contact@bana.mobi" style="color:#0F5F4B;text-decoration:underline">contact@bana.mobi</a> · <a href="tel:+32495283791" style="color:#0F5F4B;text-decoration:underline">+32 495 283 791</a> · <a href="https://www.bana.mobi/fr/faq/" style="color:#0F5F4B;text-decoration:underline">Centre d'aide</a></p>
+              <sc-if value="{{ showSocials }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.facebook.com/BanaCommunity/" style="color:#0F5F4B;text-decoration:underline">Facebook</a> · <a href="https://www.instagram.com/bana_tribus/" style="color:#0F5F4B;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/banamobi/" style="color:#0F5F4B;text-decoration:underline">LinkedIn</a></p>
+              </sc-if>
+              <p style="margin:0 0 12px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.bana.mobi/fr/cgu/" style="color:#0F5F4B;text-decoration:underline">CGU</a> · <a href="https://www.bana.mobi/fr/confidentialite/" style="color:#0F5F4B;text-decoration:underline">Confidentialité</a> · <a href="https://www.bana.mobi/fr/mentions-legales/" style="color:#0F5F4B;text-decoration:underline">Mentions légales</a> · <a href="https://www.bana.mobi/fr/cookies/" style="color:#0F5F4B;text-decoration:underline">Cookies</a> · <a href="https://www.bana.mobi/fr/accounts/profile/" style="color:#0F5F4B;text-decoration:underline">Gérer mes notifications</a></p>
+              <p style="margin:0 0 10px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Vous recevez cet email parce que vous avez un compte Bana.</p>
+              <p style="margin:0 0 4px;font:700 11px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Bana Community ASBL</p>
+              <p style="margin:0;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 · RPM Charleroi · <a href="https://www.bana.mobi" style="color:#42564F;text-decoration:underline">www.bana.mobi</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+      <sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:12px;padding:12px 14px;background-color:#DDE5E3;border-radius:8px;font:400 12px/1.7 'Courier New',monospace;color:#42564F">groupe_name affiché en titre du récap (masquer toute la ligne si vide) · counterpart_name · requested_places · dates au format « Lun. 12 oct. » · children · heure_depart/heure_arrivee · 1 seul email par trajet quel que soit le nombre de dates · icônes départ/arrivée servies en PNG 48 px (affichées à 16 px) : le SVG inline est supprimé par Gmail et Outlook</div>
+      </sc-if>
+    </div>
+
+    <!-- 09 -->
+    <div style="flex:0 0 600px;width:600px">
+      <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0F5F4B;margin-bottom:7px">09 — Réservation confirmée (Parent)</div>
+      <div style="font:400 12px/1.6 'Courier New',monospace;color:#4A5E58;margin-bottom:14px">trajects/email/reservation_confirmed_message.html<br>Objet : Sophie L. a confirmé 3 de vos réservations</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+        <tr><td style="padding:0">
+          <span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">Sophie L. accompagnera Léa et Tom sur 3 dates, du 12 au 14 octobre.</span>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#FFFFFF">
+            <tr><td style="background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%);padding:24px 32px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td width="52" style="width:52px;vertical-align:middle"><img src="bana/bana/static/bana/img/shared/bana_logo.png" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                  <td align="right" style="vertical-align:middle;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#D7FC19">Réservation<br>confirmée</td>
+                </tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:34px 32px 8px">
+              <p style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonjour Marie D.,</p>
+              <h1 style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#123B34;mso-line-height-rule:exactly">3 réservations confirmées</h1>
+              <p style="margin:0 0 22px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonne nouvelle ! <strong style="color:#123B34">Sophie L.</strong> a confirmé <strong style="color:#123B34">3 de vos réservations</strong>.</p>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#F3F7F6;border:1px solid #DCE8E5;border-radius:12px">
+                <tr><td style="padding:20px 22px"><p style="margin:0 0 14px;padding:0 0 14px;border-bottom:1px solid #DCE8E5;font:700 15px/1.4 Arial,Helvetica,sans-serif;color:#123B34">Trajet : École Charleroi (matin)</p><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                    <tr>
+                      <td width="26" style="width:26px;vertical-align:top;padding:3px 0 0"><img src="assets/email/icon-pin.png" width="16" height="16" alt="" style="display:block;width:16px;height:16px;border:0"></td>
+                      <td style="vertical-align:top">
+                        <p style="margin:0 0 1px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Départ</p>
+                        <p style="margin:0;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#123B34">Rue de la Station 12, Charleroi</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="26" style="width:26px;padding:2px 0"><div style="width:2px;height:20px;margin-left:7px;background-color:#C6DCD7"></div></td>
+                      <td style="font:400 12px/1.4 Arial,Helvetica,sans-serif;color:#42564F;padding:2px 0">07:45 → 08:20</td>
+                    </tr>
+                    <tr>
+                      <td width="26" style="width:26px;vertical-align:top;padding:3px 0 0"><img src="assets/email/icon-flag.png" width="16" height="16" alt="" style="display:block;width:16px;height:16px;border:0"></td>
+                      <td style="vertical-align:top">
+                        <p style="margin:0 0 1px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Arrivée</p>
+                        <p style="margin:0;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#123B34">École Saint-Joseph, Gosselies</p>
+                      </td>
+                    </tr>
+                  </table><div style="height:16px;line-height:16px">&nbsp;</div>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                    <tr>
+                      <td width="34%" style="width:34%;padding:11px 0;border-top:1px solid #DCE8E5;font:400 12px/1.5 Arial,Helvetica,sans-serif;color:#4A5E58">Accompagnateur</td>
+                      <td style="padding:11px 0;border-top:1px solid #DCE8E5;font:700 13px/1.5 Arial,Helvetica,sans-serif;color:#123B34">Sophie L.</td>
+                    </tr>
+                    <tr>
+                      <td width="34%" style="width:34%;padding:11px 0;border-top:1px solid #DCE8E5;font:400 12px/1.5 Arial,Helvetica,sans-serif;color:#4A5E58">Enfants</td>
+                      <td style="padding:11px 0;border-top:1px solid #DCE8E5;font:700 13px/1.5 Arial,Helvetica,sans-serif;color:#123B34">Léa M. (7 ans), Tom M. (9 ans)</td>
+                    </tr>
+                  </table><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;margin-top:16px;border-top:1px solid #DCE8E5">
+                    <tr><td style="padding:14px 0 0">
+                      <p style="margin:0 0 9px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Dates confirmées</p>
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                        <tr><td style="padding:7px 12px;background-color:#FFFFFF;border:1px solid #C6DCD7;border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:#0F5F4B">Lun. 12 oct.</td><td style="width:8px"></td><td style="padding:7px 12px;background-color:#FFFFFF;border:1px solid #C6DCD7;border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:#0F5F4B">Mar. 13 oct.</td><td style="width:8px"></td><td style="padding:7px 12px;background-color:#FFFFFF;border:1px solid #C6DCD7;border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:#0F5F4B">Mer. 14 oct.</td></tr>
+                      </table>
+                    </td></tr>
+                  </table></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 4px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                <tr><td align="center" bgcolor="#007F73" style="background-color:#007F73;border-radius:8px;padding:15px 30px"><a href="https://www.bana.mobi/fr/trajets/r%C3%A9servations/" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#FFFFFF;text-decoration:none">Voir mes réservations</a></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 34px">
+              <p style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Retrouvez le détail et contactez Sophie L. depuis votre espace Bana.</p>
+              <p style="margin:0;font:400 15px/1.6 Arial,Helvetica,sans-serif;color:#42564F">À très vite,<br><strong style="color:#123B34">L'équipe Bana</strong></p>
+            </td></tr>
+          </table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+            <tr><td style="padding:24px 32px 30px;border-top:1px solid #DCE4E2">
+              <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="mailto:contact@bana.mobi" style="color:#0F5F4B;text-decoration:underline">contact@bana.mobi</a> · <a href="tel:+32495283791" style="color:#0F5F4B;text-decoration:underline">+32 495 283 791</a> · <a href="https://www.bana.mobi/fr/faq/" style="color:#0F5F4B;text-decoration:underline">Centre d'aide</a></p>
+              <sc-if value="{{ showSocials }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.facebook.com/BanaCommunity/" style="color:#0F5F4B;text-decoration:underline">Facebook</a> · <a href="https://www.instagram.com/bana_tribus/" style="color:#0F5F4B;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/banamobi/" style="color:#0F5F4B;text-decoration:underline">LinkedIn</a></p>
+              </sc-if>
+              <p style="margin:0 0 12px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.bana.mobi/fr/cgu/" style="color:#0F5F4B;text-decoration:underline">CGU</a> · <a href="https://www.bana.mobi/fr/confidentialite/" style="color:#0F5F4B;text-decoration:underline">Confidentialité</a> · <a href="https://www.bana.mobi/fr/mentions-legales/" style="color:#0F5F4B;text-decoration:underline">Mentions légales</a> · <a href="https://www.bana.mobi/fr/cookies/" style="color:#0F5F4B;text-decoration:underline">Cookies</a> · <a href="https://www.bana.mobi/fr/accounts/profile/" style="color:#0F5F4B;text-decoration:underline">Gérer mes notifications</a></p>
+              <p style="margin:0 0 10px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Vous recevez cet email parce que vous avez un compte Bana.</p>
+              <p style="margin:0 0 4px;font:700 11px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Bana Community ASBL</p>
+              <p style="margin:0;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 · RPM Charleroi · <a href="https://www.bana.mobi" style="color:#42564F;text-decoration:underline">www.bana.mobi</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+      <sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:12px;padding:12px 14px;background-color:#DDE5E3;border-radius:8px;font:400 12px/1.7 'Courier New',monospace;color:#42564F">La ligne « Accompagnateur » et la mention « contactez X » ne s'affichent que si counterpart_named est vrai · pas de badges de vérification : l'info n'est pas dans le contexte email · icônes départ/arrivée servies en PNG 48 px (affichées à 16 px) : le SVG inline est supprimé par Gmail et Outlook</div>
+      </sc-if>
+    </div>
+
+    <!-- 10 -->
+    <div style="flex:0 0 600px;width:600px">
+      <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0F5F4B;margin-bottom:7px">10 — Demande non retenue (Parent)</div>
+      <div style="font:400 12px/1.6 'Courier New',monospace;color:#4A5E58;margin-bottom:14px">trajects/email/reservation_rejected_message.html<br>Objet : Vos demandes du 12 au 14/10 n'ont pas été retenues</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+        <tr><td style="padding:0">
+          <span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">Sophie L. n'est pas disponible. D'autres accompagnateurs figurent dans vos matchings.</span>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#FFFFFF">
+            <tr><td style="background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%);padding:24px 32px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td width="52" style="width:52px;vertical-align:middle"><img src="bana/bana/static/bana/img/shared/bana_logo.png" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                  <td align="right" style="vertical-align:middle;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#D7FC19">Suivi de<br>réservation</td>
+                </tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:34px 32px 8px">
+              <p style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonjour Marie D.,</p>
+              <h1 style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#123B34;mso-line-height-rule:exactly">Ces demandes n'ont pas été retenues</h1>
+              <p style="margin:0 0 22px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F"><strong style="color:#123B34">Sophie L.</strong> n'est pas disponible pour ce trajet. Consulté votre espace Bana pour trouvé d'autres accompagnteurs</p>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#F4F6F5;border:1px solid #E1E7E5;border-radius:12px">
+                <tr><td style="padding:20px 22px"><p style="margin:0 0 4px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#42564F">Demandes annulées</p>
+                  <p style="margin:0 0 14px;padding:0 0 14px;border-bottom:1px solid #E1E7E5;font:700 15px/1.4 Arial,Helvetica,sans-serif;color:#123B34">Trajet : École Charleroi (matin)</p>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                    <tr>
+                      <td width="26" style="width:26px;vertical-align:top;padding:3px 0 0"><img src="assets/email/icon-pin.png" width="16" height="16" alt="" style="display:block;width:16px;height:16px;border:0"></td>
+                      <td style="vertical-align:top">
+                        <p style="margin:0 0 1px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Départ</p>
+                        <p style="margin:0;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#123B34">Rue de la Station 12, Charleroi</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="26" style="width:26px;padding:2px 0"><div style="width:2px;height:20px;margin-left:7px;background-color:#C6DCD7"></div></td>
+                      <td style="font:400 12px/1.4 Arial,Helvetica,sans-serif;color:#42564F;padding:2px 0">07:45 → 08:20</td>
+                    </tr>
+                    <tr>
+                      <td width="26" style="width:26px;vertical-align:top;padding:3px 0 0"><img src="assets/email/icon-flag.png" width="16" height="16" alt="" style="display:block;width:16px;height:16px;border:0"></td>
+                      <td style="vertical-align:top">
+                        <p style="margin:0 0 1px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Arrivée</p>
+                        <p style="margin:0;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#123B34">École Saint-Joseph, Gosselies</p>
+                      </td>
+                    </tr>
+                  </table>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;margin-top:16px;border-top:1px solid #E1E7E5">
+                    <tr><td style="padding:14px 0 0">
+                      <p style="margin:0 0 9px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Dates annulées</p>
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                        <tr><td style="padding:7px 12px;background-color:#FFFFFF;border:1px solid #DCE4E2;border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:#4A5E58">Lun. 12 oct.</td><td style="width:8px"></td><td style="padding:7px 12px;background-color:#FFFFFF;border:1px solid #DCE4E2;border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:#4A5E58">Mar. 13 oct.</td><td style="width:8px"></td><td style="padding:7px 12px;background-color:#FFFFFF;border:1px solid #DCE4E2;border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:#4A5E58">Mer. 14 oct.</td></tr>
+                      </table>
+                    </td></tr>
+                  </table></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 4px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                <tr><td align="center" bgcolor="#007F73" style="background-color:#007F73;border-radius:8px;padding:15px 30px"><a href="https://www.bana.mobi/fr/trajets/r%C3%A9servations/" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#FFFFFF;text-decoration:none">Voir mes réservations</a></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 34px">
+              <p style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Vos places ne sont pas bloquées : vous pouvez réserver un autre accompagnateur dès maintenant.</p>
+              <p style="margin:0;font:400 15px/1.6 Arial,Helvetica,sans-serif;color:#42564F">À très vite,<br><strong style="color:#123B34">L'équipe Bana</strong></p>
+            </td></tr>
+          </table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+            <tr><td style="padding:24px 32px 30px;border-top:1px solid #DCE4E2">
+              <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="mailto:contact@bana.mobi" style="color:#0F5F4B;text-decoration:underline">contact@bana.mobi</a> · <a href="tel:+32495283791" style="color:#0F5F4B;text-decoration:underline">+32 495 283 791</a> · <a href="https://www.bana.mobi/fr/faq/" style="color:#0F5F4B;text-decoration:underline">Centre d'aide</a></p>
+              <sc-if value="{{ showSocials }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.facebook.com/BanaCommunity/" style="color:#0F5F4B;text-decoration:underline">Facebook</a> · <a href="https://www.instagram.com/bana_tribus/" style="color:#0F5F4B;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/banamobi/" style="color:#0F5F4B;text-decoration:underline">LinkedIn</a></p>
+              </sc-if>
+              <p style="margin:0 0 12px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.bana.mobi/fr/cgu/" style="color:#0F5F4B;text-decoration:underline">CGU</a> · <a href="https://www.bana.mobi/fr/confidentialite/" style="color:#0F5F4B;text-decoration:underline">Confidentialité</a> · <a href="https://www.bana.mobi/fr/mentions-legales/" style="color:#0F5F4B;text-decoration:underline">Mentions légales</a> · <a href="https://www.bana.mobi/fr/cookies/" style="color:#0F5F4B;text-decoration:underline">Cookies</a> · <a href="https://www.bana.mobi/fr/accounts/profile/" style="color:#0F5F4B;text-decoration:underline">Gérer mes notifications</a></p>
+              <p style="margin:0 0 10px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Vous recevez cet email parce que vous avez un compte Bana.</p>
+              <p style="margin:0 0 4px;font:700 11px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Bana Community ASBL</p>
+              <p style="margin:0;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 · RPM Charleroi · <a href="https://www.bana.mobi" style="color:#42564F;text-decoration:underline">www.bana.mobi</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+      <sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:12px;padding:12px 14px;background-color:#DDE5E3;border-radius:8px;font:400 12px/1.7 'Courier New',monospace;color:#42564F">Ton non culpabilisant, aucune attribution de faute · pastilles de dates en gris : les demandes n'existent plus · CTA vers my_reservations (pas de deep link possible)</div>
+      </sc-if>
+    </div>
+
+    <!-- 11 -->
+    <div style="flex:0 0 600px;width:600px">
+      <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0F5F4B;margin-bottom:7px">11 — Demande annulée (Yaya)</div>
+      <div style="font:400 12px/1.6 'Courier New',monospace;color:#4A5E58;margin-bottom:14px">trajects/email/reservation_canceled_message.html<br>Objet : Sophie L. a annulé sa demande pour votre trajet</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+        <tr><td style="padding:0">
+          <span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">Sophie L. a confirmé un autre trajet : vos places sont à nouveau disponibles.</span>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#FFFFFF">
+            <tr><td style="background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%);padding:24px 32px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td width="52" style="width:52px;vertical-align:middle"><img src="bana/bana/static/bana/img/shared/bana_logo.png" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                  <td align="right" style="vertical-align:middle;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#D7FC19">Demande<br>annulée</td>
+                </tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:34px 32px 8px">
+              <p style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonjour Marie D.,</p>
+              <h1 style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#123B34;mso-line-height-rule:exactly">Une demande a été annulée</h1>
+              <p style="margin:0 0 22px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F"><strong style="color:#123B34">Sophie L.</strong> a confirmé un autre trajet pour cette date. Sa demande a donc été annulée automatiquement et votre place est à nouveau disponible.</p>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#F4F6F5;border:1px solid #E1E7E5;border-radius:12px">
+                <tr><td style="padding:20px 22px"><table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-bottom:14px">
+                    <tr><td style="padding:5px 10px;background-color:#E7EDEB;border-radius:20px;font:700 11px/1.3 Arial,Helvetica,sans-serif;color:#42564F">Annulée — le parent a confirmé ailleurs</td></tr>
+                  </table>
+                  <p style="margin:0 0 14px;padding:0 0 14px;border-bottom:1px solid #E1E7E5;font:700 15px/1.4 Arial,Helvetica,sans-serif;color:#123B34">Trajet : École Charleroi (matin)</p>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                    <tr>
+                      <td width="26" style="width:26px;vertical-align:top;padding:3px 0 0"><img src="assets/email/icon-pin.png" width="16" height="16" alt="" style="display:block;width:16px;height:16px;border:0"></td>
+                      <td style="vertical-align:top">
+                        <p style="margin:0 0 1px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Départ</p>
+                        <p style="margin:0;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#123B34">Rue de la Station 12, Charleroi</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="26" style="width:26px;padding:2px 0"><div style="width:2px;height:20px;margin-left:7px;background-color:#C6DCD7"></div></td>
+                      <td style="font:400 12px/1.4 Arial,Helvetica,sans-serif;color:#42564F;padding:2px 0">07:45 → 08:20</td>
+                    </tr>
+                    <tr>
+                      <td width="26" style="width:26px;vertical-align:top;padding:3px 0 0"><img src="assets/email/icon-flag.png" width="16" height="16" alt="" style="display:block;width:16px;height:16px;border:0"></td>
+                      <td style="vertical-align:top">
+                        <p style="margin:0 0 1px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Arrivée</p>
+                        <p style="margin:0;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#123B34">École Saint-Joseph, Gosselies</p>
+                      </td>
+                    </tr>
+                  </table>
+                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;margin-top:16px;border-top:1px solid #E1E7E5">
+                    <tr><td style="padding:14px 0 0">
+                      <p style="margin:0 0 9px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Dates libérées</p>
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                        <tr><td style="padding:7px 12px;background-color:#FFFFFF;border:1px solid #DCE4E2;border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:#4A5E58">Lun. 12 oct.</td></tr>
+                      </table>
+                    </td></tr>
+                  </table></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 4px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                <tr><td align="center" bgcolor="#007F73" style="background-color:#007F73;border-radius:8px;padding:15px 30px"><a href="https://www.bana.mobi/fr/trajets/r%C3%A9servations/" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#FFFFFF;text-decoration:none">Voir mes réservations</a></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 34px">
+              <p style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58"><strong style="color:#123B34">Aucune action n'est requise de votre part.</strong> Les 2 places sont de nouveau proposées aux autres parents.</p>
+              <p style="margin:0;font:400 15px/1.6 Arial,Helvetica,sans-serif;color:#42564F">À très vite,<br><strong style="color:#123B34">L'équipe Bana</strong></p>
+            </td></tr>
+          </table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+            <tr><td style="padding:24px 32px 30px;border-top:1px solid #DCE4E2">
+              <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="mailto:contact@bana.mobi" style="color:#0F5F4B;text-decoration:underline">contact@bana.mobi</a> · <a href="tel:+32495283791" style="color:#0F5F4B;text-decoration:underline">+32 495 283 791</a> · <a href="https://www.bana.mobi/fr/faq/" style="color:#0F5F4B;text-decoration:underline">Centre d'aide</a></p>
+              <sc-if value="{{ showSocials }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.facebook.com/BanaCommunity/" style="color:#0F5F4B;text-decoration:underline">Facebook</a> · <a href="https://www.instagram.com/bana_tribus/" style="color:#0F5F4B;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/banamobi/" style="color:#0F5F4B;text-decoration:underline">LinkedIn</a></p>
+              </sc-if>
+              <p style="margin:0 0 12px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.bana.mobi/fr/cgu/" style="color:#0F5F4B;text-decoration:underline">CGU</a> · <a href="https://www.bana.mobi/fr/confidentialite/" style="color:#0F5F4B;text-decoration:underline">Confidentialité</a> · <a href="https://www.bana.mobi/fr/mentions-legales/" style="color:#0F5F4B;text-decoration:underline">Mentions légales</a> · <a href="https://www.bana.mobi/fr/cookies/" style="color:#0F5F4B;text-decoration:underline">Cookies</a> · <a href="https://www.bana.mobi/fr/accounts/profile/" style="color:#0F5F4B;text-decoration:underline">Gérer mes notifications</a></p>
+              <p style="margin:0 0 10px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Vous recevez cet email parce que vous avez un compte Bana.</p>
+              <p style="margin:0 0 4px;font:700 11px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Bana Community ASBL</p>
+              <p style="margin:0;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 · RPM Charleroi · <a href="https://www.bana.mobi" style="color:#42564F;text-decoration:underline">www.bana.mobi</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+      <sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:12px;padding:12px 14px;background-color:#DDE5E3;border-radius:8px;font:400 12px/1.7 'Courier New',monospace;color:#42564F">3 variantes selon canceled_by — 'parent' : « a annulé sa demande » · 'auto' : « a confirmé un autre trajet… place à nouveau disponible » (illustré ici) · None : formulation neutre sans attribution · la pastille reprend cancel_reason · 1 email par trajet ET par motif</div>
+      </sc-if>
+    </div>
+
+    <!-- 12 -->
+    <div style="flex:0 0 600px;width:600px">
+      <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0F5F4B;margin-bottom:7px">12 — Aide proposée — 1 date (Parent)</div>
+      <div style="font:400 12px/1.6 'Courier New',monospace;color:#4A5E58;margin-bottom:14px">trajects/email/help_proposed_message.html<br>Objet : Sophie L. est disponible pour votre trajet du 12/10/2026</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+        <tr><td style="padding:0">
+          <span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">Sophie L. propose son aide pour le lundi 12 octobre, au départ de Charleroi.</span>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#FFFFFF">
+            <tr><td style="background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%);padding:24px 32px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td width="52" style="width:52px;vertical-align:middle"><img src="bana/bana/static/bana/img/shared/bana_logo.png" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                  <td align="right" style="vertical-align:middle;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#D7FC19">Nouveau<br>matching</td>
+                </tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:34px 32px 8px">
+              <p style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonjour Marie D.,</p>
+              <h1 style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#123B34;mso-line-height-rule:exactly">Sophie L. est disponible</h1>
+              <p style="margin:0 0 22px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Un accompagnateur propose son aide sur <strong style="color:#123B34">une date</strong> de votre recherche.</p>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#F3F7F6;border:1px solid #DCE8E5;border-radius:12px">
+                <tr><td style="padding:20px 22px"><p style="margin:0 0 14px;padding:0 0 14px;border-bottom:1px solid #DCE8E5;font:700 15px/1.4 Arial,Helvetica,sans-serif;color:#123B34">Trajet : École Charleroi (matin)</p><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                    <tr>
+                      <td width="26" style="width:26px;vertical-align:top;padding:3px 0 0"><img src="assets/email/icon-pin.png" width="16" height="16" alt="" style="display:block;width:16px;height:16px;border:0"></td>
+                      <td style="vertical-align:top">
+                        <p style="margin:0 0 1px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Départ</p>
+                        <p style="margin:0;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#123B34">Rue de la Station 12, Charleroi</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="26" style="width:26px;padding:2px 0"><div style="width:2px;height:20px;margin-left:7px;background-color:#C6DCD7"></div></td>
+                      <td style="font:400 12px/1.4 Arial,Helvetica,sans-serif;color:#42564F;padding:2px 0">dans un rayon de 14 km · départ 07:45</td>
+                    </tr>
+                  </table><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;margin-top:16px;border-top:1px solid #DCE8E5">
+                    <tr><td style="padding:14px 0 0">
+                      <p style="margin:0 0 9px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Date proposée</p>
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                        <tr><td style="padding:7px 12px;background-color:#FFFFFF;border:1px solid #C6DCD7;border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:#0F5F4B">Lun. 12 oct.</td></tr>
+                      </table>
+                    </td></tr>
+                  </table></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 4px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                <tr><td align="center" bgcolor="#007F73" style="background-color:#007F73;border-radius:8px;padding:15px 30px"><a href="https://www.bana.mobi/fr/trajets/recherche/matchings/" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#FFFFFF;text-decoration:none">Voir mes matchings</a></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 34px">
+              <p style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">La place n'est pas réservée tant que vous n'avez pas validé depuis vos matchings.</p>
+              <p style="margin:0;font:400 15px/1.6 Arial,Helvetica,sans-serif;color:#42564F">À très vite,<br><strong style="color:#123B34">L'équipe Bana</strong></p>
+            </td></tr>
+          </table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+            <tr><td style="padding:24px 32px 30px;border-top:1px solid #DCE4E2">
+              <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="mailto:contact@bana.mobi" style="color:#0F5F4B;text-decoration:underline">contact@bana.mobi</a> · <a href="tel:+32495283791" style="color:#0F5F4B;text-decoration:underline">+32 495 283 791</a> · <a href="https://www.bana.mobi/fr/faq/" style="color:#0F5F4B;text-decoration:underline">Centre d'aide</a></p>
+              <sc-if value="{{ showSocials }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.facebook.com/BanaCommunity/" style="color:#0F5F4B;text-decoration:underline">Facebook</a> · <a href="https://www.instagram.com/bana_tribus/" style="color:#0F5F4B;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/banamobi/" style="color:#0F5F4B;text-decoration:underline">LinkedIn</a></p>
+              </sc-if>
+              <p style="margin:0 0 12px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.bana.mobi/fr/cgu/" style="color:#0F5F4B;text-decoration:underline">CGU</a> · <a href="https://www.bana.mobi/fr/confidentialite/" style="color:#0F5F4B;text-decoration:underline">Confidentialité</a> · <a href="https://www.bana.mobi/fr/mentions-legales/" style="color:#0F5F4B;text-decoration:underline">Mentions légales</a> · <a href="https://www.bana.mobi/fr/cookies/" style="color:#0F5F4B;text-decoration:underline">Cookies</a> · <a href="https://www.bana.mobi/fr/accounts/profile/" style="color:#0F5F4B;text-decoration:underline">Gérer mes notifications</a></p>
+              <p style="margin:0 0 10px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Vous recevez cet email parce que vous avez un compte Bana.</p>
+              <p style="margin:0 0 4px;font:700 11px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Bana Community ASBL</p>
+              <p style="margin:0;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 · RPM Charleroi · <a href="https://www.bana.mobi" style="color:#42564F;text-decoration:underline">www.bana.mobi</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+      <sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:12px;padding:12px 14px;background-color:#DDE5E3;border-radius:8px;font:400 12px/1.7 'Courier New',monospace;color:#42564F">Variante is_simple=True : offre dans un rayon, aucune destination — pas de ligne « Arrivée », jamais de flèche · yaya_name / yaya_named · dates ne contient qu'une date · CTA vers my_matchings_researched</div>
+      </sc-if>
+    </div>
+
+    <!-- 13 -->
+    <div style="flex:0 0 600px;width:600px">
+      <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0F5F4B;margin-bottom:7px">13 — Aide proposée — plusieurs dates (Parent)</div>
+      <div style="font:400 12px/1.6 'Courier New',monospace;color:#4A5E58;margin-bottom:14px">trajects/email/help_proposed_bulk_message.html<br>Objet : Sophie L. est disponible pour 3 dates de votre recherche</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+        <tr><td style="padding:0">
+          <span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">3 dates disponibles sur votre recherche Charleroi → Gosselies, du 12 au 14 octobre.</span>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#FFFFFF">
+            <tr><td style="background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%);padding:24px 32px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td width="52" style="width:52px;vertical-align:middle"><img src="bana/bana/static/bana/img/shared/bana_logo.png" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                  <td align="right" style="vertical-align:middle;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#D7FC19">Nouveau<br>matching</td>
+                </tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:34px 32px 8px">
+              <p style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonjour Marie D.,</p>
+              <h1 style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#123B34;mso-line-height-rule:exactly">Sophie L. est disponible pour 3 dates</h1>
+              <p style="margin:0 0 22px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonne nouvelle ! Un accompagnateur couvre <strong style="color:#123B34">3 dates</strong> de votre recherche de trajet.</p>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#F3F7F6;border:1px solid #DCE8E5;border-radius:12px">
+                <tr><td style="padding:20px 22px"><p style="margin:0 0 14px;padding:0 0 14px;border-bottom:1px solid #DCE8E5;font:700 15px/1.4 Arial,Helvetica,sans-serif;color:#123B34">Trajet : École Charleroi (matin)</p><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                    <tr>
+                      <td width="26" style="width:26px;vertical-align:top;padding:3px 0 0"><img src="assets/email/icon-pin.png" width="16" height="16" alt="" style="display:block;width:16px;height:16px;border:0"></td>
+                      <td style="vertical-align:top">
+                        <p style="margin:0 0 1px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Départ</p>
+                        <p style="margin:0;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#123B34">Rue de la Station 12, Charleroi</p>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td width="26" style="width:26px;padding:2px 0"><div style="width:2px;height:20px;margin-left:7px;background-color:#C6DCD7"></div></td>
+                      <td style="font:400 12px/1.4 Arial,Helvetica,sans-serif;color:#42564F;padding:2px 0">07:45 → 08:20</td>
+                    </tr>
+                    <tr>
+                      <td width="26" style="width:26px;vertical-align:top;padding:3px 0 0"><img src="assets/email/icon-flag.png" width="16" height="16" alt="" style="display:block;width:16px;height:16px;border:0"></td>
+                      <td style="vertical-align:top">
+                        <p style="margin:0 0 1px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Arrivée</p>
+                        <p style="margin:0;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#123B34">École Saint-Joseph, Gosselies</p>
+                      </td>
+                    </tr>
+                  </table><table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;margin-top:16px;border-top:1px solid #DCE8E5">
+                    <tr><td style="padding:14px 0 0">
+                      <p style="margin:0 0 9px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#4A5E58">Dates disponibles</p>
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                        <tr><td style="padding:7px 12px;background-color:#FFFFFF;border:1px solid #C6DCD7;border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:#0F5F4B">Lun. 12 oct.</td><td style="width:8px"></td><td style="padding:7px 12px;background-color:#FFFFFF;border:1px solid #C6DCD7;border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:#0F5F4B">Mar. 13 oct.</td><td style="width:8px"></td><td style="padding:7px 12px;background-color:#FFFFFF;border:1px solid #C6DCD7;border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:#0F5F4B">Mer. 14 oct.</td></tr>
+                      </table>
+                    </td></tr>
+                  </table></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 4px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                <tr><td align="center" bgcolor="#007F73" style="background-color:#007F73;border-radius:8px;padding:15px 30px"><a href="https://www.bana.mobi/fr/trajets/recherche/matchings/" style="display:block;font:700 15px/1 Arial,Helvetica,sans-serif;color:#FFFFFF;text-decoration:none">Voir mes matchings</a></td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 34px">
+              <p style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Réservez les dates qui vous arrangent — vous n'êtes pas obligée de prendre tout le lot.</p>
+              <p style="margin:0;font:400 15px/1.6 Arial,Helvetica,sans-serif;color:#42564F">À très vite,<br><strong style="color:#123B34">L'équipe Bana</strong></p>
+            </td></tr>
+          </table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+            <tr><td style="padding:24px 32px 30px;border-top:1px solid #DCE4E2">
+              <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="mailto:contact@bana.mobi" style="color:#0F5F4B;text-decoration:underline">contact@bana.mobi</a> · <a href="tel:+32495283791" style="color:#0F5F4B;text-decoration:underline">+32 495 283 791</a> · <a href="https://www.bana.mobi/fr/faq/" style="color:#0F5F4B;text-decoration:underline">Centre d'aide</a></p>
+              <sc-if value="{{ showSocials }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.facebook.com/BanaCommunity/" style="color:#0F5F4B;text-decoration:underline">Facebook</a> · <a href="https://www.instagram.com/bana_tribus/" style="color:#0F5F4B;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/banamobi/" style="color:#0F5F4B;text-decoration:underline">LinkedIn</a></p>
+              </sc-if>
+              <p style="margin:0 0 12px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.bana.mobi/fr/cgu/" style="color:#0F5F4B;text-decoration:underline">CGU</a> · <a href="https://www.bana.mobi/fr/confidentialite/" style="color:#0F5F4B;text-decoration:underline">Confidentialité</a> · <a href="https://www.bana.mobi/fr/mentions-legales/" style="color:#0F5F4B;text-decoration:underline">Mentions légales</a> · <a href="https://www.bana.mobi/fr/cookies/" style="color:#0F5F4B;text-decoration:underline">Cookies</a> · <a href="https://www.bana.mobi/fr/accounts/profile/" style="color:#0F5F4B;text-decoration:underline">Gérer mes notifications</a></p>
+              <p style="margin:0 0 10px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Vous recevez cet email parce que vous avez un compte Bana.</p>
+              <p style="margin:0 0 4px;font:700 11px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Bana Community ASBL</p>
+              <p style="margin:0;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 · RPM Charleroi · <a href="https://www.bana.mobi" style="color:#42564F;text-decoration:underline">www.bana.mobi</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+      <sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:12px;padding:12px 14px;background-color:#DDE5E3;border-radius:8px;font:400 12px/1.7 'Courier New',monospace;color:#42564F">Proposition groupée : 1 seul email pour tout le groupe de trajets du yaya · dates contient toutes les dates disponibles, donc on les liste au lieu d'afficher un décompte</div>
+      </sc-if>
+    </div>
+
+    <!-- 14 -->
+    <div style="flex:0 0 600px;width:600px">
+      <div style="font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#0F5F4B;margin-bottom:7px">14 — Message d'un membre</div>
+      <div style="font:400 12px/1.6 'Courier New',monospace;color:#4A5E58;margin-bottom:14px">trajects/email/member_contact_message.html<br>Objet : Sophie L. vous a écrit via Bana</div>
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+        <tr><td style="padding:0">
+          <span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">Répondez directement à cet email : votre réponse arrive dans la boîte de Sophie L.</span>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#FFFFFF">
+            <tr><td style="background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%);padding:24px 32px">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+                <tr>
+                  <td width="52" style="width:52px;vertical-align:middle"><img src="bana/bana/static/bana/img/shared/bana_logo.png" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                  <td align="right" style="vertical-align:middle;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#D7FC19">Message<br>d'un membre</td>
+                </tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:34px 32px 8px">
+              <p style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#42564F">Bonjour Marie D.,</p>
+              <h1 style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#123B34;mso-line-height-rule:exactly">Sophie L. vous a écrit</h1>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin-bottom:18px">
+                <tr><td style="padding:5px 10px;background-color:#EAF3F0;border-radius:20px;font:700 11px/1.3 Arial,Helvetica,sans-serif;color:#0F5F4B">À propos de : École Charleroi (matin)</td></tr>
+              </table>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#F3F7F6;border-left:3px solid #007F73">
+                <tr><td style="padding:18px 20px">
+                  <p style="margin:0;font:400 15px/1.7 Arial,Helvetica,sans-serif;color:#2E403B">Bonjour Marie,<br><br>Merci beaucoup d'avoir accepté les trajets de Léa et Tom cette semaine. Petite précision : mardi, ils sortiront par la porte côté rue de l'Église, la cour principale est en travaux.<br><br>Mon numéro si besoin : 0470 12 34 56.<br><br>Belle journée,<br>Sophie</p>
+                </td></tr>
+              </table>
+            </td></tr>
+            <tr><td style="padding:22px 32px 34px">
+              <p style="margin:0 0 16px;font:400 14px/1.6 Arial,Helvetica,sans-serif;color:#42564F"><strong style="color:#123B34">Répondez directement à cet email</strong> — votre réponse arrive dans la boîte de Sophie L., sans repasser par Bana.</p>
+              <p style="margin:0;font:400 15px/1.6 Arial,Helvetica,sans-serif;color:#42564F">À très vite,<br><strong style="color:#123B34">L'équipe Bana</strong></p>
+            </td></tr>
+          </table>
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:600px;border-collapse:collapse;background-color:#F1F4F3">
+            <tr><td style="padding:24px 32px 30px;border-top:1px solid #DCE4E2">
+              <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="mailto:contact@bana.mobi" style="color:#0F5F4B;text-decoration:underline">contact@bana.mobi</a> · <a href="tel:+32495283791" style="color:#0F5F4B;text-decoration:underline">+32 495 283 791</a> · <a href="https://www.bana.mobi/fr/faq/" style="color:#0F5F4B;text-decoration:underline">Centre d'aide</a></p>
+              <sc-if value="{{ showSocials }}" hint-placeholder-val="{{ true }}">
+                <p style="margin:0 0 8px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.facebook.com/BanaCommunity/" style="color:#0F5F4B;text-decoration:underline">Facebook</a> · <a href="https://www.instagram.com/bana_tribus/" style="color:#0F5F4B;text-decoration:underline">Instagram</a> · <a href="https://www.linkedin.com/company/banamobi/" style="color:#0F5F4B;text-decoration:underline">LinkedIn</a></p>
+              </sc-if>
+              <p style="margin:0 0 12px;font:400 12px/1.7 Arial,Helvetica,sans-serif;color:#4A5E58"><a href="https://www.bana.mobi/fr/cgu/" style="color:#0F5F4B;text-decoration:underline">CGU</a> · <a href="https://www.bana.mobi/fr/confidentialite/" style="color:#0F5F4B;text-decoration:underline">Confidentialité</a> · <a href="https://www.bana.mobi/fr/mentions-legales/" style="color:#0F5F4B;text-decoration:underline">Mentions légales</a> · <a href="https://www.bana.mobi/fr/cookies/" style="color:#0F5F4B;text-decoration:underline">Cookies</a> · <a href="https://www.bana.mobi/fr/accounts/profile/" style="color:#0F5F4B;text-decoration:underline">Gérer mes notifications</a></p>
+              <p style="margin:0 0 10px;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Vous recevez cet email parce que vous avez un compte Bana.</p>
+              <p style="margin:0 0 4px;font:700 11px/1.6 Arial,Helvetica,sans-serif;color:#4A5E58">Bana Community ASBL</p>
+              <p style="margin:0;font:400 11px/1.6 Arial,Helvetica,sans-serif;color:#42564F">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 · RPM Charleroi · <a href="https://www.bana.mobi" style="color:#42564F;text-decoration:underline">www.bana.mobi</a></p>
+            </td></tr>
+          </table>
+        </td></tr>
+      </table>
+      <sc-if value="{{ showAnnotations }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top:12px;padding:12px 14px;background-color:#DDE5E3;border-radius:8px;font:400 12px/1.7 'Courier New',monospace;color:#42564F">From : « Sophie L. via Bana » &lt;contact@bana.mobi&gt; · Reply-To : adresse réelle de l'expéditeur · aucun CTA, le mécanisme est la réponse par email · ne jamais écrire « ne pas répondre » · body = texte libre jusqu'à 2000 caractères, sauts de ligne convertis en &lt;br&gt; (linebreaksbr) et échappés · context_label souvent vide → masquer la pastille</div>
+      </sc-if>
+    </div>
+
+</div>
+
+  </div>
+
+  <div style="max-width:1320px;margin:44px auto 0;padding:22px 24px;background-color:#123B34;border-radius:12px">
+    <p style="margin:0 0 8px;font:700 11px/1 'Courier New',monospace;letter-spacing:.14em;text-transform:uppercase;color:#D7FC19">À prévoir pour l'intégration</p>
+    <p style="margin:0;max-width:86ch;font:400 14px/1.7 Arial,Helvetica,sans-serif;color:#DCE8E5;text-wrap:pretty">Le logo doit être servi en URL absolue (<span style="font-family:'Courier New',monospace">https://www.bana.mobi/static/bana/img/shared/bana_logo.png</span>) — le SVG ne s'affiche pas dans Gmail ni Outlook. Le dégradé d'en-tête retombe sur <span style="font-family:'Courier New',monospace">#0F5F4B</span> plein dans Outlook. Les blocs récap consomment <span style="font-family:'Courier New',monospace">depart_adresse</span> / <span style="font-family:'Courier New',monospace">arrivee_adresse</span> / <span style="font-family:'Courier New',monospace">is_simple</span> plutôt que <span style="font-family:'Courier New',monospace">trajet_info</span>, qui peut dépasser 500 caractères. Chaque ligne optionnelle (groupe_name, horaires, enfants, accompagnateur) se masque entièrement si la variable est vide — jamais d'étiquette orpheline. Les icônes départ/arrivée sont des PNG de 48 px à déposer dans <span style="font-family:'Courier New',monospace">/static/bana/img/email/</span> et à servir en URL absolue : un SVG inline est supprimé par Gmail et Outlook. Les dates s'affichent au format « Lun. 12 oct. » (<span style="font-family:'Courier New',monospace">date|date:"D j M"</span>), pas en JJ/MM/AAAA. Emails de compte : il suffit de déposer <span style="font-family:'Courier New',monospace">&lt;nom&gt;_message.html</span> à côté du .txt, allauth l'attache en alternative — sauf le changement d'adresse, qui demande <span style="font-family:'Courier New',monospace">html_message</span> dans <span style="font-family:'Courier New',monospace">accounts/utils.py</span>. Emails de trajets : passage de <span style="font-family:'Courier New',monospace">send_mail</span> à <span style="font-family:'Courier New',monospace">EmailMultiAlternatives</span>. <span style="font-family:'Courier New',monospace">LANGUAGES</span> ne déclare que <span style="font-family:'Courier New',monospace">fr</span> : les gabarits restent en français en dur, à envelopper de <span style="font-family:'Courier New',monospace">{% trans %}</span> le jour où en/nl arrivent.</p>
+  </div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showAnnotations&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Revue&quot;},&quot;showSocials&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Contenu&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      showAnnotations: this.props.showAnnotations ?? true,
+      showSocials: this.props.showSocials ?? true,
+    };
+  }
+}
+</script>
+</body>
+</html>

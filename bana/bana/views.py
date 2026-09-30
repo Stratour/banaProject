@@ -382,7 +382,9 @@ def tarifs(request):
             'price': '99',
             'included': '1 enfant inclus',
             'extra_child': '+30€/an par enfant supplémentaire',
-            'highlight': False,
+            'highlight': True,
+            'badge': _('Seule formule disponible'),
+            'available': True,
             'features': [
                 "Profils vérifiés (carte d'identité + extrait de casier judiciaire)",
                 "Accès matching",
@@ -396,7 +398,9 @@ def tarifs(request):
             'price': '149',
             'included': '1 enfant inclus',
             'extra_child': '+40€/an par enfant supplémentaire',
-            'highlight': True,
+            'highlight': False,
+            'badge': _('Bientôt disponible'),
+            'available': False,
             'features': [
                 "Pack Essentiel inclus +",
                 "Calendrier",
@@ -413,6 +417,8 @@ def tarifs(request):
             'included': '1 enfant inclus',
             'extra_child': '+50€/an par enfant supplémentaire',
             'highlight': False,
+            'badge': _('Bientôt disponible'),
+            'available': False,
             'features': [
                 "Pack Confort inclus +",
                 "Badge identification enfant personnalisé",
@@ -454,105 +460,310 @@ def tarifs(request):
 def faq(request):
     faq_categories = [
         {
-            'slug': 'trajets-matching',
-            'label': _('Trajets & Matching'),
+            'slug': 'bana-mobi',
+            'label': _('Bana Mobi'),
             'questions': [
                 {
-                    'question': _('Comment fonctionne le système de matching ?'),
-                    'answer': _("Grâce à son système de matching, Bana met en relation des parents et des Yaya qui effectuent déjà des trajets similaires aux mêmes horaires pour accompagner les enfants entre la maison, l'école et les activités extrascolaires."),
+                    'question': _("Qu'est-ce que Bana Mobi ?"),
+                    'answer': _("<p>Bana Mobi est une plateforme qui facilite les trajets des enfants entre la maison, l'école et les activités extrascolaires grâce à un réseau de personnes de confiance appelées les Yaya.</p>"),
                     'featured': True,
                 },
                 {
-                    'question': _('Comment entrer en contact avec un matching ?'),
-                    'answer': _("Une fois l'abonnement activé, vous avez accès à l'adresse email de vos matchings afin de pouvoir échanger avec les membres de la communauté et organiser les trajets.<br>Vous pouvez ensuite partager vos coordonnées téléphoniques pour communiquer plus facilement."),
-                },
-                {
-                    'question': _('Comment se déroule le premier contact ?'),
-                    'answer': _("Avant le premier trajet, une rencontre entre le parent, l'enfant et le Yaya est fortement recommandée afin de faire connaissance et d'organiser le trajet en toute confiance. Bana recommande également que le premier trajet soit effectué en présence du parent."),
+                    'question': _('Comment fonctionne Bana ?'),
+                    'answer': _("<p>Bana met en relation des parents qui recherchent une solution pour les trajets de leurs enfants avec des Yaya qui effectuent des trajets similaires aux mêmes horaires.</p>\n<p>Bana facilite la mise en relation. Les parents et les Yaya organisent ensuite ensemble les modalités de leurs trajets.</p>"),
                     'featured': True,
                 },
                 {
-                    'question': _("Comment fonctionne le système d'avis et d'évaluations ?"),
-                    'answer': _("Après les trajets, les parents et les Yaya peuvent laisser un avis sur leur expérience. Ce système d'évaluations réciproques permet de renforcer la confiance, de valoriser les comportements respectueux et d'aider les membres de la communauté à choisir leurs matchings en toute sérénité."),
+                    'question': _('Qui sont les Yaya ?'),
+                    'answer': _("<p>Les Yaya sont des personnes de confiance au profil vérifié qui accompagnent les enfants sur leurs trajets du quotidien.</p>\n<p>Il peut s'agir d'étudiants, de parents, de coachs sportifs, d'animateurs, d'infirmières ou d'autres membres de la communauté.</p>"),
+                    'featured': True,
+                },
+                {
+                    'question': _("Quels types de trajets peut-on organiser avec Bana ?"),
+                    'answer': _("<p>Bana permet d'organiser les trajets entre la maison, l'école, la garderie et les activités extrascolaires.</p>\n<p>Les trajets peuvent être réguliers ou ponctuels, selon les besoins de la famille et les disponibilités des Yaya.</p>"),
+                },
+                {
+                    'question': _('Quels moyens de transport peuvent être utilisés ?'),
+                    'answer': _("<p>Les trajets peuvent être effectués :</p>\n<ul><li>à pied</li><li>à vélo</li><li>en transports en commun</li><li>en covoiturage</li></ul>\n<p>L'utilisation d'une trottinette électrique pour accompagner un enfant est interdite.</p>"),
+                },
+                {
+                    'question': _('Bana est-il un service de taxi ou de chauffeur privé ?'),
+                    'answer': _("<p>Non. Bana est une plateforme de mobilité partagée.</p>\n<p>Les Yaya ne sont pas des chauffeurs professionnels : ils accompagnent les enfants dans le cadre de trajets qu'ils effectuent ou peuvent intégrer à leurs déplacements.</p>"),
+                },
+                {
+                    'question': _('Dans quelles régions Bana est-il disponible ?'),
+                    'answer': _("<p>Bana se développe progressivement en fonction des familles et des Yaya inscrits dans chaque zone.</p>\n<p>La disponibilité dépend donc du nombre de trajets encodés et de la présence de membres compatibles à proximité.</p>"),
                 },
             ],
         },
         {
-            'slug': 'securite-verification',
-            'label': _('Sécurité & Vérification'),
-            'questions': [
-                {
-                    'question': _('Comment sont vérifiés les Yayas ?'),
-                    'answer': _('Chaque Yaya fournit une carte d\'identité et un extrait de casier judiciaire. Seuls les Yayas ayant obtenu le badge <strong>"Yaya vérifié"</strong> apparaissent dans les résultats et peuvent être contactés par les parents.'),
-                    'featured': True,
-                },
-                {
-                    'question': _('À quel âge mon enfant peut-il utiliser Bana ?'),
-                    'answer': _("Bana est conçu pour les enfants en âge scolaire (maternelle à secondaire). Le parent reste responsable de définir les conditions qui lui conviennent selon l'autonomie de son enfant."),
-                },
-            ],
-        },
-        {
-            'slug': 'tarifs-paiement',
-            'label': _('Tarifs & Paiement'),
+            'slug': 'inscription-matching',
+            'label': _('Inscription & matching'),
             'questions': [
                 {
                     'question': _("L'inscription sur Bana est-elle gratuite ?"),
-                    'answer': _("Oui. L'inscription est gratuite pour les parents et les Yaya afin de créer un profil et d'indiquer ses trajets."),
+                    'answer': _("<p>Oui. Parents et Yaya peuvent s'inscrire gratuitement, créer leur profil et encoder leurs trajets.</p>\n<p>Vous ne passez à l'abonnement que lorsqu'un matching est disponible et que vous souhaitez entrer en contact avec un membre de la communauté.</p>"),
                     'featured': True,
                 },
                 {
-                    'question': _('Quand devient-on payant sur Bana ?'),
-                    'answer': _("Vous payez uniquement lorsqu'un matching existe et que vous souhaitez entrer en contact avec les membres de la communauté."),
+                    'question': _("Combien de temps faut-il pour s'inscrire ?"),
+                    'answer': _("<p>La création du compte ne prend que quelques minutes.</p>\n<p>Vous pouvez ensuite compléter votre profil et encoder les trajets que vous recherchez ou proposez.</p>"),
+                },
+                {
+                    'question': _('Comment fonctionne le système de matching ?'),
+                    'answer': _("<p>Bana recherche les trajets compatibles entre les besoins encodés par les parents et les trajets proposés par les Yaya.</p>\n<p>Le matching tient notamment compte des lieux, des horaires et des caractéristiques du trajet.</p>"),
                     'featured': True,
                 },
                 {
-                    'question': _('Y a-t-il un engagement annuel ?'),
-                    'answer': _("Non. L'abonnement est annuel mais sans reconduction automatique. À l'échéance, vous choisissez librement de renouveler ou non."),
+                    'question': _("Que se passe-t-il si aucun matching n'est disponible ?"),
+                    'answer': _("<p>Vous pouvez conserver gratuitement votre profil et vos trajets sur la plateforme.</p>\n<p>Si un nouveau Yaya ou une nouvelle famille encode ultérieurement un trajet compatible, un matching pourra alors apparaître.</p>"),
+                },
+                {
+                    'question': _("Dois-je payer même si aucun matching n'existe ?"),
+                    'answer': _("<p>Non.</p>\n<p>L'inscription et l'encodage des trajets restent gratuits. Vous passez à l'abonnement uniquement lorsqu'un matching existe et que vous souhaitez entrer en contact avec le membre concerné.</p>"),
+                },
+                {
+                    'question': _('Comment entrer en contact avec un matching ?'),
+                    'answer': _("<p>Une fois votre abonnement activé, vous avez accès à l'adresse email de vos matchings afin de pouvoir échanger et organiser les trajets.</p>\n<p>Vous pouvez ensuite partager vos coordonnées téléphoniques pour communiquer plus facilement.</p>"),
+                },
+                {
+                    'question': _('Puis-je choisir le Yaya qui accompagnera mon enfant ?'),
+                    'answer': _("<p>Oui.</p>\n<p>Le parent choisit toujours la personne avec laquelle il souhaite entrer en contact et à laquelle il souhaite confier son enfant parmi les profils compatibles proposés sur Bana.</p>"),
+                },
+                {
+                    'question': _('Un matching signifie-t-il que le trajet est automatiquement accepté ?'),
+                    'answer': _("<p>Non.</p>\n<p>Un matching signifie simplement que les trajets semblent compatibles. Le parent et le Yaya doivent ensuite échanger pour vérifier leurs disponibilités, leurs attentes et les modalités du trajet.</p>"),
+                },
+            ],
+        },
+        {
+            'slug': 'trajets-organisation',
+            'label': _('Trajets & organisation'),
+            'questions': [
+                {
+                    'question': _('Comment se déroule le premier contact avec un Yaya ?'),
+                    'answer': _("<p>Avant le premier trajet, une rencontre entre le parent, l'enfant et le Yaya est fortement recommandée afin de faire connaissance et de préparer le trajet en toute confiance.</p>\n<p>Bana recommande également d'effectuer le premier trajet en présence du parent afin de présenter le parcours au Yaya et de permettre à l'enfant de se familiariser progressivement avec cette nouvelle organisation.</p>"),
+                    'featured': True,
+                },
+                {
+                    'question': _('Comment se passe un trajet ?'),
+                    'answer': _("<p>Le Yaya récupère l'enfant auprès d'un adulte responsable, l'accompagne jusqu'à destination puis le confie à l'adulte désigné par le parent.</p>\n<p>L'enfant est accompagné pendant toute la durée du trajet.</p>"),
+                },
+                {
+                    'question': _('Comment suis-je informé pendant le trajet ?'),
+                    'answer': _("<p>Le parent reçoit un message lorsque le Yaya prend l'enfant en charge et un second message lorsque l'enfant arrive à destination.</p>"),
+                },
+                {
+                    'question': _('À qui le Yaya peut-il confier mon enfant à l\'arrivée ?'),
+                    'answer': _("<p>L'enfant doit être remis à l'adulte désigné par le parent selon les consignes convenues avant le trajet.</p>\n<p>Il peut s'agir par exemple d'un parent, d'un enseignant, d'un éducateur, d'un coach ou d'un autre adulte autorisé.</p>"),
+                },
+                {
+                    'question': _('Les trajets peuvent-ils être ponctuels ?'),
+                    'answer': _("<p>Oui.</p>\n<p>Selon les disponibilités des Yaya, un trajet peut être organisé de manière ponctuelle ou récurrente.</p>"),
+                },
+                {
+                    'question': _('Les trajets doivent-ils toujours se faire en voiture ?'),
+                    'answer': _("<p>Non.</p>\n<p>Bana encourage une mobilité multimodale. Selon le trajet et l'âge de l'enfant, l'accompagnement peut se faire à pied, à vélo, en transports en commun ou en covoiturage.</p>"),
+                },
+                {
+                    'question': _('Peut-on combiner plusieurs moyens de transport sur un même trajet ?'),
+                    'answer': _("<p>Oui.</p>\n<p>Un trajet peut par exemple combiner la marche et les transports en commun si cette solution est adaptée au parcours et à l'enfant.</p>"),
+                },
+                {
+                    'question': _("Combien d'enfants un Yaya peut-il accompagner ?"),
+                    'answer': _("<p>Un Yaya peut accompagner maximum 4 enfants à la fois.</p>\n<p>Cette limite vise à garantir une attention suffisante à chaque enfant et des conditions de trajet adaptées.</p>"),
+                },
+                {
+                    'question': _("Que se passe-t-il en cas d'annulation ou d'imprévu ?"),
+                    'answer': _("<p>Le parent et le Yaya doivent se prévenir mutuellement dès que possible.</p>\n<p>Les modalités d'annulation et d'organisation sont convenues directement entre eux dans le respect des engagements pris.</p>"),
+                },
+                {
+                    'question': _('Puis-je demander au même Yaya d\'accompagner régulièrement mon enfant ?'),
+                    'answer': _("<p>Oui, si le Yaya est disponible et que l'organisation convient aux deux parties.</p>\n<p>Une relation régulière peut d'ailleurs favoriser la confiance et créer des repères rassurants pour l'enfant.</p>"),
+                },
+            ],
+        },
+        {
+            'slug': 'confiance-securite-assurance',
+            'label': _('Confiance, sécurité & assurance'),
+            'questions': [
+                {
+                    'question': _('Comment Bana vérifie-t-il les Yaya ?'),
+                    'answer': _("<p>Les Yaya doivent faire vérifier leur identité et fournir un extrait de casier judiciaire modèle 596-2, destiné aux activités impliquant des mineurs.</p>\n<p>Ces vérifications constituent un prérequis pour rejoindre la communauté en tant que Yaya vérifié.</p>"),
+                    'featured': True,
+                },
+                {
+                    'question': _('Comment puis-je savoir si je peux faire confiance à un Yaya ?'),
+                    'answer': _("<p>La confiance repose sur plusieurs éléments :</p>\n<ul><li>la vérification du profil</li><li>les évaluations laissées par la communauté</li><li>les échanges avec le Yaya</li><li>la rencontre organisée avant le premier trajet</li></ul>\n<p>Le parent reste toujours décisionnaire quant au choix de la personne qui accompagnera son enfant.</p>"),
+                },
+                {
+                    'question': _('La rencontre avant le premier trajet est-elle importante ?'),
+                    'answer': _("<p>Oui.</p>\n<p>Elle permet au parent, à l'enfant et au Yaya de faire connaissance, de vérifier que chacun se sent à l'aise et de clarifier l'organisation du trajet.</p>"),
+                },
+                {
+                    'question': _("Comment fonctionne le système d'avis et d'évaluations ?"),
+                    'answer': _("<p>Après les trajets, parents et Yaya peuvent partager leur expérience.</p>\n<p>Les évaluations permettent notamment de valoriser la ponctualité, la fiabilité, la communication et le respect des engagements.</p>\n<p>Elles aident ainsi les membres à choisir leurs futurs matchings en s'appuyant sur l'expérience de la communauté.</p>"),
+                },
+                {
+                    'question': _('Pourquoi les parents sont-ils également évalués ?'),
+                    'answer': _("<p>Chez Bana, la confiance fonctionne dans les deux sens.</p>\n<p>Les Yaya peuvent eux aussi évaluer les parents, notamment sur la ponctualité, la communication et le respect des engagements.</p>\n<p>Ce système réciproque contribue à créer une communauté équilibrée, transparente et respectueuse pour tous.</p>"),
+                },
+                {
+                    'question': _('Les Yaya sont-ils assurés pendant les trajets ?'),
+                    'answer': _("<p>Oui. Une assurance est prévue pour les Yaya pendant les accompagnements organisés via Bana, selon les conditions applicables au service.</p>"),
+                },
+                {
+                    'question': _('Mon enfant est-il assuré pendant le trajet ?'),
+                    'answer': _("<p>Bana prévoit également des solutions d'assurance pour les enfants selon la formule ou les options choisies.</p>\n<p>Les conditions exactes sont précisées lors de l'inscription et dans les informations contractuelles.</p>"),
+                },
+                {
+                    'question': _("Que se passe-t-il en cas d'incident pendant un trajet ?"),
+                    'answer': _("<p>Le Yaya doit assurer en priorité la sécurité de l'enfant et prévenir immédiatement le parent.</p>\n<p>En cas de situation nécessitant une aide urgente, les services d'urgence doivent être contactés sans délai.</p>"),
+                },
+                {
+                    'question': _("Bana garantit-il qu'aucun incident ne peut survenir ?"),
+                    'answer': _("<p>Aucun service ne peut garantir un risque zéro.</p>\n<p>Bana met néanmoins en place plusieurs mesures pour renforcer la sécurité : vérification des profils, rencontre préalable, évaluations, consignes de trajet et règles de bonne conduite.</p>"),
+                },
+                {
+                    'question': _('Existe-t-il une charte de bonne conduite ?'),
+                    'answer': _("<p>Oui.</p>\n<p>Les membres de la communauté s'engagent à respecter des principes essentiels comme la sécurité des enfants, la ponctualité, la fiabilité, la communication claire et le respect mutuel.</p>"),
+                },
+            ],
+        },
+        {
+            'slug': 'tarifs-defraiements',
+            'label': _('Tarifs & défraiements'),
+            'questions': [
+                {
+                    'question': _('Quand dois-je payer un abonnement ?'),
+                    'answer': _("<p>L'inscription et l'encodage des trajets sont gratuits.</p>\n<p>Vous payez uniquement lorsqu'un matching est disponible et que vous souhaitez accéder aux coordonnées du membre afin d'entrer en contact avec lui.</p>"),
+                    'featured': True,
+                },
+                {
+                    'question': _("Que comprend l'abonnement Bana ?"),
+                    'answer': _("<p>L'abonnement permet notamment d'accéder aux matchings disponibles et aux coordonnées nécessaires pour entrer en contact avec les membres compatibles.</p>"),
+                },
+                {
+                    'question': _("Le prix des trajets est-il compris dans l'abonnement ?"),
+                    'answer': _("<p>Non.</p>\n<p>L'abonnement concerne l'accès à la plateforme et aux matchings. Les trajets font ensuite l'objet d'un défraiement distinct, versé directement par le parent au Yaya.</p>"),
                 },
                 {
                     'question': _('Le prix des trajets est-il fixé par Bana ?'),
-                    'answer': _("Non. Le montant du défraiement est librement convenu entre le parent et le Yaya. Bana fournit une fourchette indicative afin de garantir un équilibre entre accessibilité pour les familles et reconnaissance du temps consacré par les Yaya."),
+                    'answer': _("<p>Non.</p>\n<p>Le défraiement est librement convenu entre le parent et le Yaya avant le début des trajets.</p>\n<p>Bana propose uniquement des montants indicatifs afin de préserver un équilibre entre l'accessibilité pour les familles et la reconnaissance du temps et de la responsabilité assumée par les Yaya.</p>"),
                 },
                 {
-                    'question': _('Bana intervient-il dans le paiement ?'),
-                    'answer': _("Non. Le paiement se fait directement entre le parent et le Yaya, en dehors de la plateforme (espèces, virement, etc.). Bana facilite uniquement la mise en relation et ne perçoit aucune commission sur les trajets."),
+                    'question': _('Quel défraiement Bana recommande-t-il ?'),
+                    'answer': _("<p>À titre indicatif :</p>\n<ul><li>moins de 10 minutes : environ 3 € par enfant</li><li>de 10 à 20 minutes : 4 à 5 € par enfant</li><li>de 20 à 30 minutes : 5 à 7 € par enfant</li></ul>\n<p>Le montant définitif reste librement convenu entre le parent et le Yaya.</p>"),
+                    'featured': True,
+                },
+                {
+                    'question': _('Pourquoi le défraiement est-il calculé par enfant ?'),
+                    'answer': _("<p>Chaque enfant accompagné représente une responsabilité et nécessite l'attention du Yaya.</p>\n<p>Le montant indicatif est donc exprimé par enfant et par trajet.</p>"),
+                },
+                {
+                    'question': _('Que couvre le défraiement ?'),
+                    'answer': _("<p>Le défraiement reconnaît :</p>\n<ul><li>le temps consacré à l'accompagnement</li><li>la responsabilité liée à la prise en charge de l'enfant</li><li>les éventuels frais liés au déplacement</li></ul>"),
+                },
+                {
+                    'question': _('Le défraiement dépend-il du moyen de transport ?'),
+                    'answer': _("<p>Non.</p>\n<p>Le principe de défraiement reste le même que le trajet soit effectué à pied, à vélo, en transports en commun ou en covoiturage.</p>"),
+                },
+                {
+                    'question': _('Bana intervient-il dans le paiement des trajets ?'),
+                    'answer': _("<p>Non.</p>\n<p>Le défraiement est versé directement par le parent au Yaya selon les modalités convenues entre eux.</p>\n<p>Bana n'intervient ni dans la fixation du montant définitif ni dans son paiement.</p>"),
+                },
+                {
+                    'question': _('À quelle fréquence dois-je payer le Yaya ?'),
+                    'answer': _("<p>La fréquence du paiement est convenue directement entre le parent et le Yaya.</p>\n<p>Il peut par exemple être effectué après chaque trajet ou de manière hebdomadaire.</p>"),
+                },
+                {
+                    'question': _('Dois-je payer si un trajet est annulé ?'),
+                    'answer': _("<p>Les modalités sont à convenir entre le parent et le Yaya avant de commencer les trajets.</p>\n<p>Pour les trajets réguliers, Bana recommande de clarifier dès le départ les règles applicables en cas d'annulation afin d'éviter tout malentendu.</p>"),
                 },
             ],
         },
         {
-            'slug': 'general',
-            'label': _('Général'),
+            'slug': 'devenir-yaya',
+            'label': _('Devenir Yaya'),
             'questions': [
                 {
-                    'question': _('Lorem ipsum dolor sit amet, consectetur adipiscing elit ?'),
-                    'answer': _('Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'),
+                    'question': _('Qui peut devenir Yaya ?'),
+                    'answer': _("<p>Toute personne responsable et fiable âgée d'au moins 15 ans peut proposer ses trajets sur Bana, sous réserve de satisfaire aux conditions de vérification de la plateforme.</p>\n<p>Il n'est pas nécessaire d'être étudiant ni de posséder une voiture.</p>"),
+                    'featured': True,
                 },
                 {
-                    'question': _('Duis aute irure dolor in reprehenderit in voluptate velit esse ?'),
-                    'answer': _('Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Cillum dolore eu fugiat nulla pariatur.'),
+                    'question': _("Quel est le statut d'un Yaya ?"),
+                    'answer': _("<p>Un Yaya effectue les trajets sous le statut de bénévole.</p>\n<p>Il ne s'agit ni d'un emploi, ni d'un job étudiant, ni d'un flexi-job, ni d'une activité indépendante.</p>"),
                 },
                 {
-                    'question': _('Sed ut perspiciatis unde omnis iste natus error sit voluptatem ?'),
-                    'answer': _('Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.'),
+                    'question': _('Dois-je avoir une voiture pour devenir Yaya ?'),
+                    'answer': _("<p>Non.</p>\n<p>Vous pouvez devenir Yaya si vous vous déplacez à pied, à vélo, en transports en commun ou en voiture.</p>"),
+                },
+                {
+                    'question': _('Quel défraiement puis-je recevoir en tant que Yaya ?'),
+                    'answer': _("<p>Chaque trajet peut donner lieu à un défraiement convenu directement avec le parent.</p>\n<p>Le montant dépend notamment de la durée du trajet et du nombre d'enfants accompagnés, dans le respect des plafonds légaux applicables au volontariat.</p>"),
+                },
+                {
+                    'question': _('Comment sont calculés les défraiements ?'),
+                    'answer': _("<p>À titre indicatif :</p>\n<ul><li>moins de 10 minutes : environ 3 € par enfant</li><li>de 10 à 20 minutes : 4 à 5 € par enfant</li><li>de 20 à 30 minutes : 5 à 7 € par enfant</li></ul>\n<p>Le montant est toujours convenu avec le parent avant le début des trajets.</p>"),
+                },
+                {
+                    'question': _('Dois-je m\'engager sur des trajets réguliers ?'),
+                    'answer': _("<p>Non.</p>\n<p>Être Yaya reste flexible. Vous choisissez les trajets que vous souhaitez proposer et n'acceptez que ceux qui correspondent à vos déplacements habituels et à vos disponibilités.</p>"),
+                },
+                {
+                    'question': _('Puis-je être Yaya uniquement de temps en temps ?'),
+                    'answer': _("<p>Oui.</p>\n<p>Vous pouvez proposer des trajets réguliers ou ponctuels selon votre emploi du temps.</p>"),
+                },
+                {
+                    'question': _("Dois-je avoir de l'expérience avec les enfants ?"),
+                    'answer': _("<p>Il n'est pas nécessaire d'avoir une expérience professionnelle dans le secteur de l'enfance.</p>\n<p>En revanche, le Yaya doit être responsable, attentif, fiable et à l'aise avec l'accompagnement des enfants.</p>"),
+                },
+                {
+                    'question': _('Quelles vérifications dois-je effectuer pour devenir Yaya ?'),
+                    'answer': _("<p>Vous devez notamment faire vérifier votre identité et fournir un extrait de casier judiciaire modèle 596-2.</p>\n<p>D'autres informations peuvent également être demandées afin de compléter votre profil.</p>"),
+                },
+                {
+                    'question': _('Puis-je choisir les familles avec lesquelles je souhaite effectuer des trajets ?'),
+                    'answer': _("<p>Oui.</p>\n<p>Comme les parents, les Yaya restent libres d'accepter ou non un matching.</p>\n<p>La mise en relation doit convenir aux deux parties.</p>"),
+                },
+                {
+                    'question': _('Pourquoi les parents peuvent-ils m\'évaluer ?'),
+                    'answer': _("<p>Les évaluations permettent aux futurs parents de mieux connaître l'expérience des autres membres avec vous.</p>\n<p>La ponctualité, la communication, la fiabilité et le respect des engagements contribuent progressivement à construire votre réputation sur Bana.</p>"),
+                },
+                {
+                    'question': _('Puis-je également évaluer les parents ?'),
+                    'answer': _("<p>Oui.</p>\n<p>Le système d'évaluation est réciproque afin que les Yaya puissent eux aussi partager leur expérience et choisir leurs futurs matchings en connaissance de cause.</p>"),
+                },
+                {
+                    'question': _('Pourquoi devenir Yaya ?'),
+                    'answer': _("<p>Parce qu'un déplacement du quotidien peut aussi devenir un geste d'entraide.</p>\n<p>En accompagnant un enfant, vous soutenez une famille de votre quartier, contribuez à sécuriser ses déplacements et participez à une mobilité plus locale, intergénérationnelle et partagée.</p>"),
                 },
             ],
         },
         {
-            'slug': 'compte-inscription',
-            'label': _('Compte & Inscription'),
+            'slug': 'a-propos',
+            'label': _('À propos de Bana'),
             'questions': [
                 {
-                    'question': _('Neque porro quisquam est qui dolorem ipsum quia dolor sit amet ?'),
-                    'answer': _('Consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.'),
+                    'question': _('Que signifie le nom "Bana" ?'),
+                    'answer': _("<p>« Bana » est un mot en lingala qui signifie « enfants ».</p>\n<p>Nous avons choisi ce nom parce qu'il est court, facile à retenir et qu'il représente le cœur de notre activité : les enfants.</p>"),
                 },
                 {
-                    'question': _('Ut enim ad minima veniam, quis nostrum exercitationem ullam ?'),
-                    'answer': _('Corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse.'),
+                    'question': _('Pourquoi Bana a-t-il été créé ?'),
+                    'answer': _("<p>Bana a été créé pour faciliter la vie des familles, alléger la charge mentale et logistique des parents et permettre aux enfants de participer plus sereinement à leurs activités scolaires et extrascolaires.</p>"),
                 },
                 {
-                    'question': _('At vero eos et accusamus et iusto odio dignissimos ducimus ?'),
-                    'answer': _('Qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.'),
+                    'question': _('Quelle est la mission de Bana ?'),
+                    'answer': _("<p>Bana souhaite développer une nouvelle culture de la mobilité scolaire : plus partagée, plus douce, plus responsable et plus solidaire.</p>\n<p>La plateforme contribue également à aider les enfants à développer progressivement leur autonomie dans leurs déplacements.</p>"),
+                },
+                {
+                    'question': _('Quel est l\'impact social de Bana ?'),
+                    'answer': _("<p>Bana encourage l'entraide locale et intergénérationnelle et crée du lien entre les familles et les personnes de confiance de leur quartier.</p>\n<p>La plateforme aide également les parents à mieux concilier leur vie familiale, professionnelle et les activités de leurs enfants.</p>"),
+                },
+                {
+                    'question': _('Quel est l\'impact environnemental de Bana ?'),
+                    'answer': _("<p>En encourageant la marche, le vélo, les transports en commun et le covoiturage, Bana favorise une mobilité plus durable et contribue à réduire la dépendance à la voiture individuelle pour les trajets des enfants.</p>"),
                 },
             ],
         },

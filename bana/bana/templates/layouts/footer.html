@@ -37,11 +37,11 @@
         <div class="flex-none mr-12">
             <h3 class="text-brand-50 font-bold text-lg mb-2">{% trans "Informations" %}</h3>
             <ul class="space-y-1">
+                <li><a href="{% url 'faq' %}" class="hover:text-brand-50 hover:font-semibold {% if url_name == 'faq' %}text-brand-50 font-semibold{% endif %}">{% trans "FAQ" %}</a></li>
                 <li><a href="{% static 'bana/doc/charte-de-bonne-conduite-yaya-mai-2026.pdf' %}" target="_blank" class="hover:text-brand-50 hover:font-semibold">{% trans "Charte Yaya" %}</a></li>
                 <li><a href="{% static 'bana/doc/reglement-bana-yaya.pdf' %}" target="_blank" class="hover:text-brand-50 hover:font-semibold">{% trans "Règlement Yaya" %}</a></li>
                 <li><a href="{% static 'bana/doc/charte-de-bonne-conduite-parents-mai-2026.pdf' %}" target="_blank" class="hover:text-brand-50 hover:font-semibold">{% trans "Charte Parent" %}</a></li>
                 <li><a href="{% static 'bana/doc/reglement-bana-parents.pdf' %}" target="_blank" class="hover:text-brand-50 hover:font-semibold">{% trans "Règlement Parent" %}</a></li>
-                <li><a href="{% url 'faq' %}" class="hover:text-brand-50 hover:font-semibold {% if url_name == 'faq' %}text-brand-50 font-semibold{% endif %}">{% trans "FAQ" %}</a></li>
 
             </ul>                
         </div>

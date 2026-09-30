@@ -1,8 +1,22 @@
 {% extends "account/email/base_message.txt" %}
 {% load i18n %}
-{% block content %}{% blocktrans with site_name=current_site.name %}
-Vous avez demandé à changer votre adresse e-mail pour votre compte sur {{ site_name }}.
-{% endblocktrans %}
-{% blocktrans %}Pour confirmer ce changement, cliquez sur le lien ci-dessous :{% endblocktrans %}
+{% comment %}
+  Envoyé par accounts.utils.send_change_email_confirmation, qui fournit
+  `activate_url` et `expiration_days` — allauth n'expose pas ce dernier dans
+  ses propres emails, d'où la garde.
+
+  Le sort de l'ancienne adresse est dit explicitement : à la confirmation, le
+  signal `email_confirmed` (accounts/signals.py) SUPPRIME les autres adresses
+  du compte, car allauth authentifie sur n'importe quelle EmailAddress liée.
+  L'ancienne cesse donc de permettre la connexion — une surprise s'il fallait
+  la découvrir à la prochaine tentative.
+{% endcomment %}
+{% block content %}{% trans "Vous avez demandé à utiliser cette adresse e-mail pour votre compte Bana." %}
+
+{% if expiration_days %}{% blocktrans %}Confirmez ce changement depuis le lien ci-dessous, valable {{ expiration_days }} jour(s) :{% endblocktrans %}{% else %}{% trans "Confirmez ce changement depuis le lien ci-dessous :" %}{% endif %}
+
 {{ activate_url }}
-{% endblock content %}
+
+{% trans "Tant que ce lien n'est pas ouvert, votre ancienne adresse reste celle de connexion. Une fois le changement confirmé, elle est supprimée et ne permettra plus de vous connecter." %}
+
+{% trans "Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail : votre adresse actuelle reste inchangée." %}{% endblock content %}

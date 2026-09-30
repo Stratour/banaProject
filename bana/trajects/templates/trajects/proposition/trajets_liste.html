@@ -95,7 +95,7 @@
 
           <!-- Transport -->
           <div class="flex items-center gap-2 flex-wrap mb-4">
-            <span class="text-[10px] font-bold uppercase tracking-wider text-[#C0BFBA]">{% trans "Transport" %}</span>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-brand">{% trans "Transport" %}</span>
             {% for mode in proposed.transport_modes.all %}
               {% include "trajects/partials/transport_badge.html" with mode=mode %}
             {% empty %}
@@ -111,7 +111,6 @@
             </div>
           {% endif %}
 
-          <div class="h-px bg-[#F3F4F6] mb-3.5"></div>
 
           <div class="flex justify-end">
             <button type="button" data-tj-toggle-dates

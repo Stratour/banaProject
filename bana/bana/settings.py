@@ -247,6 +247,11 @@ EMAIL_HOST_USER = 'contact@bana.mobi'
 EMAIL_HOST_PASSWORD = config('EMAIL_MDP', default='')
 DEFAULT_FROM_EMAIL = formataddr(('Bana', 'contact@bana.mobi'))
 
+# Base des liens envoyés par email : utils/mail.py reçoit des modèles, jamais de
+# request, donc pas de build_absolute_uri. django.contrib.sites n'est pas
+# installé (le SITE_ID ci-dessus est un résidu).
+SITE_BASE_URL = config('SITE_BASE_URL', default='https://www.bana.mobi')
+
 # ================================
 # STRIPE
 # ================================

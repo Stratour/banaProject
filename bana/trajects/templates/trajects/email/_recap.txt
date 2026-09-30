@@ -1,0 +1,18 @@
+{% comment %}
+Bloc récapitulatif commun aux emails de trajet.
+
+Chaque ligne est optionnelle : groupe_name est un libellé libre donc souvent
+vide, les horaires de ProposedTraject sont nullables (le repli vers
+ResearchedTraject est fait dans utils/mail.py, mais une réservation sans
+recherche liée n'en a aucun), et une recherche peut n'avoir aucun enfant
+rattaché. Le détail des enfants (noms et âges) n'est volontairement pas
+repris : il figure sur la fiche du trajet dans l'app, et une donnée d'enfant n'a
+pas à circuler dans une boîte mail quand un clic y donne accès. Afficher « Horaires : — → — » ne vaut pas mieux que masquer la ligne.
+
+Les balises sont collées aux sauts de ligne : en texte brut, une balise seule
+sur sa ligne laisse une ligne vide derrière elle.
+{% endcomment %}{% if is_simple %}Départ : {{ trajet_info }}{% if search_radius_km %} (dans un rayon de {{ search_radius_km }} km){% endif %}{% else %}Trajet : {{ trajet_info }}{% endif %}
+{% if groupe_name %}Groupe : {{ groupe_name }}
+{% endif %}{% if heure_depart or heure_arrivee %}Horaires : {{ heure_depart }}{% if heure_depart and heure_arrivee %} → {% endif %}{{ heure_arrivee }}
+{% endif %}{% if requested_places %}Nombre d'enfant(s) : {{ requested_places }}
+{% endif %}

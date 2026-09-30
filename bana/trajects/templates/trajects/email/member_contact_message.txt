@@ -1,0 +1,9 @@
+{% autoescape off %}Bonjour{% if recipient_name %} {{ recipient_name }}{% endif %},
+
+{{ sender_name }} vous a envoyé un message via Bana{% if context_label %}, au sujet de votre trajet « {{ context_label }} »{% endif %} :
+
+---
+{{ body }}
+---
+
+Pour lui répondre, répondez simplement à cet email : votre réponse lui parviendra directement.{% endautoescape %}

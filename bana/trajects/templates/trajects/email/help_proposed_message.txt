@@ -1,7 +1,8 @@
-{% autoescape off %}Bonjour,
+{% autoescape off %}Bonjour{% if recipient_name %} {{ recipient_name }}{% endif %},
 
-Bonne nouvelle ! Un accompagnateur est disponible pour votre recherche de trajet :
+Bonne nouvelle ! {{ yaya_name|capfirst }} est disponible pour votre recherche de trajet.
 
-{{ trajet_info }} le {{ date_str }} (départ à {{ heure_depart }}).
-
-Connectez-vous à Bana pour consulter les trajets disponible et effectuer une réservation. {{ matchings_url }}{% endautoescape %}
+{% include "trajects/email/_recap.txt" %}{% if dates %}Date : {{ dates|first|date:"D j b"|capfirst }}
+{% endif %}
+Consultez les trajets disponibles et effectuez votre réservation :
+{{ cta_url }}{% endautoescape %}

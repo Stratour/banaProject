@@ -21,7 +21,6 @@
 
 {% url 'index' as index_url %}
 {% url 'my_reservations' as my_reservations_url %}
-{% url 'my_reservations_received_detail' as my_reservations_received_detail_url %}
 
 {% url 'subscription' as subscription_url %}
 {% url 'accounts:profile_security' as profile_security_url %}
@@ -140,9 +139,9 @@
       {% with current_url=request.resolver_match.url_name %}
       <li>
         <a href="{{ my_reservations_url }}"
-          class="flex items-center gap-2 py-2.5 px-4 {% if current_url == 'my_reservations' or current_url == 'my_reservations_received_detail' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
+          class="flex items-center gap-2 py-2.5 px-4 {% if current_url == 'my_reservations' %}rounded-full bg-brand text-brand-50 font-semibold{% else %}text-gray-700 hover:bg-brand-50 hover:text-brand rounded-full{% endif %}">
           <img
-            src="{% if current_url == 'my_reservations' or current_url == 'my_reservations_received_detail' %}{% static 'bana/img/icon/Icon_reservation_active.svg' %}{% else %}{% static 'bana/img/icon/Icon_reservation.svg' %}{% endif %}?v={{ timestamp }}"
+            src="{% if current_url == 'my_reservations' %}{% static 'bana/img/icon/Icon_reservation_active.svg' %}{% else %}{% static 'bana/img/icon/Icon_reservation.svg' %}{% endif %}?v={{ timestamp }}"
             class="w-6 h-6" alt="">
           {% trans "Mes réservations" %}
         </a>

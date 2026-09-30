@@ -1,0 +1,115 @@
+{% load i18n %}
+{% comment %}
+  Corps de la modale « Contacter X ». Rendu deux fois par le même chemin :
+  à l'affichage de la page (inclus par person_card.html) et en réponse au POST
+  de contact_member, qui ne re-swappe que ce bloc — la liste des réservations
+  ne change pas, et un re-rendu global ferait perdre le message saisi en cas
+  d'erreur de validation.
+
+  Attend : contact_form, contact_open_key, contact_recipient_id,
+           contact_recipient_name, contact_label, contact_sent, contact_toast.
+
+  contact_label est le nom du trajet tel que le DESTINATAIRE l'a nommé, jamais
+  celui de l'expéditeur : c'est lui qui lit le mail et qui doit retrouver la
+  série concernée dans ses propres listes. D'où le « son trajet » ci-dessous,
+  qui lève l'ambiguïté pour l'expéditeur.
+{% endcomment %}
+
+{% comment %}
+  Toasts poussés en out-of-band : ils sont rendus hors du fragment swappé,
+  sinon le message n'apparaîtrait qu'au chargement suivant. Le drapeau n'est
+  posé que par la vue de contact — au rendu initial, person_card.html est
+  affiché autant de fois qu'il y a de cartes et dupliquerait #toast-host.
+{% endcomment %}
+{% if contact_toast %}
+  <div id="toast-host" hx-swap-oob="true">{% include "layouts/toasts.html" %}</div>
+{% endif %}
+
+<div class="flex items-start justify-between gap-4">
+  <div class="min-w-0">
+    <h3 class="text-lg font-bold text-gray-900 truncate">
+      {% blocktrans with name=contact_recipient_name %}Contacter {{ name }}{% endblocktrans %}
+    </h3>
+    {% if contact_label %}
+      <p class="text-sm text-gray-500 truncate">
+        {% blocktrans with label=contact_label %}À propos de son trajet « {{ label }} »{% endblocktrans %}
+      </p>
+    {% endif %}
+  </div>
+  <button type="button"
+          onclick="document.getElementById('contact-modal-{{ contact_open_key|slugify }}').close()"
+          class="shrink-0 rounded-full p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition cursor-pointer"
+          aria-label="{% trans 'Fermer' %}">✕</button>
+</div>
+
+{% if contact_sent %}
+
+  {% comment %}
+    État de succès : la modale reste ouverte pour confirmer l'envoi. Le toast
+    est déjà parti en out-of-band, mais il disparaît au bout de 5 secondes et
+    l'utilisateur regarde la modale, pas le haut de la page.
+  {% endcomment %}
+  <div class="flex flex-col items-center text-center gap-3 py-4">
+    <span class="flex h-12 w-12 items-center justify-center rounded-full bg-brand/10 text-brand text-2xl font-bold">✓</span>
+    <p class="text-sm text-gray-700">
+      {% blocktrans with name=contact_recipient_name %}Votre message a bien été envoyé à {{ name }}.{% endblocktrans %}
+    </p>
+    <p class="text-xs text-gray-500">
+      {% trans "Sa réponse vous parviendra directement par email." %}
+    </p>
+  </div>
+
+  <div class="flex justify-end pt-2">
+    <button type="button"
+            onclick="document.getElementById('contact-modal-{{ contact_open_key|slugify }}').close()"
+            class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 cursor-pointer">
+      {% trans "Fermer" %}
+    </button>
+  </div>
+
+{% else %}
+
+  {% comment %}
+    hx-post ET method/action : le formulaire reste fonctionnel sans JavaScript,
+    comme toutes les actions de cette page. La cible est le corps de la modale,
+    pas #reservations-content.
+  {% endcomment %}
+  <form hx-post="{% url 'contact_member' contact_recipient_id %}"
+        hx-target="#contact-modal-body-{{ contact_open_key|slugify }}"
+        hx-swap="innerHTML"
+        hx-disabled-elt="find button[type=submit]"
+        method="post"
+        action="{% url 'contact_member' contact_recipient_id %}"
+        class="space-y-4">
+    {% csrf_token %}
+    <input type="hidden" name="open_key" value="{{ contact_open_key }}">
+    <input type="hidden" name="context_label" value="{{ contact_label }}">
+    <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+    <div>
+      <label for="{{ contact_form.body.id_for_label }}" class="block text-sm font-semibold text-gray-700">
+        {{ contact_form.body.label }}
+      </label>
+      {{ contact_form.body }}
+      {% if contact_form.body.errors %}
+        <p class="mt-1 text-sm text-red-600">{{ contact_form.body.errors.0 }}</p>
+      {% endif %}
+      <p class="mt-2 text-xs text-gray-500">
+        {% trans "Votre message est envoyé par email. La personne pourra vous répondre directement." %}
+      </p>
+    </div>
+
+    <div class="flex items-center justify-end gap-3 pt-2">
+      <button type="button"
+              onclick="document.getElementById('contact-modal-{{ contact_open_key|slugify }}').close()"
+              class="inline-flex items-center gap-2 rounded-full border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 cursor-pointer">
+        {% trans "Annuler" %}
+      </button>
+      <button type="submit"
+              class="bg-brand text-white px-4 py-2 rounded-full font-bold hover:bg-brand-600 disabled:opacity-60 cursor-pointer">
+        {% trans "Envoyer" %}
+      </button>
+    </div>
+  </form>
+
+{% endif %}

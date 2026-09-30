@@ -1,0 +1,27 @@
+{% extends "account/email/base_message.html" %}
+{% load i18n %}
+{% comment %}
+  Réinitialisation demandée pour une adresse inconnue. Cet email existe parce
+  que ACCOUNT_PREVENT_ENUMERATION est actif : le formulaire répond la même chose
+  que l'adresse existe ou non, et c'est ici que la distinction se fait.
+
+  Deux conséquences sur la forme : le destinataire n'est PAS membre — aucun
+  « votre compte », aucun ton familier, et pas de `user` en contexte donc
+  « Bonjour, » tout court ; et le message reste sobre. Un bouton plein
+  « Rejoignez Bana ! » transformerait un mécanisme de sécurité en prospection,
+  d'où le CTA secondaire à contour.
+{% endcomment %}
+{% block subject %}{% trans "Aucun compte Bana avec cette adresse" %}{% endblock subject %}
+
+{% block preheader %}{% trans "Une demande de réinitialisation a été faite pour une adresse sans compte Bana." %}{% endblock preheader %}
+
+{% block eyebrow %}{% trans "Demande de" %}<br>{% trans "réinitialisation" %}{% endblock eyebrow %}
+
+{% block title %}{% trans "Aucun compte Bana avec cette adresse" %}{% endblock title %}
+
+{% block content %}<p class="m-txt" style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000">{% blocktrans %}Vous avez demandé à réinitialiser le mot de passe du compte associé à <strong style="color:#007F73">{{ email }}</strong>, mais aucun compte Bana n'utilise cette adresse.{% endblocktrans %}</p>
+<p class="m-txt" style="margin:0 0 14px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000">{% trans "Vous avez peut-être utilisé une autre adresse lors de votre inscription." %}</p>{% endblock content %}
+
+{% block cta %}{% include "emails/_cta.html" with url=signup_url label=_("Créer un compte") outline=True cta_padding="14px 32px 4px" %}{% endblock cta %}
+
+{% block closing %}<p class="m-txt-s" style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#000000">{% trans "Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail." %}</p>{% endblock closing %}

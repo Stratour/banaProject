@@ -169,6 +169,15 @@ class Reservation(models.Model):
         ('canceled', _('Annulée')),
     ]
 
+    # Qui a mis fin à la réservation. Un refus du yaya et une annulation du
+    # parent produisent tous deux status='canceled' : sans ce champ, l'un des
+    # deux ne peut pas savoir ce qui s'est passé.
+    CANCELED_BY_CHOICES = [
+        ('parent', _('Annulée par le parent')),
+        ('yaya', _('Refusée par le conducteur')),
+        ('auto', _('Annulée automatiquement')),
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, verbose_name="Utilisateur ayant réservé")
     proposed_traject = models.ForeignKey(
         ProposedTraject, 
@@ -187,7 +196,47 @@ class Reservation(models.Model):
     transport_modes = models.ManyToManyField(TransportMode, blank=True)
     reservation_date = models.DateTimeField(auto_now_add=True)  # Date et heure de la réservation
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')  # Statut de la réservation
+    # Nullable : les réservations annulées avant l'ajout du champ restent à NULL
+    # et s'affichent avec le libellé générique « Annulée ».
+    canceled_by = models.CharField(
+        max_length=10, choices=CANCELED_BY_CHOICES, blank=True, null=True,
+    )
 
     def __str__(self):
         return f"Reservation {self.id} by {self.user.username} for {self.number_of_places} places"
+
+
+class ContactMessage(models.Model):
+    """Message libre d'un membre à un autre, acheminé par email.
+
+    Conservé en base pour trois raisons : borner le nombre d'envois (le cache
+    du projet est un LocMemCache, non partagé entre les workers, donc
+    inutilisable pour un quota), garder une trace en cas de signalement, et
+    servir de table de départ à la messagerie in-app quand elle arrivera.
+    """
+    sender = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="sent_contact_messages",
+        verbose_name=_("Expéditeur"),
+    )
+    recipient = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="received_contact_messages",
+        verbose_name=_("Destinataire"),
+    )
+    # Nom du trajet concerné, repris de la carte d'où part le message : il situe
+    # la conversation pour le destinataire, qui en a souvent plusieurs en cours.
+    context_label = models.CharField(max_length=120, blank=True)
+    body = models.TextField(max_length=2000)
+    created_at = models.DateTimeField(auto_now_add=True)
+    # Faux si le SMTP a échoué : le message reste alors consultable en base.
+    email_sent = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["sender", "-created_at"]),
+            models.Index(fields=["recipient", "-created_at"]),
+        ]
+
+    def __str__(self):
+        return f"ContactMessage {self.id} de {self.sender_id} à {self.recipient_id}"
 

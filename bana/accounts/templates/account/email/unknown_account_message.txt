@@ -1,10 +1,18 @@
 {% extends "account/email/base_message.txt" %}
 {% load i18n %}
+{% comment %}
+  Réinitialisation demandée pour une adresse inconnue. Cet email existe parce
+  que ACCOUNT_PREVENT_ENUMERATION est actif : le formulaire répond la même
+  chose que l'adresse existe ou non, c'est ici que la distinction se fait.
+  Il n'y a donc pas de `user` en contexte — la salutation de base_message
+  retombe sur « Bonjour, ».
+{% endcomment %}
+{% block content %}{% blocktrans %}Vous avez demandé à réinitialiser le mot de passe du compte associé à {{ email }}, mais aucun compte Bana n'utilise cette adresse.{% endblocktrans %}
 
-{% block content %}{% autoescape off %}{% blocktranslate %}Vous recevez cet email parce que vous, ou quelqu'un d'autre, a tenté d'accéder à un compte avec l'adresse e-mail {{ email }}. Cependant, nous n'avons aucun compte associé à cette adresse dans notre base de données.{% endblocktranslate %}
+{% trans "Vous avez peut-être utilisé une autre adresse lors de votre inscription." %}
 
-{% blocktranslate %}Vous pouvez ignorer cet email en toute sécurité si vous n'êtes pas à l'origine de cette action.{% endblocktranslate %}
+{% trans "Si vous souhaitez nous rejoindre, vous pouvez créer un compte ici :" %}
 
-{% blocktranslate %}Si c'est bien vous, vous pouvez créer un compte en cliquant sur le lien ci-dessous.{% endblocktranslate %}
+{{ signup_url }}
 
-{{ signup_url }}{% endautoescape %}{% endblock content %}
+{% trans "Si vous n'êtes pas à l'origine de cette demande, ignorez cet e-mail." %}{% endblock content %}

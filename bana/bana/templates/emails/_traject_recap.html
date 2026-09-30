@@ -1,0 +1,112 @@
+{% load bana_email %}{% comment %}
+  Bloc récapitulatif d'un trajet, pendant HTML de trajects/email/_recap.txt.
+
+  Paramètres passés par `{% templatetag openblock %} include ... with {% templatetag closeblock %}` :
+    dates_label  libellé de la liste de dates (« Dates demandées », « Dates libérées »…)
+    muted        carte grise au lieu de blanche : ce qui est décrit n'existe plus
+    card_label   sur-titre facultatif (« Demandes annulées »)
+    badge        pastille facultative en tête de carte (cancel_reason)
+    extra_label  ligne de tableau facultative (« Accompagnateur »)
+    extra_value  sa valeur : les deux ou aucune, jamais d'étiquette orpheline
+
+  Lu dans le contexte de l'email : depart_adresse, arrivee_adresse, is_simple,
+  search_radius_km, groupe_name, heure_depart, heure_arrivee, dates.
+
+  Le détail des enfants (noms et âges) n'est PAS affiché : il figure sur la
+  fiche du trajet dans l'app, et une donnée d'enfant n'a pas à circuler dans une
+  boîte mail quand un clic y donne accès. `children` reste dans le contexte,
+  d'autres gabarits peuvent en avoir besoin.
+
+  HORAIRES. Chaque heure est posée en regard de son propre libellé, à droite de
+  « DÉPART » et de « ARRIVÉE », et non plus regroupée sur la ligne de liaison.
+  Le trait vertical qui relie les deux points est conservé, avec un écart accru
+  entre les deux blocs.
+
+  Chaque ligne se masque entièrement quand sa variable est vide : `groupe_name`
+  est un libellé libre souvent absent, les horaires de ProposedTraject sont
+  nullables.
+
+  BORDURES ARRONDIES. Toute table qui porte à la fois `border` et
+  `border-radius` est en `border-collapse:separate;border-spacing:0`. En
+  `collapse`, les bordures quittent le flux de la cellule et sont tracées en
+  angle droit par-dessus le rayon.
+
+  PASTILLES DE DATE. Elles sont en `inline-block` et non en cellules de table.
+  Une rangée de trois cellules en `white-space:nowrap` imposait à l'email une
+  largeur minimale supérieure à celle d'un écran de 320 px ; Gmail et iOS Mail
+  réduisaient alors l'email entier et TOUT le texte rapetissait. En
+  `inline-block`, elles passent à la ligne d'elles-mêmes. Contrepartie assumée :
+  Outlook pour Windows les rend rectangulaires. Le `font-size:0` du conteneur
+  supprime l'espace que les navigateurs insèrent entre deux `inline-block`.
+
+  Les icônes départ/arrivée sont des PNG servis en URL absolue : un SVG inline
+  est supprimé par Gmail comme par Outlook. Elles sont purement décoratives
+  (alt vide), les libellés portent le sens, la carte reste lisible images
+  bloquées.
+{% endcomment %}<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:separate;border-spacing:0;background-color:{% if muted %}#F7F7F7{% else %}#FFFFFF{% endif %};border:1px solid {% if muted %}#E0E0E0{% else %}#D5D5D5{% endif %};border-radius:12px">
+  <tr><td class="m-card" style="padding:20px 22px">
+
+    {% if badge %}<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;border-spacing:0;margin-bottom:14px">
+      <tr><td class="m-pill" style="padding:5px 10px;background-color:#F0F0F0;border-radius:20px;font:700 11px/1.3 Arial,Helvetica,sans-serif;color:#000000">{{ badge }}</td></tr>
+    </table>{% endif %}
+
+    {% if card_label %}<p style="margin:0 0 4px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#767676">{{ card_label }}</p>{% endif %}
+
+    {% if groupe_name %}<p style="margin:0 0 16px;padding:0 0 16px;border-bottom:1px solid {% if muted %}#E0E0E0{% else %}#E5E5E5{% endif %};font:700 15px/1.4 Arial,Helvetica,sans-serif;color:#000000">Trajet : {{ groupe_name }}</p>{% endif %}
+
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+      <tr>
+        <td width="26" style="width:26px;vertical-align:top;padding:3px 0 0"><img src="{% email_static 'bana/img/email/icon-pin.png' %}" width="16" height="16" alt="" style="display:block;width:16px;height:16px;border:0"></td>
+        <td style="vertical-align:top">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+            <tr>
+              <td style="font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#767676">Départ</td>
+              {% if heure_depart %}<td align="right" style="font:700 13px/1.4 Arial,Helvetica,sans-serif;color:#007F73;white-space:nowrap">{{ heure_depart }}</td>{% endif %}
+            </tr>
+          </table>
+          <p class="m-addr" style="margin:2px 0 0;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#000000">{{ depart_adresse }}</p>
+        </td>
+      </tr>
+      {% if is_simple %}{% if search_radius_km %}
+      <tr>
+        <td width="26" style="width:26px;padding:6px 0"></td>
+        <td style="font:400 12px/1.4 Arial,Helvetica,sans-serif;color:#767676;padding:6px 0">dans un rayon de {{ search_radius_km }} km</td>
+      </tr>
+      {% endif %}{% else %}
+      <tr>
+        <td width="26" style="width:26px;padding:8px 0"><div style="width:2px;height:30px;margin-left:7px;background-color:#D5D5D5"></div></td>
+        <td style="padding:8px 0">&nbsp;</td>
+      </tr>
+      {% if arrivee_adresse %}
+      <tr>
+        <td width="26" style="width:26px;vertical-align:top;padding:3px 0 0"><img src="{% email_static 'bana/img/email/icon-flag.png' %}" width="16" height="16" alt="" style="display:block;width:16px;height:16px;border:0"></td>
+        <td style="vertical-align:top">
+          <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+            <tr>
+              <td style="font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#767676">Arrivée</td>
+              {% if heure_arrivee %}<td align="right" style="font:700 13px/1.4 Arial,Helvetica,sans-serif;color:#007F73;white-space:nowrap">{{ heure_arrivee }}</td>{% endif %}
+            </tr>
+          </table>
+          <p class="m-addr" style="margin:2px 0 0;font:700 16px/1.4 Arial,Helvetica,sans-serif;color:#000000">{{ arrivee_adresse }}</p>
+        </td>
+      </tr>
+      {% endif %}{% endif %}
+    </table>
+
+    {% if extra_label and extra_value %}<div style="height:16px;line-height:16px">&nbsp;</div>
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+      <tr>
+        <td width="34%" style="width:34%;padding:11px 0;border-top:1px solid {% if muted %}#E0E0E0{% else %}#E5E5E5{% endif %};font:400 12px/1.5 Arial,Helvetica,sans-serif;color:#767676;vertical-align:top">{{ extra_label }}</td>
+        <td style="padding:11px 0;border-top:1px solid {% if muted %}#E0E0E0{% else %}#E5E5E5{% endif %};font:700 13px/1.5 Arial,Helvetica,sans-serif;color:#000000">{{ extra_value }}</td>
+      </tr>
+    </table>{% endif %}
+
+    {% if dates %}<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;margin-top:16px;border-top:1px solid {% if muted %}#E0E0E0{% else %}#E5E5E5{% endif %}">
+      <tr><td style="padding:14px 0 0">
+        <p style="margin:0 0 9px;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.11em;text-transform:uppercase;color:#767676">{{ dates_label }}</p>
+        <p style="margin:0;padding:0;font-size:0;line-height:0">{% for date_obj in dates %}<span class="m-pill" style="display:inline-block;margin:0 8px 8px 0;padding:7px 12px;background-color:#FFFFFF;border:1px solid {% if muted %}#CCCCCC{% else %}#007F73{% endif %};border-radius:20px;font:700 13px/1 Arial,Helvetica,sans-serif;color:{% if muted %}#767676{% else %}#007F73{% endif %};white-space:nowrap">{{ date_obj|date:"D j b"|capfirst }}</span>{% endfor %}</p>
+      </td></tr>
+    </table>{% endif %}
+
+  </td></tr>
+</table>

@@ -1,0 +1,1 @@
+{% autoescape off %}{{ sender_name }} vous a envoyé un message sur Bana{% endautoescape %}

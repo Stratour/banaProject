@@ -1,0 +1,197 @@
+{% load i18n bana_email %}{% comment %}
+  Squelette HTML commun à tous les emails Bana (compte et trajets).
+
+  Contraintes propres à l'email, qui expliquent la forme du fichier :
+
+  - tables imbriquées et styles 100 % inline : Gmail supprime les <style>, et
+    Outlook rend le HTML via Word, qui ignore float, flex et grid ;
+  - aucune police web : Arial/Helvetica seulement ;
+  - aucune image décorative indispensable à la compréhension, la plupart des
+    clients les bloquent par défaut au premier message ;
+  - toutes les URL sont absolues (balises `email_static` / `email_url`) : un
+    chemin relatif n'a aucun hôte auquel se rattacher dans une boîte mail ;
+  - le dégradé d'en-tête retombe sur #0F5F4B plein dans Outlook, d'où le
+    `background-color` posé avant le `background-image`.
+
+  RESPONSIVE. Le rendu inline est celui du desktop ; la feuille ci-dessous ne
+  fait que le corriger sous 480 px. C'est le seul ordre possible : un client qui
+  jette le <style> (Outlook, certains webmails) doit retomber sur une mise en
+  page complète, pas sur une mise en page mobile orpheline. D'où aussi le couple
+  `width="600"` + `max-width:600px;width:100%` : l'attribut sert aux clients qui
+  ignorent le CSS, le style laisse le gabarit se réduire partout ailleurs.
+
+  Les classes `m-*` n'existent QUE pour ces media queries. Le `display:block` sur
+  des <td> est le motif standard d'empilement en email : il n'a d'effet que là
+  où les media queries passent, c'est-à-dire sur les clients mobiles qui le
+  gèrent.
+
+  Le preheader est le texte affiché par la boîte de réception à côté de l'objet.
+  Laissé vide, les clients y recopient le premier texte trouvé, ici les liens du
+  pied de page. Chaque email doit donc remplir le bloc.
+
+  La version texte reste le corps principal du message : ce gabarit n'est
+  attaché qu'en alternative. Les deux doivent dire la même chose.
+{% endcomment %}<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="x-apple-disable-message-reformatting">
+<meta name="color-scheme" content="light">
+<meta name="supported-color-schemes" content="light">
+<title>{% block subject %}Bana{% endblock subject %}</title>
+<style type="text/css">
+  body, table, td, p, a, h1 { -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+  table { mso-table-lspace:0pt; mso-table-rspace:0pt; }
+  img { -ms-interpolation-mode:bicubic; }
+  a { color:#007F73; }
+  /* iOS et macOS Mail détectent d'eux-mêmes adresses postales, numéros et
+     dates, les transforment en liens et leur imposent leur propre couleur.
+     C'est ce qui repeignait une partie de l'adresse du siège, en coupant même
+     les lettres accentuées du reste de la ligne. On leur rend le style du
+     texte qui les entoure. */
+  a[x-apple-data-detectors] { color:inherit !important; text-decoration:none !important;
+    font-size:inherit !important; font-family:inherit !important;
+    font-weight:inherit !important; line-height:inherit !important; }
+  @media only screen and (max-width:480px) {
+    /* La bande de couleur autour du message ne coûte rien sur un large écran
+       et referme la mise en page ; sur mobile elle prenait de la largeur utile
+       là où elle manque. On la laisse en place et on annule sa gouttière. */
+    .m-gutter { padding:0 !important; }
+    .m-pad { padding-left:20px !important; padding-right:20px !important; }
+    .m-hdr-l { padding:18px 0 18px 20px !important; }
+    .m-hdr-r { padding:18px 20px 18px 0 !important; letter-spacing:.08em !important; }
+    .m-h1 { font-size:19px !important; line-height:1.3 !important; }
+    .m-txt { font-size:14px !important; line-height:1.6 !important; }
+    .m-txt-s { font-size:13px !important; }
+    .m-card { padding:16px !important; }
+    .m-addr { font-size:14px !important; }
+    .m-btn-cell { text-align:center !important; }
+    .m-btn { display:inline-table !important; }
+    .m-pill { font-size:12px !important; }
+    .m-foot { font-size:11px !important; }
+    /* Les trois liens légaux tiennent sur une seule ligne : libellés courts,
+       séparateurs resserrés et coupure interdite. */
+    .m-legal { font-size:11px !important; white-space:nowrap !important; }
+  }
+</style>
+</head>
+<body style="margin:0;padding:0;background-color:#E7ECEA;">
+<span style="display:none;visibility:hidden;max-height:0;overflow:hidden;color:transparent;font-size:1px;line-height:1px">{% block preheader %}{% endblock preheader %}</span>
+{% comment %}
+  La bande de couleur autour du message est conservée sur écran large, où elle
+  referme la mise en page sans rien coûter. Sous 480 px, `m-gutter` annule sa
+  gouttière et le gabarit va d'un bord à l'autre : c'est là, et seulement là,
+  que la largeur manque.
+{% endcomment %}
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#E7ECEA">
+  <tr><td align="center" class="m-gutter" style="padding:24px 10px">
+
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="600" style="width:100%;max-width:600px;border-collapse:collapse;background-color:#FFFFFF">
+      <tr><td style="padding:0">
+
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#FFFFFF">
+          {% comment %}
+            Le padding de l'en-tête est porté par les CELLULES, pas par le <td>
+            qui les contient. Une table en `width:100%` placée dans un <td>
+            rembourré est calculée par certains clients sur la largeur totale du
+            <td>, padding compris : le contenu débordait alors de la valeur du
+            padding vers la droite, ce qui décalait le libellé. Avec le padding
+            dans les cellules, la table est fille d'un <td> à zéro et le calcul
+            redevient exact.
+
+            Logo à gauche, libellé à droite, à toutes les tailles : sous 480 px
+            on ne réduit que le padding et l'interlettrage. Les deux cellules ne
+            s'empilent jamais.
+          {% endcomment %}
+          <tr><td style="{% block header_style %}background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%){% endblock header_style %};padding:0">
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse">
+              <tr>
+                <td width="52" class="m-hdr-l" style="width:52px;vertical-align:middle;padding:24px 0 24px 32px"><img src="{% email_static 'bana/img/shared/bana_logo.png' %}" width="48" height="48" alt="Bana" style="display:block;width:48px;height:48px;border:0"></td>
+                <td align="right" class="m-hdr-r" style="vertical-align:middle;padding:24px 32px 24px 0;font:700 10px/1.4 Arial,Helvetica,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:{% block eyebrow_color %}#D7FC19{% endblock eyebrow_color %}">{% block eyebrow %}{% endblock eyebrow %}</td>
+              </tr>
+            </table>
+          </td></tr>
+
+          <tr><td class="m-pad" style="padding:{% block body_padding %}34px 32px 8px{% endblock body_padding %}">
+            <p class="m-txt" style="margin:0 0 16px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000">{% block greeting %}{% trans "Bonjour," %}{% endblock greeting %}</p>
+            <h1 class="m-h1" style="margin:0 0 14px;font:700 25px/1.25 Arial,Helvetica,sans-serif;color:#000000;mso-line-height-rule:exactly">{% block title %}{% endblock title %}</h1>
+            {% block content %}{% endblock content %}
+          </td></tr>
+
+          {% block cta %}{% endblock cta %}
+
+          <tr><td class="m-pad" style="padding:22px 32px 34px">
+            {% block closing %}{% endblock closing %}
+            {% comment %}
+              Signature identique partout : la formule de politesse en noir,
+              la signature elle-même en couleur de marque.
+            {% endcomment %}
+            {% block signature %}<p class="m-txt" style="margin:0;font:400 15px/1.6 Arial,Helvetica,sans-serif;color:#000000">{% trans "À très vite," %}<br><strong style="color:#007F73">{% trans "L'équipe Bana" %}</strong></p>{% endblock signature %}
+          </td></tr>
+        </table>
+
+        {% comment %}
+          Pied de page sur le dégradé de marque, comme l'en-tête : les deux
+          referment le message et le fond blanc du corps ressort entre eux.
+
+          Contenu réduit à ce qui doit y être. Obligatoire pour une ASBL belge
+          sur tout document adressé à un tiers : dénomination, forme juridique,
+          siège, numéro d'entreprise et RPM (Code des sociétés et des
+          associations, art. 2:20), plus un moyen de contact au titre de
+          l'identification du prestataire (CDE, art. XII.6). La raison de
+          l'envoi relève de la transparence RGPD. Les liens CGU, Confidentialité
+          et Mentions légales restent : ils portent l'information contractuelle
+          et le traitement des données.
+
+          Retirés faute d'être exigés : le lien Cookies, qui ne concerne que la
+          navigation sur le site et n'a rien à faire dans un email, et le lien
+          Centre d'aide, qui doublonnait avec l'adresse de contact.
+
+          Pas de lien de désinscription : ces emails sont transactionnels et
+          indispensables au compte, ils ne relèvent pas du consentement
+          marketing.
+
+          Les icônes sociales sont des PNG générés dans le lime de marque : les
+          SVG du site sont supprimés par Gmail et Outlook. Chacune porte un
+          `alt` pour rester identifiable images bloquées.
+        {% endcomment %}
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="width:100%;border-collapse:collapse;background-color:#0F5F4B;background-image:linear-gradient(105deg,#0F5F4B 42%,#0ab092 100%)">
+          <tr><td class="m-pad" align="center" style="padding:28px 32px 30px">
+
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;margin:0 auto 16px">
+              <tr>
+                <td style="padding:0 7px"><a href="https://www.facebook.com/BanaCommunity/"><img src="{% email_static 'bana/img/email/icon-facebook.png' %}" width="24" height="24" alt="Facebook" style="display:block;width:24px;height:24px;border:0"></a></td>
+                <td style="padding:0 7px"><a href="https://www.instagram.com/bana_tribus/"><img src="{% email_static 'bana/img/email/icon-instagram.png' %}" width="24" height="24" alt="Instagram" style="display:block;width:24px;height:24px;border:0"></a></td>
+                <td style="padding:0 7px"><a href="https://www.linkedin.com/company/banamobi/"><img src="{% email_static 'bana/img/email/icon-linkedin.png' %}" width="24" height="24" alt="LinkedIn" style="display:block;width:24px;height:24px;border:0"></a></td>
+              </tr>
+            </table>
+
+            <p class="m-foot" style="margin:0 0 14px;font:700 13px/1.7 Arial,Helvetica,sans-serif;color:#D7FC19"><a href="mailto:contact@bana.mobi" style="color:#D7FC19;text-decoration:none">contact@bana.mobi</a> &nbsp;&middot;&nbsp; <a href="tel:+32495283791" style="color:#D7FC19;text-decoration:none">+32 495 283 791</a></p>
+
+            {% comment %}
+              « CGU » plutôt que « Conditions générales » : sous 480 px, les
+              trois libellés longs ne tenaient pas sur une ligne et passaient à
+              la suivante. Le sigle est celui employé partout ailleurs dans le
+              projet.
+            {% endcomment %}
+            <p class="m-foot m-legal" style="margin:0 0 18px;font:400 12px/1.9 Arial,Helvetica,sans-serif;color:#D7FC19"><a href="{% email_static 'bana/doc/conditions-generales-utilisation.pdf' %}" style="color:#D7FC19;text-decoration:underline">{% trans "CGU" %}</a> &nbsp;&middot;&nbsp; <a href="{% email_static 'bana/doc/politique-de-confidentialite-bana.pdf' %}" style="color:#D7FC19;text-decoration:underline">{% trans "Confidentialité" %}</a> &nbsp;&middot;&nbsp; <a href="{% email_static 'bana/doc/mentions-legales-bana.pdf' %}" style="color:#D7FC19;text-decoration:underline">{% trans "Mentions légales" %}</a></p>
+
+            {% comment %}
+              Caractères accentués en UTF-8 littéral, pas en entités HTML : les
+              entités coupaient la ligne en fragments que le détecteur d'adresse
+              d'Apple Mail traitait séparément, d'où des lettres restées d'une
+              autre couleur au milieu du texte relié.
+            {% endcomment %}
+            <p class="m-foot" style="margin:0 0 4px;font:700 12px/1.6 Arial,Helvetica,sans-serif;color:#FFFFFF">Bana Community ASBL</p>
+            <p class="m-foot" style="margin:0;font:400 12px/1.6 Arial,Helvetica,sans-serif;color:#D7FC19">Chaussée de Châtelet 226, 6060 Gilly, Belgique<br>N° d'entreprise 0795750584 &nbsp;&middot;&nbsp; RPM Charleroi &nbsp;&middot;&nbsp; <a href="https://www.bana.mobi" style="color:#D7FC19;text-decoration:underline">www.bana.mobi</a></p>
+          </td></tr>
+        </table>
+
+      </td></tr>
+    </table>
+
+  </td></tr>
+</table>
+</body>
+</html>

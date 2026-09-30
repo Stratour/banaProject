@@ -1,0 +1,22 @@
+{% extends "trajects/email/base_message.html" %}
+{% comment %}
+  Le Yaya n'a pas retenu la demande : le PARENT est prévenu.
+
+  Ton volontairement non culpabilisant, aucune attribution de faute, et le CTA
+  renvoie vers les autres possibilités plutôt que vers le trajet refusé. Carte
+  grise (`muted`) : ces demandes n'existent plus.
+{% endcomment %}
+{% block subject %}{% if dates_count > 1 %}{{ dates_count }} de vos réservations n'ont pas été retenues{% else %}Votre réservation n'a pas été retenue{% endif %}{% endblock subject %}
+
+{% block preheader %}{{ counterpart_name|capfirst }} n'est pas disponible. D'autres accompagnateurs figurent dans vos matchings.{% endblock preheader %}
+
+{% block eyebrow %}Suivi de<br>réservation{% endblock eyebrow %}
+
+{% block title %}{% if dates_count > 1 %}Ces demandes n'ont pas été retenues{% else %}Cette demande n'a pas été retenue{% endif %}{% endblock title %}
+
+{% block content %}<p class="m-txt" style="margin:0 0 22px;font:400 15px/1.65 Arial,Helvetica,sans-serif;color:#000000"><strong style="color:#007F73">{{ counterpart_name|capfirst }}</strong> n'est pas disponible pour ce trajet. Consultez votre espace Bana pour trouver d'autres accompagnateurs.</p>
+{% include "emails/_traject_recap.html" with dates_label=dates_count|pluralize:"Date annulée,Dates annulées" muted=True card_label=dates_count|pluralize:"Demande annulée,Demandes annulées" %}{% endblock content %}
+
+{% block cta %}{% include "emails/_cta.html" with url=cta_url label="Voir mes réservations" %}{% endblock cta %}
+
+{% block closing %}<p class="m-txt-s" style="margin:0 0 16px;font:400 13px/1.6 Arial,Helvetica,sans-serif;color:#000000">Vos places ne sont pas bloquées : vous pouvez réserver un autre accompagnateur dès maintenant.</p>{% endblock closing %}
